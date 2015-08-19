@@ -1352,6 +1352,9 @@ CL_API_ENTRY void * CL_API_CALL
 clGetExtensionFunctionAddressForPlatform(cl_platform_id platform,
                                          const char *   function_name) CL_API_SUFFIX__VERSION_1_2
 {
+
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(function_name, NULL);
+
     // make sure the ICD is initialized
     khrIcdInitialize();    
 
@@ -1414,10 +1417,10 @@ clGetExtensionFunctionAddressForPlatform(cl_platform_id platform,
     /* cl_khr_sub_groups */
     CL_COMMON_EXTENSION_ENTRYPOINT_ADD(clGetKernelSubGroupInfoKHR);
 
-    // fall back to vendor extension detection
+    #undef CL_COMMON_EXTENSION_ENTRYPOINT_ADD
 
-    // FIXME Now that we have a platform id here, we need to validate that it isn't NULL, so shouldn't we have an errcode_ret
-    // KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(platform, CL_INVALID_PLATFORM);   
+    // fall back to vendor extension detection
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, NULL);
     return platform->dispatch->clGetExtensionFunctionAddressForPlatform(
         platform,
         function_name);
@@ -1555,11 +1558,14 @@ clEnqueueBarrier(cl_command_queue command_queue) CL_EXT_SUFFIX__VERSION_1_1_DEPR
 CL_API_ENTRY void * CL_API_CALL
 clGetExtensionFunctionAddress(const char *function_name) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
 {
-    size_t function_name_length = strlen(function_name);
+    size_t function_name_length = 0;
     KHRicdVendor* vendor = NULL;
+
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(function_name, NULL);
 
     // make sure the ICD is initialized
     khrIcdInitialize();    
+    function_name_length = strlen(function_name);
 
     // return any ICD-aware extensions
     #define CL_COMMON_EXTENSION_ENTRYPOINT_ADD(name) if (!strcmp(function_name, #name) ) return (void *)(size_t)&name
@@ -1619,6 +1625,8 @@ clGetExtensionFunctionAddress(const char *function_name) CL_EXT_SUFFIX__VERSION_
 
     /* cl_khr_sub_groups */
     CL_COMMON_EXTENSION_ENTRYPOINT_ADD(clGetKernelSubGroupInfoKHR);
+
+    #undef CL_COMMON_EXTENSION_ENTRYPOINT_ADD
 
     // fall back to vendor extension detection
     for (vendor = khrIcdVendors; vendor; vendor = vendor->next)
