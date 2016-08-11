@@ -218,11 +218,6 @@ clCreateContextFromType(const cl_context_properties * properties,
     // determine the platform to use from the properties specified
     khrIcdContextPropertiesGetPlatform(properties, &platform);
 
-    if (properties == NULL && khrIcdVendors != NULL)
-    {
-        platform = khrIcdVendors[0].platform;
-    }
-
     // validate the platform handle and dispatch
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(platform, CL_INVALID_PLATFORM);
     return platform->dispatch->clCreateContextFromType(
