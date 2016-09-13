@@ -198,6 +198,12 @@ Done:
 
 void khrIcdContextPropertiesGetPlatform(const cl_context_properties *properties, cl_platform_id *outPlatform)
 {
+    if (properties == NULL && khrIcdVendors != NULL)
+    {
+        *outPlatform = khrIcdVendors[0].platform;
+        return;
+    }
+
     const cl_context_properties *property = (cl_context_properties *)NULL;
     *outPlatform = NULL;
     for (property = properties; property && property[0]; property += 2)
