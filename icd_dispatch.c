@@ -584,6 +584,32 @@ clLinkProgram(cl_context           context,
 }
 
 CL_API_ENTRY cl_int CL_API_CALL
+clSetProgramSpecializationConstant(cl_program  program,
+                                   cl_uint     spec_id,
+                                   size_t      spec_size,
+                                   const void* spec_value) CL_API_SUFFIX__VERSION_2_2
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
+    return program->dispatch->clSetProgramSpecializationConstant(
+        program,
+        spec_id,
+        spec_size,
+        spec_value); 
+}
+
+CL_API_ENTRY cl_int CL_API_CALL
+clSetProgramReleaseCallback(cl_program  program,
+                            void (CL_CALLBACK * pfn_notify)(cl_program program, void * user_data),
+                            void *              user_data) CL_API_SUFFIX__VERSION_2_2
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
+    return program->dispatch->clSetProgramReleaseCallback(
+        program,
+        pfn_notify,
+        user_data); 
+}
+
+CL_API_ENTRY cl_int CL_API_CALL
 clUnloadPlatformCompiler(cl_platform_id platform) CL_API_SUFFIX__VERSION_1_2
 {
     // initialize the platforms (in case they have not been already)

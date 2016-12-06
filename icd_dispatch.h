@@ -50,6 +50,10 @@
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 #endif
 
+#ifndef CL_USE_DEPRECATED_OPENCL_2_0_APIS
+#define CL_USE_DEPRECATED_OPENCL_2_0_APIS
+#endif
+
 // cl.h
 #include <CL/cl.h>
 
@@ -322,6 +326,17 @@ typedef CL_API_ENTRY cl_program (CL_API_CALL *KHRpfn_clLinkProgram)(
     void (CL_CALLBACK *  pfn_notify)(cl_program program, void * user_data),
     void *               user_data,
     cl_int *             errcode_ret) CL_API_SUFFIX__VERSION_1_2;
+
+typedef CL_API_ENTRY cl_int (CL_API_CALL *KHRpfn_clSetProgramSpecializationConstant)(
+    cl_program           program,
+    cl_uint              spec_id,
+    size_t               spec_size,
+    const void*          spec_value) CL_API_SUFFIX__VERSION_2_2;
+
+typedef CL_API_ENTRY cl_int (CL_API_CALL *KHRpfn_clSetProgramReleaseCallback)(
+    cl_program           program,
+    void (CL_CALLBACK *  pfn_notify)(cl_program program, void * user_data),
+    void *               user_data) CL_API_SUFFIX__VERSION_2_2;
 
 typedef CL_API_ENTRY cl_int (CL_API_CALL *KHRpfn_clUnloadPlatformCompiler)(
     cl_platform_id     platform) CL_API_SUFFIX__VERSION_1_2;
@@ -1459,6 +1474,10 @@ struct KHRicdVendorDispatchRec
     KHRpfn_clGetHostTimer                           clGetHostTimer;
     KHRpfn_clGetKernelSubGroupInfo                  clGetKernelSubGroupInfo;
     KHRpfn_clSetDefaultDeviceCommandQueue           clSetDefaultDeviceCommandQueue;
+
+    /* OpenCL 2.2 */
+    KHRpfn_clSetProgramReleaseCallback              clSetProgramReleaseCallback;
+    KHRpfn_clSetProgramSpecializationConstant       clSetProgramSpecializationConstant;
 };
 
 /*

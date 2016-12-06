@@ -174,3 +174,8 @@ clGetDeviceAndHostTimer
 clGetHostTimer
 clGetKernelSubGroupInfo
 clSetDefaultDeviceCommandQueue
+
+; OpenCL 2.2 API
+clSetProgramReleaseCallback
+clSetProgramSpecializationConstant
+

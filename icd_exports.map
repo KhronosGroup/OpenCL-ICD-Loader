@@ -177,3 +177,8 @@ OPENCL_2.1 {
         clSetDefaultDeviceCommandQueue;
 } OPENCL_2.0;
 
+OPENCL_2.2 {
+    global:
+        clSetProgramReleaseCallback;
+        clSetProgramSpecializationConstant;
+} OPENCL_2.1;
