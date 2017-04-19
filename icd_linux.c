@@ -57,11 +57,17 @@ void khrIcdOsVendorsEnumerate(void)
 {
     DIR *dir = NULL;
     struct dirent *dirEntry = NULL;
+    char *vendorPath = NULL;
+
+    vendorPath = getenv("OPENCL_VENDOR_PATH");
+    if  (NULL == vendorPath)
+    {
 #ifdef __ANDROID__
-    char *vendorPath = "/system/vendor/Khronos/OpenCL/vendors/";
+        vendorPath = "/system/vendor/Khronos/OpenCL/vendors/";
 #else
-    char *vendorPath = "/etc/OpenCL/vendors/";
+        vendorPath = "/etc/OpenCL/vendors/";
 #endif // ANDROID
+    }
 
     // open the directory
     dir = opendir(vendorPath);
