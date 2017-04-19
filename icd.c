@@ -201,17 +201,18 @@ void khrIcdContextPropertiesGetPlatform(const cl_context_properties *properties,
     if (properties == NULL && khrIcdVendors != NULL)
     {
         *outPlatform = khrIcdVendors[0].platform;
-        return;
     }
-
-    const cl_context_properties *property = (cl_context_properties *)NULL;
-    *outPlatform = NULL;
-    for (property = properties; property && property[0]; property += 2)
+    else
     {
-        if ((cl_context_properties)CL_CONTEXT_PLATFORM == property[0])
+        const cl_context_properties *property = (cl_context_properties *)NULL;
+        *outPlatform = NULL;
+        for (property = properties; property && property[0]; property += 2)
         {
-            *outPlatform = (cl_platform_id)property[1];
-        }    
+            if ((cl_context_properties)CL_CONTEXT_PLATFORM == property[0])
+            {
+                *outPlatform = (cl_platform_id)property[1];
+            }
+        }
     }
 }
 
