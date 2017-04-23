@@ -165,6 +165,11 @@ int test_clGetExtensionFunctionAddressForPlatform(const struct clGetExtensionFun
                      platform,  
                      data->func_name);
 
+    if (!platform) {
+        test_icd_app_log("No stub platform\n");
+        return -2;
+    }
+
     return_value=clGetExtensionFunctionAddressForPlatform(platform,
                                                         data->func_name);
 

@@ -174,10 +174,15 @@ int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
                 &param_val_ret_size );  
 
         if (ret_val == CL_SUCCESS ){
-            if(!strcmp(platform_name, "ICD_LOADER_TEST_OPENCL_STUB")) {
+            if (!strcmp(platform_name, "ICD_LOADER_TEST_OPENCL_STUB")) {
                 platform = all_platforms[i];                
             }
         }
+    }
+
+    if (!platform) {
+        // The stub OpenCL not found.
+        return -2;
     }
 
 #if ENABLE_MISMATCHING_PRINTS
