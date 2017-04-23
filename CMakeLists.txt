@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 2.6)
 
 project (OPENCL_ICD_LOADER)
 
+option (TESTS "Enable building tests" ON)
+
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -27,5 +29,7 @@ endif ()
 
 target_link_libraries (OpenCL ${CMAKE_DL_LIBS})
 
-enable_testing()
-add_subdirectory (test)
+if (TESTS)
+    enable_testing ()
+    add_subdirectory (test)
+endif ()
