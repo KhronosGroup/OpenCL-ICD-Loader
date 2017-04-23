@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 2.6)
 
 project (OPENCL_ICD_LOADER)
 
+option (BUILD_SHARED_LIBS "Build shared libs" ON)
 option (TESTS "Enable building tests" ON)
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -20,7 +21,7 @@ endif ()
 # OR copy OpenCL headers to ./inc/CL/
 include_directories (./inc)
 
-add_library (OpenCL SHARED ${OPENCL_ICD_LOADER_SOURCES})
+add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")

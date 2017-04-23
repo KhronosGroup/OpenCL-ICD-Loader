@@ -12,4 +12,5 @@ add_executable (icd_loader_test
     test_clgl.c
     test_image_objects.c )
 
-target_link_libraries (icd_loader_test OpenCL IcdLog)
+find_package(Threads)
+target_link_libraries (icd_loader_test OpenCL IcdLog ${CMAKE_THREAD_LIBS_INIT})
