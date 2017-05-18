@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 2.6)
 project (OPENCL_ICD_LOADER)
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 set (OPENCL_ICD_LOADER_SOURCES icd.c icd_dispatch.c)
 
@@ -16,13 +16,17 @@ endif ()
 
 # Change this to point to a directory containing OpenCL header directory "CL"
 # OR copy OpenCL headers to ./inc/CL/
-include_directories (./inc)
+if (NOT DEFINED OPENCL_INCLUDE_DIRS)
+    set (OPENCL_INCLUDE_DIRS ./inc)
+endif ()
+
+include_directories (${OPENCL_INCLUDE_DIRS})
 
 add_library (OpenCL SHARED ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-    set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-pthread -Wl,--version-script -Wl,${CMAKE_SOURCE_DIR}/icd_exports.map")
+    set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-pthread -Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/icd_exports.map")
 endif ()
 
 target_link_libraries (OpenCL ${CMAKE_DL_LIBS})
