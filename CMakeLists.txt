@@ -10,7 +10,7 @@ set (OPENCL_ICD_LOADER_SOURCES icd.c icd_dispatch.c)
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
     list (APPEND OPENCL_ICD_LOADER_SOURCES icd_linux.c icd_exports.map)
 else ()
-    list (APPEND OPENCL_ICD_LOADER_SOURCES icd_windows.c icd_windows_hkr.c OpenCL.def)
+    list (APPEND OPENCL_ICD_LOADER_SOURCES icd_windows.c icd_windows_hkr.c OpenCL.def OpenCL.rc)
     include_directories ($ENV{DXSDK_DIR}/Include)
 endif ()
 
