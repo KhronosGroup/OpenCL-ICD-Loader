@@ -49,7 +49,7 @@
         mem = NULL;                   \
     } while (0)
 
-static const char HKR_PREFIX[] = "SYSTEM\\ControlSet001\\Control\\Class\\";
+static const char HKR_PREFIX[] = "SYSTEM\\CurrentControlSet\\Control\\Class\\";
 #ifdef _WIN64
 static const char OPENCL_REG_SUB_KEY[] = "OpenCLDriverName";
 #else
