@@ -41,12 +41,11 @@
 #include <SetupAPI.h>
 #include <devguid.h>
 
-#define KHR_SAFE_RELEASE(mem)         \
-    do                                \
-    {                                 \
-        if (mem)                      \
-            free(mem);                \
-        mem = NULL;                   \
+#define KHR_SAFE_RELEASE(mem)       \
+    do                              \
+    {                               \
+        free(mem);                  \
+        mem = NULL;                 \
     } while (0)
 
 static const char HKR_PREFIX[] = "SYSTEM\\CurrentControlSet\\Control\\Class\\";
