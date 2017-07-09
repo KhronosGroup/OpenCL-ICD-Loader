@@ -52,7 +52,7 @@ static const char HKR_PREFIX[] = "SYSTEM\\CurrentControlSet\\Control\\Class\\";
 #ifdef _WIN64
 static const char OPENCL_REG_SUB_KEY[] = "OpenCLDriverName";
 #else
-static const char OPENCL_REG_SUB_KEY[] = "OpenCLDriverNameWow"
+static const char OPENCL_REG_SUB_KEY[] = "OpenCLDriverNameWow";
 #endif
 
 // Given a display adapter HKR (GUID\000x), returns the full registry path
