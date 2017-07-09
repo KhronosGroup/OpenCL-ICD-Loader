@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 The Khronos Group Inc.
+ * Copyright (c) 2017 The Khronos Group Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software source and associated documentation files (the "Materials"),
@@ -35,36 +35,7 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
+#include "icd.h"
 #include <windows.h>
 
-#ifdef RC_INVOKED
-
-VS_VERSION_INFO VERSIONINFO
-FILEVERSION    2,2,1,0
-PRODUCTVERSION 2,2,1,0
-FILETYPE       VFT_DLL
-
-BEGIN
-    BLOCK "StringFileInfo"
-    BEGIN
-        BLOCK "040904E4"
-        BEGIN
-            VALUE "FileDescription" ,"OpenCL Client DLL"
-            VALUE "ProductName"     ,"Khronos OpenCL ICD"
-            VALUE "LegalCopyright"  ,"Copyright \251 The Khronos Group Inc 2016"
-            VALUE "FileVersion"     ,"2.2.1.0"
-            VALUE "CompanyName"     ,"Khronos Group"
-            VALUE "InternalName"    ,"OpenCL"
-            VALUE "OriginalFilename","OpenCL.dll"
-        END
-    END
-
-    BLOCK "VarFileInfo"
-    BEGIN
-        // extend this line for localized versions
-        VALUE "Translation", 0x0409, 0x04E4
-    END
-END
-
-#endif
-
+BOOL CALLBACK khrIcdOsVendorsEnumerateHKR(void);
