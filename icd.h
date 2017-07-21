@@ -53,6 +53,10 @@
 #include <CL/cl.h>
 #include <CL/cl_ext.h>
 
+#ifdef _WIN32
+#include <tchar.h>
+#endif
+
 /*
  * type definitions
  */
@@ -145,7 +149,16 @@ void khrIcdContextPropertiesGetPlatform(
         fprintf(stderr, "KHR ICD trace at %s:%d: ", __FILE__, __LINE__); \
         fprintf(stderr, __VA_ARGS__); \
     } while (0)
-
+#ifdef _WIN32
+#define KHR_ICD_WIDE_TRACE(...) \
+    do \
+    { \
+        fwprintf(stderr, L"KHR ICD trace at %hs:%d: ", __FILE__, __LINE__); \
+        fwprintf(stderr, __VA_ARGS__); \
+    } while (0)
+#else
+#define KHR_ICD_WIDE_TRACE(...)
+#endif
     #define KHR_ICD_ASSERT(x) \
     do \
     { \
@@ -156,6 +169,7 @@ void khrIcdContextPropertiesGetPlatform(
     } while (0)
 #else
     #define KHR_ICD_TRACE(...)
+    #define KHR_ICD_WIDE_TRACE(...)
     #define KHR_ICD_ASSERT(x)
 #endif
 

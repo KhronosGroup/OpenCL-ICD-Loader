@@ -58,6 +58,7 @@ void khrIcdVendorAdd(const char *libraryName)
     cl_uint i = 0;
     cl_uint platformCount = 0;
     cl_platform_id *platforms = NULL;
+    KHRicdVendor *vendorIterator = NULL;
 
     // require that the library name be valid
     if (!libraryName) 
@@ -72,6 +73,16 @@ void khrIcdVendorAdd(const char *libraryName)
     {
         KHR_ICD_TRACE("failed to load library %s\n", libraryName);
         goto Done;
+    }
+
+    // ensure that we haven't already loaded this vendor
+    for (vendorIterator = khrIcdVendors; vendorIterator; vendorIterator = vendorIterator->next)
+    {
+        if (vendorIterator->library == library)
+        {
+            KHR_ICD_TRACE("already loaded vendor %s, nothing to do here\n", libraryName);
+            goto Done;
+        }
     }
 
     // get the library's clGetExtensionFunctionAddress pointer

@@ -36,6 +36,7 @@
  */
 
 #include "icd.h"
+#include "icd_windows_hkr.h"
 #include <stdio.h>
 #include <windows.h>
 #include <winreg.h>
@@ -56,6 +57,11 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     const char* platformsName = "SOFTWARE\\Khronos\\OpenCL\\Vendors";
     HKEY platformsKey = NULL;
     DWORD dwIndex;
+
+    if (!khrIcdOsVendorsEnumerateHKR())
+    {
+        KHR_ICD_TRACE("Failed to enumerate HKR entries, continuing\n");
+    }
 
     KHR_ICD_TRACE("Opening key HKLM\\%s...\n", platformsName);
     result = RegOpenKeyExA(
