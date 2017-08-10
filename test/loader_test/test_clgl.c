@@ -154,6 +154,8 @@ int test_clGetGLObjectInfo(const struct clGetGLObjectInfo_st* data)
                                 data->gl_object_name);
 
     test_icd_app_log("Value returned: %p\n", ret_val);
+    
+    return ret_val;
 
 }
 

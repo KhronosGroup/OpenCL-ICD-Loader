@@ -179,7 +179,7 @@ clGetDeviceIDs(cl_platform_id   platform,
     else {
         cl_device_id obj = (cl_device_id) malloc(sizeof(cl_device_id));
         obj->dispatch = dispatchTable;
-        *devices = obj;
+        devices = obj;
     }
     if (num_devices) {
         *num_devices = 1;
