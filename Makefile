@@ -34,4 +34,8 @@ clean:
 	${MAKE} -C ${BUILD_DIR} clean
 
 clobber:
+ifeq ($(wildcard ${BUILD_DIR}/CMakeCache.txt),)
+	$(error CMakeCache.txt does not exist in the specified BUILD_DIR. You might be pointing \
+	to the wrong directory to be cleaned or you have not even built the sources yet)
+endif
 	rm -rf ${BUILD_DIR}
