@@ -4,7 +4,7 @@
 BUILD_DIR?=build
 CMAKE_C_COMPILER?=gcc
 OPENCL_INCLUDE_DIRS?=./inc
-CURRDIR=$(shell pwd)
+SRC_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 ICD_VERSION:=$(shell grep FileVersion OpenCL.rc | sed "s/.*\([0-9]\+\.[0-9]\+\.[0-9]\+.[0-9]\+\).*/\1/")
 PACKAGE_PATH:=/tmp/opencl-icd-${ICD_VERSION}.tgz
@@ -20,7 +20,7 @@ do_cmake:
 	cmake                                        \
 	-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}       \
 	-DOPENCL_INCLUDE_DIRS=${OPENCL_INCLUDE_DIRS} \
-	${CURRDIR}
+	${SRC_DIR}
 
 test:
 	${MAKE} -C ${BUILD_DIR} test
