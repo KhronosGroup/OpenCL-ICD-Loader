@@ -99,8 +99,7 @@ clGetPlatformInfo(cl_platform_id    platform,
                   void *            param_value,
                   size_t *          param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
-    cl_int result = CL_SUCCESS;
-    cl_int return_value = CL_SUCCESS;
+    cl_int ret = CL_SUCCESS;
     const char *returnString = NULL;
     size_t returnStringLength = 0;
     /*test_icd_stub_log("clGetPlatformInfo(%p, %u, %u, %p, %p)\n", 
@@ -112,7 +111,8 @@ clGetPlatformInfo(cl_platform_id    platform,
 
     // validate the arguments
     if (param_value_size == 0 && param_value != NULL) {
-        return CL_INVALID_VALUE;
+        ret = CL_INVALID_VALUE;
+        goto done;
     }
     // select the string to return
     switch(param_name) {
@@ -135,18 +135,15 @@ clGetPlatformInfo(cl_platform_id    platform,
             returnString = platform->suffix;
             break;
         default:
-            /*test_icd_stub_log("Value returned: %d\n", 
-                                CL_INVALID_VALUE);*/
-            return CL_INVALID_VALUE;
-            break;
+            ret = CL_INVALID_VALUE;
+            goto done;
     }
 
     // make sure the buffer passed in is big enough for the result
     returnStringLength = strlen(returnString)+1;
     if (param_value_size && param_value_size < returnStringLength) {
-        /*test_icd_stub_log("Value returned: %d\n", 
-                          CL_INVALID_VALUE);*/
-        return CL_INVALID_VALUE;
+        ret = CL_INVALID_VALUE;
+        goto done;
     }
 
     // pass the data back to the user
@@ -157,9 +154,10 @@ clGetPlatformInfo(cl_platform_id    platform,
         *param_value_size_ret = returnStringLength;
     }
 
+done:
     /*test_icd_stub_log("Value returned: %d\n",
                       return_value);*/
-    return return_value;
+    return ret;
 }
 
 
@@ -171,28 +169,31 @@ clGetDeviceIDs(cl_platform_id   platform,
                cl_device_id *   devices,
                cl_uint *        num_devices) CL_API_SUFFIX__VERSION_1_0
 {
-    cl_int return_value = CL_SUCCESS;
+    cl_int ret = CL_SUCCESS;
 
     if ((num_entries > 1 || num_entries < 0) && devices != NULL) {
-        return_value = CL_INVALID_VALUE;
+        ret = CL_INVALID_VALUE;
+        goto done;
     }
-    else {
-        cl_device_id obj = (cl_device_id) malloc(sizeof(cl_device_id));
+
+    if (devices != NULL) {
+        cl_device_id obj = (cl_device_id) malloc(sizeof(*obj));
         obj->dispatch = dispatchTable;
-        devices = obj;
+        devices[0] = obj;
     }
     if (num_devices) {
         *num_devices = 1;
     }
 
+done:
     test_icd_stub_log("clGetDeviceIDs(%p, %x, %u, %p, %p)\n",
                       platform,
                       device_type,
                       num_entries,
                       devices,
                       num_devices);
-    test_icd_stub_log("Value returned: %d\n", CL_SUCCESS);
-    return CL_SUCCESS;
+    test_icd_stub_log("Value returned: %d\n", ret);
+    return ret;
 }
 
 
