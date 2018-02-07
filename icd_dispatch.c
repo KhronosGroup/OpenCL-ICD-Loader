@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 The Khronos Group Inc.
+ * Copyright (c) 2012-2018 The Khronos Group Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software source and associated documentation files (the "Materials"),
@@ -1382,10 +1382,15 @@ clGetExtensionFunctionAddressForPlatform(cl_platform_id platform,
     khrIcdInitialize();    
 
     // return any ICD-aware extensions
+
+    // Most extensions, including multi-vendor KHR and EXT extensions,
+    // do not need to be ICD-aware and do not require any ICD loader
+    // modifications.  The KHR and EXT extensions below were added for
+    // backwards compatibility only.
     #define CL_COMMON_EXTENSION_ENTRYPOINT_ADD(name) if (!strcmp(function_name, #name) ) return (void *)(size_t)&name
 
-    // Are these core or ext?  This is unclear, but they appear to be
-    // independent from cl_khr_gl_sharing.
+    // Functions supporting the creation of OpenCL Memory Objects
+    // from OpenGL Objects (cl_apple_gl_sharing, cl_khr_gl_sharing)
     CL_COMMON_EXTENSION_ENTRYPOINT_ADD(clCreateFromGLBuffer);
     CL_COMMON_EXTENSION_ENTRYPOINT_ADD(clCreateFromGLTexture);
     CL_COMMON_EXTENSION_ENTRYPOINT_ADD(clCreateFromGLTexture2D);
@@ -1440,10 +1445,10 @@ clGetExtensionFunctionAddressForPlatform(cl_platform_id platform,
     /* cl_khr_sub_groups */
     CL_COMMON_EXTENSION_ENTRYPOINT_ADD(clGetKernelSubGroupInfoKHR);
 
-    // fall back to vendor extension detection
+    // This is not an ICD-aware extension, so call into the implementation
+    // to get the extension function address.
 
-    // FIXME Now that we have a platform id here, we need to validate that it isn't NULL, so shouldn't we have an errcode_ret
-    // KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(platform, CL_INVALID_PLATFORM);   
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, NULL);
     return platform->dispatch->clGetExtensionFunctionAddressForPlatform(
         platform,
         function_name);
@@ -1588,10 +1593,15 @@ clGetExtensionFunctionAddress(const char *function_name) CL_EXT_SUFFIX__VERSION_
     khrIcdInitialize();    
 
     // return any ICD-aware extensions
+
+    // Most extensions, including multi-vendor KHR and EXT extensions,
+    // do not need to be ICD-aware and do not require any ICD loader
+    // modifications.  The KHR and EXT extensions below were added for
+    // backwards compatibility only.
     #define CL_COMMON_EXTENSION_ENTRYPOINT_ADD(name) if (!strcmp(function_name, #name) ) return (void *)(size_t)&name
 
-    // Are these core or ext?  This is unclear, but they appear to be
-    // independent from cl_khr_gl_sharing.
+    // Functions supporting the creation of OpenCL Memory Objects
+    // from OpenGL Objects (cl_apple_gl_sharing, cl_khr_gl_sharing)
     CL_COMMON_EXTENSION_ENTRYPOINT_ADD(clCreateFromGLBuffer);
     CL_COMMON_EXTENSION_ENTRYPOINT_ADD(clCreateFromGLTexture);
     CL_COMMON_EXTENSION_ENTRYPOINT_ADD(clCreateFromGLTexture2D);
