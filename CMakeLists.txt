@@ -2,6 +2,36 @@ cmake_minimum_required (VERSION 2.6)
 
 project (OPENCL_ICD_LOADER)
 
+# The option below allows building the ICD Loader library as a shared library
+# (ON, default) or a static library (OFF).
+#
+# Khronos OpenCL Working Group strongly recommends building and using the ICD
+# loader as a shared library due to the following benefits:
+#
+# 1. The shared library can be updated independent of the application. This
+#    allows releasing new fixes and features in the ICD loader without updating
+#    the application.
+#
+#    In rare cases when there are backward-incompatible changes to the ICD
+#    loader (due to platform requirements, for instance), using a shared
+#    library allows updating the library to make the transition seamless to
+#    installed applications.
+#
+# 2. On platforms that require the ICD mechanism there are multiple vendors
+#    shipping their OpenCL implementations. The vendor installers collaborate
+#    to make sure that the installed ICD shared library version is suitable for
+#    working with all vendor implementations installed on the system.
+#
+#    If applications statically link to ICD Loader then that version of the ICD
+#    loader may not work with one or more installed vendor implementations.
+#
+# Using the OpenCL ICD loader as a static library is NOT recommended for
+# end-user installations in general. However in some controlled environments it
+# may be useful to simplify the build and distribution of the application. E.g.
+# in test farms, or in cases where the end-user system configs are known in
+# advance. Use it with discretion.
+option (BUILD_SHARED_LIBS "Build shared libs" ON)
+
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
