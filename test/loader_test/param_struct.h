@@ -5,11 +5,6 @@
 #include<CL/cl_gl.h>
 #include<CL/cl_gl_ext.h>
 
-#ifdef _WIN32
-#include <windows.h> /* Needed for gl.h */
-#endif
-#include<GL/gl.h>
-
 struct clCreateCommandQueue_st
 {
     cl_context context;
@@ -930,7 +925,7 @@ struct clCreateFromGLBuffer_st
 {
     cl_context context;
     cl_mem_flags flags; 
-    GLuint bufobj; 
+    cl_GLuint bufobj; 
     int *errcode_ret;
 };
 
@@ -942,9 +937,9 @@ struct clCreateFromGLTexture_st
 {
     cl_context context;
     cl_mem_flags flags; 
-    GLenum texture_target;
-    GLint miplevel; 
-    GLuint texture; 
+    cl_GLenum texture_target;
+    cl_GLint miplevel; 
+    cl_GLuint texture; 
     cl_int *errcode_ret;
 };
 
@@ -952,9 +947,9 @@ struct clCreateFromGLTexture2D_st
 {
     cl_context context;
     cl_mem_flags flags; 
-    GLenum texture_target;
-    GLint miplevel; 
-    GLuint texture; 
+    cl_GLenum texture_target;
+    cl_GLint miplevel; 
+    cl_GLuint texture; 
     cl_int *errcode_ret;
 };
 
@@ -962,9 +957,9 @@ struct clCreateFromGLTexture3D_st
 {
     cl_context context;
     cl_mem_flags flags; 
-    GLenum texture_target;
-    GLint miplevel; 
-    GLuint texture; 
+    cl_GLenum texture_target;
+    cl_GLint miplevel; 
+    cl_GLuint texture; 
     cl_int *errcode_ret;
 };
 
@@ -974,7 +969,7 @@ struct clCreateFromGLRenderbuffer_st
 {
     cl_context context; 
     cl_mem_flags flags;
-    GLuint renderbuffer; 
+    cl_GLuint renderbuffer; 
     cl_int *errcode_ret;
 };
   
@@ -987,7 +982,7 @@ struct clGetGLObjectInfo_st
 {
     cl_mem memobj;
     cl_gl_object_type *gl_object_type; 
-    GLuint *gl_object_name;
+    cl_GLuint *gl_object_name;
 };
 
 struct clGetGLTextureInfo_st 

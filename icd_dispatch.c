@@ -1666,7 +1666,7 @@ clGetExtensionFunctionAddress(const char *function_name) CL_EXT_SUFFIX__VERSION_
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLBuffer(
     cl_context    context,
     cl_mem_flags  flags,
-    GLuint        bufobj,
+    cl_GLuint     bufobj,
     int *         errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
@@ -1698,9 +1698,9 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture(
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
     cl_context      context,
     cl_mem_flags    flags,
-    GLenum          target,
-    GLint           miplevel,
-    GLuint          texture,
+    cl_GLenum       target,
+    cl_GLint        miplevel,
+    cl_GLuint       texture,
     cl_int *        errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
@@ -1716,9 +1716,9 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
     cl_context      context,
     cl_mem_flags    flags,
-    GLenum          target,
-    GLint           miplevel,
-    GLuint          texture,
+    cl_GLenum       target,
+    cl_GLint        miplevel,
+    cl_GLuint       texture,
     cl_int *        errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
@@ -1734,7 +1734,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer(
     cl_context           context,
     cl_mem_flags         flags,
-    GLuint               renderbuffer,
+    cl_GLuint            renderbuffer,
     cl_int *             errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
@@ -1748,7 +1748,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer(
 CL_API_ENTRY cl_int CL_API_CALL clGetGLObjectInfo(
     cl_mem               memobj,
     cl_gl_object_type *  gl_object_type,
-    GLuint *             gl_object_name) CL_API_SUFFIX__VERSION_1_0
+    cl_GLuint *          gl_object_name) CL_API_SUFFIX__VERSION_1_0
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
     return memobj->dispatch->clGetGLObjectInfo(
