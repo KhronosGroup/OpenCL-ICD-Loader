@@ -36,6 +36,7 @@
  */
 
 #include "icd.h"
+#include "icd_envvar.h"
 #include <dlfcn.h>
 #include <stdio.h>
 #include <string.h>
@@ -134,8 +135,14 @@ void khrIcdOsVendorsEnumerate(void)
                 // ignore a newline at the end of the file
                 if (buffer[bufferSize-1] == '\n') buffer[bufferSize-1] = '\0';
 
+                khrIcdVisibilityReplaceLibraryName(dirEntry->d_name, buffer);
+                khrIcdVisibilityReplaceLibraryName(fileName, buffer);
+
                 // load the string read from the file
-                khrIcdVendorAdd(buffer);
+                if (khrIcdCheckLibraryVisible(buffer))
+                {
+                    khrIcdVendorAdd(buffer);
+                }
                 
                 free(fileName);
                 free(buffer);

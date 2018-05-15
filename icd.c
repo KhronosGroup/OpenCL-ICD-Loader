@@ -45,6 +45,7 @@ KHRicdVendor *khrIcdVendors = NULL;
 // entrypoint to initialize the ICD and add all vendors
 void khrIcdInitialize(void)
 {
+    khrIcdOsGetOpenCLVisibleDevicesOnce();
     // enumerate vendors present on the system
     khrIcdOsVendorsEnumerateOnce();
 }
@@ -134,6 +135,10 @@ void khrIcdVendorAdd(const char *libraryName)
         {
             continue;
         }
+        if (!khrIcdCheckPlatformVisible(libraryName, i))
+        {
+            continue;
+        }
         result = platforms[i]->dispatch->clGetPlatformInfo(
             platforms[i],
             CL_PLATFORM_ICD_SUFFIX_KHR,
@@ -190,6 +195,8 @@ void khrIcdVendorAdd(const char *libraryName)
             for (prevNextPointer = &khrIcdVendors; *prevNextPointer; prevNextPointer = &( (*prevNextPointer)->next) );
             *prevNextPointer = vendor;
         }
+
+        khrIcdVisibilitySetPlatform(libraryName, i, platforms[i]);
 
         KHR_ICD_TRACE("successfully added vendor %s with suffix %s\n", libraryName, suffix);
 
