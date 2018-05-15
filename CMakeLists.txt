@@ -5,12 +5,12 @@ project (OPENCL_ICD_LOADER)
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-set (OPENCL_ICD_LOADER_SOURCES icd.c icd_dispatch.c)
+set (OPENCL_ICD_LOADER_SOURCES icd.c icd_dispatch.c icd_envvar.c)
 
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-    list (APPEND OPENCL_ICD_LOADER_SOURCES icd_linux.c icd_exports.map)
+    list (APPEND OPENCL_ICD_LOADER_SOURCES icd_linux.c icd_linux_envvar.c icd_exports.map)
 else ()
-    list (APPEND OPENCL_ICD_LOADER_SOURCES icd_windows.c icd_windows_hkr.c OpenCL.def OpenCL.rc)
+    list (APPEND OPENCL_ICD_LOADER_SOURCES icd_windows.c icd_windows_hkr.c icd_windows_envvar.c OpenCL.def OpenCL.rc)
     include_directories ($ENV{DXSDK_DIR}/Include)
 endif ()
 
