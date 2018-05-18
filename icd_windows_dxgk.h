@@ -1,9 +1,5 @@
 /*
-<<<<<<< HEAD
- * Copyright (c) 2018 The Khronos Group Inc.
-=======
- * Copyright (c) 2017 The Khronos Group Inc.
->>>>>>> Windows 10 RS4 support for OpenCL ICD as per MS directive
+ * Copyright (c) 2017-2019 The Khronos Group Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software source and associated documentation files (the "Materials"),

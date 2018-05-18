@@ -1,6 +1,10 @@
 /*
 <<<<<<< HEAD:loader/windows/icd_windows_hkr.c
+<<<<<<< HEAD:loader/windows/icd_windows_hkr.c
  * Copyright (c) 2017-2019 The Khronos Group Inc.
+=======
+ * Copyright (c) 2018 The Khronos Group Inc.
+>>>>>>> Update Copyright year:icd_windows_hkr.c
 =======
  * Copyright (c) 2018 The Khronos Group Inc.
 >>>>>>> Update Copyright year:icd_windows_hkr.c
