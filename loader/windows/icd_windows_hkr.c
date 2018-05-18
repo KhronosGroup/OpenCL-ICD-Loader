@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD:loader/windows/icd_windows_hkr.c
  * Copyright (c) 2017-2019 The Khronos Group Inc.
+=======
+ * Copyright (c) 2018 The Khronos Group Inc.
+>>>>>>> Update Copyright year:icd_windows_hkr.c
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
