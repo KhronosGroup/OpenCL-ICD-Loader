@@ -18,6 +18,7 @@
 
 #include "icd.h"
 #include "icd_windows_hkr.h"
+#include "icd_windows_dxgk.h"
 #include <stdio.h>
 #include <windows.h>
 #include <winreg.h>
@@ -39,9 +40,13 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     HKEY platformsKey = NULL;
     DWORD dwIndex;
 
-    if (!khrIcdOsVendorsEnumerateHKR())
+    if (!khrIcdOsVendorsEnumerateDXGK())
     {
-        KHR_ICD_TRACE("Failed to enumerate HKR entries, continuing\n");
+        KHR_ICD_TRACE("Failed to load via DXGK interface on RS4, continuing\n");
+        if (!khrIcdOsVendorsEnumerateHKR())
+        {
+            KHR_ICD_TRACE("Failed to enumerate HKR entries, continuing\n");
+        }
     }
 
     KHR_ICD_TRACE("Opening key HKLM\\%s...\n", platformsName);

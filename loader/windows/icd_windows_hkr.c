@@ -44,30 +44,11 @@ typedef enum
         mem = NULL;                 \
     } while (0)
 
-static const char OPENCL_REG_SUB_KEY[] = "OpenCLDriverName";
-
-#ifndef _WIN64
-static const char OPENCL_REG_SUB_KEY_WOW[] = "OpenCLDriverNameWow";
-#endif
-
-// Do not free the memory returned by this function.
-static const char* GetOpenCLRegKeyName(void)
-{
 #ifdef _WIN64
-    return OPENCL_REG_SUB_KEY;
+static const char OPENCL_REG_SUB_KEY[] = "OpenCLDriverName";
 #else
-    // The suffix/substring "WoW" is meaningful only when a 32-bit
-    // application is running on a 64-bit Windows OS. A 32-bit application
-    // running on a 32-bit OS uses non-WoW names.
-    BOOL is_wow64;
-    if (IsWow64Process(GetCurrentProcess(), &is_wow64) && is_wow64)
-    {
-        return OPENCL_REG_SUB_KEY_WOW;
-    }
-
-    return OPENCL_REG_SUB_KEY;
+static const char OPENCL_REG_SUB_KEY[] = "OpenCLDriverNameWow";
 #endif
-}
 
 static bool ReadOpenCLKey(DEVINST dnDevNode)
 {
@@ -96,7 +77,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
     {
         result = RegQueryValueExA(
             hkey,
-            GetOpenCLRegKeyName(),
+            OPENCL_REG_SUB_KEY,
             NULL,
             &dwLibraryNameType,
             NULL,
@@ -128,7 +109,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
             goto out;
         }
 
-        if (REG_SZ != dwLibraryNameType)
+        if (REG_MULTI_SZ != dwLibraryNameType)
         {
             KHR_ICD_TRACE("Unexpected registry entry 0x%x! continuing\n", dwLibraryNameType);
             goto out;
@@ -168,6 +149,7 @@ static DeviceProbeResult ProbeDevice(DEVINST devnode)
         devnode,
         0);
 
+    // TODO: consider extracting warning messages out of this function
     if (CR_SUCCESS != ret)
     {
         KHR_ICD_TRACE("    WARNING: failed to probe the status of the device 0x%x\n", ret);
@@ -339,6 +321,8 @@ bool khrIcdOsVendorsEnumerateHKR(void)
                     (PBYTE)&guid,
                     &szGuid,
                     0);
+
+                KHR_ICD_ASSERT(devpropType == DEVPROP_TYPE_GUID);
 
                 if (CR_SUCCESS != ret ||
                     !IsEqualGUID(&OCL_GUID_DEVCLASS_SOFTWARECOMPONENT, &guid))
