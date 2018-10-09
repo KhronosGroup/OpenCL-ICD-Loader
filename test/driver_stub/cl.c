@@ -514,7 +514,8 @@ clCreateImage2D(cl_context              context ,
                       image_width,
                       image_height,
                       image_row_pitch,
-                      host_ptr);
+                      host_ptr,
+		      errcode_ret);
 
     test_icd_stub_log("Value returned: %p\n", obj);
     return obj;
