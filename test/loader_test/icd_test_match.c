@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
+#ifndef __APPLE__
 #include <malloc.h>
+#endif
 #include <platform/icd_test_log.h>
 
 int test_icd_match()
