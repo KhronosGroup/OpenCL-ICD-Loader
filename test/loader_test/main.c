@@ -16,6 +16,7 @@ extern int test_icd_match();
 
 extern int test_OpenGL_share();
 extern int test_Direct3D10_share();
+extern int test_release_calls();
 
 int main(int argc, char **argv)
 {
