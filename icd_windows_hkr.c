@@ -36,8 +36,9 @@
  */
 
 #include "icd.h"
-#include "icd_windows_hkr.h"
 #include <windows.h>
+#include "icd_windows_hkr.h"
+#include "icd_windows_dxgk.h"
 #include <cfgmgr32.h>
 #include <assert.h>
 #include <stdbool.h>
@@ -63,11 +64,30 @@ typedef enum
         mem = NULL;                 \
     } while (0)
 
-#ifdef _WIN64
 static const char OPENCL_REG_SUB_KEY[] = "OpenCLDriverName";
-#else
-static const char OPENCL_REG_SUB_KEY[] = "OpenCLDriverNameWow";
+
+#ifndef _WIN64
+static const char OPENCL_REG_SUB_KEY_WOW[] = "OpenCLDriverNameWow";
 #endif
+
+// Do not free the memory returned by this function.
+const char* GetOpenCLRegKeyName(void)
+{
+#ifdef _WIN64
+    return OPENCL_REG_SUB_KEY;
+#else
+    // The suffix/substring "WoW" is meaningful only when a 32-bit
+    // application is running on a 64-bit Windows OS. A 32-bit application
+    // running on a 32-bit OS uses non-WoW names.
+    BOOL is_wow64;
+    if (IsWow64Process(GetCurrentProcess(), &is_wow64) && is_wow64)
+    {
+        return OPENCL_REG_SUB_KEY_WOW;
+    }
+
+    return OPENCL_REG_SUB_KEY;
+#endif
+}
 
 static bool ReadOpenCLKey(DEVINST dnDevNode)
 {
@@ -96,7 +116,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
     {
         result = RegQueryValueExA(
             hkey,
-            OPENCL_REG_SUB_KEY,
+            GetOpenCLRegKeyName(),
             NULL,
             &dwLibraryNameType,
             NULL,
@@ -128,7 +148,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
             goto out;
         }
 
-        if (REG_MULTI_SZ != dwLibraryNameType)
+        if (REG_SZ != dwLibraryNameType)
         {
             KHR_ICD_TRACE("Unexpected registry entry 0x%x! continuing\n", dwLibraryNameType);
             goto out;
@@ -136,7 +156,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
 
         KHR_ICD_TRACE("    Path: %s\n", cszOclPath);
 
-        khrIcdVendorAdd(cszOclPath);
+        AdapterAdd(cszOclPath, ZeroLuid);
 
         bRet = true;
     }

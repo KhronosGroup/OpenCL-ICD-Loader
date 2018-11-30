@@ -174,6 +174,8 @@ int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
                 (void*)platform_name,
                 &param_val_ret_size );  
 
+        // printf("Platform %d Name: %s\n", i, platform_name);
+
         if (ret_val == CL_SUCCESS ){
             if(!strcmp(platform_name, "ICD_LOADER_TEST_OPENCL_STUB")) {
                 platform = all_platforms[i];                
