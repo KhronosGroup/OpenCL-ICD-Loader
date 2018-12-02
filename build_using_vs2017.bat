@@ -31,7 +31,7 @@ cd %BUILDTREE%
 cmake -G %cmake_platform% ^
 -DCMAKE_INSTALL_PREFIX=%BINDIR% ^
 %SRC%
-cmake --build . --target install
+cmake --build %BUILDTREE%
 
 
 cd %INITDIR%
