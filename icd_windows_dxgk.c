@@ -53,13 +53,13 @@ typedef LONG NTSTATUS;
 bool khrIcdOsVendorsEnumerateDXGK(void)
 {
 #if defined(DXGKDDI_INTERFACE_VERSION_WDDM2_4) && (DXGKDDI_INTERFACE_VERSION >= DXGKDDI_INTERFACE_VERSION_WDDM2_4)
+    // Get handle to GDI Runtime
+    HMODULE h = LoadLibrary("gdi32.dll");
+    if (h && GetProcAddress((HMODULE)h, "D3DKMTSubmitPresentBltToHwQueue")) // OS Version check
     {
         D3DKMT_ADAPTERINFO* pAdapterInfo;
         D3DKMT_ENUMADAPTERS2 EnumAdapters;
         NTSTATUS Status = STATUS_SUCCESS;
-
-        // Get handle to GDI Runtime
-        HMODULE h = LoadLibrary("gdi32.dll");
 
         char cszLibraryName[1024] = { 0 };
         EnumAdapters.NumAdapters = 0;
