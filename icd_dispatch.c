@@ -1442,8 +1442,9 @@ clGetExtensionFunctionAddressForPlatform(cl_platform_id platform,
 
     // fall back to vendor extension detection
 
-    // FIXME Now that we have a platform id here, we need to validate that it isn't NULL, so shouldn't we have an errcode_ret
-    // KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(platform, CL_INVALID_PLATFORM);   
+    // Now that we have a platform id here, we need to validate that it isn't NULL.
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);   
+
     return platform->dispatch->clGetExtensionFunctionAddressForPlatform(
         platform,
         function_name);
