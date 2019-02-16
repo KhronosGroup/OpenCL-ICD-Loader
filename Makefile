@@ -1,10 +1,10 @@
+SRC_DIR:=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 .PHONY: default do_cmake do_build test package
 .PHONY: clean clobber
 
-BUILD_DIR?=build
+BUILD_DIR?=${SRC_DIR}build
 CMAKE_C_COMPILER?=gcc
-OPENCL_INCLUDE_DIRS?=./inc
-SRC_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+OPENCL_INCLUDE_DIRS?=${SRC_DIR}inc
 
 ICD_VERSION:=$(shell grep FileVersion OpenCL.rc | sed "s/.*\([0-9]\+\.[0-9]\+\.[0-9]\+.[0-9]\+\).*/\1/")
 PACKAGE_PATH:=/tmp/opencl-icd-${ICD_VERSION}.tgz
@@ -33,9 +33,12 @@ package: clobber
 clean:
 	${MAKE} -C ${BUILD_DIR} clean
 
-clobber:
+check_clobber_erases_build_dir:
 ifeq ($(wildcard ${BUILD_DIR}/CMakeCache.txt),)
-	$(error CMakeCache.txt does not exist in the specified BUILD_DIR. You might be pointing \
-	to the wrong directory to be cleaned or you have not even built the sources yet)
+	$(warning MakeCache.txt does not exist in the specified BUILD_DIR. You might be \
+	pointing to the wrong directory to be cleaned or you have not even built the sources yet.)
+	@echo -n "Are you sure to remove ${BUILD_DIR}? [y/N] " && read ans && [ $${ans:-N} = y ]
 endif
+
+clobber: check_clobber_erases_build_dir
 	rm -rf ${BUILD_DIR}
