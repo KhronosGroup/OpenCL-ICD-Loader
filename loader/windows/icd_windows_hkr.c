@@ -1,6 +1,7 @@
 /*
 <<<<<<< HEAD:loader/windows/icd_windows_hkr.c
 <<<<<<< HEAD:loader/windows/icd_windows_hkr.c
+<<<<<<< HEAD:loader/windows/icd_windows_hkr.c
  * Copyright (c) 2017-2019 The Khronos Group Inc.
 =======
  * Copyright (c) 2018 The Khronos Group Inc.
@@ -8,6 +9,9 @@
 =======
  * Copyright (c) 2018 The Khronos Group Inc.
 >>>>>>> Update Copyright year:icd_windows_hkr.c
+=======
+ * Copyright (c) 2019 The Khronos Group Inc.
+>>>>>>> Resolve changes with:icd_windows_hkr.c
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,11 +56,30 @@ typedef enum
         mem = NULL;                 \
     } while (0)
 
-#ifdef _WIN64
 static const char OPENCL_REG_SUB_KEY[] = "OpenCLDriverName";
-#else
-static const char OPENCL_REG_SUB_KEY[] = "OpenCLDriverNameWow";
+
+#ifndef _WIN64
+static const char OPENCL_REG_SUB_KEY_WOW[] = "OpenCLDriverNameWow";
 #endif
+
+// Do not free the memory returned by this function.
+static const char* GetOpenCLRegKeyName(void)
+{
+#ifdef _WIN64
+    return OPENCL_REG_SUB_KEY;
+#else
+    // The suffix/substring "WoW" is meaningful only when a 32-bit
+    // application is running on a 64-bit Windows OS. A 32-bit application
+    // running on a 32-bit OS uses non-WoW names.
+    BOOL is_wow64;
+    if (IsWow64Process(GetCurrentProcess(), &is_wow64) && is_wow64)
+    {
+        return OPENCL_REG_SUB_KEY_WOW;
+    }
+
+    return OPENCL_REG_SUB_KEY;
+#endif
+}
 
 static bool ReadOpenCLKey(DEVINST dnDevNode)
 {
@@ -85,7 +108,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
     {
         result = RegQueryValueExA(
             hkey,
-            OPENCL_REG_SUB_KEY,
+            GetOpenCLRegKeyName(),
             NULL,
             &dwLibraryNameType,
             NULL,
@@ -157,7 +180,6 @@ static DeviceProbeResult ProbeDevice(DEVINST devnode)
         devnode,
         0);
 
-    // TODO: consider extracting warning messages out of this function
     if (CR_SUCCESS != ret)
     {
         KHR_ICD_TRACE("    WARNING: failed to probe the status of the device 0x%x\n", ret);
@@ -329,8 +351,6 @@ bool khrIcdOsVendorsEnumerateHKR(void)
                     (PBYTE)&guid,
                     &szGuid,
                     0);
-
-                KHR_ICD_ASSERT(devpropType == DEVPROP_TYPE_GUID);
 
                 if (CR_SUCCESS != ret ||
                     !IsEqualGUID(&OCL_GUID_DEVCLASS_SOFTWARECOMPONENT, &guid))
