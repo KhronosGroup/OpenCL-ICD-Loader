@@ -45,20 +45,22 @@ if (WIN32)
         loader/windows/icd_windows_hkr.c
         loader/windows/OpenCL.def
         loader/windows/OpenCL.rc)
-    include_directories ($ENV{DXSDK_DIR}/Include)
+    # Only add the DXSDK include directory if the environment variable is
+    # defined.  Since the DXSDK has merged into the Windows SDK, this is
+    # only required in rare cases.
+    if (DEFINED ENV{DXSDK_DIR})
+        include_directories ($ENV{DXSDK_DIR}/Include)
+    endif ()
 else ()
     list (APPEND OPENCL_ICD_LOADER_SOURCES
         loader/linux/icd_linux.c
         loader/linux/icd_exports.map)
 endif ()
 
-# Change this to point to a directory containing OpenCL header directory "CL"
-# OR copy OpenCL headers to ./inc/CL/
-if (NOT DEFINED OPENCL_INCLUDE_DIRS)
-    set (OPENCL_INCLUDE_DIRS ./inc)
-endif ()
+set (OPENCL_ICD_LOADER_HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/inc CACHE PATH "Path to OpenCL Headers")
 
-include_directories (${OPENCL_INCLUDE_DIRS})
+include_directories (${OPENCL_ICD_LOADER_HEADERS_DIR})
+include_directories (loader)
 
 add_library (OpenCL SHARED ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")

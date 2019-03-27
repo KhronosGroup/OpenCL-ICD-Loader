@@ -16,7 +16,7 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
-#include "../icd.h"
+#include "icd.h"
 #include "icd_windows_hkr.h"
 #include <windows.h>
 #include <cfgmgr32.h>
