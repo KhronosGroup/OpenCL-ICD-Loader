@@ -35,13 +35,21 @@ option (BUILD_SHARED_LIBS "Build shared libs" ON)
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-set (OPENCL_ICD_LOADER_SOURCES icd.c icd_dispatch.c)
+set (OPENCL_ICD_LOADER_SOURCES
+    loader/icd.c
+    loader/icd_dispatch.c)
 
 if (WIN32)
-    list (APPEND OPENCL_ICD_LOADER_SOURCES icd_windows.c icd_windows_hkr.c OpenCL.def OpenCL.rc)
+    list (APPEND OPENCL_ICD_LOADER_SOURCES 
+        loader/windows/icd_windows.c
+        loader/windows/icd_windows_hkr.c
+        loader/windows/OpenCL.def
+        loader/windows/OpenCL.rc)
     include_directories ($ENV{DXSDK_DIR}/Include)
 else ()
-    list (APPEND OPENCL_ICD_LOADER_SOURCES icd_linux.c icd_exports.map)
+    list (APPEND OPENCL_ICD_LOADER_SOURCES
+        loader/linux/icd_linux.c
+        loader/linux/icd_exports.map)
 endif ()
 
 # Change this to point to a directory containing OpenCL header directory "CL"
