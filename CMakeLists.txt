@@ -77,7 +77,7 @@ else()
     if (APPLE)
         set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-pthread")
     else ()
-        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-pthread -Wl,--version-script -Wl,${PROJECT_SOURCE_DIR}/icd_exports.map")
+        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-pthread -Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/loader/linux/icd_exports.map")
     endif ()
 endif ()
 
