@@ -54,7 +54,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     if (ERROR_SUCCESS != result)
     {
         KHR_ICD_TRACE("Failed to open platforms key %s, continuing\n", platformsName);
-        return FALSE;
+        return TRUE;
     }
 
     // for each value
