@@ -1,6 +1,6 @@
 include_directories (./inc)
 
-add_subdirectory (platform)
+add_subdirectory (log)
 add_subdirectory (driver_stub)
 add_subdirectory (loader_test)
 
