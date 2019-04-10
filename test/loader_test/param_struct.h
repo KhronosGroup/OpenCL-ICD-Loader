@@ -760,7 +760,7 @@ struct clGetKernelWorkGroupInfo_st
 struct clEnqueueMigrateMemObjects_st 
 {
     cl_command_queue command_queue;
-    size_t num_mem_objects;
+    cl_uint num_mem_objects;
     const cl_mem *mem_objects;
     cl_mem_migration_flags flags;
     cl_uint num_events_in_wait_list;
