@@ -85,8 +85,10 @@ add_definitions (-DCL_TARGET_OPENCL_VERSION=220)
 target_include_directories (OpenCL PRIVATE loader)
 target_link_libraries (OpenCL ${CMAKE_DL_LIBS})
 
-enable_testing()
-add_subdirectory (test)
+include (CTest)
+if (BUILD_TESTING)
+    add_subdirectory (test)
+endif()
 
 install (TARGETS OpenCL
     RUNTIME DESTINATION bin
