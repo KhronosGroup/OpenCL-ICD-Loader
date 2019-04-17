@@ -74,14 +74,14 @@ else()
     if (APPLE)
         target_link_libraries (OpenCL ${CMAKE_THREAD_LIBS_INIT})
     else ()
-        target_link_options (OpenCL PRIVATE -Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/loader/linux/icd_exports.map)
+        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/loader/linux/icd_exports.map")
         target_link_libraries (OpenCL ${CMAKE_THREAD_LIBS_INIT})
     endif ()
 endif ()
 
 include_directories (${OPENCL_ICD_LOADER_HEADERS_DIR})
+add_definitions (-DCL_TARGET_OPENCL_VERSION=220)
 
-target_compile_definitions (OpenCL PRIVATE CL_TARGET_OPENCL_VERSION=220)
 target_include_directories (OpenCL PRIVATE loader)
 target_link_libraries (OpenCL ${CMAKE_DL_LIBS})
 
