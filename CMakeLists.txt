@@ -1,6 +1,7 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8.11)
 
 project (OPENCL_ICD_LOADER)
+find_package (Threads REQUIRED)
 
 # The option below allows building the ICD Loader library as a shared library
 # (ON, default) or a static library (OFF).
@@ -32,9 +33,6 @@ project (OPENCL_ICD_LOADER)
 # advance. Use it with discretion.
 option (BUILD_SHARED_LIBS "Build shared libs" ON)
 
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-
 set (OPENCL_ICD_LOADER_SOURCES
     loader/icd.c
     loader/icd_dispatch.c)
@@ -59,12 +57,7 @@ endif ()
 
 set (OPENCL_ICD_LOADER_HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/inc CACHE PATH "Path to OpenCL Headers")
 
-include_directories (${OPENCL_ICD_LOADER_HEADERS_DIR})
-include_directories (loader)
-
-add_definitions (-DCL_TARGET_OPENCL_VERSION=220)
-
-add_library (OpenCL SHARED ${OPENCL_ICD_LOADER_SOURCES})
+add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 
 if (WIN32)
@@ -79,13 +72,23 @@ if (WIN32)
     string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 else()
     if (APPLE)
-        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-pthread")
+        target_link_libraries (OpenCL ${CMAKE_THREAD_LIBS_INIT})
     else ()
-        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-pthread -Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/loader/linux/icd_exports.map")
+        target_link_options (OpenCL PRIVATE -Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/loader/linux/icd_exports.map)
+        target_link_libraries (OpenCL ${CMAKE_THREAD_LIBS_INIT})
     endif ()
 endif ()
 
+include_directories (${OPENCL_ICD_LOADER_HEADERS_DIR})
+
+target_compile_definitions (OpenCL PRIVATE CL_TARGET_OPENCL_VERSION=220)
+target_include_directories (OpenCL PRIVATE loader)
 target_link_libraries (OpenCL ${CMAKE_DL_LIBS})
 
 enable_testing()
 add_subdirectory (test)
+
+install (TARGETS OpenCL
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib)
