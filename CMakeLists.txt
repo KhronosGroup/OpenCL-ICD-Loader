@@ -46,7 +46,7 @@ if (WIN32)
     # Only add the DXSDK include directory if the environment variable is
     # defined.  Since the DXSDK has merged into the Windows SDK, this is
     # only required in rare cases.
-    if (DEFINED ENV{DXSDK_DIR})
+    if (DEFINED ENV{DXSDK_DIR} AND NOT (MINGW OR MSYS OR CYGWIN))
         include_directories ($ENV{DXSDK_DIR}/Include)
     endif ()
 else ()

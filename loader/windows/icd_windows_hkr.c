@@ -23,7 +23,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <initguid.h>
-#include <Devpkey.h>
+#include <devpkey.h>
 #include <devguid.h>
 
  // This GUID was only added to devguid.h on Windows SDK v10.0.16232 which
