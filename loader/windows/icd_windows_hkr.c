@@ -128,7 +128,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
             goto out;
         }
 
-        if (REG_SZ != dwLibraryNameType)
+        if (REG_MULTI_SZ != dwLibraryNameType)
         {
             KHR_ICD_TRACE("Unexpected registry entry 0x%x! continuing\n", dwLibraryNameType);
             goto out;
@@ -168,6 +168,7 @@ static DeviceProbeResult ProbeDevice(DEVINST devnode)
         devnode,
         0);
 
+    // TODO: consider extracting warning messages out of this function
     if (CR_SUCCESS != ret)
     {
         KHR_ICD_TRACE("    WARNING: failed to probe the status of the device 0x%x\n", ret);
@@ -339,6 +340,8 @@ bool khrIcdOsVendorsEnumerateHKR(void)
                     (PBYTE)&guid,
                     &szGuid,
                     0);
+
+                KHR_ICD_ASSERT(devpropType == DEVPROP_TYPE_GUID);
 
                 if (CR_SUCCESS != ret ||
                     !IsEqualGUID(&OCL_GUID_DEVCLASS_SOFTWARECOMPONENT, &guid))
