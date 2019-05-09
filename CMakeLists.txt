@@ -33,6 +33,11 @@ find_package (Threads REQUIRED)
 # advance. Use it with discretion.
 option (BUILD_SHARED_LIBS "Build shared libs" ON)
 
+if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup()
+endif()
+
 set (OPENCL_ICD_LOADER_SOURCES
     loader/icd.c
     loader/icd_dispatch.c)
