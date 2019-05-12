@@ -1,3 +1,21 @@
+# Getting the ICD Loader
+
+<table>
+    <tr><th>Conan</th><th>vcpkg</th><th>CMake (v3.0 and up)</th></tr>
+    <tr>
+        <td><a href="https://bintray.com/bincrafters/public-conan/khronos-opencl-icd-loader%3Abincrafters/_latestVersion"><img src="https://api.bintray.com/packages/bincrafters/public-conan/khronos-opencl-icd-loader%3Abincrafters/images/download.svg"></img></a></td>
+        <td><a href="https://github.com/microsoft/vcpkg/tree/master/ports/opencl"><img src="https://img.shields.io/badge/vcpkg-opencl-blueviolet.svg"></img></a></td>
+        <td>
+<pre language="cmake"><code>
+find_package(OpenCL REQUIRED NO_MODULE)
+target_link_libraries(app PRIVATE OpenCL::OpenCL)
+</code></pre>
+        </td>
+        </tr>
+</table>
+
+Please note that these packages are maintained by the community and not by the Khronos Group. Please raise any packaging-related issues on their respective repositories.
+
 # Building the OpenCL ICD Loader and Tests
 
 The build system will build ICD Loader library (OpenCL.dll or libOpenCL.so), the
