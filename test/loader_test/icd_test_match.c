@@ -8,7 +8,8 @@
 int test_icd_match()
 {
     int error = 0;
-    char *app_log = NULL, *stub_log = NULL;
+    char *app_log = NULL;
+    char *stub_log = NULL;
 
     app_log = test_icd_get_app_log();
     if (!app_log) {
@@ -24,7 +25,7 @@ int test_icd_match()
         goto End;
     }
 
-    if (strcmp(app_log, stub_log)) {
+    if (strcmp(app_log, stub_log) != 0) {
         printf("ERROR: App log and stub log differ.\n");
         error = 1;
         goto End;

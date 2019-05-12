@@ -1,10 +1,10 @@
 #define CL_USE_DEPRECATED_OPENCL_1_0_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS
 
+#include "param_struct.h"
 #include <CL/cl.h>
 #include <CL/cl_gl.h>
 #include <CL/cl_gl_ext.h>
-#include "param_struct.h"
 #include <platform/icd_test_log.h>
 
 extern cl_context context;
@@ -310,38 +310,49 @@ int test_OpenGL_share()
 {
 	int i;
     
-    for(i=0;i<NUM_ITEMS_clCreateFromGLBuffer;i++)
+    for(i=0;i<NUM_ITEMS_clCreateFromGLBuffer;i++) {
 		test_clCreateFromGLBuffer(&clCreateFromGLBufferData[i]);
+    }
 
-    for(i=0;i<NUM_ITEMS_clCreateFromGLTexture;i++)
+    for(i=0;i<NUM_ITEMS_clCreateFromGLTexture;i++) {
 		test_clCreateFromGLTexture(&clCreateFromGLTextureData[i]);
+    }
 
-    for(i=0;i<NUM_ITEMS_clCreateFromGLTexture2D;i++)
+    for(i=0;i<NUM_ITEMS_clCreateFromGLTexture2D;i++) {
 		test_clCreateFromGLTexture2D(&clCreateFromGLTexture2DData[i]);
+    }
 
-    for(i=0;i<NUM_ITEMS_clCreateFromGLTexture3D;i++)
+    for(i=0;i<NUM_ITEMS_clCreateFromGLTexture3D;i++) {
 		test_clCreateFromGLTexture3D(&clCreateFromGLTexture3DData[i]);
+    }
 
-    for(i=0;i<NUM_ITEMS_clCreateFromGLRenderbuffer;i++)
+    for(i=0;i<NUM_ITEMS_clCreateFromGLRenderbuffer;i++) {
 		test_clCreateFromGLRenderbuffer(&clCreateFromGLRenderbufferData[i]);
+    }
 
-    for(i=0;i<NUM_ITEMS_clGetGLObjectInfo;i++)
+    for(i=0;i<NUM_ITEMS_clGetGLObjectInfo;i++) {
 		test_clGetGLObjectInfo(&clGetGLObjectInfoData[i]);
+    }
 
-    for(i=0;i<NUM_ITEMS_clGetGLTextureInfo;i++)
+    for(i=0;i<NUM_ITEMS_clGetGLTextureInfo;i++) {
 		test_clGetGLTextureInfo(&clGetGLTextureInfoData[i]);
+    }
 
-    for(i=0;i<NUM_ITEMS_clEnqueueAcquireGLObjects;i++)
+    for(i=0;i<NUM_ITEMS_clEnqueueAcquireGLObjects;i++) {
 		test_clEnqueueAcquireGLObjects(&clEnqueueAcquireGLObjectsData[i]);
+    }
         
-    for(i=0;i<NUM_ITEMS_clEnqueueReleaseGLObjects;i++)
+    for(i=0;i<NUM_ITEMS_clEnqueueReleaseGLObjects;i++) {
 		test_clEnqueueReleaseGLObjects(&clEnqueueReleaseGLObjectsData[i]);	
+    }
     
-    for(i=0;i<NUM_ITEMS_clCreateEventFromGLsyncKHR;i++)
+    for(i=0;i<NUM_ITEMS_clCreateEventFromGLsyncKHR;i++) {
 		test_clCreateEventFromGLsyncKHR(&clCreateEventFromGLsyncKHRData[i]);
+    }
     
-    for(i=0;i<NUM_ITEMS_clGetGLContextInfoKHR;i++)
+    for(i=0;i<NUM_ITEMS_clGetGLContextInfoKHR;i++) {
 		test_clGetGLContextInfoKHR(&clGetGLContextInfoKHRData[i]);
+    }
     
     return 0;
 }

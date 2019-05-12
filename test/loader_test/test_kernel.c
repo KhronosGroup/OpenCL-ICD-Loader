@@ -6,8 +6,8 @@
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 #endif
 
-#include <CL/cl.h>
 #include "param_struct.h"
+#include <CL/cl.h>
 #include <platform/icd_test_log.h>
 
 extern cl_kernel kernel;

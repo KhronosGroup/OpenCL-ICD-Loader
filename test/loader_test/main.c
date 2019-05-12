@@ -1,7 +1,7 @@
-#include<stdio.h>
+#include "param_struct.h"
 #include<CL/cl.h>
 #include<platform/icd_test_log.h>
-#include "param_struct.h"
+#include <stdio.h>
 
 extern int test_create_calls();
 extern int test_platforms();
@@ -38,8 +38,7 @@ int main(int argc, char **argv)
     if (test_icd_match()) {
         printf("ICD Loader Test FAILED\n");
         return 1;
-    } else {
-        printf("ICD Loader Test PASSED\n");
-        return 0;
     }
+    printf("ICD Loader Test PASSED\n");
+    return 0;
 }

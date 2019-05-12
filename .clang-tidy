@@ -1,0 +1,11 @@
+---
+Checks:          '*,-android-cloexec-fopen,-misc-unused-parameters'
+WarningsAsErrors: 'readability-inconsistent-declaration-parameter-name,hicpp-braces-around-statements,bugprone-macro-parentheses,bugprone-suspicious-string-compare'
+HeaderFilterRegex: ''
+AnalyzeTemporaryDtors: false
+FormatStyle: file
+CheckOptions:    
+  - key: readability-inconsistent-declaration-parameter-name.Strict
+    value: 1
+...
+

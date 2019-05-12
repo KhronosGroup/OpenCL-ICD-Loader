@@ -1,9 +1,9 @@
-#include<sys/stat.h>
-#include<stdlib.h>
-#include<stdio.h>
-#include<stdarg.h>
-#include<CL/cl.h>
-#include<platform/icd_test_log.h>
+#include <CL/cl.h>
+#include <platform/icd_test_log.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
 
 #define APP_LOG_FILE  "icd_test_app_log.txt"
 #define STUB_LOG_FILE "icd_test_stub_log.txt"
@@ -31,7 +31,7 @@ void test_icd_app_log(const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    vfprintf(app_log_file, format, args);
+    vfprintf(app_log_file, format, args); // NOLINT
     va_end(args);
 }
 
@@ -56,7 +56,7 @@ void test_icd_stub_log(const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    vfprintf(stub_log_file, format, args);
+    vfprintf(stub_log_file, format, args); // NOLINT
     va_end(args);
 }
 

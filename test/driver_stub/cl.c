@@ -1,5 +1,5 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #ifndef CL_USE_DEPRECATED_OPENCL_1_0_APIS
@@ -14,13 +14,13 @@
 // themselves via the dispatch table. Include this before cl headers.
 #include "rename_api.h"
 
+#include "icd_structs.h"
 #include <CL/cl.h>
 #include <platform/icd_test_log.h>
-#include "icd_structs.h"
 
 #define CL_PLATFORM_ICD_SUFFIX_KHR                  0x0920
 CL_API_ENTRY cl_int CL_API_CALL
-clIcdGetPlatformIDsKHR(cl_uint, cl_platform_id *, cl_uint *);
+clIcdGetPlatformIDsKHR(cl_uint /*num_entries*/, cl_platform_id * /*platforms*/, cl_uint * /*num_platforms*/);
 
 struct _cl_platform_id
 {
@@ -863,7 +863,7 @@ clLinkProgram(cl_context            context ,
               void *                user_data ,
               cl_int *              errcode_ret) CL_API_SUFFIX__VERSION_1_2
 {
-    cl_program obj = (cl_program) malloc(sizeof(cl_program));
+    cl_program obj = (cl_program) malloc(sizeof(*obj));
     obj->dispatch = dispatchTable;
     test_icd_stub_log("clLinkProgram(%p, %u, %p, %p, %u, %p, %p, %p, %p)\n",
                       context,
@@ -1598,7 +1598,7 @@ clEnqueueMapBuffer(cl_command_queue  command_queue ,
                    cl_event *        event ,
                    cl_int *          errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
-    void *return_value = (void *) malloc(sizeof(void *));
+    void *return_value = malloc(sizeof(void *));
     test_icd_stub_log("clEnqueueMapBuffer(%p, %p, %u, %x, %u, %u, %u, %p, %p, %p)\n",
                       command_queue,
                       buffer,
@@ -1629,7 +1629,7 @@ clEnqueueMapImage(cl_command_queue   command_queue ,
                   cl_event *         event ,
                   cl_int *           errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
-    void *return_value = (void *) malloc(sizeof(void *));
+    void *return_value = malloc(sizeof(void *));
     test_icd_stub_log("clEnqueueMapImage(%p, %p, %u, %x, %p, %p, %p, %p, %u, %p, %p, %p)\n",
                       command_queue,
                       image,
@@ -1772,7 +1772,7 @@ CL_API_ENTRY void * CL_API_CALL
 clGetExtensionFunctionAddressForPlatform(cl_platform_id  platform ,
                                          const char *    func_name) CL_API_SUFFIX__VERSION_1_2
 {
-    void *return_value = (void *) malloc(sizeof(void *));
+    void *return_value = malloc(sizeof(void *));
     test_icd_stub_log("clGetExtensionFunctionAddressForPlatform(%p, %p)\n",
                       platform,
                       func_name);

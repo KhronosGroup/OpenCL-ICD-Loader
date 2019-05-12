@@ -1,6 +1,6 @@
 #include <CL/cl.h>
-#include <stdio.h>
 #include <platform/icd_test_log.h>
+#include <stdio.h>
 
 void CL_CALLBACK createcontext_callback(const char* _a, const void* _b, size_t _c, void* _d)
 {
