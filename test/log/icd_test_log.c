@@ -31,7 +31,7 @@ void test_icd_app_log(const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    vfprintf(app_log_file, format, args); // NOLINT
+    vfprintf(app_log_file, format, args); // NOLINT(clang-analyzer-valist.Uninitialized) - It's initialized one line above.
     va_end(args);
 }
 
@@ -56,7 +56,7 @@ void test_icd_stub_log(const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    vfprintf(stub_log_file, format, args); // NOLINT
+    vfprintf(stub_log_file, format, args); // NOLINT(clang-analyzer-valist.Uninitialized) - It's initialized one line above.
     va_end(args);
 }
 
