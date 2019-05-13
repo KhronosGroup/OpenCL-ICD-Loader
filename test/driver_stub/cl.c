@@ -863,7 +863,7 @@ clLinkProgram(cl_context            context ,
               void *                user_data ,
               cl_int *              errcode_ret) CL_API_SUFFIX__VERSION_1_2
 {
-    cl_program obj = (cl_program) malloc(sizeof(*obj));
+    cl_program obj = malloc(sizeof(*obj));
     obj->dispatch = dispatchTable;
     test_icd_stub_log("clLinkProgram(%p, %u, %p, %p, %u, %p, %p, %p, %p)\n",
                       context,
