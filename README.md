@@ -31,12 +31,12 @@ To use system OpenCL Headers, please specify the OpenCL Header location using th
 By default, the OpenCL ICD Loader will look for OpenCL Headers in the `inc` directory.
 
 The OpenCL ICD Loader uses CMake for its build system.
-If CMake is not provided by your build system or OS pcakage manager, please consult the [CMake website](https://cmake.org).
+If CMake is not provided by your build system or OS package manager, please consult the [CMake website](https://cmake.org).
 
 ### Build and Install Directories
 
 A common convention is to place the `build` directory in the top directory of the repository and to place the `install` directory as a child of the `build` directory.
-The remainder of these instructions follow this convention, although you may place these directores in any location.
+The remainder of these instructions follow this convention, although you may place these directories in any location.
 
 ### Example Usage
 
