@@ -121,6 +121,11 @@ void khrIcdContextPropertiesGetPlatform(
     const cl_context_properties *properties, 
     cl_platform_id *outPlatform);
 
+// translate device type to platform
+void khrIcdDeviceTypeGetPlatform(
+    cl_device_type device_type,
+    cl_platform_id *outPlatform);
+
 // internal tracing macros
 #if 0
     #include <stdio.h>

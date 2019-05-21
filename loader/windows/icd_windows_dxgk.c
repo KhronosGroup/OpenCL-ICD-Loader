@@ -37,6 +37,7 @@
 
 #include "icd.h"
 #include <windows.h>
+#include "icd_windows_hkr.h"
 #include "icd_windows_dxgk.h"
 #include <assert.h>
 
@@ -52,13 +53,13 @@ typedef LONG NTSTATUS;
 bool khrIcdOsVendorsEnumerateDXGK(void)
 {
 #if defined(DXGKDDI_INTERFACE_VERSION_WDDM2_4) && (DXGKDDI_INTERFACE_VERSION >= DXGKDDI_INTERFACE_VERSION_WDDM2_4)
+    // Get handle to GDI Runtime
+    HMODULE h = LoadLibrary("gdi32.dll");
+    if (h && GetProcAddress((HMODULE)h, "D3DKMTSubmitPresentBltToHwQueue")) // OS Version check
     {
         D3DKMT_ADAPTERINFO* pAdapterInfo;
         D3DKMT_ENUMADAPTERS2 EnumAdapters;
         NTSTATUS Status = STATUS_SUCCESS;
-
-        // Get handle to GDI Runtime
-        HMODULE h = LoadLibrary("gdi32.dll");
 
         char cszLibraryName[1024] = { 0 };
         EnumAdapters.NumAdapters = 0;
@@ -84,6 +85,8 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             if (pAdapterInfo) free(pAdapterInfo);
             return FALSE;
         }
+        const char* cszOpenCLRegKeyName = GetOpenCLRegKeyName();
+        const int OpenCLRegKeyNameSize = (int)(strlen(cszOpenCLRegKeyName) + 1);
         for (UINT AdapterIndex = 0; AdapterIndex < EnumAdapters.NumAdapters; AdapterIndex++)
         {
             D3DDDI_QUERYREGISTRY_INFO QueryArgs = {0};
@@ -91,12 +94,19 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             D3DDDI_QUERYREGISTRY_INFO* pQueryBuffer = NULL;
             QueryArgs.QueryType = D3DDDI_QUERYREGISTRY_ADAPTERKEY;
             QueryArgs.QueryFlags.TranslatePath = TRUE;
-            QueryArgs.ValueType = REG_MULTI_SZ;
 #ifdef _WIN64
             wcscpy_s(QueryArgs.ValueName, ARRAYSIZE(L"OpenCLDriverName"), L"OpenCLDriverName");
 #else
             wcscpy_s(QueryArgs.ValueName, ARRAYSIZE(L"OpenCLDriverNameWow"), L"OpenCLDriverNameWow");
 #endif
+            QueryArgs.ValueType = REG_SZ;
+            MultiByteToWideChar(
+                CP_ACP,
+                0,
+                cszOpenCLRegKeyName,
+                OpenCLRegKeyNameSize,
+                QueryArgs.ValueName,
+                ARRAYSIZE(QueryArgs.ValueName));
             D3DKMT_QUERYADAPTERINFO QueryAdapterInfo = {0};
             QueryAdapterInfo.hAdapter = pAdapterInfo[AdapterIndex].hAdapter;
             QueryAdapterInfo.Type = KMTQAITYPE_QUERYREGISTRY;
@@ -105,9 +115,9 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             Status = D3DKMTQueryAdapterInfo(&QueryAdapterInfo);
             if (!NT_SUCCESS(Status))
             {
-                FreeLibrary(h);
-                if (pAdapterInfo) free(pAdapterInfo);
-                return FALSE;
+                // Continue trying to get as much info on each adapter as possible.
+                // It's too late to return FALSE and claim WDDM2_4 enumeration is not available here.
+                continue;
             }
             if (NT_SUCCESS(Status) && pQueryArgs->Status == D3DDDI_QUERYREGISTRY_STATUS_BUFFER_OVERFLOW)
             {
@@ -139,7 +149,7 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
                         i++;
                         pWchar++;
                     }
-                    if (i < 1023) khrIcdVendorAdd(cszLibraryName);
+                    if (i < 1023) AdapterAdd(cszLibraryName, pAdapterInfo[AdapterIndex].AdapterLuid);
                 }
             }
             if (pQueryBuffer) free(pQueryBuffer);

@@ -41,6 +41,7 @@ if (WIN32)
     list (APPEND OPENCL_ICD_LOADER_SOURCES 
         loader/windows/icd_windows.c
         loader/windows/icd_windows_hkr.c
+        loader/windows/icd_windows_dxgk.c 
         loader/windows/OpenCL.def
         loader/windows/OpenCL.rc)
     # Only add the DXSDK include directory if the environment variable is
@@ -48,6 +49,7 @@ if (WIN32)
     # only required in rare cases.
     if (DEFINED ENV{DXSDK_DIR})
         include_directories ($ENV{DXSDK_DIR}/Include)
+        include_directories ($ENV{WDK}/km)
     endif ()
 else ()
     list (APPEND OPENCL_ICD_LOADER_SOURCES

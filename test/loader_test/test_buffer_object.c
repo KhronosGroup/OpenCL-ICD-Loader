@@ -1,5 +1,4 @@
 #include <stdlib.h>
-
 #include <CL/cl.h>
 #include "param_struct.h"
 #include <platform/icd_test_log.h>

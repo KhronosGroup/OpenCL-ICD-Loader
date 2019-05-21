@@ -167,3 +167,7 @@ void khrIcdOsLibraryUnload(void *library)
     dlclose(library);
 }
 
+// implement device type platform behavior
+void khrIcdDeviceTypeGetPlatform(cl_device_type device_type, cl_platform_id *outPlatform)
+{
+}

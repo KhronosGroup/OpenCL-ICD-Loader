@@ -3,13 +3,26 @@
 The build system will build ICD Loader library (OpenCL.dll or libOpenCL.so), the
 ICD Loader Test binary (icd_loader_test), and some helper libraries for the test.
 
+1. See inc/readme.txt about downloading or symlink the OpenCL headers.
+    Ex: https://github.com/KhronosGroup/OpenCL-Headers
+
 ## Linux
 
 Run "make"
 
 ## Windows
 
-Run "build_using_cmake.bat"
+1. Install recent Windows WDK, for access to d3dkmthk.h
+    Currently at https://docs.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk
+
+2. Establish environment variable WDK to include directory
+    Ex: set WDK=C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0
+
+2. Modify environment for your compiler.
+    Ex: Command line builds should modify "build_using_cmake.bat" 
+    Ex: Visual Studio CMake integration should modify the "buildRoot" to match the BUILD_DIR in "build_using_cmake.bat"
+
+3. Build either using the command line to run "build_using_cmake.bat" or with Visual Studio CMake integration
 
 ## Running ICD Test
 

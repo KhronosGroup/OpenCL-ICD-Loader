@@ -21,8 +21,8 @@
 #ifdef RC_INVOKED
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION    2,2,1,0
-PRODUCTVERSION 2,2,1,0
+FILEVERSION    2,2,2,0
+PRODUCTVERSION 2,2,2,0
 FILETYPE       VFT_DLL
 
 BEGIN
@@ -33,7 +33,7 @@ BEGIN
             VALUE "FileDescription" ,"OpenCL Client DLL"
             VALUE "ProductName"     ,"Khronos OpenCL ICD"
             VALUE "LegalCopyright"  ,"Copyright \251 The Khronos Group Inc 2016-2019"
-            VALUE "FileVersion"     ,"2.2.1.0"
+            VALUE "FileVersion"     ,"2.2.2.0"
             VALUE "CompanyName"     ,"Khronos Group"
             VALUE "InternalName"    ,"OpenCL"
             VALUE "OriginalFilename","OpenCL.dll"
