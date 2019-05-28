@@ -1,6 +1,7 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8.11)
 
 project (OPENCL_ICD_LOADER)
+find_package (Threads REQUIRED)
 
 # The option below allows building the ICD Loader library as a shared library
 # (ON, default) or a static library (OFF).
@@ -32,40 +33,66 @@ project (OPENCL_ICD_LOADER)
 # advance. Use it with discretion.
 option (BUILD_SHARED_LIBS "Build shared libs" ON)
 
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-
-set (OPENCL_ICD_LOADER_SOURCES icd.c icd_dispatch.c)
+set (OPENCL_ICD_LOADER_SOURCES
+    loader/icd.c
+    loader/icd_dispatch.c)
 
 if (WIN32)
-    list (APPEND OPENCL_ICD_LOADER_SOURCES icd_windows.c icd_windows_hkr.c OpenCL.def OpenCL.rc)
-    include_directories ($ENV{DXSDK_DIR}/Include)
+    list (APPEND OPENCL_ICD_LOADER_SOURCES 
+        loader/windows/icd_windows.c
+        loader/windows/icd_windows_hkr.c
+        loader/windows/OpenCL.def
+        loader/windows/OpenCL.rc)
+    # Only add the DXSDK include directory if the environment variable is
+    # defined.  Since the DXSDK has merged into the Windows SDK, this is
+    # only required in rare cases.
+    if (DEFINED ENV{DXSDK_DIR} AND NOT (MINGW OR MSYS OR CYGWIN))
+        include_directories ($ENV{DXSDK_DIR}/Include)
+    endif ()
 else ()
-    list (APPEND OPENCL_ICD_LOADER_SOURCES icd_linux.c icd_exports.map)
+    list (APPEND OPENCL_ICD_LOADER_SOURCES
+        loader/linux/icd_linux.c
+        loader/linux/icd_exports.map)
 endif ()
 
-# Change this to point to a directory containing OpenCL header directory "CL"
-# OR copy OpenCL headers to ./inc/CL/
-if (NOT DEFINED OPENCL_INCLUDE_DIRS)
-    set (OPENCL_INCLUDE_DIRS ./inc)
-endif ()
+set (OPENCL_ICD_LOADER_HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/inc CACHE PATH "Path to OpenCL Headers")
 
-include_directories (${OPENCL_INCLUDE_DIRS})
-
-add_library (OpenCL SHARED ${OPENCL_ICD_LOADER_SOURCES})
+add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 
 if (WIN32)
     target_link_libraries (OpenCL cfgmgr32.lib)
+    if(NOT USE_DYNAMIC_VCXX_RUNTIME)
+        string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+        string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+        string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL}")
+        string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL}")
+        string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
+        string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+        string(REPLACE "/MDd" "/MTd" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+        string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    endif()
 else()
     if (APPLE)
-        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-pthread")
+        target_link_libraries (OpenCL ${CMAKE_THREAD_LIBS_INIT})
     else ()
-        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-pthread -Wl,--version-script -Wl,${PROJECT_SOURCE_DIR}/icd_exports.map")
+        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/loader/linux/icd_exports.map")
+        target_link_libraries (OpenCL ${CMAKE_THREAD_LIBS_INIT})
     endif ()
 endif ()
 
+include_directories (${OPENCL_ICD_LOADER_HEADERS_DIR})
+add_definitions (-DCL_TARGET_OPENCL_VERSION=220)
+
+target_include_directories (OpenCL PRIVATE loader)
 target_link_libraries (OpenCL ${CMAKE_DL_LIBS})
 
-enable_testing()
-add_subdirectory (test)
+include (CTest)
+if (BUILD_TESTING)
+    add_subdirectory (test)
+endif()
+
+install (TARGETS OpenCL
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib)
