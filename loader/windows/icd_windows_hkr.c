@@ -128,7 +128,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
             goto out;
         }
 
-        if (REG_MULTI_SZ != dwLibraryNameType)
+        if (REG_SZ != dwLibraryNameType)
         {
             KHR_ICD_TRACE("Unexpected registry entry 0x%x! continuing\n", dwLibraryNameType);
             goto out;
