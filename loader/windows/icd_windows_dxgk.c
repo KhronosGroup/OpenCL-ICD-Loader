@@ -32,34 +32,52 @@ typedef LONG NTSTATUS;
 
 bool khrIcdOsVendorsEnumerateDXGK(void)
 {
+    bool ret = FALSE;
 #if defined(DXGKDDI_INTERFACE_VERSION_WDDM2_4) && (DXGKDDI_INTERFACE_VERSION >= DXGKDDI_INTERFACE_VERSION_WDDM2_4)
     {
-        D3DKMT_ADAPTERINFO* pAdapterInfo;
+        D3DKMT_ADAPTERINFO* pAdapterInfo = NULL;
         D3DKMT_ENUMADAPTERS2 EnumAdapters;
         NTSTATUS Status = STATUS_SUCCESS;
 
         // Get handle to GDI Runtime
         HMODULE h = LoadLibrary("gdi32.dll");
+        KHR_ICD_ASSERT(h != NULL);
 
         char cszLibraryName[MAX_PATH] = { 0 };
-        EnumAdapters.NumAdapters = 0;
-        EnumAdapters.pAdapters = NULL;
         PFND3DKMT_ENUMADAPTERS2 pEnumAdapters2 = (PFND3DKMT_ENUMADAPTERS2)GetProcAddress((HMODULE)h, "D3DKMTEnumAdapters2");
         if (!pEnumAdapters2)
         {
-          goto out;
+            KHR_ICD_TRACE("GetProcAddress failed for D3DKMT_ENUMADAPTERS2\n");
+            goto out;
         }
-        Status = pEnumAdapters2(&EnumAdapters);
-        if (!NT_SUCCESS(Status) && (Status != STATUS_BUFFER_TOO_SMALL))
+        while (1)
         {
-          goto out;
+            EnumAdapters.NumAdapters = 0;
+            EnumAdapters.pAdapters = NULL;
+            Status = pEnumAdapters2(&EnumAdapters);
+            if (Status == STATUS_BUFFER_TOO_SMALL)
+            {
+                // Number of Adapters increased between calls, retry;
+                continue;
+            }
+            else if (!NT_SUCCESS(Status))
+            {
+                KHR_ICD_TRACE("D3DKMT_ENUMADAPTERS2 status != SUCCESS\n");
+                goto out;
+            }
+            break;
         }
         pAdapterInfo = (D3DKMT_ADAPTERINFO*)malloc(sizeof(D3DKMT_ADAPTERINFO)*(EnumAdapters.NumAdapters));
+        if (pAdapterInfo == NULL)
+        {
+            KHR_ICD_TRACE("Allocation failure for AdapterInfo buffer\n");
+            goto out;
+        }
         EnumAdapters.pAdapters = pAdapterInfo;
         Status = pEnumAdapters2(&EnumAdapters);
         if (!NT_SUCCESS(Status))
         {
-            free(pAdapterInfo);
+            KHR_ICD_TRACE("D3DKMT_ENUMADAPTERS2 status != SUCCESS\n");
             goto out;
         }
         for (UINT AdapterIndex = 0; AdapterIndex < EnumAdapters.NumAdapters; AdapterIndex++)
@@ -83,12 +101,12 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             Status = D3DKMTQueryAdapterInfo(&QueryAdapterInfo);
             if (!NT_SUCCESS(Status))
             {
-                free(pAdapterInfo);
+                KHR_ICD_TRACE("D3DKMT_QUERYADAPTERINFO status != SUCCESS\n");
                 goto out;
             }
             if (NT_SUCCESS(Status) && pQueryArgs->Status == D3DDDI_QUERYREGISTRY_STATUS_BUFFER_OVERFLOW)
             {
-                unsigned int QueryBufferSize = sizeof(D3DDDI_QUERYREGISTRY_INFO) + QueryArgs.OutputValueSize;
+                ULONG QueryBufferSize = sizeof(D3DDDI_QUERYREGISTRY_INFO) + QueryArgs.OutputValueSize;
                 pQueryBuffer = (D3DDDI_QUERYREGISTRY_INFO*)malloc(QueryBufferSize);
                 memcpy(pQueryBuffer, &QueryArgs, sizeof(D3DDDI_QUERYREGISTRY_INFO));
                 QueryAdapterInfo.pPrivateDriverData = pQueryBuffer;
@@ -99,22 +117,25 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             if (NT_SUCCESS(Status) && pQueryArgs->Status == D3DDDI_QUERYREGISTRY_STATUS_SUCCESS)
             {
                 wchar_t* pWchar = pQueryArgs->OutputString;
-                unsigned int i = 0;
                 memset(cszLibraryName, 0, sizeof(cszLibraryName));
                 {
-                    size_t ret = wcstombs(cszLibraryName, pWchar, sizeof(cszLibraryName));
-                    KHR_ICD_ASSERT(ret == (sizeof(cszLibraryName) - 1));
-                    if (i < (sizeof(cszLibraryName) - 1)) khrIcdVendorAdd(cszLibraryName);
+                    size_t len = wcstombs(cszLibraryName, pWchar, sizeof(cszLibraryName));
+                    KHR_ICD_ASSERT(len == (sizeof(cszLibraryName) - 1));
+                    khrIcdVendorAdd(cszLibraryName);
                 }
+            }
+            else if (Status == STATUS_INVALID_PARAMETER && pQueryArgs->Status == D3DDDI_QUERYREGISTRY_STATUS_FAIL)
+            {
+                free(pQueryBuffer);
+                goto out;
             }
             free(pQueryBuffer);
         }
-        free(pAdapterInfo);
-        FreeLibrary(h);
-        return TRUE;
+        ret = TRUE;
 out:
+      free(pAdapterInfo);
       FreeLibrary(h);
     }
 #endif
-    return FALSE;
+    return ret;
 }
