@@ -4,7 +4,7 @@ This repo contains the source code and tests for the Khronos official OpenCL ICD
 
 ## CI Build Status
 
-TBD
+[![Windows Build Status](https://ci.appveyor.com/api/projects/status/47uhjgp5h4de2f63/branch/master?svg=true)](https://ci.appveyor.com/project/Khronoswebmaster/opencl-icd-loader/branch/master) [![Linux OSX Build Status](https://travis-ci.com/KhronosGroup/opencl-icd-loader.svg?branch=master)](https://travis-ci.com/KhronosGroup/opencl-icd-loader)
 
 ## Introduction
 
