@@ -87,7 +87,7 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             D3DDDI_QUERYREGISTRY_INFO* pQueryBuffer = NULL;
             QueryArgs.QueryType = D3DDDI_QUERYREGISTRY_ADAPTERKEY;
             QueryArgs.QueryFlags.TranslatePath = TRUE;
-            QueryArgs.ValueType = REG_MULTI_SZ;
+            QueryArgs.ValueType = REG_SZ;
 #ifdef _WIN64
             wcscpy_s(QueryArgs.ValueName, ARRAYSIZE(L"OpenCLDriverName"), L"OpenCLDriverName");
 #else
