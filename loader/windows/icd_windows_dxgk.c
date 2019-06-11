@@ -28,7 +28,7 @@ typedef LONG NTSTATUS;
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0)
 #endif
 
-#include "d3dkmthk.h"
+#include <d3dkmthk.h>
 
 bool khrIcdOsVendorsEnumerateDXGK(void)
 {
@@ -91,7 +91,16 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
 #ifdef _WIN64
             wcscpy_s(QueryArgs.ValueName, ARRAYSIZE(L"OpenCLDriverName"), L"OpenCLDriverName");
 #else
-            wcscpy_s(QueryArgs.ValueName, ARRAYSIZE(L"OpenCLDriverNameWow"), L"OpenCLDriverNameWow");
+            // There is no WOW prefix for 32bit Windows hence make a specific check
+            BOOL is_wow64;
+            if (IsWow64Process(GetCurrentProcess(), &is_wow64) && is_wow64)
+            {
+                wcscpy_s(QueryArgs.ValueName, ARRAYSIZE(L"OpenCLDriverNameWow"), L"OpenCLDriverNameWow");
+            }
+            else
+            {
+                wcscpy_s(QueryArgs.ValueName, ARRAYSIZE(L"OpenCLDriverName"), L"OpenCLDriverName");
+            }
 #endif
             D3DKMT_QUERYADAPTERINFO QueryAdapterInfo = {0};
             QueryAdapterInfo.hAdapter = pAdapterInfo[AdapterIndex].hAdapter;
