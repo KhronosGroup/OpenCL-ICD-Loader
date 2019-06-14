@@ -63,6 +63,22 @@ set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 
 if (WIN32)
     target_link_libraries (OpenCL cfgmgr32.lib)
+
+    if(DEFINED ENV{WDKContentRoot})
+        file(GLOB D3DKMT_HEADER "$ENV{WDKContentRoot}/Include/*/km/d3dkmthk.h")
+    else()
+        file(GLOB D3DKMT_HEADER "$ENV{HOMEDRIVE}/Program Files */Windows Kits/10/Include/*/km/d3dkmthk.h")
+    endif()
+
+    if(D3DKMT_HEADER)
+        list(GET D3DKMT_HEADER -1 LATEST_D3DKMT_HEADER)
+        get_filename_component(WDK_DIRECTORY ${LATEST_D3DKMT_HEADER} DIRECTORY)
+        get_filename_component(WDK_DIRECTORY ${WDK_DIRECTORY} DIRECTORY)
+        target_include_directories(OpenCL PRIVATE ${WDK_DIRECTORY}/um)
+        target_include_directories(OpenCL PRIVATE ${WDK_DIRECTORY}/km)
+        target_include_directories(OpenCL PRIVATE ${WDK_DIRECTORY}/shared)
+    endif()
+
     if(NOT USE_DYNAMIC_VCXX_RUNTIME)
         string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
         string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
