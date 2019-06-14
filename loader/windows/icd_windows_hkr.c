@@ -117,7 +117,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
 
         result = RegQueryValueExA(
             hkey,
-            OPENCL_REG_SUB_KEY,
+            GetOpenCLRegKeyName(),
             NULL,
             &dwLibraryNameType,
             (LPBYTE)cszOclPath,
