@@ -1,7 +1,5 @@
-cmake_minimum_required (VERSION 2.8.11)
-
-project (OPENCL_ICD_LOADER)
-find_package (Threads REQUIRED)
+cmake_minimum_required (VERSION 3.1)
+project (OPENCL_ICD_LOADER VERSION 1.2 LANGUAGES C)
 
 # The option below allows building the ICD Loader library as a shared library
 # (ON, default) or a static library (OFF).
@@ -33,66 +31,51 @@ find_package (Threads REQUIRED)
 # advance. Use it with discretion.
 option (BUILD_SHARED_LIBS "Build shared libs" ON)
 
-set (OPENCL_ICD_LOADER_SOURCES
-    loader/icd.c
-    loader/icd_dispatch.c)
+set (CMAKE_C_STANDARD 99)
+set (CMAKE_C_STANDARD_REQUIRED ON)
+set (CMAKE_C_EXTENSIONS OFF)
 
-if (WIN32)
-    list (APPEND OPENCL_ICD_LOADER_SOURCES 
-        loader/windows/icd_windows.c
-        loader/windows/icd_windows_hkr.c
-        loader/windows/OpenCL.def
-        loader/windows/OpenCL.rc)
-    # Only add the DXSDK include directory if the environment variable is
-    # defined.  Since the DXSDK has merged into the Windows SDK, this is
-    # only required in rare cases.
-    if (DEFINED ENV{DXSDK_DIR} AND NOT (MINGW OR MSYS OR CYGWIN))
-        include_directories ($ENV{DXSDK_DIR}/Include)
-    endif ()
-else ()
-    list (APPEND OPENCL_ICD_LOADER_SOURCES
-        loader/linux/icd_linux.c
-        loader/linux/icd_exports.map)
+if (WIN32 AND NOT USE_DYNAMIC_VCXX_RUNTIME)
+    string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+    string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+    string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL}")
+    string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL}")
+    string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
+    string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+    string(REPLACE "/MDd" "/MTd" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+    string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 endif ()
 
-set (OPENCL_ICD_LOADER_HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/inc CACHE PATH "Path to OpenCL Headers")
-
-add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
-set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
-
-if (WIN32)
-    target_link_libraries (OpenCL cfgmgr32.lib)
-    if(NOT USE_DYNAMIC_VCXX_RUNTIME)
-        string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
-        string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
-        string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL}")
-        string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL}")
-        string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
-        string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
-        string(REPLACE "/MDd" "/MTd" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
-        string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-    endif()
-else()
-    if (APPLE)
-        target_link_libraries (OpenCL ${CMAKE_THREAD_LIBS_INIT})
-    else ()
-        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/loader/linux/icd_exports.map")
-        target_link_libraries (OpenCL ${CMAKE_THREAD_LIBS_INIT})
-    endif ()
-endif ()
-
-include_directories (${OPENCL_ICD_LOADER_HEADERS_DIR})
-add_definitions (-DCL_TARGET_OPENCL_VERSION=220)
-
-target_include_directories (OpenCL PRIVATE loader)
-target_link_libraries (OpenCL ${CMAKE_DL_LIBS})
+add_subdirectory (loader)
 
 include (CTest)
 if (BUILD_TESTING)
     add_subdirectory (test)
 endif()
 
-install (TARGETS OpenCL
-    RUNTIME DESTINATION bin
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib)
+export(EXPORT OpenCLTargets
+  FILE "${PROJECT_BINARY_DIR}/OpenCL/OpenCLTargets.cmake"
+  NAMESPACE OpenCL::)
+configure_file(cmake/OpenCLConfig.cmake
+  "${PROJECT_BINARY_DIR}/OpenCL/OpenCLConfig.cmake"
+  COPYONLY)
+
+set(config_package_location lib/cmake/OpenCL)
+install(EXPORT OpenCLTargets
+  FILE OpenCLTargets.cmake
+  NAMESPACE OpenCL::
+  DESTINATION ${config_package_location})
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCL/OpenCLConfig.cmake
+  DESTINATION ${config_package_location}
+  COMPONENT Devel)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/OpenCL/OpenCLConfigVersion.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY AnyNewerVersion)
+install(
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/OpenCL/OpenCLConfigVersion.cmake"
+  DESTINATION ${config_package_location}
+  COMPONENT Devel)
