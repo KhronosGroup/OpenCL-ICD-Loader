@@ -16,7 +16,14 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
+// for secure_getenv():
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+
 #include "icd.h"
+#include "icd_envvars.h"
+
 #include <dlfcn.h>
 #include <stdio.h>
 #include <string.h>
@@ -38,11 +45,15 @@ void khrIcdOsVendorsEnumerate(void)
 {
     DIR *dir = NULL;
     struct dirent *dirEntry = NULL;
+    char* vendorPath = khrIcd_secure_getenv("OCL_ICD_VENDORS");
+    if (vendorPath == NULL)
+    {
 #ifdef __ANDROID__
-    char *vendorPath = "/system/vendor/Khronos/OpenCL/vendors/";
+        vendorPath = "/system/vendor/Khronos/OpenCL/vendors/";
 #else
-    char *vendorPath = "/etc/OpenCL/vendors/";
+        vendorPath = "/etc/OpenCL/vendors/";
 #endif // ANDROID
+    }
 
     // open the directory
     dir = opendir(vendorPath);

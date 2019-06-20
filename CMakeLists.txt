@@ -33,6 +33,12 @@ find_package (Threads REQUIRED)
 # advance. Use it with discretion.
 option (BUILD_SHARED_LIBS "Build shared libs" ON)
 
+include(CheckFunctionExists)
+check_function_exists(secure_getenv HAVE_SECURE_GETENV)
+check_function_exists(__secure_getenv HAVE___SECURE_GETENV)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/loader/icd_cmake_config.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/icd_cmake_config.h)
+
 set (OPENCL_ICD_LOADER_SOURCES
     loader/icd.c
     loader/icd_dispatch.c)
@@ -108,7 +114,7 @@ endif ()
 include_directories (${OPENCL_ICD_LOADER_HEADERS_DIR})
 add_definitions (-DCL_TARGET_OPENCL_VERSION=220)
 
-target_include_directories (OpenCL PRIVATE loader)
+target_include_directories (OpenCL PRIVATE ${CMAKE_CURRENT_BINARY_DIR} loader)
 target_link_libraries (OpenCL ${CMAKE_DL_LIBS})
 
 include (CTest)
