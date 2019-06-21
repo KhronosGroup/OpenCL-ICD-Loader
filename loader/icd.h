@@ -19,8 +19,6 @@
 #ifndef _ICD_H_
 #define _ICD_H_
 
-#include "icd_cmake_config.h"
-
 #ifndef CL_USE_DEPRECATED_OPENCL_1_0_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_0_APIS
 #endif

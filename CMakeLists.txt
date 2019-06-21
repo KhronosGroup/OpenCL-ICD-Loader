@@ -46,6 +46,7 @@ set (OPENCL_ICD_LOADER_SOURCES
 if (WIN32)
     list (APPEND OPENCL_ICD_LOADER_SOURCES 
         loader/windows/icd_windows.c
+        loader/windows/icd_windows_envvars.c
         loader/windows/icd_windows_hkr.c
         loader/windows/icd_windows_dxgk.c
         loader/windows/OpenCL.def
@@ -59,6 +60,7 @@ if (WIN32)
 else ()
     list (APPEND OPENCL_ICD_LOADER_SOURCES
         loader/linux/icd_linux.c
+        loader/linux/icd_linux_envvars.c
         loader/linux/icd_exports.map)
 endif ()
 

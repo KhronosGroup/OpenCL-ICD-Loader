@@ -16,11 +16,32 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
-#ifndef _ICD_ENVVARS_H_
-#define _ICD_ENVVARS_H_
+#include <Windows.h>
 
-char *khrIcd_getenv(const char *name);
-char *khrIcd_secure_getenv(const char *name);
-void khrIcd_free_getenv(char *val);
+char *khrIcd_getenv(const char *name) {
+    char *retVal;
+    DWORD valSize;
 
-#endif
+    valSize = GetEnvironmentVariableA(name, NULL, 0);
+
+    // valSize DOES include the null terminator, so for any set variable
+    // will always be at least 1. If it's 0, the variable wasn't set.
+    if (valSize == 0) return NULL;
+
+    // Allocate the space necessary for the registry entry
+    retVal = (char *)malloc(valSize);
+
+    if (NULL != retVal) {
+        GetEnvironmentVariableA(name, retVal, valSize);
+    }
+
+    return retVal;
+}
+
+char *khrIcd_secure_getenv(const char *name) {
+    return khrIcd_getenv(name);
+}
+
+void khrIcd_free_getenv(char *val) {
+    free((void *)val);
+}

@@ -16,11 +16,6 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
-// for secure_getenv():
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE
-#endif
-
 #include "icd.h"
 #include "icd_envvars.h"
 
