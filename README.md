@@ -116,3 +116,12 @@ Please create a GitHub issue to report an issue or ask questions.
 
 Contributions to the OpenCL ICD Loader are welcomed and encouraged.
 You will be prompted with a one-time "click-through" CLA dialog as part of submitting your pull request or other contribution to GitHub.
+
+## Table of Debug Environment Variables
+
+The following debug environment variables are available for use with the OpenCL ICD loader:
+
+| Environment Variable              | Behavior            |  Example Format      |
+|:---------------------------------:|---------------------|----------------------|
+| OCL_ICD_FILENAMES                 | Specifies a list of additional ICDs to load.  The ICDs will be enumerated first, before any ICDs discovered via default mechanisms. | `export OCL_ICD_FILENAMES=libVendorA.so:libVendorB.so`<br/><br/>`set OCL_ICD_FILENAMES=vendor_a.dll;vendor_b.dll` |
+| OCL_ICD_VENDORS                   | On Linux and Android, specifies a directory to scan for ICDs to enumerate in place of the default `/etc/OpenCL/vendors'. |  `export OCL_ICD_VENDORS=/my/local/icd/search/path` |
