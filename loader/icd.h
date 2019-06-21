@@ -101,6 +101,9 @@ void khrIcdInitialize(void);
 // n.b, this call is OS-specific
 void khrIcdOsVendorsEnumerateOnce(void);
 
+// read vendors from environment variables
+void khrIcdVendorsEnumerateEnv(void);
+
 // add a vendor's implementation to the list of libraries
 void khrIcdVendorAdd(const char *libraryName);
 
@@ -122,7 +125,7 @@ void khrIcdContextPropertiesGetPlatform(
     cl_platform_id *outPlatform);
 
 // internal tracing macros
-#if 0
+#if 1
     #include <stdio.h>
     #define KHR_ICD_TRACE(...) \
     do \
