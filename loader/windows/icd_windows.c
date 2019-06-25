@@ -69,7 +69,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
         {
             char cszLibraryName[1024] = {0};
             DWORD dwLibraryNameSize = sizeof(cszLibraryName);
-            DWORD dwLibraryNameType = 0;     
+            DWORD dwLibraryNameType = 0;
             DWORD dwValue = 0;
             DWORD dwValueSize = sizeof(dwValue);
 
@@ -85,7 +85,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
                   (LPBYTE)&dwValue,
                   &dwValueSize);
             // if RegEnumKeyEx fails, we are done with the enumeration
-            if (ERROR_SUCCESS != result) 
+            if (ERROR_SUCCESS != result)
             {
                 KHR_ICD_TRACE("Failed to read value %d, done reading key.\n", dwIndex);
                 break;
@@ -93,7 +93,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
             KHR_ICD_TRACE("Value %s found...\n", cszLibraryName);
         
             // Require that the value be a DWORD and equal zero
-            if (REG_DWORD != dwLibraryNameType)  
+            if (REG_DWORD != dwLibraryNameType)
             {
                 KHR_ICD_TRACE("Value not a DWORD, skipping\n");
                 continue;

@@ -189,12 +189,6 @@ Done:
     }
 }
 
-#if defined(__linux__) || defined(__APPLE__)
-#define PATH_SEPARATOR ':'
-#elif defined(_WIN32)
-#define PATH_SEPARATOR ';'
-#endif
-
 // Get next file or dirname given a string list or registry key path.
 // Note: the input string may be modified!
 static char *loader_get_next_path(char *path) {

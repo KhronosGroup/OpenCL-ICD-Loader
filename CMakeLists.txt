@@ -41,14 +41,20 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/loader/icd_cmake_config.h.in
 
 set (OPENCL_ICD_LOADER_SOURCES
     loader/icd.c
-    loader/icd_dispatch.c)
+    loader/icd.h
+    loader/icd_dispatch.c
+    loader/icd_dispatch.h
+    loader/icd_envvars.h
+    loader/icd_platform.h)
 
 if (WIN32)
     list (APPEND OPENCL_ICD_LOADER_SOURCES 
         loader/windows/icd_windows.c
+        loader/windows/icd_windows_dxgk.c
+        loader/windows/icd_windows_dxgk.h
         loader/windows/icd_windows_envvars.c
         loader/windows/icd_windows_hkr.c
-        loader/windows/icd_windows_dxgk.c
+        loader/windows/icd_windows_hkr.h
         loader/windows/OpenCL.def
         loader/windows/OpenCL.rc)
     # Only add the DXSDK include directory if the environment variable is
