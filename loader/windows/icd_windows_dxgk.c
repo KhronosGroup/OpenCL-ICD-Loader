@@ -17,9 +17,10 @@
  */
 
 #include "icd.h"
-#include <windows.h>
 #include "icd_windows_dxgk.h"
-#include <assert.h>
+
+#if defined(OPENCL_ICD_LOADER_REQUIRE_WDK)
+#include <windows.h>
 
 #ifndef NTSTATUS
 typedef LONG NTSTATUS;
@@ -29,10 +30,12 @@ typedef LONG NTSTATUS;
 #endif
 
 #include <d3dkmthk.h>
+#endif
 
 bool khrIcdOsVendorsEnumerateDXGK(void)
 {
-    bool ret = FALSE;
+    bool ret = false;
+#if defined(OPENCL_ICD_LOADER_REQUIRE_WDK)
 #if defined(DXGKDDI_INTERFACE_VERSION_WDDM2_4) && (DXGKDDI_INTERFACE_VERSION >= DXGKDDI_INTERFACE_VERSION_WDDM2_4)
     {
         D3DKMT_ADAPTERINFO* pAdapterInfo = NULL;
@@ -140,11 +143,12 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             }
             free(pQueryBuffer);
         }
-        ret = TRUE;
+        ret = true;
 out:
       free(pAdapterInfo);
       FreeLibrary(h);
     }
+#endif
 #endif
     return ret;
 }
