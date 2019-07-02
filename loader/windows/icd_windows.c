@@ -153,9 +153,9 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
                 KHR_ICD_TRACE("Value not zero, skipping\n");
                 continue;
             }
+            // add the library
+            AdapterAdd(cszLibraryName, ZeroLuid);
         }
-        // add the library
-        AdapterAdd(cszLibraryName, ZeroLuid);
     }
 
     // Add adapters according to DXGI's preference order
