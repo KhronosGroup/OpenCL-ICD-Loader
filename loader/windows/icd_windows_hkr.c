@@ -17,8 +17,9 @@
  */
 
 #include "icd.h"
-#include "icd_windows_hkr.h"
 #include <windows.h>
+#include "icd_windows_hkr.h"
+#include "icd_windows_dxgk.h"
 #include <cfgmgr32.h>
 #include <assert.h>
 #include <stdbool.h>
@@ -136,7 +137,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
 
         KHR_ICD_TRACE("    Path: %s\n", cszOclPath);
 
-        khrIcdVendorAdd(cszOclPath);
+        AdapterAdd(cszOclPath, ZeroLuid);
 
         bRet = true;
     }
