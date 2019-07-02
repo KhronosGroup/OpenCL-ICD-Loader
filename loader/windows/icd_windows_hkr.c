@@ -52,7 +52,7 @@ static const char OPENCL_REG_SUB_KEY_WOW[] = "OpenCLDriverNameWow";
 #endif
 
 // Do not free the memory returned by this function.
-static const char* GetOpenCLRegKeyName(void)
+const char* GetOpenCLRegKeyName(void)
 {
 #ifdef _WIN64
     return OPENCL_REG_SUB_KEY;

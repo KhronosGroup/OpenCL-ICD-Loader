@@ -112,49 +112,48 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     if (ERROR_SUCCESS != result)
     {
         KHR_ICD_TRACE("Failed to open platforms key %s, continuing\n", platformsName);
-        return TRUE;
     }
-
-    // for each value
-    for (dwIndex = 0;; ++dwIndex)
-    {
-        char cszLibraryName[1024] = {0};
-        DWORD dwLibraryNameSize = sizeof(cszLibraryName);
-        DWORD dwLibraryNameType = 0;     
-        DWORD dwValue = 0;
-        DWORD dwValueSize = sizeof(dwValue);
-
-        // read the value name
-        KHR_ICD_TRACE("Reading value %d...\n", dwIndex);
-        result = RegEnumValueA(
-              platformsKey,
-              dwIndex,
-              cszLibraryName,
-              &dwLibraryNameSize,
-              NULL,
-              &dwLibraryNameType,
-              (LPBYTE)&dwValue,
-              &dwValueSize);
-        // if RegEnumKeyEx fails, we are done with the enumeration
-        if (ERROR_SUCCESS != result) 
+    else {
+        // for each value
+        for (dwIndex = 0;; ++dwIndex)
         {
-            KHR_ICD_TRACE("Failed to read value %d, done reading key.\n", dwIndex);
-            break;
-        }
-        KHR_ICD_TRACE("Value %s found...\n", cszLibraryName);
+            char cszLibraryName[MAX_PATH] = {0};
+            DWORD dwLibraryNameSize = sizeof(cszLibraryName);
+            DWORD dwLibraryNameType = 0;     
+            DWORD dwValue = 0;
+            DWORD dwValueSize = sizeof(dwValue);
+
+            // read the value name
+            KHR_ICD_TRACE("Reading value %d...\n", dwIndex);
+            result = RegEnumValueA(
+                  platformsKey,
+                  dwIndex,
+                  cszLibraryName,
+                  &dwLibraryNameSize,
+                  NULL,
+                  &dwLibraryNameType,
+                  (LPBYTE)&dwValue,
+                  &dwValueSize);
+            // if RegEnumKeyEx fails, we are done with the enumeration
+            if (ERROR_SUCCESS != result) 
+            {
+                KHR_ICD_TRACE("Failed to read value %d, done reading key.\n", dwIndex);
+                break;
+            }
+            KHR_ICD_TRACE("Value %s found...\n", cszLibraryName);
         
-        // Require that the value be a DWORD and equal zero
-        if (REG_DWORD != dwLibraryNameType)  
-        {
-            KHR_ICD_TRACE("Value not a DWORD, skipping\n");
-            continue;
+            // Require that the value be a DWORD and equal zero
+            if (REG_DWORD != dwLibraryNameType)  
+            {
+                KHR_ICD_TRACE("Value not a DWORD, skipping\n");
+                continue;
+            }
+            if (dwValue)
+            {
+                KHR_ICD_TRACE("Value not zero, skipping\n");
+                continue;
+            }
         }
-        if (dwValue)
-        {
-            KHR_ICD_TRACE("Value not zero, skipping\n");
-            continue;
-        }
-
         // add the library
         AdapterAdd(cszLibraryName, ZeroLuid);
     }
