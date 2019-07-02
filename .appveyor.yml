@@ -1,0 +1,20 @@
+os:
+  - Visual Studio 2017
+  #- Visual Studio 2015
+
+platform:
+  - Win32
+  - x64
+
+configuration:
+  - Debug
+  - Release
+
+before_build:
+  - git clone --depth=1 https://github.com/KhronosGroup/OpenCL-Headers inc/OpenCL-Headers
+  - cmake -DOPENCL_ICD_LOADER_HEADERS_DIR=inc/OpenCL-Headers -H. -Bbuild -A%PLATFORM%
+
+build:
+  project: build\OPENCL_ICD_LOADER.sln
+  parallel: true
+  verbosity: normal

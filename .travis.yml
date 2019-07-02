@@ -1,0 +1,18 @@
+language: cpp
+
+compiler:
+  - gcc
+  #- clang
+
+os:
+  - linux
+  #- osx
+
+before_install:
+  - git clone https://github.com/KhronosGroup/OpenCL-Headers inc/OpenCL-Headers
+
+script:
+  - mkdir -p build
+  - cd build
+  - cmake -DOPENCL_ICD_LOADER_HEADERS_DIR=../inc/OpenCL-Headers ..
+  - make

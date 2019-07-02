@@ -41,12 +41,13 @@ if (WIN32)
     list (APPEND OPENCL_ICD_LOADER_SOURCES 
         loader/windows/icd_windows.c
         loader/windows/icd_windows_hkr.c
+        loader/windows/icd_windows_dxgk.c
         loader/windows/OpenCL.def
         loader/windows/OpenCL.rc)
     # Only add the DXSDK include directory if the environment variable is
     # defined.  Since the DXSDK has merged into the Windows SDK, this is
     # only required in rare cases.
-    if (DEFINED ENV{DXSDK_DIR})
+    if (DEFINED ENV{DXSDK_DIR} AND NOT (MINGW OR MSYS OR CYGWIN))
         include_directories ($ENV{DXSDK_DIR}/Include)
     endif ()
 else ()
@@ -62,6 +63,29 @@ set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 
 if (WIN32)
     target_link_libraries (OpenCL cfgmgr32.lib)
+
+    option (OPENCL_ICD_LOADER_REQUIRE_WDK "Build with D3DKMT support, which requires the Windows WDK." ON)
+    if (OPENCL_ICD_LOADER_REQUIRE_WDK)
+        if(DEFINED ENV{WDKContentRoot})
+            file(GLOB D3DKMT_HEADER "$ENV{WDKContentRoot}/Include/*/km/d3dkmthk.h")
+        else()
+            file(GLOB D3DKMT_HEADER "$ENV{HOMEDRIVE}/Program Files */Windows Kits/10/Include/*/km/d3dkmthk.h")
+        endif()
+
+        if(D3DKMT_HEADER)
+            list(GET D3DKMT_HEADER -1 LATEST_D3DKMT_HEADER)
+            get_filename_component(WDK_DIRECTORY ${LATEST_D3DKMT_HEADER} DIRECTORY)
+            get_filename_component(WDK_DIRECTORY ${WDK_DIRECTORY} DIRECTORY)
+            message(STATUS "Found the Windows WDK in: ${WDK_DIRECTORY}")
+            target_compile_definitions(OpenCL PRIVATE OPENCL_ICD_LOADER_REQUIRE_WDK)
+            target_include_directories(OpenCL PRIVATE ${WDK_DIRECTORY}/um)
+            target_include_directories(OpenCL PRIVATE ${WDK_DIRECTORY}/km)
+            target_include_directories(OpenCL PRIVATE ${WDK_DIRECTORY}/shared)
+        else()
+            message(FATAL_ERROR "The Windows WDK was not found. Consider disabling OPENCL_ICD_LOADER_REQUIRE_WDK. Aborting.")
+        endif()
+    endif()
+
     if(NOT USE_DYNAMIC_VCXX_RUNTIME)
         string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
         string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
