@@ -17,6 +17,7 @@
  */
 
 #include <stdbool.h>
+#include <windows.h>
 
 bool khrIcdOsVendorsEnumerateHKR(void);
 

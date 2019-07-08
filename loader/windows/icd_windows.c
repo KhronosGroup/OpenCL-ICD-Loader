@@ -17,10 +17,10 @@
  */
 
 #include "icd.h"
-#include <windows.h>
 #include "icd_windows_hkr.h"
 #include "icd_windows_dxgk.h"
 #include <stdio.h>
+#include <windows.h>
 #include <winreg.h>
 
 #include <initguid.h>
@@ -197,12 +197,13 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
         khrIcdVendorAdd(iterAdapter->szName);
     }
 
+    free(pWinAdapterBegin);	
+
     result = RegCloseKey(platformsKey);
     if (ERROR_SUCCESS != result)
     {
         KHR_ICD_TRACE("Failed to close platforms key %s, ignoring\n", platformsName);
     }
-	
     return TRUE;
 }
 
