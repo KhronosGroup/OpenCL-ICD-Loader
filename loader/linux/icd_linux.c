@@ -17,13 +17,13 @@
  */
 
 #include "icd.h"
-#include <dlfcn.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/types.h>
 #include <dirent.h>
+#include <dlfcn.h>
 #include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
 
 static pthread_once_t initialized = PTHREAD_ONCE_INIT;
 
@@ -72,7 +72,7 @@ void khrIcdOsVendorsEnumerate(void)
                 {
                     break;
                 }
-                if (strcmp(dirEntry->d_name + strlen(dirEntry->d_name) - strlen(extension), extension) ) 
+                if (strcmp(dirEntry->d_name + strlen(dirEntry->d_name) - strlen(extension), extension) != 0) 
                 {
                     break;
                 }
@@ -113,7 +113,10 @@ void khrIcdOsVendorsEnumerate(void)
                     break;
                 }
                 // ignore a newline at the end of the file
-                if (buffer[bufferSize-1] == '\n') buffer[bufferSize-1] = '\0';
+                if (buffer[bufferSize-1] == '\n')
+                {
+                    buffer[bufferSize-1] = '\0';
+                }
 
                 // load the string read from the file
                 khrIcdVendorAdd(buffer);

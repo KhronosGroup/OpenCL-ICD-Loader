@@ -111,7 +111,7 @@ clGetGLObjectInfo(cl_mem                 memobj,
                   cl_gl_object_type *    gl_object_type,
                   cl_GLuint *            gl_object_name ) CL_API_SUFFIX__VERSION_1_0
 {  
-     cl_int ret_val = -5;
+     cl_int ret_val = CL_OUT_OF_RESOURCES;
      test_icd_stub_log("clGetGLObjectInfo(%p, %p, %p)\n",
                        memobj,
                        gl_object_type,
@@ -128,7 +128,7 @@ clGetGLTextureInfo(cl_mem                memobj,
                    void *                param_value,
                    size_t *              param_value_size_ret ) CL_API_SUFFIX__VERSION_1_0
 {
-     cl_int ret_val = -5;
+     cl_int ret_val = CL_OUT_OF_RESOURCES;
      test_icd_stub_log("clGetGLTextureInfo(%p, %u, %u, %p, %p)\n",
                        memobj,
                        param_name,
@@ -148,7 +148,7 @@ clEnqueueAcquireGLObjects(cl_command_queue       command_queue,
                           const cl_event *       event_wait_list,
                           cl_event *             event ) CL_API_SUFFIX__VERSION_1_0
 {
-    cl_int ret_val = -5;
+    cl_int ret_val = CL_OUT_OF_RESOURCES;
     test_icd_stub_log("clEnqueueAcquireGLObjects(%p, %u, %p, %u, %p, %p)\n",
                       command_queue,
                       num_objects,
@@ -171,7 +171,7 @@ clEnqueueReleaseGLObjects(cl_command_queue       command_queue,
                           cl_event *             event ) CL_API_SUFFIX__VERSION_1_0
 
 {
-     cl_int ret_val = -5;
+     cl_int ret_val = CL_OUT_OF_RESOURCES;
      test_icd_stub_log("clEnqueueReleaseGLObjects(%p, %u, %p, %u, %p, %p)\n",
                         command_queue,
                         num_objects,
@@ -191,7 +191,7 @@ clGetGLContextInfoKHR(const cl_context_properties *  properties,
                       void *                         param_value,
                       size_t *                       param_value_size_ret ) CL_API_SUFFIX__VERSION_1_0
 {
-    cl_int ret_val = -5;
+    cl_int ret_val = CL_OUT_OF_RESOURCES;
     test_icd_stub_log("clGetGLContextInfoKHR(%p, %u, %u, %p, %p)\n",
                       properties,
                       param_name,

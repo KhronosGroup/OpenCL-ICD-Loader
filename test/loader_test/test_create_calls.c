@@ -1,12 +1,12 @@
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define CL_USE_DEPRECATED_OPENCL_1_0_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 
-#include <CL/cl.h>
 #include "param_struct.h"
+#include <CL/cl.h>
 #include <platform/icd_test_log.h>
 
 extern void CL_CALLBACK createcontext_callback(const char* a, const void* b, size_t c, void* d);
@@ -568,7 +568,7 @@ int test_clReleaseSampler(const struct clReleaseSampler_st *data)
 
 int test_clReleaseMemObject(const struct clReleaseMemObject_st *data)
 {
-    int ret_val = -15;
+    int ret_val = CL_OUT_OF_RESOURCES;
     test_icd_app_log("clReleaseMemObject(%p)\n", data->memobj);
 
     ret_val = clReleaseMemObject(data->memobj);

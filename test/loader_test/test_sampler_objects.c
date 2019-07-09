@@ -1,5 +1,5 @@
-#include <CL/cl.h>
 #include "param_struct.h"
+#include <CL/cl.h>
 #include <platform/icd_test_log.h>
 
 extern cl_sampler  sampler;

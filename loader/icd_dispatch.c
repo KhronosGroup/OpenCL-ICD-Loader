@@ -128,17 +128,17 @@ clGetDeviceInfo(
 CL_API_ENTRY cl_int CL_API_CALL
 clCreateSubDevices(cl_device_id                         in_device,
                    const cl_device_partition_property * properties,
-                   cl_uint                              num_entries,
+                   cl_uint                              num_devices,
                    cl_device_id *                       out_devices,
-                   cl_uint *                            num_devices) CL_API_SUFFIX__VERSION_1_2
+                   cl_uint *                            num_devices_ret) CL_API_SUFFIX__VERSION_1_2
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_device, CL_INVALID_DEVICE);
     return in_device->dispatch->clCreateSubDevices(
         in_device,
         properties,
-        num_entries,
+        num_devices,
         out_devices,
-        num_devices);
+        num_devices_ret);
 }
 
 CL_API_ENTRY cl_int CL_API_CALL
@@ -823,7 +823,7 @@ clEnqueueReadBuffer(cl_command_queue    command_queue,
                     cl_mem              buffer,
                     cl_bool             blocking_read,
                     size_t              offset,
-                    size_t              cb, 
+                    size_t              size, 
                     void *              ptr,
                     cl_uint             num_events_in_wait_list,
                     const cl_event *    event_wait_list,
@@ -835,7 +835,7 @@ clEnqueueReadBuffer(cl_command_queue    command_queue,
         buffer,
         blocking_read,
         offset,
-        cb, 
+        size, 
         ptr,
         num_events_in_wait_list,
         event_wait_list,
@@ -847,8 +847,8 @@ clEnqueueReadBufferRect(
     cl_command_queue command_queue,
     cl_mem buffer,
     cl_bool blocking_read,
-    const size_t * buffer_origin,
-    const size_t * host_origin, 
+    const size_t * buffer_offset,
+    const size_t * host_offset, 
     const size_t * region,
     size_t buffer_row_pitch,
     size_t buffer_slice_pitch,
@@ -864,8 +864,8 @@ clEnqueueReadBufferRect(
         command_queue,
         buffer,
         blocking_read,
-        buffer_origin,
-        host_origin, 
+        buffer_offset,
+        host_offset, 
         region,
         buffer_row_pitch,
         buffer_slice_pitch,
@@ -882,7 +882,7 @@ clEnqueueWriteBuffer(cl_command_queue   command_queue,
                      cl_mem             buffer, 
                      cl_bool            blocking_write, 
                      size_t             offset, 
-                     size_t             cb, 
+                     size_t             size, 
                      const void *       ptr, 
                      cl_uint            num_events_in_wait_list, 
                      const cl_event *   event_wait_list, 
@@ -894,7 +894,7 @@ clEnqueueWriteBuffer(cl_command_queue   command_queue,
         buffer, 
         blocking_write, 
         offset, 
-        cb, 
+        size, 
         ptr, 
         num_events_in_wait_list, 
         event_wait_list, 
@@ -905,9 +905,9 @@ CL_API_ENTRY cl_int CL_API_CALL
 clEnqueueWriteBufferRect(
     cl_command_queue command_queue,
     cl_mem buffer,
-    cl_bool blocking_read,
-    const size_t * buffer_origin,
-    const size_t * host_origin, 
+    cl_bool blocking_write,
+    const size_t * buffer_offset,
+    const size_t * host_offset, 
     const size_t * region,
     size_t buffer_row_pitch,
     size_t buffer_slice_pitch,
@@ -922,9 +922,9 @@ clEnqueueWriteBufferRect(
     return command_queue->dispatch->clEnqueueWriteBufferRect(
         command_queue,
         buffer,
-        blocking_read,
-        buffer_origin,
-        host_origin, 
+        blocking_write,
+        buffer_offset,
+        host_offset, 
         region,
         buffer_row_pitch,
         buffer_slice_pitch,
@@ -942,7 +942,7 @@ clEnqueueFillBuffer(cl_command_queue   command_queue,
                     const void *       pattern, 
                     size_t             pattern_size, 
                     size_t             offset, 
-                    size_t             cb, 
+                    size_t             size, 
                     cl_uint            num_events_in_wait_list, 
                     const cl_event *   event_wait_list, 
                     cl_event *         event) CL_API_SUFFIX__VERSION_1_2
@@ -954,7 +954,7 @@ clEnqueueFillBuffer(cl_command_queue   command_queue,
         pattern, 
         pattern_size,
         offset,
-        cb, 
+        size, 
         num_events_in_wait_list,
         event_wait_list,
         event);
@@ -966,7 +966,7 @@ clEnqueueCopyBuffer(cl_command_queue    command_queue,
                     cl_mem              dst_buffer, 
                     size_t              src_offset,
                     size_t              dst_offset,
-                    size_t              cb, 
+                    size_t              size, 
                     cl_uint             num_events_in_wait_list,
                     const cl_event *    event_wait_list,
                     cl_event *          event) CL_API_SUFFIX__VERSION_1_0
@@ -978,7 +978,7 @@ clEnqueueCopyBuffer(cl_command_queue    command_queue,
         dst_buffer, 
         src_offset,
         dst_offset,
-        cb, 
+        size, 
         num_events_in_wait_list,
         event_wait_list,
         event);
@@ -1173,7 +1173,7 @@ clEnqueueMapBuffer(cl_command_queue command_queue,
                    cl_bool          blocking_map, 
                    cl_map_flags     map_flags,
                    size_t           offset,
-                   size_t           cb,
+                   size_t           size,
                    cl_uint          num_events_in_wait_list,
                    const cl_event * event_wait_list,
                    cl_event *       event,
@@ -1186,7 +1186,7 @@ clEnqueueMapBuffer(cl_command_queue command_queue,
         blocking_map, 
         map_flags,
         offset,
-        cb,
+        size,
         num_events_in_wait_list,
         event_wait_list,
         event,
@@ -1357,9 +1357,9 @@ clEnqueueBarrierWithWaitList(cl_command_queue  command_queue,
 
 CL_API_ENTRY void * CL_API_CALL
 clGetExtensionFunctionAddressForPlatform(cl_platform_id platform,
-                                         const char *   function_name) CL_API_SUFFIX__VERSION_1_2
+                                         const char *   func_name) CL_API_SUFFIX__VERSION_1_2
 {
-    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(function_name, NULL);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(func_name, NULL);
 
     // make sure the ICD is initialized
     khrIcdInitialize();    
@@ -1370,7 +1370,7 @@ clGetExtensionFunctionAddressForPlatform(cl_platform_id platform,
     // do not need to be ICD-aware and do not require any ICD loader
     // modifications.  The KHR and EXT extensions below were added for
     // backwards compatibility only.
-    #define CL_COMMON_EXTENSION_ENTRYPOINT_ADD(name) if (!strcmp(function_name, #name) ) return (void *)(size_t)&name
+    #define CL_COMMON_EXTENSION_ENTRYPOINT_ADD(name) if (!strcmp(func_name, #name) ) return ((void *)(size_t)&(name))
 
     // Functions supporting the creation of OpenCL Memory Objects
     // from OpenGL Objects (cl_apple_gl_sharing, cl_khr_gl_sharing)
@@ -1436,7 +1436,7 @@ clGetExtensionFunctionAddressForPlatform(cl_platform_id platform,
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, NULL);
     return platform->dispatch->clGetExtensionFunctionAddressForPlatform(
         platform,
-        function_name);
+        func_name);
 }
 
 // Deprecated APIs
@@ -1457,7 +1457,7 @@ clSetCommandQueueProperty(cl_command_queue              command_queue,
 CL_API_ENTRY cl_int CL_API_CALL
 clCreateSubDevicesEXT(
     cl_device_id in_device,
-    const cl_device_partition_property_ext * partition_properties,
+    const cl_device_partition_property_ext * properties,
     cl_uint num_entries,
     cl_device_id * out_devices,
     cl_uint * num_devices) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
@@ -1465,7 +1465,7 @@ clCreateSubDevicesEXT(
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_device, CL_INVALID_DEVICE);
         return in_device->dispatch->clCreateSubDevicesEXT(
         in_device,
-        partition_properties,
+        properties,
         num_entries,
         out_devices,
         num_devices);
@@ -1569,16 +1569,16 @@ clEnqueueBarrier(cl_command_queue command_queue) CL_EXT_SUFFIX__VERSION_1_1_DEPR
 }
 
 CL_API_ENTRY void * CL_API_CALL
-clGetExtensionFunctionAddress(const char *function_name) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+clGetExtensionFunctionAddress(const char *func_name) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
 {
     size_t function_name_length = 0;
     KHRicdVendor* vendor = NULL;
 
-    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(function_name, NULL);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(func_name, NULL);
 
     // make sure the ICD is initialized
     khrIcdInitialize();    
-    function_name_length = strlen(function_name);
+    function_name_length = strlen(func_name);
 
     // return any ICD-aware extensions
 
@@ -1586,7 +1586,7 @@ clGetExtensionFunctionAddress(const char *function_name) CL_EXT_SUFFIX__VERSION_
     // do not need to be ICD-aware and do not require any ICD loader
     // modifications.  The KHR and EXT extensions below were added for
     // backwards compatibility only.
-    #define CL_COMMON_EXTENSION_ENTRYPOINT_ADD(name) if (!strcmp(function_name, #name) ) return (void *)(size_t)&name
+    #define CL_COMMON_EXTENSION_ENTRYPOINT_ADD(name) if (!strcmp(func_name, #name) ) return ((void *)(size_t)&(name))
 
     // Functions supporting the creation of OpenCL Memory Objects
     // from OpenGL Objects (cl_apple_gl_sharing, cl_khr_gl_sharing)
@@ -1652,10 +1652,10 @@ clGetExtensionFunctionAddress(const char *function_name) CL_EXT_SUFFIX__VERSION_
         size_t vendor_suffix_length = strlen(vendor->suffix);
         if (vendor_suffix_length <= function_name_length && vendor_suffix_length > 0)
         {            
-            const char *function_suffix = function_name+function_name_length-vendor_suffix_length;
+            const char *function_suffix = func_name+function_name_length-vendor_suffix_length;
             if (!strcmp(function_suffix, vendor->suffix) )
             {
-                return vendor->clGetExtensionFunctionAddress(function_name);
+                return vendor->clGetExtensionFunctionAddress(func_name);
             }
         }
     }
@@ -1835,13 +1835,13 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLContextInfoKHR(
 
 CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromGLsyncKHR(
 	cl_context context,
-	cl_GLsync sync,
+	cl_GLsync cl_GLsync,
 	cl_int * errcode_ret) CL_API_SUFFIX__VERSION_1_1
 {
 	KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
 	return context->dispatch->clCreateEventFromGLsyncKHR(
 		context,
-		sync,
+		cl_GLsync,
 		errcode_ret);
 }
 
@@ -2232,8 +2232,8 @@ clSetUserEventStatus(
 CL_API_ENTRY cl_mem CL_API_CALL
 clCreateFromEGLImageKHR(
     cl_context context,
-    CLeglDisplayKHR display,
-    CLeglImageKHR image,
+    CLeglDisplayKHR egldisplay,
+    CLeglImageKHR eglimage,
     cl_mem_flags flags,
     const cl_egl_image_properties_khr *properties,
     cl_int *errcode_ret)
@@ -2241,8 +2241,8 @@ clCreateFromEGLImageKHR(
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromEGLImageKHR(
         context,
-        display,
-        image,
+        egldisplay,
+        eglimage,
         flags,
         properties,
         errcode_ret);

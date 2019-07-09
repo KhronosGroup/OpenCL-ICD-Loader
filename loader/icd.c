@@ -167,8 +167,10 @@ void khrIcdVendorAdd(const char *libraryName)
 
         // add this vendor to the list of vendors at the tail
         {
-            KHRicdVendor **prevNextPointer = NULL;
-            for (prevNextPointer = &khrIcdVendors; *prevNextPointer; prevNextPointer = &( (*prevNextPointer)->next) );
+            KHRicdVendor **prevNextPointer = &khrIcdVendors;
+            while(*prevNextPointer) {
+                prevNextPointer = &( (*prevNextPointer)->next);
+            }
             *prevNextPointer = vendor;
         }
 
