@@ -51,6 +51,7 @@ set (OPENCL_ICD_LOADER_SOURCES
 if (WIN32)
     list (APPEND OPENCL_ICD_LOADER_SOURCES 
         loader/windows/icd_windows.c
+        loader/windows/icd_windows.h
         loader/windows/icd_windows_dxgk.c
         loader/windows/icd_windows_dxgk.h
         loader/windows/icd_windows_envvars.c

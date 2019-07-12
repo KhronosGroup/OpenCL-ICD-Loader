@@ -19,6 +19,7 @@
 #include "icd.h"
 #include "icd_windows_hkr.h"
 #include <windows.h>
+#include "icd_windows_dxgk.h"
 #include <cfgmgr32.h>
 #include <assert.h>
 #include <stdbool.h>
@@ -51,7 +52,7 @@ static const char OPENCL_REG_SUB_KEY_WOW[] = "OpenCLDriverNameWow";
 #endif
 
 // Do not free the memory returned by this function.
-static const char* GetOpenCLRegKeyName(void)
+const char* getOpenCLRegKeyName(void)
 {
 #ifdef _WIN64
     return OPENCL_REG_SUB_KEY;
@@ -96,7 +97,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
     {
         result = RegQueryValueExA(
             hkey,
-            GetOpenCLRegKeyName(),
+            getOpenCLRegKeyName(),
             NULL,
             &dwLibraryNameType,
             NULL,
@@ -117,7 +118,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
 
         result = RegQueryValueExA(
             hkey,
-            GetOpenCLRegKeyName(),
+            getOpenCLRegKeyName(),
             NULL,
             &dwLibraryNameType,
             (LPBYTE)cszOclPath,
@@ -136,9 +137,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
 
         KHR_ICD_TRACE("    Path: %s\n", cszOclPath);
 
-        khrIcdVendorAdd(cszOclPath);
-
-        bRet = true;
+        bRet |= adapterAdd(cszOclPath, ZeroLuid);
     }
 
 out:
