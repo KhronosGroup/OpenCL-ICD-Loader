@@ -23,7 +23,60 @@
 #include <windows.h>
 #include <winreg.h>
 
+#include <initguid.h>
+#include <dxgi.h>
+typedef HRESULT (WINAPI *PFN_CREATE_DXGI_FACTORY)(REFIID, void **);
+
 static INIT_ONCE initialized = INIT_ONCE_STATIC_INIT;
+
+typedef struct WinAdapter
+{
+    char * szName;
+    LUID luid;
+} WinAdapter;
+
+LUID ZeroLuid = { 0, 0 };
+
+static WinAdapter* pWinAdapterBegin = NULL;
+static WinAdapter* pWinAdapterEnd = NULL;
+static WinAdapter* pWinAdapterCapacity = NULL;
+
+void AdapterAdd(const char* szName, LUID luid)
+{
+    if (pWinAdapterEnd == pWinAdapterCapacity)
+    {
+        size_t OldCapacity = pWinAdapterCapacity - pWinAdapterBegin;
+        size_t NewCapacity = OldCapacity;
+        if (0 == NewCapacity)
+        {
+            NewCapacity = 1;
+        }
+        NewCapacity *= 2;
+
+        WinAdapter* pNewBegin = malloc(NewCapacity * sizeof(*pWinAdapterBegin));
+        if (pNewBegin)
+        {
+            if (pWinAdapterBegin)
+            {
+                memcpy(pNewBegin, pWinAdapterBegin, OldCapacity * sizeof(*pWinAdapterBegin));
+                free(pWinAdapterBegin);
+            }
+            pWinAdapterCapacity = pNewBegin + NewCapacity;
+            pWinAdapterEnd = pNewBegin + OldCapacity;
+            pWinAdapterBegin = pNewBegin;
+        }
+    }
+    if (pWinAdapterEnd != pWinAdapterCapacity)
+    {
+        size_t nameLen = strlen(szName) + 1;
+        if (pWinAdapterEnd->szName = malloc(nameLen))
+        {
+            memcpy(pWinAdapterEnd->szName, szName, nameLen * sizeof(*szName));
+            pWinAdapterEnd->luid = luid;
+            ++pWinAdapterEnd;
+        }
+    }
+}
 
 /*
  * 
@@ -59,59 +112,98 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     if (ERROR_SUCCESS != result)
     {
         KHR_ICD_TRACE("Failed to open platforms key %s, continuing\n", platformsName);
-        return TRUE;
     }
-
-    // for each value
-    for (dwIndex = 0;; ++dwIndex)
-    {
-        char cszLibraryName[1024] = {0};
-        DWORD dwLibraryNameSize = sizeof(cszLibraryName);
-        DWORD dwLibraryNameType = 0;     
-        DWORD dwValue = 0;
-        DWORD dwValueSize = sizeof(dwValue);
-
-        // read the value name
-        KHR_ICD_TRACE("Reading value %d...\n", dwIndex);
-        result = RegEnumValueA(
-              platformsKey,
-              dwIndex,
-              cszLibraryName,
-              &dwLibraryNameSize,
-              NULL,
-              &dwLibraryNameType,
-              (LPBYTE)&dwValue,
-              &dwValueSize);
-        // if RegEnumKeyEx fails, we are done with the enumeration
-        if (ERROR_SUCCESS != result) 
+    else {
+        // for each value
+        for (dwIndex = 0;; ++dwIndex)
         {
-            KHR_ICD_TRACE("Failed to read value %d, done reading key.\n", dwIndex);
-            break;
-        }
-        KHR_ICD_TRACE("Value %s found...\n", cszLibraryName);
+            char cszLibraryName[MAX_PATH] = {0};
+            DWORD dwLibraryNameSize = sizeof(cszLibraryName);
+            DWORD dwLibraryNameType = 0;     
+            DWORD dwValue = 0;
+            DWORD dwValueSize = sizeof(dwValue);
+
+            // read the value name
+            KHR_ICD_TRACE("Reading value %d...\n", dwIndex);
+            result = RegEnumValueA(
+                  platformsKey,
+                  dwIndex,
+                  cszLibraryName,
+                  &dwLibraryNameSize,
+                  NULL,
+                  &dwLibraryNameType,
+                  (LPBYTE)&dwValue,
+                  &dwValueSize);
+            // if RegEnumKeyEx fails, we are done with the enumeration
+            if (ERROR_SUCCESS != result) 
+            {
+                KHR_ICD_TRACE("Failed to read value %d, done reading key.\n", dwIndex);
+                break;
+            }
+            KHR_ICD_TRACE("Value %s found...\n", cszLibraryName);
         
-        // Require that the value be a DWORD and equal zero
-        if (REG_DWORD != dwLibraryNameType)  
-        {
-            KHR_ICD_TRACE("Value not a DWORD, skipping\n");
-            continue;
+            // Require that the value be a DWORD and equal zero
+            if (REG_DWORD != dwLibraryNameType)  
+            {
+                KHR_ICD_TRACE("Value not a DWORD, skipping\n");
+                continue;
+            }
+            if (dwValue)
+            {
+                KHR_ICD_TRACE("Value not zero, skipping\n");
+                continue;
+            }
+            // add the library
+            AdapterAdd(cszLibraryName, ZeroLuid);
         }
-        if (dwValue)
-        {
-            KHR_ICD_TRACE("Value not zero, skipping\n");
-            continue;
-        }
-
-        // add the library
-        khrIcdVendorAdd(cszLibraryName);
     }
+
+    // Add adapters according to DXGI's preference order
+    HMODULE hDXGI = LoadLibrary("dxgi.dll");
+    if (hDXGI)
+    {
+        IDXGIFactory* pFactory = NULL;
+        PFN_CREATE_DXGI_FACTORY pCreateDXGIFactory = (PFN_CREATE_DXGI_FACTORY)GetProcAddress(hDXGI, "CreateDXGIFactory");
+        HRESULT hr = pCreateDXGIFactory(&IID_IDXGIFactory, &pFactory);
+        if (SUCCEEDED(hr))
+        {
+            UINT i = 0;
+            IDXGIAdapter* pAdapter = NULL;
+            while (SUCCEEDED(pFactory->lpVtbl->EnumAdapters(pFactory, i++, &pAdapter)))
+            {
+                DXGI_ADAPTER_DESC AdapterDesc;
+                pAdapter->lpVtbl->GetDesc(pAdapter, &AdapterDesc);
+
+                for (WinAdapter* iterAdapter = pWinAdapterBegin; iterAdapter != pWinAdapterEnd; ++iterAdapter)
+                {
+                    if (iterAdapter->luid.LowPart == AdapterDesc.AdapterLuid.LowPart
+                        && iterAdapter->luid.HighPart == AdapterDesc.AdapterLuid.HighPart)
+                    {
+                        khrIcdVendorAdd(iterAdapter->szName);
+                        break;
+                    }
+                }
+
+                pAdapter->lpVtbl->Release(pAdapter);
+            }
+            pFactory->lpVtbl->Release(pFactory);
+        }
+        FreeLibrary(hDXGI);
+    }
+
+    // Go through the list again, putting any remaining adapters at the end of the list in an undefined order
+    for (WinAdapter* iterAdapter = pWinAdapterBegin; iterAdapter != pWinAdapterEnd; ++iterAdapter)
+    {
+        khrIcdVendorAdd(iterAdapter->szName);
+    }
+
+    free(pWinAdapterBegin);	
 
     result = RegCloseKey(platformsKey);
     if (ERROR_SUCCESS != result)
     {
         KHR_ICD_TRACE("Failed to close platforms key %s, ignoring\n", platformsName);
     }
-	
     return TRUE;
 }
 
@@ -148,4 +240,3 @@ void khrIcdOsLibraryUnload(void *library)
 {
     FreeLibrary( (HMODULE)library);
 }
-

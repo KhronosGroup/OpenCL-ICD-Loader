@@ -166,4 +166,3 @@ void khrIcdOsLibraryUnload(void *library)
 {
     dlclose(library);
 }
-
