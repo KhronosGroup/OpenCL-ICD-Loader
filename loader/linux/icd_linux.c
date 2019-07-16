@@ -17,6 +17,8 @@
  */
 
 #include "icd.h"
+#include "icd_envvars.h"
+
 #include <dlfcn.h>
 #include <stdio.h>
 #include <string.h>
@@ -38,102 +40,106 @@ void khrIcdOsVendorsEnumerate(void)
 {
     DIR *dir = NULL;
     struct dirent *dirEntry = NULL;
-#ifdef __ANDROID__
-    char *vendorPath = "/system/vendor/Khronos/OpenCL/vendors/";
-#else
-    char *vendorPath = "/etc/OpenCL/vendors/";
-#endif // ANDROID
+    char* vendorPath = ICD_VENDOR_PATH;
+    char* envPath = NULL;
 
-    // open the directory
+    khrIcdVendorsEnumerateEnv();
+
+    envPath = khrIcd_secure_getenv("OCL_ICD_VENDORS");
+    if (NULL != envPath)
+    {
+        vendorPath = envPath;
+    }
+
     dir = opendir(vendorPath);
     if (NULL == dir) 
     {
-        KHR_ICD_TRACE("Failed to open path %s\n", vendorPath);
-        goto Cleanup;
+        KHR_ICD_TRACE("Failed to open path %s, continuing\n", vendorPath);
     }
-
-    // attempt to load all files in the directory
-    for (dirEntry = readdir(dir); dirEntry; dirEntry = readdir(dir) )
+    else
     {
-        switch(dirEntry->d_type)
+        // attempt to load all files in the directory
+        for (dirEntry = readdir(dir); dirEntry; dirEntry = readdir(dir) )
         {
-        case DT_UNKNOWN:
-        case DT_REG:
-        case DT_LNK:
+            switch(dirEntry->d_type)
             {
-                const char* extension = ".icd";
-                FILE *fin = NULL;
-                char* fileName = NULL;
-                char* buffer = NULL;
-                long bufferSize = 0;
+            case DT_UNKNOWN:
+            case DT_REG:
+            case DT_LNK:
+                {
+                    const char* extension = ".icd";
+                    FILE *fin = NULL;
+                    char* fileName = NULL;
+                    char* buffer = NULL;
+                    long bufferSize = 0;
 
-                // make sure the file name ends in .icd
-                if (strlen(extension) > strlen(dirEntry->d_name) )
-                {
-                    break;
-                }
-                if (strcmp(dirEntry->d_name + strlen(dirEntry->d_name) - strlen(extension), extension) ) 
-                {
-                    break;
-                }
+                    // make sure the file name ends in .icd
+                    if (strlen(extension) > strlen(dirEntry->d_name) )
+                    {
+                        break;
+                    }
+                    if (strcmp(dirEntry->d_name + strlen(dirEntry->d_name) - strlen(extension), extension) )
+                    {
+                        break;
+                    }
 
-                // allocate space for the full path of the vendor library name
-                fileName = malloc(strlen(dirEntry->d_name) + strlen(vendorPath) + 1);
-                if (!fileName) 
-                {
-                    KHR_ICD_TRACE("Failed allocate space for ICD file path\n");
-                    break;
-                }
-                sprintf(fileName, "%s%s", vendorPath, dirEntry->d_name);
+                    // allocate space for the full path of the vendor library name
+                    fileName = malloc(strlen(dirEntry->d_name) + strlen(vendorPath) + 1);
+                    if (!fileName)
+                    {
+                        KHR_ICD_TRACE("Failed allocate space for ICD file path\n");
+                        break;
+                    }
+                    sprintf(fileName, "%s%s", vendorPath, dirEntry->d_name);
 
-                // open the file and read its contents
-                fin = fopen(fileName, "r");
-                if (!fin)
-                {
-                    free(fileName);
-                    break;
-                }
-                fseek(fin, 0, SEEK_END);
-                bufferSize = ftell(fin);
+                    // open the file and read its contents
+                    fin = fopen(fileName, "r");
+                    if (!fin)
+                    {
+                        free(fileName);
+                        break;
+                    }
+                    fseek(fin, 0, SEEK_END);
+                    bufferSize = ftell(fin);
 
-                buffer = malloc(bufferSize+1);
-                if (!buffer)
-                {
-                    free(fileName);
-                    fclose(fin);
-                    break;
-                }                
-                memset(buffer, 0, bufferSize+1);
-                fseek(fin, 0, SEEK_SET);                       
-                if (bufferSize != (long)fread(buffer, 1, bufferSize, fin) )
-                {
+                    buffer = malloc(bufferSize+1);
+                    if (!buffer)
+                    {
+                        free(fileName);
+                        fclose(fin);
+                        break;
+                    }
+                    memset(buffer, 0, bufferSize+1);
+                    fseek(fin, 0, SEEK_SET);
+                    if (bufferSize != (long)fread(buffer, 1, bufferSize, fin) )
+                    {
+                        free(fileName);
+                        free(buffer);
+                        fclose(fin);
+                        break;
+                    }
+                    // ignore a newline at the end of the file
+                    if (buffer[bufferSize-1] == '\n') buffer[bufferSize-1] = '\0';
+
+                    // load the string read from the file
+                    khrIcdVendorAdd(buffer);
+
                     free(fileName);
                     free(buffer);
                     fclose(fin);
-                    break;
                 }
-                // ignore a newline at the end of the file
-                if (buffer[bufferSize-1] == '\n') buffer[bufferSize-1] = '\0';
-
-                // load the string read from the file
-                khrIcdVendorAdd(buffer);
-                
-                free(fileName);
-                free(buffer);
-                fclose(fin);
+                break;
+            default:
+                break;
             }
-            break;
-        default:
-            break;
         }
+
+        closedir(dir);
     }
 
-Cleanup:
-
-    // free resources and exit
-    if (dir) 
+    if (NULL != envPath)
     {
-        closedir(dir);
+        khrIcd_free_getenv(envPath);
     }
 }
 
