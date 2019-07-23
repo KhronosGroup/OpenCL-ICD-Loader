@@ -19,8 +19,9 @@ The fields must match each other after the increment.
 ## Linux shared library versioning
 
 The ICD loader library version on Linux is 1.2 with SONAME set to libOpenCL.so.1 using the SOVERSION property in CMakeLists.txt.
-This version does not change when new API functions are added to the ICD loader because the loader maintains backwards compatibility.
+MAJOR version does not change when new API functions are added to the ICD loader because the loader maintains backwards compatibility.
+MINOR version remains 2.
 Note that the version number is independent of the OpenCL specification revision number.
-
-No changes are required in the library version when submitting pull requests.
+ICD loader library version should take the form MAJOR.MINOR.RELEASE instead of currently used MAJOR.MINOR format (e.g. current version 1.2 should become 1.2.0).
+RELEASE field should be incremented by one for each pull request that modifies anything in the loader directory.
 
