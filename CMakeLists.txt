@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.8.11)
 
 project (OPENCL_ICD_LOADER)
+include (GNUInstallDirs)
 find_package (Threads REQUIRED)
 
 # The option below allows building the ICD Loader library as a shared library
@@ -131,6 +132,6 @@ if (BUILD_TESTING)
 endif()
 
 install (TARGETS OpenCL
-    RUNTIME DESTINATION bin
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib)
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
