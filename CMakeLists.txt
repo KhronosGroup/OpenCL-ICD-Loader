@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.8.11)
 
 project (OPENCL_ICD_LOADER)
+include (GNUInstallDirs)
 find_package (Threads REQUIRED)
 
 # The option below allows building the ICD Loader library as a shared library
@@ -33,15 +34,28 @@ find_package (Threads REQUIRED)
 # advance. Use it with discretion.
 option (BUILD_SHARED_LIBS "Build shared libs" ON)
 
+include(CheckFunctionExists)
+check_function_exists(secure_getenv HAVE_SECURE_GETENV)
+check_function_exists(__secure_getenv HAVE___SECURE_GETENV)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/loader/icd_cmake_config.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/icd_cmake_config.h)
+
 set (OPENCL_ICD_LOADER_SOURCES
     loader/icd.c
-    loader/icd_dispatch.c)
+    loader/icd.h
+    loader/icd_dispatch.c
+    loader/icd_dispatch.h
+    loader/icd_envvars.h
+    loader/icd_platform.h)
 
 if (WIN32)
     list (APPEND OPENCL_ICD_LOADER_SOURCES 
         loader/windows/icd_windows.c
-        loader/windows/icd_windows_hkr.c
         loader/windows/icd_windows_dxgk.c
+        loader/windows/icd_windows_dxgk.h
+        loader/windows/icd_windows_envvars.c
+        loader/windows/icd_windows_hkr.c
+        loader/windows/icd_windows_hkr.h
         loader/windows/OpenCL.def
         loader/windows/OpenCL.rc)
     # Only add the DXSDK include directory if the environment variable is
@@ -53,6 +67,7 @@ if (WIN32)
 else ()
     list (APPEND OPENCL_ICD_LOADER_SOURCES
         loader/linux/icd_linux.c
+        loader/linux/icd_linux_envvars.c
         loader/linux/icd_exports.map)
 endif ()
 
@@ -108,7 +123,7 @@ endif ()
 include_directories (${OPENCL_ICD_LOADER_HEADERS_DIR})
 add_definitions (-DCL_TARGET_OPENCL_VERSION=220)
 
-target_include_directories (OpenCL PRIVATE loader)
+target_include_directories (OpenCL PRIVATE ${CMAKE_CURRENT_BINARY_DIR} loader)
 target_link_libraries (OpenCL ${CMAKE_DL_LIBS})
 
 include (CTest)
@@ -117,6 +132,6 @@ if (BUILD_TESTING)
 endif()
 
 install (TARGETS OpenCL
-    RUNTIME DESTINATION bin
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib)
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

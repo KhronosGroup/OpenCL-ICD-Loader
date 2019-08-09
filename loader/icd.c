@@ -18,6 +18,7 @@
 
 #include "icd.h"
 #include "icd_dispatch.h"
+#include "icd_envvars.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -185,6 +186,46 @@ Done:
     if (platforms)
     {
         free(platforms);
+    }
+}
+
+// Get next file or dirname given a string list or registry key path.
+// Note: the input string may be modified!
+static char *loader_get_next_path(char *path) {
+    size_t len;
+    char *next;
+
+    if (path == NULL) return NULL;
+    next = strchr(path, PATH_SEPARATOR);
+    if (next == NULL) {
+        len = strlen(path);
+        next = path + len;
+    } else {
+        *next = '\0';
+        next++;
+    }
+
+    return next;
+}
+
+void khrIcdVendorsEnumerateEnv(void)
+{
+    char* icdFilenames = khrIcd_secure_getenv("OCL_ICD_FILENAMES");
+    char* cur_file = NULL;
+    char* next_file = NULL;
+    if (icdFilenames)
+    {
+        KHR_ICD_TRACE("Found OCL_ICD_FILENAMES environment variable.\n");
+
+        next_file = icdFilenames;
+        while (NULL != next_file && *next_file != '\0') {
+            cur_file = next_file;
+            next_file = loader_get_next_path(cur_file);
+
+            khrIcdVendorAdd(cur_file);
+        }
+
+        khrIcd_free_getenv(icdFilenames);
     }
 }
 
