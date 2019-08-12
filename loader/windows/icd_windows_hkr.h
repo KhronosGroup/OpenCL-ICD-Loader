@@ -21,7 +21,7 @@
 
 bool khrIcdOsVendorsEnumerateHKR(void);
 
-LUID ZeroLuid;
+extern LUID ZeroLuid;
 
 void AdapterAdd(const char* szName, LUID luid);
 
