@@ -39,7 +39,10 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
 #if defined(DXGKDDI_INTERFACE_VERSION_WDDM2_4) && (DXGKDDI_INTERFACE_VERSION >= DXGKDDI_INTERFACE_VERSION_WDDM2_4)
     // Get handle to GDI Runtime
     HMODULE h = LoadLibrary("gdi32.dll");
-    if (h && GetProcAddress((HMODULE)h, "D3DKMTSubmitPresentBltToHwQueue")) // OS Version check
+    if (h == NULL)
+        return ret;
+
+    if(GetProcAddress((HMODULE)h, "D3DKMTSubmitPresentBltToHwQueue")) // OS Version check
     {
         D3DKMT_ADAPTERINFO* pAdapterInfo = NULL;
         D3DKMT_ENUMADAPTERS2 EnumAdapters;
@@ -85,28 +88,28 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             goto out;
         }
         const char* cszOpenCLRegKeyName = GetOpenCLRegKeyName();
-        const int OpenCLRegKeyNameSize = (int)(strlen(cszOpenCLRegKeyName) + 1);
+        const int szOpenCLRegKeyName = (int)(strlen(cszOpenCLRegKeyName) + 1)*sizeof(cszOpenCLRegKeyName[0]);
         for (UINT AdapterIndex = 0; AdapterIndex < EnumAdapters.NumAdapters; AdapterIndex++)
         {
-            D3DDDI_QUERYREGISTRY_INFO QueryArgs = {0};
-            D3DDDI_QUERYREGISTRY_INFO* pQueryArgs = &QueryArgs;
+            D3DDDI_QUERYREGISTRY_INFO queryArgs = {0};
+            D3DDDI_QUERYREGISTRY_INFO* pQueryArgs = &queryArgs;
             D3DDDI_QUERYREGISTRY_INFO* pQueryBuffer = NULL;
-            QueryArgs.QueryType = D3DDDI_QUERYREGISTRY_ADAPTERKEY;
-            QueryArgs.QueryFlags.TranslatePath = TRUE;
-            QueryArgs.ValueType = REG_SZ;
+            queryArgs.QueryType = D3DDDI_QUERYREGISTRY_ADAPTERKEY;
+            queryArgs.QueryFlags.TranslatePath = TRUE;
+            queryArgs.ValueType = REG_SZ;
             MultiByteToWideChar(
                 CP_ACP,
                 0,
                 cszOpenCLRegKeyName,
-                OpenCLRegKeyNameSize,
-                QueryArgs.ValueName,
-                ARRAYSIZE(QueryArgs.ValueName));
-            D3DKMT_QUERYADAPTERINFO QueryAdapterInfo = {0};
-            QueryAdapterInfo.hAdapter = pAdapterInfo[AdapterIndex].hAdapter;
-            QueryAdapterInfo.Type = KMTQAITYPE_QUERYREGISTRY;
-            QueryAdapterInfo.pPrivateDriverData = &QueryArgs;
-            QueryAdapterInfo.PrivateDriverDataSize = sizeof(QueryArgs);
-            Status = D3DKMTQueryAdapterInfo(&QueryAdapterInfo);
+                szOpenCLRegKeyName,
+                queryArgs.ValueName,
+                ARRAYSIZE(queryArgs.ValueName));
+            D3DKMT_QUERYADAPTERINFO queryAdapterInfo = {0};
+            queryAdapterInfo.hAdapter = pAdapterInfo[AdapterIndex].hAdapter;
+            queryAdapterInfo.Type = KMTQAITYPE_QUERYREGISTRY;
+            queryAdapterInfo.pPrivateDriverData = &queryArgs;
+            queryAdapterInfo.PrivateDriverDataSize = sizeof(queryArgs);
+            Status = D3DKMTQueryAdapterInfo(&queryAdapterInfo);
             if (!NT_SUCCESS(Status))
             {
                 // Continue trying to get as much info on each adapter as possible.
@@ -115,12 +118,12 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             }
             if (NT_SUCCESS(Status) && pQueryArgs->Status == D3DDDI_QUERYREGISTRY_STATUS_BUFFER_OVERFLOW)
             {
-                ULONG QueryBufferSize = sizeof(D3DDDI_QUERYREGISTRY_INFO) + QueryArgs.OutputValueSize;
-                pQueryBuffer = (D3DDDI_QUERYREGISTRY_INFO*)malloc(QueryBufferSize);
-                memcpy(pQueryBuffer, &QueryArgs, sizeof(D3DDDI_QUERYREGISTRY_INFO));
-                QueryAdapterInfo.pPrivateDriverData = pQueryBuffer;
-                QueryAdapterInfo.PrivateDriverDataSize = QueryBufferSize;
-                Status = D3DKMTQueryAdapterInfo(&QueryAdapterInfo);
+                ULONG queryBufferSize = sizeof(D3DDDI_QUERYREGISTRY_INFO) + queryArgs.OutputValueSize;
+                pQueryBuffer = (D3DDDI_QUERYREGISTRY_INFO*)malloc(queryBufferSize);
+                memcpy(pQueryBuffer, &queryArgs, sizeof(D3DDDI_QUERYREGISTRY_INFO));
+                queryAdapterInfo.pPrivateDriverData = pQueryBuffer;
+                queryAdapterInfo.PrivateDriverDataSize = queryBufferSize;
+                Status = D3DKMTQueryAdapterInfo(&queryAdapterInfo);
                 pQueryArgs = pQueryBuffer;
             }
             if (NT_SUCCESS(Status) && pQueryArgs->Status == D3DDDI_QUERYREGISTRY_STATUS_SUCCESS)
@@ -130,7 +133,7 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
                 {
                     size_t len = wcstombs(cszLibraryName, pWchar, sizeof(cszLibraryName));
                     KHR_ICD_ASSERT(len == (sizeof(cszLibraryName) - 1));
-                    AdapterAdd(cszLibraryName, pAdapterInfo[AdapterIndex].AdapterLuid);
+                    adapterAdd(cszLibraryName, pAdapterInfo[AdapterIndex].AdapterLuid);
                 }
             }
             else if (Status == STATUS_INVALID_PARAMETER && pQueryArgs->Status == D3DDDI_QUERYREGISTRY_STATUS_FAIL)
@@ -143,8 +146,10 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
         ret = true;
 out:
       free(pAdapterInfo);
-      FreeLibrary(h);
     }
+
+    FreeLibrary(h);
+
 #endif
 #endif
     return ret;

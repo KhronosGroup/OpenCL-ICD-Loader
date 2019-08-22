@@ -137,7 +137,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
 
         KHR_ICD_TRACE("    Path: %s\n", cszOclPath);
 
-        AdapterAdd(cszOclPath, ZeroLuid);
+        adapterAdd(cszOclPath, ZeroLuid);
 
         bRet = true;
     }

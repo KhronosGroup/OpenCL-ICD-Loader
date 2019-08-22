@@ -35,43 +35,43 @@ typedef struct WinAdapter
     LUID luid;
 } WinAdapter;
 
-LUID ZeroLuid = { 0, 0 };
+const LUID ZeroLuid = { 0, 0 };
 
 static WinAdapter* pWinAdapterBegin = NULL;
 static WinAdapter* pWinAdapterEnd = NULL;
 static WinAdapter* pWinAdapterCapacity = NULL;
 
-void AdapterAdd(const char* szName, LUID luid)
+void adapterAdd(const char* szName, LUID luid)
 {
     if (pWinAdapterEnd == pWinAdapterCapacity)
     {
-        size_t OldCapacity = pWinAdapterCapacity - pWinAdapterBegin;
-        size_t NewCapacity = OldCapacity;
-        if (0 == NewCapacity)
+        size_t oldCapacity = pWinAdapterCapacity - pWinAdapterBegin;
+        size_t newCapacity = oldCapacity;
+        if (0 == newCapacity)
         {
-            NewCapacity = 1;
+            newCapacity = 1;
         }
-        NewCapacity *= 2;
+        newCapacity *= 2;
 
-        WinAdapter* pNewBegin = malloc(NewCapacity * sizeof(*pWinAdapterBegin));
+        WinAdapter* pNewBegin = malloc(newCapacity * sizeof(*pWinAdapterBegin));
         if (pNewBegin)
         {
             if (pWinAdapterBegin)
             {
-                memcpy(pNewBegin, pWinAdapterBegin, OldCapacity * sizeof(*pWinAdapterBegin));
+                memcpy(pNewBegin, pWinAdapterBegin, oldCapacity * sizeof(*pWinAdapterBegin));
                 free(pWinAdapterBegin);
             }
-            pWinAdapterCapacity = pNewBegin + NewCapacity;
-            pWinAdapterEnd = pNewBegin + OldCapacity;
+            pWinAdapterCapacity = pNewBegin + newCapacity;
+            pWinAdapterEnd = pNewBegin + oldCapacity;
             pWinAdapterBegin = pNewBegin;
         }
     }
     if (pWinAdapterEnd != pWinAdapterCapacity)
     {
-        size_t nameLen = strlen(szName) + 1;
+        size_t nameLen = (strlen(szName) + 1)*sizeof(szName[0]);
         if (pWinAdapterEnd->szName = malloc(nameLen))
         {
-            memcpy(pWinAdapterEnd->szName, szName, nameLen * sizeof(*szName));
+            memcpy(pWinAdapterEnd->szName, szName, nameLen);
             pWinAdapterEnd->luid = luid;
             ++pWinAdapterEnd;
         }
@@ -157,7 +157,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
                 continue;
             }
             // add the library
-            AdapterAdd(cszLibraryName, ZeroLuid);
+            adapterAdd(cszLibraryName, ZeroLuid);
         }
     }
 

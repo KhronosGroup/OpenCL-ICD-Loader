@@ -21,9 +21,9 @@
 
 bool khrIcdOsVendorsEnumerateHKR(void);
 
-extern LUID ZeroLuid;
+extern const LUID ZeroLuid;
 
-void AdapterAdd(const char* szName, LUID luid);
+void adapterAdd(const char* szName, LUID luid);
 
 // Do not free the memory returned by this function.
 const char* GetOpenCLRegKeyName(void);
