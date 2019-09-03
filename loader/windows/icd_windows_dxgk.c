@@ -35,6 +35,7 @@ typedef LONG NTSTATUS;
 bool khrIcdOsVendorsEnumerateDXGK(void)
 {
     bool ret = false;
+    int result = 0;
 #if defined(OPENCL_ICD_LOADER_REQUIRE_WDK)
 #if defined(DXGKDDI_INTERFACE_VERSION_WDDM2_4) && (DXGKDDI_INTERFACE_VERSION >= DXGKDDI_INTERFACE_VERSION_WDDM2_4)
     // Get handle to GDI Runtime
@@ -97,13 +98,17 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             queryArgs.QueryType = D3DDDI_QUERYREGISTRY_ADAPTERKEY;
             queryArgs.QueryFlags.TranslatePath = TRUE;
             queryArgs.ValueType = REG_SZ;
-            MultiByteToWideChar(
-                CP_ACP,
-                0,
-                cszOpenCLRegKeyName,
-                szOpenCLRegKeyName,
-                queryArgs.ValueName,
-                ARRAYSIZE(queryArgs.ValueName));
+	    result = MultiByteToWideChar(
+                	CP_ACP,
+                	0,
+                	cszOpenCLRegKeyName,
+                	szOpenCLRegKeyName,
+                	queryArgs.ValueName,
+                	ARRAYSIZE(queryArgs.ValueName));
+	    if (!result) {
+            	KHR_ICD_TRACE("MultiByteToWideChar status != SUCCESS\n");
+                continue;
+	    }
             D3DKMT_QUERYADAPTERINFO queryAdapterInfo = {0};
             queryAdapterInfo.hAdapter = pAdapterInfo[AdapterIndex].hAdapter;
             queryAdapterInfo.Type = KMTQAITYPE_QUERYREGISTRY;
@@ -133,7 +138,7 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
                 {
                     size_t len = wcstombs(cszLibraryName, pWchar, sizeof(cszLibraryName));
                     KHR_ICD_ASSERT(len == (sizeof(cszLibraryName) - 1));
-                    adapterAdd(cszLibraryName, pAdapterInfo[AdapterIndex].AdapterLuid);
+                    ret |= adapterAdd(cszLibraryName, pAdapterInfo[AdapterIndex].AdapterLuid);
                 }
             }
             else if (Status == STATUS_INVALID_PARAMETER && pQueryArgs->Status == D3DDDI_QUERYREGISTRY_STATUS_FAIL)
@@ -143,7 +148,6 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             }
             free(pQueryBuffer);
         }
-        ret = true;
 out:
       free(pAdapterInfo);
     }

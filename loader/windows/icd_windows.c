@@ -41,8 +41,9 @@ static WinAdapter* pWinAdapterBegin = NULL;
 static WinAdapter* pWinAdapterEnd = NULL;
 static WinAdapter* pWinAdapterCapacity = NULL;
 
-void adapterAdd(const char* szName, LUID luid)
+BOOL adapterAdd(const char* szName, LUID luid)
 {
+    BOOL result = TRUE; 
     if (pWinAdapterEnd == pWinAdapterCapacity)
     {
         size_t oldCapacity = pWinAdapterCapacity - pWinAdapterBegin;
@@ -51,10 +52,13 @@ void adapterAdd(const char* szName, LUID luid)
         {
             newCapacity = 1;
         }
-        newCapacity *= 2;
+	else 
+            newCapacity *= 2;
 
         WinAdapter* pNewBegin = malloc(newCapacity * sizeof(*pWinAdapterBegin));
-        if (pNewBegin)
+        if (!pNewBegin)
+	    result = FALSE;
+	else
         {
             if (pWinAdapterBegin)
             {
@@ -69,13 +73,17 @@ void adapterAdd(const char* szName, LUID luid)
     if (pWinAdapterEnd != pWinAdapterCapacity)
     {
         size_t nameLen = (strlen(szName) + 1)*sizeof(szName[0]);
-        if (pWinAdapterEnd->szName = malloc(nameLen))
-        {
+        pWinAdapterEnd->szName = malloc(nameLen);
+	if (!pWinAdapterEnd->szName)
+	    result = FALSE;
+	else 
+	{
             memcpy(pWinAdapterEnd->szName, szName, nameLen);
             pWinAdapterEnd->luid = luid;
             ++pWinAdapterEnd;
         }
     }
+    return result;
 }
 
 /*
@@ -89,6 +97,7 @@ void adapterAdd(const char* szName, LUID luid)
 BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVOID *lpContext)
 {
     LONG result;
+    BOOL status = FALSE;
     const char* platformsName = "SOFTWARE\\Khronos\\OpenCL\\Vendors";
     HKEY platformsKey = NULL;
     DWORD dwIndex;
@@ -157,7 +166,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
                 continue;
             }
             // add the library
-            adapterAdd(cszLibraryName, ZeroLuid);
+            status |= adapterAdd(cszLibraryName, ZeroLuid);
         }
     }
 
@@ -207,7 +216,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     {
         KHR_ICD_TRACE("Failed to close platforms key %s, ignoring\n", platformsName);
     }
-    return TRUE;
+    return status;
 }
 
 // go through the list of vendors only once
