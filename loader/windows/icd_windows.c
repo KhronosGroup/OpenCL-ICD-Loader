@@ -86,6 +86,12 @@ BOOL adapterAdd(const char* szName, LUID luid)
     return result;
 }
 
+void adapterFree(WinAdapter *pWinAdapter)
+{
+    if(pWinAdapter->szName)
+        free(pWinAdapter->szName);
+}
+
 /*
  * 
  * Vendor enumeration functions
@@ -176,37 +182,41 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     {
         IDXGIFactory* pFactory = NULL;
         PFN_CREATE_DXGI_FACTORY pCreateDXGIFactory = (PFN_CREATE_DXGI_FACTORY)GetProcAddress(hDXGI, "CreateDXGIFactory");
-        HRESULT hr = pCreateDXGIFactory(&IID_IDXGIFactory, &pFactory);
-        if (SUCCEEDED(hr))
-        {
-            UINT i = 0;
-            IDXGIAdapter* pAdapter = NULL;
-            while (SUCCEEDED(pFactory->lpVtbl->EnumAdapters(pFactory, i++, &pAdapter)))
+	if (pCreateDXGIFactory)
+	{
+            HRESULT hr = pCreateDXGIFactory(&IID_IDXGIFactory, &pFactory);
+            if (SUCCEEDED(hr))
             {
-                DXGI_ADAPTER_DESC AdapterDesc;
-                pAdapter->lpVtbl->GetDesc(pAdapter, &AdapterDesc);
-
-                for (WinAdapter* iterAdapter = pWinAdapterBegin; iterAdapter != pWinAdapterEnd; ++iterAdapter)
+                UINT i = 0;
+                IDXGIAdapter* pAdapter = NULL;
+                while (SUCCEEDED(pFactory->lpVtbl->EnumAdapters(pFactory, i++, &pAdapter)))
                 {
-                    if (iterAdapter->luid.LowPart == AdapterDesc.AdapterLuid.LowPart
-                        && iterAdapter->luid.HighPart == AdapterDesc.AdapterLuid.HighPart)
-                    {
-                        khrIcdVendorAdd(iterAdapter->szName);
-                        break;
-                    }
-                }
+                    DXGI_ADAPTER_DESC AdapterDesc;
+                    pAdapter->lpVtbl->GetDesc(pAdapter, &AdapterDesc);
 
-                pAdapter->lpVtbl->Release(pAdapter);
+                    for (WinAdapter* iterAdapter = pWinAdapterBegin; iterAdapter != pWinAdapterEnd; ++iterAdapter)
+                    {
+                        if (iterAdapter->luid.LowPart == AdapterDesc.AdapterLuid.LowPart
+                            && iterAdapter->luid.HighPart == AdapterDesc.AdapterLuid.HighPart)
+                        {
+                            khrIcdVendorAdd(iterAdapter->szName);
+                            break;
+                        }
+                    }
+
+                    pAdapter->lpVtbl->Release(pAdapter);
+                }
+                pFactory->lpVtbl->Release(pFactory);
             }
-            pFactory->lpVtbl->Release(pFactory);
-        }
-        FreeLibrary(hDXGI);
+            FreeLibrary(hDXGI);
+	}
     }
 
     // Go through the list again, putting any remaining adapters at the end of the list in an undefined order
     for (WinAdapter* iterAdapter = pWinAdapterBegin; iterAdapter != pWinAdapterEnd; ++iterAdapter)
     {
         khrIcdVendorAdd(iterAdapter->szName);
+        adapterFree(iterAdapter);
     }
 
     free(pWinAdapterBegin);	
