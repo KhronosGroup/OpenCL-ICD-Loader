@@ -52,8 +52,10 @@ BOOL adapterAdd(const char* szName, LUID luid)
         {
             newCapacity = 1;
         }
-	else 
+	else if(newCapacity < UINT_MAX/2)
+	{
             newCapacity *= 2;
+	}
 
         WinAdapter* pNewBegin = malloc(newCapacity * sizeof(*pWinAdapterBegin));
         if (!pNewBegin)
@@ -88,8 +90,8 @@ BOOL adapterAdd(const char* szName, LUID luid)
 
 void adapterFree(WinAdapter *pWinAdapter)
 {
-    if(pWinAdapter->szName)
-        free(pWinAdapter->szName);
+    free(pWinAdapter->szName);
+    pWinAdapter->szName = NULL;
 }
 
 /*
@@ -192,16 +194,17 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
                 while (SUCCEEDED(pFactory->lpVtbl->EnumAdapters(pFactory, i++, &pAdapter)))
                 {
                     DXGI_ADAPTER_DESC AdapterDesc;
-                    pAdapter->lpVtbl->GetDesc(pAdapter, &AdapterDesc);
-
-                    for (WinAdapter* iterAdapter = pWinAdapterBegin; iterAdapter != pWinAdapterEnd; ++iterAdapter)
+                    if (SUCCEEDED(pAdapter->lpVtbl->GetDesc(pAdapter, &AdapterDesc)))
                     {
-                        if (iterAdapter->luid.LowPart == AdapterDesc.AdapterLuid.LowPart
-                            && iterAdapter->luid.HighPart == AdapterDesc.AdapterLuid.HighPart)
+                        for (WinAdapter* iterAdapter = pWinAdapterBegin; iterAdapter != pWinAdapterEnd; ++iterAdapter)
                         {
-                            khrIcdVendorAdd(iterAdapter->szName);
-                            break;
-                        }
+                            if (iterAdapter->luid.LowPart == AdapterDesc.AdapterLuid.LowPart
+                                && iterAdapter->luid.HighPart == AdapterDesc.AdapterLuid.HighPart)
+                            {
+                                khrIcdVendorAdd(iterAdapter->szName);
+                                break;
+                            }
+			}
                     }
 
                     pAdapter->lpVtbl->Release(pAdapter);

@@ -88,7 +88,7 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             KHR_ICD_TRACE("D3DKMT_ENUMADAPTERS2 status != SUCCESS\n");
             goto out;
         }
-        const char* cszOpenCLRegKeyName = GetOpenCLRegKeyName();
+        const char* cszOpenCLRegKeyName = getOpenCLRegKeyName();
         const int szOpenCLRegKeyName = (int)(strlen(cszOpenCLRegKeyName) + 1)*sizeof(cszOpenCLRegKeyName[0]);
         for (UINT AdapterIndex = 0; AdapterIndex < EnumAdapters.NumAdapters; AdapterIndex++)
         {
@@ -98,15 +98,16 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             queryArgs.QueryType = D3DDDI_QUERYREGISTRY_ADAPTERKEY;
             queryArgs.QueryFlags.TranslatePath = TRUE;
             queryArgs.ValueType = REG_SZ;
-	    result = MultiByteToWideChar(
-                	CP_ACP,
-                	0,
-                	cszOpenCLRegKeyName,
-                	szOpenCLRegKeyName,
-                	queryArgs.ValueName,
-                	ARRAYSIZE(queryArgs.ValueName));
-	    if (!result) {
-            	KHR_ICD_TRACE("MultiByteToWideChar status != SUCCESS\n");
+            result = MultiByteToWideChar(
+                CP_ACP,
+                0,
+                cszOpenCLRegKeyName,
+                szOpenCLRegKeyName,
+                queryArgs.ValueName,
+                ARRAYSIZE(queryArgs.ValueName));
+	    if (!result)
+	    {
+                KHR_ICD_TRACE("MultiByteToWideChar status != SUCCESS\n");
                 continue;
 	    }
             D3DKMT_QUERYADAPTERINFO queryAdapterInfo = {0};
@@ -125,6 +126,8 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             {
                 ULONG queryBufferSize = sizeof(D3DDDI_QUERYREGISTRY_INFO) + queryArgs.OutputValueSize;
                 pQueryBuffer = (D3DDDI_QUERYREGISTRY_INFO*)malloc(queryBufferSize);
+                if (pQueryBuffer == NULL)
+		    continue;
                 memcpy(pQueryBuffer, &queryArgs, sizeof(D3DDDI_QUERYREGISTRY_INFO));
                 queryAdapterInfo.pPrivateDriverData = pQueryBuffer;
                 queryAdapterInfo.PrivateDriverDataSize = queryBufferSize;

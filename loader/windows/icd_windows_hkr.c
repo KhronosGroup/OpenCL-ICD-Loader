@@ -52,7 +52,7 @@ static const char OPENCL_REG_SUB_KEY_WOW[] = "OpenCLDriverNameWow";
 #endif
 
 // Do not free the memory returned by this function.
-const char* GetOpenCLRegKeyName(void)
+const char* getOpenCLRegKeyName(void)
 {
 #ifdef _WIN64
     return OPENCL_REG_SUB_KEY;
@@ -97,7 +97,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
     {
         result = RegQueryValueExA(
             hkey,
-            GetOpenCLRegKeyName(),
+            getOpenCLRegKeyName(),
             NULL,
             &dwLibraryNameType,
             NULL,
@@ -118,7 +118,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
 
         result = RegQueryValueExA(
             hkey,
-            GetOpenCLRegKeyName(),
+            getOpenCLRegKeyName(),
             NULL,
             &dwLibraryNameType,
             (LPBYTE)cszOclPath,

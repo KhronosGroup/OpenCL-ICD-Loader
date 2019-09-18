@@ -26,4 +26,4 @@ extern const LUID ZeroLuid;
 BOOL adapterAdd(const char* szName, LUID luid);
 
 // Do not free the memory returned by this function.
-const char* GetOpenCLRegKeyName(void);
+const char* getOpenCLRegKeyName(void);
