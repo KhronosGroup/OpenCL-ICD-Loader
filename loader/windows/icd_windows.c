@@ -112,10 +112,12 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
 
     khrIcdVendorsEnumerateEnv();
 
-    if (!khrIcdOsVendorsEnumerateDXGK())
+    status |= khrIcdOsVendorsEnumerateDXGK();
+    if (!status)
     {
         KHR_ICD_TRACE("Failed to load via DXGK interface on RS4, continuing\n");
-        if (!khrIcdOsVendorsEnumerateHKR())
+        status |= khrIcdOsVendorsEnumerateHKR();
+	if (!status)
         {
             KHR_ICD_TRACE("Failed to enumerate HKR entries, continuing\n");
         }
@@ -222,8 +224,11 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
         adapterFree(iterAdapter);
     }
 
-    free(pWinAdapterBegin);	
-
+    free(pWinAdapterBegin);
+    pWinAdapterBegin = NULL;
+    pWinAdapterEnd = NULL;
+    pWinAdapterCapacity = NULL;
+    
     result = RegCloseKey(platformsKey);
     if (ERROR_SUCCESS != result)
     {
