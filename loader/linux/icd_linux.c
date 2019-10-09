@@ -84,13 +84,13 @@ void khrIcdOsVendorsEnumerate(void)
                     }
 
                     // allocate space for the full path of the vendor library name
-                    fileName = malloc(strlen(dirEntry->d_name) + strlen(vendorPath) + 1);
+                    fileName = malloc(strlen(dirEntry->d_name) + strlen(vendorPath) + 2);
                     if (!fileName)
                     {
                         KHR_ICD_TRACE("Failed allocate space for ICD file path\n");
                         break;
                     }
-                    sprintf(fileName, "%s%s", vendorPath, dirEntry->d_name);
+                    sprintf(fileName, "%s/%s", vendorPath, dirEntry->d_name);
 
                     // open the file and read its contents
                     fin = fopen(fileName, "r");
