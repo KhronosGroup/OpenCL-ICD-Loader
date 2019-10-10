@@ -229,7 +229,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     pWinAdapterBegin = NULL;
     pWinAdapterEnd = NULL;
     pWinAdapterCapacity = NULL;
-    
+
     result = RegCloseKey(platformsKey);
     if (ERROR_SUCCESS != result)
     {
