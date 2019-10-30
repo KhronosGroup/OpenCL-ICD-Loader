@@ -58,16 +58,11 @@ BOOL adapterAdd(const char* szName, LUID luid)
             newCapacity *= 2;
 	}
 
-        WinAdapter* pNewBegin = malloc(newCapacity * sizeof(*pWinAdapterBegin));
+        WinAdapter* pNewBegin = realloc(pWinAdapterBegin, newCapacity * sizeof(*pWinAdapterBegin));
         if (!pNewBegin)
 	    result = FALSE;
 	else
         {
-            if (pWinAdapterBegin)
-            {
-                memcpy(pNewBegin, pWinAdapterBegin, oldCapacity * sizeof(*pWinAdapterBegin));
-                free(pWinAdapterBegin);
-            }
             pWinAdapterCapacity = pNewBegin + newCapacity;
             pWinAdapterEnd = pNewBegin + oldCapacity;
             pWinAdapterBegin = pNewBegin;
@@ -93,6 +88,7 @@ void adapterFree(WinAdapter *pWinAdapter)
 {
     free(pWinAdapter->szName);
     pWinAdapter->szName = NULL;
+    pWinAdapter->luid = ZeroLuid;
 }
 
 /*
