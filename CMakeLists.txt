@@ -34,6 +34,8 @@ find_package (Threads REQUIRED)
 # advance. Use it with discretion.
 option (BUILD_SHARED_LIBS "Build shared libs" ON)
 
+set(OPENCL_OUTPUT_NAME "OpenCL" CACHE STRING "Output OpenCL library name")
+
 include(CheckFunctionExists)
 check_function_exists(secure_getenv HAVE_SECURE_GETENV)
 check_function_exists(__secure_getenv HAVE___SECURE_GETENV)
@@ -49,7 +51,7 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd_platform.h)
 
 if (WIN32)
-    list (APPEND OPENCL_ICD_LOADER_SOURCES 
+    list (APPEND OPENCL_ICD_LOADER_SOURCES
         loader/windows/icd_windows.c
         loader/windows/icd_windows.h
         loader/windows/icd_windows_dxgk.c
@@ -126,6 +128,7 @@ add_definitions (-DCL_TARGET_OPENCL_VERSION=220)
 
 target_include_directories (OpenCL PRIVATE ${CMAKE_CURRENT_BINARY_DIR} loader)
 target_link_libraries (OpenCL ${CMAKE_DL_LIBS})
+set_target_properties (OpenCL PROPERTIES OUTPUT_NAME "${OPENCL_OUTPUT_NAME}")
 
 include (CTest)
 if (BUILD_TESTING)
