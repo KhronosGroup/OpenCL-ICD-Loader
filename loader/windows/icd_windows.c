@@ -44,7 +44,7 @@ static WinAdapter* pWinAdapterCapacity = NULL;
 
 BOOL adapterAdd(const char* szName, LUID luid)
 {
-    BOOL result = TRUE; 
+    BOOL result = TRUE;
     if (pWinAdapterEnd == pWinAdapterCapacity)
     {
         size_t oldCapacity = pWinAdapterCapacity - pWinAdapterBegin;
@@ -53,21 +53,16 @@ BOOL adapterAdd(const char* szName, LUID luid)
         {
             newCapacity = 1;
         }
-	else if(newCapacity < UINT_MAX/2)
-	{
-            newCapacity *= 2;
-	}
-
-        WinAdapter* pNewBegin = malloc(newCapacity * sizeof(*pWinAdapterBegin));
-        if (!pNewBegin)
-	    result = FALSE;
-	else
+        else if(newCapacity < UINT_MAX/2)
         {
-            if (pWinAdapterBegin)
-            {
-                memcpy(pNewBegin, pWinAdapterBegin, oldCapacity * sizeof(*pWinAdapterBegin));
-                free(pWinAdapterBegin);
-            }
+            newCapacity *= 2;
+        }
+
+        WinAdapter* pNewBegin = realloc(pWinAdapterBegin, newCapacity * sizeof(*pWinAdapterBegin));
+        if (!pNewBegin)
+            result = FALSE;
+        else
+        {
             pWinAdapterCapacity = pNewBegin + newCapacity;
             pWinAdapterEnd = pNewBegin + oldCapacity;
             pWinAdapterBegin = pNewBegin;
@@ -77,10 +72,10 @@ BOOL adapterAdd(const char* szName, LUID luid)
     {
         size_t nameLen = (strlen(szName) + 1)*sizeof(szName[0]);
         pWinAdapterEnd->szName = malloc(nameLen);
-	if (!pWinAdapterEnd->szName)
-	    result = FALSE;
-	else 
-	{
+        if (!pWinAdapterEnd->szName)
+            result = FALSE;
+        else
+        {
             memcpy(pWinAdapterEnd->szName, szName, nameLen);
             pWinAdapterEnd->luid = luid;
             ++pWinAdapterEnd;
@@ -118,7 +113,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     {
         KHR_ICD_TRACE("Failed to load via DXGK interface on RS4, continuing\n");
         status |= khrIcdOsVendorsEnumerateHKR();
-	if (!status)
+        if (!status)
         {
             KHR_ICD_TRACE("Failed to enumerate HKR entries, continuing\n");
         }
@@ -187,8 +182,8 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     {
         IDXGIFactory* pFactory = NULL;
         PFN_CREATE_DXGI_FACTORY pCreateDXGIFactory = (PFN_CREATE_DXGI_FACTORY)GetProcAddress(hDXGI, "CreateDXGIFactory");
-	if (pCreateDXGIFactory)
-	{
+        if (pCreateDXGIFactory)
+        {
             HRESULT hr = pCreateDXGIFactory(&IID_IDXGIFactory, &pFactory);
             if (SUCCEEDED(hr))
             {
@@ -207,7 +202,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
                                 khrIcdVendorAdd(iterAdapter->szName);
                                 break;
                             }
-			}
+                        }
                     }
 
                     pAdapter->lpVtbl->Release(pAdapter);
@@ -215,7 +210,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
                 pFactory->lpVtbl->Release(pFactory);
             }
             FreeLibrary(hDXGI);
-	}
+        }
     }
 
     // Go through the list again, putting any remaining adapters at the end of the list in an undefined order
