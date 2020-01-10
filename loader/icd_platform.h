@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2019 The Khronos Group Inc.
+ * Copyright (c) 2016-2019 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,24 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
-#include <stdbool.h>
-#include <windows.h>
+#ifndef _ICD_PLATFORM_H_
+#define _ICD_PLATFORM_H_
 
-bool khrIcdOsVendorsEnumerateHKR(void);
+#if defined(__linux__) || defined(__APPLE__)
 
-LUID ZeroLuid;
+#define PATH_SEPARATOR  ':'
+#define DIRECTORY_SYMBOL '/'
+#ifdef __ANDROID__
+#define ICD_VENDOR_PATH "/system/vendor/Khronos/OpenCL/vendors/";
+#else
+#define ICD_VENDOR_PATH "/etc/OpenCL/vendors/";
+#endif // ANDROID
 
-void AdapterAdd(const char* szName, LUID luid);
+#elif defined(_WIN32)
 
-// Do not free the memory returned by this function.
-const char* GetOpenCLRegKeyName(void);
+#define PATH_SEPARATOR ';'
+#define DIRECTORY_SYMBOL '\\'
+
+#endif
+
+#endif

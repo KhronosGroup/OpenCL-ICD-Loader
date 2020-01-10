@@ -19,6 +19,8 @@
 #ifndef _ICD_H_
 #define _ICD_H_
 
+#include "icd_platform.h"
+
 #ifndef CL_USE_DEPRECATED_OPENCL_1_0_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_0_APIS
 #endif
@@ -33,10 +35,6 @@
 
 #include <CL/cl.h>
 #include <CL/cl_ext.h>
-
-#ifdef _WIN32
-#include <tchar.h>
-#endif
 
 /*
  * type definitions
@@ -100,6 +98,9 @@ void khrIcdInitialize(void);
 // the registry) and call khrIcdVendorAdd for each vendor encountered
 // n.b, this call is OS-specific
 void khrIcdOsVendorsEnumerateOnce(void);
+
+// read vendors from environment variables
+void khrIcdVendorsEnumerateEnv(void);
 
 // add a vendor's implementation to the list of libraries
 void khrIcdVendorAdd(const char *libraryName);

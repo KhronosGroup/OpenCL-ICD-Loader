@@ -1,45 +1,26 @@
 /*
- * Copyright (c) 2018 The Khronos Group Inc.
+ * Copyright (c) 2017-2019 The Khronos Group Inc.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software source and associated documentation files (the "Materials"),
- * to deal in the Materials without restriction, including without limitation
- * the rights to use, copy, modify, compile, merge, publish, distribute,
- * sublicense, and/or sell copies of the Materials, and to permit persons to
- * whom the Materials are furnished to do so, subject the following terms and
- * conditions:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * All modifications to the Materials used to create a binary that is
- * distributed to third parties shall be provided to Khronos with an
- * unrestricted license to use for the purposes of implementing bug fixes and
- * enhancements to the Materials;
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * If the binary is used as part of an OpenCL(TM) implementation, whether binary
- * is distributed together with or separately to that implementation, then
- * recipient must become an OpenCL Adopter and follow the published OpenCL
- * conformance process for that implementation, details at:
- * http://www.khronos.org/conformance/;
- *
- * The above copyright notice, the OpenCL trademark license, and this permission
- * notice shall be included in all copies or substantial portions of the
- * Materials.
- *
- * THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE MATERIALS OR THE USE OR OTHER DEALINGS IN
- * THE MATERIALS.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
 #include "icd.h"
-#include <windows.h>
-#include "icd_windows_hkr.h"
 #include "icd_windows_dxgk.h"
-#include <assert.h>
+
+#if defined(OPENCL_ICD_LOADER_REQUIRE_WDK)
+#include <windows.h>
 
 #ifndef NTSTATUS
 typedef LONG NTSTATUS;
@@ -48,42 +29,60 @@ typedef LONG NTSTATUS;
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0)
 #endif
 
-#include "d3dkmthk.h"
+#include <d3dkmthk.h>
+#endif
 
 bool khrIcdOsVendorsEnumerateDXGK(void)
 {
+    bool ret = false;
+#if defined(OPENCL_ICD_LOADER_REQUIRE_WDK)
 #if defined(DXGKDDI_INTERFACE_VERSION_WDDM2_4) && (DXGKDDI_INTERFACE_VERSION >= DXGKDDI_INTERFACE_VERSION_WDDM2_4)
     // Get handle to GDI Runtime
     HMODULE h = LoadLibrary("gdi32.dll");
     if (h && GetProcAddress((HMODULE)h, "D3DKMTSubmitPresentBltToHwQueue")) // OS Version check
     {
-        D3DKMT_ADAPTERINFO* pAdapterInfo;
+        D3DKMT_ADAPTERINFO* pAdapterInfo = NULL;
         D3DKMT_ENUMADAPTERS2 EnumAdapters;
         NTSTATUS Status = STATUS_SUCCESS;
 
-        char cszLibraryName[1024] = { 0 };
+        char cszLibraryName[MAX_PATH] = { 0 };
         EnumAdapters.NumAdapters = 0;
         EnumAdapters.pAdapters = NULL;
         PFND3DKMT_ENUMADAPTERS2 pEnumAdapters2 = (PFND3DKMT_ENUMADAPTERS2)GetProcAddress((HMODULE)h, "D3DKMTEnumAdapters2");
         if (!pEnumAdapters2)
         {
-            FreeLibrary(h);
-            return FALSE;
+            KHR_ICD_TRACE("GetProcAddress failed for D3DKMT_ENUMADAPTERS2\n");
+            goto out;
         }
-        Status = pEnumAdapters2(&EnumAdapters);
-        if (!NT_SUCCESS(Status) && (Status != STATUS_BUFFER_TOO_SMALL))
+        while (1)
         {
-            FreeLibrary(h);
-            return FALSE;
+            EnumAdapters.NumAdapters = 0;
+            EnumAdapters.pAdapters = NULL;
+            Status = pEnumAdapters2(&EnumAdapters);
+            if (Status == STATUS_BUFFER_TOO_SMALL)
+            {
+                // Number of Adapters increased between calls, retry;
+                continue;
+            }
+            else if (!NT_SUCCESS(Status))
+            {
+                KHR_ICD_TRACE("D3DKMT_ENUMADAPTERS2 status != SUCCESS\n");
+                goto out;
+            }
+            break;
         }
         pAdapterInfo = (D3DKMT_ADAPTERINFO*)malloc(sizeof(D3DKMT_ADAPTERINFO)*(EnumAdapters.NumAdapters));
+        if (pAdapterInfo == NULL)
+        {
+            KHR_ICD_TRACE("Allocation failure for AdapterInfo buffer\n");
+            goto out;
+        }
         EnumAdapters.pAdapters = pAdapterInfo;
         Status = pEnumAdapters2(&EnumAdapters);
         if (!NT_SUCCESS(Status))
         {
-            FreeLibrary(h);
-            if (pAdapterInfo) free(pAdapterInfo);
-            return FALSE;
+            KHR_ICD_TRACE("D3DKMT_ENUMADAPTERS2 status != SUCCESS\n");
+            goto out;
         }
         const char* cszOpenCLRegKeyName = GetOpenCLRegKeyName();
         const int OpenCLRegKeyNameSize = (int)(strlen(cszOpenCLRegKeyName) + 1);
@@ -94,11 +93,6 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             D3DDDI_QUERYREGISTRY_INFO* pQueryBuffer = NULL;
             QueryArgs.QueryType = D3DDDI_QUERYREGISTRY_ADAPTERKEY;
             QueryArgs.QueryFlags.TranslatePath = TRUE;
-#ifdef _WIN64
-            wcscpy_s(QueryArgs.ValueName, ARRAYSIZE(L"OpenCLDriverName"), L"OpenCLDriverName");
-#else
-            wcscpy_s(QueryArgs.ValueName, ARRAYSIZE(L"OpenCLDriverNameWow"), L"OpenCLDriverNameWow");
-#endif
             QueryArgs.ValueType = REG_SZ;
             MultiByteToWideChar(
                 CP_ACP,
@@ -121,49 +115,37 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             }
             if (NT_SUCCESS(Status) && pQueryArgs->Status == D3DDDI_QUERYREGISTRY_STATUS_BUFFER_OVERFLOW)
             {
-                unsigned int QueryBufferSize = sizeof(D3DDDI_QUERYREGISTRY_INFO) + QueryArgs.OutputValueSize;
+                ULONG QueryBufferSize = sizeof(D3DDDI_QUERYREGISTRY_INFO) + QueryArgs.OutputValueSize;
                 pQueryBuffer = (D3DDDI_QUERYREGISTRY_INFO*)malloc(QueryBufferSize);
                 memcpy(pQueryBuffer, &QueryArgs, sizeof(D3DDDI_QUERYREGISTRY_INFO));
                 QueryAdapterInfo.pPrivateDriverData = pQueryBuffer;
                 QueryAdapterInfo.PrivateDriverDataSize = QueryBufferSize;
-				KHR_ICD_TRACE("Attempting to retrieve adpater info for adapter handle %x\n", pAdapterInfo[AdapterIndex].hAdapter);
-                Status = pQueryAdapterInfo(&QueryAdapterInfo);
-				if (!NT_SUCCESS(Status))
-				{
-		    		KHR_ICD_TRACE("Failed to retrieve adpater info for adapter handle %x, continuing with next adapater\n", pAdapterInfo[AdapterIndex].hAdapter);			
-            	    // Continue trying to get as much info on each adapter as possible.
-           	    	// It's too late to return FALSE and claim WDDM2_4 enumeration is not available here.
-		    		continue;
-				}
+                Status = D3DKMTQueryAdapterInfo(&QueryAdapterInfo);
                 pQueryArgs = pQueryBuffer;
             }
             if (NT_SUCCESS(Status) && pQueryArgs->Status == D3DDDI_QUERYREGISTRY_STATUS_SUCCESS)
             {
                 wchar_t* pWchar = pQueryArgs->OutputString;
-                unsigned int i = 0;
                 memset(cszLibraryName, 0, sizeof(cszLibraryName));
                 {
-                    while ((*pWchar != L'\0') && (i<1023))
-                    {
-                        cszLibraryName[i] = (char)*pWchar;
-                        i++;
-                        pWchar++;
-                    }
-                    if (i < 1023) AdapterAdd(cszLibraryName, pAdapterInfo[AdapterIndex].AdapterLuid);
+                    size_t len = wcstombs(cszLibraryName, pWchar, sizeof(cszLibraryName));
+                    KHR_ICD_ASSERT(len == (sizeof(cszLibraryName) - 1));
+                    AdapterAdd(cszLibraryName, pAdapterInfo[AdapterIndex].AdapterLuid);
                 }
             }
-            if (pQueryBuffer) free(pQueryBuffer);
+            else if (Status == STATUS_INVALID_PARAMETER && pQueryArgs->Status == D3DDDI_QUERYREGISTRY_STATUS_FAIL)
+            {
+                free(pQueryBuffer);
+                goto out;
+            }
+            free(pQueryBuffer);
         }
-        if (pAdapterInfo) free(pAdapterInfo);
-        FreeLibrary(h);
-        // Tried all available adapters and the status is not success.
-        if (!NT_SUCCESS(Status)) {
-            return FALSE;
-        }
-        else {
-            return TRUE;
-        }
+        ret = true;
+out:
+      free(pAdapterInfo);
+      FreeLibrary(h);
     }
 #endif
-    return FALSE;
+#endif
+    return ret;
 }

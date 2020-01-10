@@ -93,6 +93,8 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     HKEY platformsKey = NULL;
     DWORD dwIndex;
 
+    khrIcdVendorsEnumerateEnv();
+
     if (!khrIcdOsVendorsEnumerateDXGK())
     {
         KHR_ICD_TRACE("Failed to load via DXGK interface on RS4, continuing\n");
@@ -112,51 +114,51 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     if (ERROR_SUCCESS != result)
     {
         KHR_ICD_TRACE("Failed to open platforms key %s, continuing\n", platformsName);
-        return TRUE;
     }
-
-    // for each value
-    for (dwIndex = 0;; ++dwIndex)
+    else
     {
-        char cszLibraryName[1024] = {0};
-        DWORD dwLibraryNameSize = sizeof(cszLibraryName);
-        DWORD dwLibraryNameType = 0;     
-        DWORD dwValue = 0;
-        DWORD dwValueSize = sizeof(dwValue);
-
-        // read the value name
-        KHR_ICD_TRACE("Reading value %d...\n", dwIndex);
-        result = RegEnumValueA(
-              platformsKey,
-              dwIndex,
-              cszLibraryName,
-              &dwLibraryNameSize,
-              NULL,
-              &dwLibraryNameType,
-              (LPBYTE)&dwValue,
-              &dwValueSize);
-        // if RegEnumKeyEx fails, we are done with the enumeration
-        if (ERROR_SUCCESS != result) 
+        // for each value
+        for (dwIndex = 0;; ++dwIndex)
         {
-            KHR_ICD_TRACE("Failed to read value %d, done reading key.\n", dwIndex);
-            break;
-        }
-        KHR_ICD_TRACE("Value %s found...\n", cszLibraryName);
+            char cszLibraryName[1024] = {0};
+            DWORD dwLibraryNameSize = sizeof(cszLibraryName);
+            DWORD dwLibraryNameType = 0;
+            DWORD dwValue = 0;
+            DWORD dwValueSize = sizeof(dwValue);
+
+            // read the value name
+            KHR_ICD_TRACE("Reading value %d...\n", dwIndex);
+            result = RegEnumValueA(
+                  platformsKey,
+                  dwIndex,
+                  cszLibraryName,
+                  &dwLibraryNameSize,
+                  NULL,
+                  &dwLibraryNameType,
+                  (LPBYTE)&dwValue,
+                  &dwValueSize);
+            // if RegEnumKeyEx fails, we are done with the enumeration
+            if (ERROR_SUCCESS != result)
+            {
+                KHR_ICD_TRACE("Failed to read value %d, done reading key.\n", dwIndex);
+                break;
+            }
+            KHR_ICD_TRACE("Value %s found...\n", cszLibraryName);
         
-        // Require that the value be a DWORD and equal zero
-        if (REG_DWORD != dwLibraryNameType)  
-        {
-            KHR_ICD_TRACE("Value not a DWORD, skipping\n");
-            continue;
+            // Require that the value be a DWORD and equal zero
+            if (REG_DWORD != dwLibraryNameType)
+            {
+                KHR_ICD_TRACE("Value not a DWORD, skipping\n");
+                continue;
+            }
+            if (dwValue)
+            {
+                KHR_ICD_TRACE("Value not zero, skipping\n");
+                continue;
+            }
+            // add the library
+            AdapterAdd(cszLibraryName, ZeroLuid);
         }
-        if (dwValue)
-        {
-            KHR_ICD_TRACE("Value not zero, skipping\n");
-            continue;
-        }
-
-        // add the library
-        AdapterAdd(cszLibraryName, ZeroLuid);
     }
 
     // Add adapters according to DXGI's preference order
@@ -198,12 +200,13 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
         khrIcdVendorAdd(iterAdapter->szName);
     }
 
+    free(pWinAdapterBegin);	
+
     result = RegCloseKey(platformsKey);
     if (ERROR_SUCCESS != result)
     {
         KHR_ICD_TRACE("Failed to close platforms key %s, ignoring\n", platformsName);
     }
-	
     return TRUE;
 }
 
@@ -239,11 +242,4 @@ void *khrIcdOsLibraryGetFunctionAddress(void *library, const char *functionName)
 void khrIcdOsLibraryUnload(void *library)
 {
     FreeLibrary( (HMODULE)library);
-}
-
-// implement device type platform behavior
-void khrIcdDeviceTypeGetPlatform(cl_device_type device_type, cl_platform_id *outPlatform)
-{
-    // CL_DEVICE_TYPE_GPU => Should likely check Direct3D user-mode driver caps
-    // CL_DEVICE_TYPE_CPU => Should likely check D3DKMT_ADAPTERTYPE::SoftwareDevice
 }

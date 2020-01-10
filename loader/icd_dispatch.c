@@ -100,11 +100,6 @@ clGetDeviceIDs(cl_platform_id   platform,
     // initialize the platforms (in case they have not been already)
     khrIcdInitialize();
 
-    // determine the platform to use from the device_type specified
-    if (!platform)
-    {
-        khrIcdDeviceTypeGetPlatform(device_type, &platform);
-    }
     if (!platform && khrIcdVendors != NULL)
     {
         platform = khrIcdVendors[0].platform;
@@ -209,10 +204,6 @@ clCreateContextFromType(const cl_context_properties * properties,
 
     // determine the platform to use from the properties and device_type specified
     khrIcdContextPropertiesGetPlatform(properties, &platform);
-    if (!platform)
-    {
-        khrIcdDeviceTypeGetPlatform(device_type, &platform);
-    }
     if (!platform && khrIcdVendors != NULL)
     {
         platform = khrIcdVendors[0].platform;
@@ -1842,11 +1833,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLContextInfoKHR(
 
     // determine the platform to use from the properties specified
     khrIcdContextPropertiesGetPlatform(properties, &platform);
-    // determine the platform to use from the device_type specified
-    if (!platform)
-    {
-        khrIcdDeviceTypeGetPlatform(device_type, &platform);
-    }
     if (!platform && khrIcdVendors != NULL)
     {
         platform = khrIcdVendors[0].platform;

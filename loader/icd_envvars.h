@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2019 The Khronos Group Inc.
+ * Copyright (c) 2016-2019 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,11 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
-#include <stdbool.h>
-#include <windows.h>
+#ifndef _ICD_ENVVARS_H_
+#define _ICD_ENVVARS_H_
 
-bool khrIcdOsVendorsEnumerateHKR(void);
+char *khrIcd_getenv(const char *name);
+char *khrIcd_secure_getenv(const char *name);
+void khrIcd_free_getenv(char *val);
 
-LUID ZeroLuid;
-
-void AdapterAdd(const char* szName, LUID luid);
-
-// Do not free the memory returned by this function.
-const char* GetOpenCLRegKeyName(void);
+#endif
