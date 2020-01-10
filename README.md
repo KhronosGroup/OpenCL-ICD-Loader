@@ -30,14 +30,11 @@ The OpenCL ICD Loader requires OpenCL Headers.
 To use system OpenCL Headers, please specify the OpenCL Header location using the CMake variable `OPENCL_ICD_LOADER_HEADERS_DIR`.
 By default, the OpenCL ICD Loader will look for OpenCL Headers in the `inc` directory.
 
-By default, the OpenCL ICD Loader on Windows requires the Windows Driver Kit (WDK).
-To build OpenCL ICD Loader with WDK support -
-* Install recent Windows WDK currently at https://docs.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk
-
-* Establish environment variable WDK to include directory. Ex: set WDK=C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0
-
-An OpenCL ICD Loader may be built without the Windows Driver Kit using the CMake variable `OPENCL_ICD_LOADER_REQUIRE_WDK`, however this option should be used with caution since it may prevent the OpenCL ICD Loader from enumerating some OpenCL implementations.
-This dependency may be removed in the future.
+OpenCL ICD Loader on Windows now requires the Windows Driver Kit (WDK). 
+While WDK headers are sufficient to be able to build OpenCL ICD Loader, you will need WDK libraries for it to function correctly. 
+Not having WDK installed may prevent the OpenCL ICD Loader from enumerating some OpenCL implementations on latest Windows versions.
+So, we advise that you install recent Windows WDK currently available at -
+* https://docs.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk
 
 The OpenCL ICD Loader uses CMake for its build system.
 If CMake is not provided by your build system or OS package manager, please consult the [CMake website](https://cmake.org).

@@ -17,13 +17,6 @@
  */
 
 #include <stdbool.h>
-#include <windows.h>
+#include "icd_windows.h"
 
 bool khrIcdOsVendorsEnumerateHKR(void);
-
-LUID ZeroLuid;
-
-void AdapterAdd(const char* szName, LUID luid);
-
-// Do not free the memory returned by this function.
-const char* GetOpenCLRegKeyName(void);

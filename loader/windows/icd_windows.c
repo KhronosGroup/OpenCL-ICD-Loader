@@ -17,7 +17,7 @@
  */
 
 #include "icd.h"
-#include <windows.h>
+#include "icd_windows.h"
 #include "icd_windows_hkr.h"
 #include "icd_windows_dxgk.h"
 #include <stdio.h>
@@ -35,47 +35,59 @@ typedef struct WinAdapter
     LUID luid;
 } WinAdapter;
 
-LUID ZeroLuid = { 0, 0 };
+const LUID ZeroLuid = { 0, 0 };
 
 static WinAdapter* pWinAdapterBegin = NULL;
 static WinAdapter* pWinAdapterEnd = NULL;
 static WinAdapter* pWinAdapterCapacity = NULL;
 
-void AdapterAdd(const char* szName, LUID luid)
+BOOL adapterAdd(const char* szName, LUID luid)
 {
+    BOOL result = TRUE; 
     if (pWinAdapterEnd == pWinAdapterCapacity)
     {
-        size_t OldCapacity = pWinAdapterCapacity - pWinAdapterBegin;
-        size_t NewCapacity = OldCapacity;
-        if (0 == NewCapacity)
+        size_t oldCapacity = pWinAdapterCapacity - pWinAdapterBegin;
+        size_t newCapacity = oldCapacity;
+        if (0 == newCapacity)
         {
-            NewCapacity = 1;
+            newCapacity = 1;
         }
-        NewCapacity *= 2;
+	    else if(newCapacity < UINT_MAX/2)
+	    {
+            newCapacity *= 2;
+        }
 
-        WinAdapter* pNewBegin = malloc(NewCapacity * sizeof(*pWinAdapterBegin));
-        if (pNewBegin)
+        WinAdapter* pNewBegin = realloc(pWinAdapterBegin, newCapacity * sizeof(*pWinAdapterBegin));
+        if (!pNewBegin)
+	    result = FALSE;
+	    else
         {
-            if (pWinAdapterBegin)
-            {
-                memcpy(pNewBegin, pWinAdapterBegin, OldCapacity * sizeof(*pWinAdapterBegin));
-                free(pWinAdapterBegin);
-            }
-            pWinAdapterCapacity = pNewBegin + NewCapacity;
-            pWinAdapterEnd = pNewBegin + OldCapacity;
+            pWinAdapterCapacity = pNewBegin + newCapacity;
+            pWinAdapterEnd = pNewBegin + oldCapacity;
             pWinAdapterBegin = pNewBegin;
         }
     }
     if (pWinAdapterEnd != pWinAdapterCapacity)
     {
-        size_t nameLen = strlen(szName) + 1;
-        if (pWinAdapterEnd->szName = malloc(nameLen))
-        {
-            memcpy(pWinAdapterEnd->szName, szName, nameLen * sizeof(*szName));
+        size_t nameLen = (strlen(szName) + 1)*sizeof(szName[0]);
+        pWinAdapterEnd->szName = malloc(nameLen);
+	    if (!pWinAdapterEnd->szName)
+	        result = FALSE;
+ 	    else 
+	    {
+            memcpy(pWinAdapterEnd->szName, szName, nameLen);
             pWinAdapterEnd->luid = luid;
             ++pWinAdapterEnd;
         }
     }
+    return result;
+}
+
+void adapterFree(WinAdapter *pWinAdapter)
+{
+    free(pWinAdapter->szName);
+    pWinAdapter->szName = NULL;
+    pWinAdapter->luid = ZeroLuid;
 }
 
 /*
@@ -89,16 +101,19 @@ void AdapterAdd(const char* szName, LUID luid)
 BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVOID *lpContext)
 {
     LONG result;
+    BOOL status = FALSE;
     const char* platformsName = "SOFTWARE\\Khronos\\OpenCL\\Vendors";
     HKEY platformsKey = NULL;
     DWORD dwIndex;
 
     khrIcdVendorsEnumerateEnv();
 
-    if (!khrIcdOsVendorsEnumerateDXGK())
+    status |= khrIcdOsVendorsEnumerateDXGK();
+    if (!status)
     {
         KHR_ICD_TRACE("Failed to load via DXGK interface on RS4, continuing\n");
-        if (!khrIcdOsVendorsEnumerateHKR())
+        status |= khrIcdOsVendorsEnumerateHKR();
+	    if (!status)
         {
             KHR_ICD_TRACE("Failed to enumerate HKR entries, continuing\n");
         }
@@ -157,7 +172,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
                 continue;
             }
             // add the library
-            AdapterAdd(cszLibraryName, ZeroLuid);
+            status |= adapterAdd(cszLibraryName, ZeroLuid);
         }
     }
 
@@ -167,47 +182,56 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     {
         IDXGIFactory* pFactory = NULL;
         PFN_CREATE_DXGI_FACTORY pCreateDXGIFactory = (PFN_CREATE_DXGI_FACTORY)GetProcAddress(hDXGI, "CreateDXGIFactory");
-        HRESULT hr = pCreateDXGIFactory(&IID_IDXGIFactory, &pFactory);
-        if (SUCCEEDED(hr))
-        {
-            UINT i = 0;
-            IDXGIAdapter* pAdapter = NULL;
-            while (SUCCEEDED(pFactory->lpVtbl->EnumAdapters(pFactory, i++, &pAdapter)))
+	    if (pCreateDXGIFactory)
+	    {
+            HRESULT hr = pCreateDXGIFactory(&IID_IDXGIFactory, &pFactory);
+            if (SUCCEEDED(hr))
             {
-                DXGI_ADAPTER_DESC AdapterDesc;
-                pAdapter->lpVtbl->GetDesc(pAdapter, &AdapterDesc);
-
-                for (WinAdapter* iterAdapter = pWinAdapterBegin; iterAdapter != pWinAdapterEnd; ++iterAdapter)
+                UINT i = 0;
+                IDXGIAdapter* pAdapter = NULL;
+                while (SUCCEEDED(pFactory->lpVtbl->EnumAdapters(pFactory, i++, &pAdapter)))
                 {
-                    if (iterAdapter->luid.LowPart == AdapterDesc.AdapterLuid.LowPart
-                        && iterAdapter->luid.HighPart == AdapterDesc.AdapterLuid.HighPart)
+                    DXGI_ADAPTER_DESC AdapterDesc;
+                    if (SUCCEEDED(pAdapter->lpVtbl->GetDesc(pAdapter, &AdapterDesc)))
                     {
-                        khrIcdVendorAdd(iterAdapter->szName);
-                        break;
+                        for (WinAdapter* iterAdapter = pWinAdapterBegin; iterAdapter != pWinAdapterEnd; ++iterAdapter)
+                        {
+                            if (iterAdapter->luid.LowPart == AdapterDesc.AdapterLuid.LowPart
+                                && iterAdapter->luid.HighPart == AdapterDesc.AdapterLuid.HighPart)
+                            {
+                                khrIcdVendorAdd(iterAdapter->szName);
+                                break;
+                            }
+			            } 
                     }
-                }
 
-                pAdapter->lpVtbl->Release(pAdapter);
+                    pAdapter->lpVtbl->Release(pAdapter);
+                    pAdapter->lpVtbl->Release(pAdapter);
+                }
+                pFactory->lpVtbl->Release(pFactory);
             }
-            pFactory->lpVtbl->Release(pFactory);
+            FreeLibrary(hDXGI);
         }
-        FreeLibrary(hDXGI);
     }
 
     // Go through the list again, putting any remaining adapters at the end of the list in an undefined order
     for (WinAdapter* iterAdapter = pWinAdapterBegin; iterAdapter != pWinAdapterEnd; ++iterAdapter)
     {
         khrIcdVendorAdd(iterAdapter->szName);
+        adapterFree(iterAdapter);
     }
 
-    free(pWinAdapterBegin);	
+    free(pWinAdapterBegin);
+    pWinAdapterBegin = NULL;
+    pWinAdapterEnd = NULL;
+    pWinAdapterCapacity = NULL;
 
     result = RegCloseKey(platformsKey);
     if (ERROR_SUCCESS != result)
     {
         KHR_ICD_TRACE("Failed to close platforms key %s, ignoring\n", platformsName);
     }
-    return TRUE;
+    return status;
 }
 
 // go through the list of vendors only once
