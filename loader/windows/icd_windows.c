@@ -52,15 +52,15 @@ BOOL adapterAdd(const char* szName, LUID luid)
         {
             newCapacity = 1;
         }
-	    else if(newCapacity < UINT_MAX/2)
+        else if(newCapacity < UINT_MAX/2)
 	    {
             newCapacity *= 2;
         }
 
         WinAdapter* pNewBegin = realloc(pWinAdapterBegin, newCapacity * sizeof(*pWinAdapterBegin));
         if (!pNewBegin)
-	    result = FALSE;
-	    else
+            result = FALSE;
+        else
         {
             pWinAdapterCapacity = pNewBegin + newCapacity;
             pWinAdapterEnd = pNewBegin + oldCapacity;
@@ -71,9 +71,9 @@ BOOL adapterAdd(const char* szName, LUID luid)
     {
         size_t nameLen = (strlen(szName) + 1)*sizeof(szName[0]);
         pWinAdapterEnd->szName = malloc(nameLen);
-	    if (!pWinAdapterEnd->szName)
-	        result = FALSE;
- 	    else 
+        if (!pWinAdapterEnd->szName)
+            result = FALSE;
+        else 
 	    {
             memcpy(pWinAdapterEnd->szName, szName, nameLen);
             pWinAdapterEnd->luid = luid;
