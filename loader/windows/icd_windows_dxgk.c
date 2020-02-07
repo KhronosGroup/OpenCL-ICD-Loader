@@ -118,9 +118,15 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             Status = D3DKMTQueryAdapterInfo(&queryAdapterInfo);
             if (!NT_SUCCESS(Status))
             {
-                // Continue trying to get as much info on each adapter as possible.
-                // It's too late to return FALSE and claim WDDM2_4 enumeration is not available here.
-                continue;
+                // Try a different value type.  Some vendors write the key as a multi-string type.
+                queryArgs.ValueType = REG_MULTI_SZ;
+                Status = D3DKMTQueryAdapterInfo(&queryAdapterInfo);
+                if (!NT_SUCCESS(Status))
+                {
+                   // Continue trying to get as much info on each adapter as possible.
+                   // It's too late to return FALSE and claim WDDM2_4 enumeration is not available here.
+                   continue;
+                }
             }
             if (NT_SUCCESS(Status) && pQueryArgs->Status == D3DDDI_QUERYREGISTRY_STATUS_BUFFER_OVERFLOW)
             {
