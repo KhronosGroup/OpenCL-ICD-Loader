@@ -20,6 +20,7 @@
 #include "icd_windows.h"
 #include "icd_windows_hkr.h"
 #include "icd_windows_dxgk.h"
+#include "icd_windows_apppackage.h"
 #include <stdio.h>
 #include <windows.h>
 #include <winreg.h>
@@ -123,6 +124,8 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
             KHR_ICD_TRACE("Failed to enumerate HKR entries, continuing\n");
         }
     }
+    
+    status |= khrIcdOsVendorsEnumerateAppPackage();
 
     KHR_ICD_TRACE("Opening key HKLM\\%s...\n", platformsName);
     result = RegOpenKeyExA(
