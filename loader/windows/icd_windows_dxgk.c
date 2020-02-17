@@ -123,13 +123,13 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
                 Status = D3DKMTQueryAdapterInfo(&queryAdapterInfo);
                 if (NT_SUCCESS(Status))
                 {
-                   KHR_ICD_TRACE("Accepting multi-string registry key type\n");
+                    KHR_ICD_TRACE("Accepting multi-string registry key type\n");
                 }
                 else
                 {
-                   // Continue trying to get as much info on each adapter as possible.
-                   // It's too late to return FALSE and claim WDDM2_4 enumeration is not available here.
-                   continue;
+                    // Continue trying to get as much info on each adapter as possible.
+                    // It's too late to return FALSE and claim WDDM2_4 enumeration is not available here.
+                    continue;
                 }
             }
             if (NT_SUCCESS(Status) && pQueryArgs->Status == D3DDDI_QUERYREGISTRY_STATUS_BUFFER_OVERFLOW)

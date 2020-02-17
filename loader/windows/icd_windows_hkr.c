@@ -133,12 +133,12 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
         {
             if (REG_MULTI_SZ == dwLibraryNameType)
             {
-               KHR_ICD_TRACE("Accepting multi-string registry key type\n");
+                KHR_ICD_TRACE("Accepting multi-string registry key type\n");
             }
             else
             {
-               KHR_ICD_TRACE("Unexpected registry entry 0x%x! continuing\n", dwLibraryNameType);
-               goto out;
+                KHR_ICD_TRACE("Unexpected registry entry 0x%x! continuing\n", dwLibraryNameType);
+                goto out;
             }
         }
 
