@@ -256,7 +256,12 @@ void khrIcdOsVendorsEnumerateOnce()
 // dynamically load a library.  returns NULL on failure
 void *khrIcdOsLibraryLoad(const char *libraryName)
 {
-    return (void *)LoadLibraryA(libraryName);
+    HMODULE hTemp = LoadLibraryExA(libraryName, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+    if (!hTemp && GetLastError() == ERROR_INVALID_PARAMETER)
+    {
+        hTemp = LoadLibraryExA(libraryName, NULL, 0);
+    }
+    return (void*)hTemp;
 }
 
 // get a function pointer from a loaded library.  returns NULL on failure.
