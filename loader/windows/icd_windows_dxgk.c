@@ -124,8 +124,8 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             {
                 // Try a different value type.  Some vendors write the key as a multi-string type.
                 queryArgs.ValueType = REG_MULTI_SZ;
-                Status = D3DKMTQueryAdapterInfo(&queryAdapterInfo);
-                if (NT_SUCCESS(Status))
+                status = D3DKMTQueryAdapterInfo(&queryAdapterInfo);
+                if (NT_SUCCESS(status))
                 {
                     KHR_ICD_TRACE("Accepting multi-string registry key type\n");
                 }
