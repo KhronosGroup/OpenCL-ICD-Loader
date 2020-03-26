@@ -4,7 +4,7 @@
 
 extern cl_command_queue command_queue;
 
-cl_int ret_val;
+static cl_int ret_val;
 
 const struct clRetainCommandQueue_st clRetainCommandQueueData[NUM_ITEMS_clRetainCommandQueue] = {
 	{NULL}

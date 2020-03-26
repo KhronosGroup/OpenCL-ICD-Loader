@@ -10,7 +10,7 @@ extern cl_command_queue command_queue;
 extern cl_event event;
 extern cl_mem buffer;
 
-int ret_val;
+static int ret_val;
 
 const struct clGetSupportedImageFormats_st clGetSupportedImageFormatsData[NUM_ITEMS_clGetSupportedImageFormats] =
 {

@@ -12,7 +12,7 @@ extern cl_mem buffer;
 extern cl_command_queue command_queue;
 extern cl_event event;
 extern cl_context_properties context_properties[3];
-cl_int ret_val;
+static cl_int ret_val;
 cl_mem ret_mem;
 
 struct clCreateFromGLBuffer_st clCreateFromGLBufferData[NUM_ITEMS_clCreateFromGLBuffer] = {

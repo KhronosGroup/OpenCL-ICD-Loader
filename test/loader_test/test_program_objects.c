@@ -7,7 +7,7 @@ extern cl_program program;
 extern cl_platform_id platform;
 extern cl_device_id devices;
 
-int ret_val;
+static int ret_val;
 
 extern void CL_CALLBACK program_callback(cl_program _a, void* _b);
 
