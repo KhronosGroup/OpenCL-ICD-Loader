@@ -4,8 +4,6 @@
 
 extern cl_command_queue command_queue;
 
-cl_int ret_val;
-
 const struct clRetainCommandQueue_st clRetainCommandQueueData[NUM_ITEMS_clRetainCommandQueue] = {
 	{NULL}
 };
@@ -16,6 +14,8 @@ const struct clGetCommandQueueInfo_st clGetCommandQueueInfoData[NUM_ITEMS_clGetC
 
 int test_clRetainCommandQueue(const struct clRetainCommandQueue_st *data)
 {
+    cl_int ret_val;
+
     test_icd_app_log("clRetainCommandQueue(%p)\n", command_queue);
 
     ret_val = clRetainCommandQueue(command_queue);
@@ -28,6 +28,8 @@ int test_clRetainCommandQueue(const struct clRetainCommandQueue_st *data)
 
 int test_clGetCommandQueueInfo(const struct clGetCommandQueueInfo_st *data)
 {
+    cl_int ret_val;
+
     test_icd_app_log("clGetCommandQueueInfo(%p, %u, %u, %p, %p)\n",
                      command_queue,
                      data->param_name,
@@ -40,7 +42,7 @@ int test_clGetCommandQueueInfo(const struct clGetCommandQueueInfo_st *data)
                                     data->param_value_size,
                                     data->param_value,
                                     data->param_value_size_ret);
-    
+
     test_icd_app_log("Value returned: %d\n", ret_val);
 
     return 0;
@@ -54,7 +56,7 @@ int test_cl_runtime()
 	for (i=0; i<NUM_ITEMS_clRetainCommandQueue; i++)	{
 		test_clRetainCommandQueue(&clRetainCommandQueueData[i]);
 	}
-    
+
     for (i=0; i<NUM_ITEMS_clGetCommandQueueInfo; i++)    {
         test_clGetCommandQueueInfo(&clGetCommandQueueInfoData[i]);
     }
