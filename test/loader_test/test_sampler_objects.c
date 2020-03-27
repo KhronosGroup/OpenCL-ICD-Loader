@@ -3,7 +3,7 @@
 #include <platform/icd_test_log.h>
 
 extern cl_sampler  sampler;
-int ret_val;
+static int ret_val;
 
 const struct clRetainSampler_st clRetainSamplerData[NUM_ITEMS_clRetainSampler]=
 {

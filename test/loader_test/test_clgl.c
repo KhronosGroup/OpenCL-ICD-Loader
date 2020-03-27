@@ -12,8 +12,9 @@ extern cl_mem buffer;
 extern cl_command_queue command_queue;
 extern cl_event event;
 extern cl_context_properties context_properties[3];
-cl_int ret_val;
-cl_mem ret_mem;
+
+static cl_int ret_val;
+static cl_mem ret_mem;
 
 struct clCreateFromGLBuffer_st clCreateFromGLBufferData[NUM_ITEMS_clCreateFromGLBuffer] = {
 	{NULL, 0x0, 0, NULL}
@@ -25,16 +26,16 @@ int test_clCreateFromGLBuffer(const struct clCreateFromGLBuffer_st* data)
     test_icd_app_log("clCreateFromGLBuffer(%p, %x, %u, %p)\n",
                      context,
                      data->flags,
-                     data->bufobj, 
+                     data->bufobj,
                      data->errcode_ret);
 
     ret_mem = clCreateFromGLBuffer(context,
                                    data->flags,
-                                   data->bufobj, 
-                                   data->errcode_ret);	
+                                   data->bufobj,
+                                   data->errcode_ret);
 
     test_icd_app_log("Value returned: %p\n", ret_mem);
-    
+
     return 0;
 }
 
@@ -46,21 +47,21 @@ int test_clCreateFromGLTexture(const struct clCreateFromGLTexture_st* data)
 {
     test_icd_app_log("clCreateFromGLTexture(%p, %x, %d, %d, %u, %p)\n",
                      context,
-                     data->flags, 
+                     data->flags,
                      data->texture_target,
-                     data->miplevel, 
-                     data->texture, 
+                     data->miplevel,
+                     data->texture,
                      data->errcode_ret);
 
     ret_mem = clCreateFromGLTexture(context,
-                                    data->flags, 
+                                    data->flags,
                                     data->texture_target,
-                                    data->miplevel, 
-                                    data->texture, 
+                                    data->miplevel,
+                                    data->texture,
                                     data->errcode_ret);
 
     test_icd_app_log("Value returned: %p\n", ret_mem);
-    
+
     return 0;
 }
 
@@ -72,21 +73,21 @@ int test_clCreateFromGLTexture2D(const struct clCreateFromGLTexture2D_st* data)
 {
     test_icd_app_log("clCreateFromGLTexture2D(%p, %x, %d, %d, %u, %p)\n",
                      context,
-                     data->flags, 
+                     data->flags,
                      data->texture_target,
-                     data->miplevel, 
-                     data->texture, 
+                     data->miplevel,
+                     data->texture,
                      data->errcode_ret);
 
     ret_mem = clCreateFromGLTexture2D(context,
-                                      data->flags, 
+                                      data->flags,
                                       data->texture_target,
-                                      data->miplevel, 
-                                      data->texture, 
+                                      data->miplevel,
+                                      data->texture,
                                       data->errcode_ret);
 
     test_icd_app_log("Value returned: %p\n", ret_mem);
-    
+
     return 0;
 }
 
@@ -95,21 +96,21 @@ struct clCreateFromGLTexture3D_st clCreateFromGLTexture3DData[NUM_ITEMS_clCreate
 };
 
 int test_clCreateFromGLTexture3D(const struct clCreateFromGLTexture3D_st* data)
-{	
+{
     test_icd_app_log("clCreateFromGLTexture3D(%p, %x, %d, %d, %u, %p)\n",
                      context,
                      data->flags,
                      data->texture_target,
-                     data->miplevel, 
-                     data->texture, 
+                     data->miplevel,
+                     data->texture,
                      data->errcode_ret);
 
     ret_mem = clCreateFromGLTexture3D(context,
-                                      data->flags, 
+                                      data->flags,
                                       data->texture_target,
-                                      data->miplevel, 
-                                      data->texture, 
-                                      data->errcode_ret);	
+                                      data->miplevel,
+                                      data->texture,
+                                      data->errcode_ret);
 
     test_icd_app_log("Value returned: %p\n", ret_mem);
 
@@ -123,14 +124,14 @@ struct clCreateFromGLRenderbuffer_st clCreateFromGLRenderbufferData[NUM_ITEMS_cl
 int test_clCreateFromGLRenderbuffer(const struct clCreateFromGLRenderbuffer_st* data)
 {
     test_icd_app_log("clCreateFromGLRenderbuffer(%p, %x, %d, %p)\n",
-                     context, 
+                     context,
                      data->flags,
-                     data->renderbuffer, 
+                     data->renderbuffer,
                      data->errcode_ret);
 
-    ret_mem = clCreateFromGLRenderbuffer(context, 
+    ret_mem = clCreateFromGLRenderbuffer(context,
                                          data->flags,
-                                         data->renderbuffer, 
+                                         data->renderbuffer,
                                          data->errcode_ret);
 
     test_icd_app_log("Value returned: %p\n", ret_mem);
@@ -146,15 +147,15 @@ int test_clGetGLObjectInfo(const struct clGetGLObjectInfo_st* data)
 {
     test_icd_app_log("clGetGLObjectInfo(%p, %p, %p)\n",
                      buffer,
-                     data->gl_object_type, 
+                     data->gl_object_type,
                      data->gl_object_name);
 
     ret_val = clGetGLObjectInfo(buffer,
-                                data->gl_object_type, 
+                                data->gl_object_type,
                                 data->gl_object_name);
 
     test_icd_app_log("Value returned: %p\n", ret_val);
-    
+
     return ret_val;
 
 }
@@ -168,13 +169,13 @@ int test_clGetGLTextureInfo(const struct clGetGLTextureInfo_st* data)
     test_icd_app_log("clGetGLTextureInfo(%p, %u, %u, %p, %p)\n",
                      buffer,
                      data->param_name,
-                     data->param_value_size, 
+                     data->param_value_size,
                      data->param_value,
                      data->param_value_size_ret);
 
     ret_val = clGetGLTextureInfo (buffer,
                                   data->param_name,
-                                  data->param_value_size, 
+                                  data->param_value_size,
                                   data->param_value,
                                   data->param_value_size_ret);
 
@@ -191,17 +192,17 @@ int test_clEnqueueAcquireGLObjects(const struct clEnqueueAcquireGLObjects_st* da
 {
     test_icd_app_log("clEnqueueAcquireGLObjects(%p, %u, %p, %u, %p, %p)\n",
                      command_queue,
-                     data->num_objects, 
+                     data->num_objects,
                      data->mem_objects,
                      data->num_events_in_wait_list,
                      &event,
                      &event);
 
     ret_val = clEnqueueAcquireGLObjects (command_queue,
-                                         data->num_objects, 
+                                         data->num_objects,
                                          data->mem_objects,
                                          data->num_events_in_wait_list,
-                                         &event, 
+                                         &event,
                                          &event);
 
     test_icd_app_log("Value returned: %p\n", ret_val);
@@ -217,17 +218,17 @@ int test_clEnqueueReleaseGLObjects(const struct clEnqueueReleaseGLObjects_st* da
 {
     test_icd_app_log("clEnqueueReleaseGLObjects(%p, %u, %p, %u, %p, %p)\n",
                      command_queue,
-                     data->num_objects, 
+                     data->num_objects,
                      data->mem_objects,
                      data->num_events_in_wait_list,
-                     &event, 
+                     &event,
                      &event);
 
     ret_val = clEnqueueReleaseGLObjects (command_queue,
-                                         data->num_objects, 
+                                         data->num_objects,
                                          data->mem_objects,
                                          data->num_events_in_wait_list,
-                                         &event, 
+                                         &event,
                                          &event);
 
 
@@ -250,8 +251,8 @@ int test_clCreateEventFromGLsyncKHR(const struct clCreateEventFromGLsyncKHR_st* 
     PFN_clCreateEventFromGLsyncKHR pfn_clCreateEventFromGLsyncKHR = NULL;
 
     test_icd_app_log("clCreateEventFromGLsyncKHR(%p, %p, %p)\n",
-                     context, 
-                     data->sync, 
+                     context,
+                     data->sync,
                      data->errcode_ret);
 
     pfn_clCreateEventFromGLsyncKHR = clGetExtensionFunctionAddress("clCreateEventFromGLsyncKHR");
@@ -260,8 +261,8 @@ int test_clCreateEventFromGLsyncKHR(const struct clCreateEventFromGLsyncKHR_st* 
         return 1;
     }
 
-    ret_event = pfn_clCreateEventFromGLsyncKHR (context, 
-                                            data->sync, 
+    ret_event = pfn_clCreateEventFromGLsyncKHR (context,
+                                            data->sync,
                                             data->errcode_ret);
 
     test_icd_app_log("Value returned: %p\n", ret_event);
@@ -278,14 +279,14 @@ typedef CL_API_ENTRY cl_int
                                          size_t                        /* param_value_size */,
                                          void *                        /* param_value */,
                                          size_t *                      /* param_value_size_ret */);
- 
+
 int test_clGetGLContextInfoKHR(const struct clGetGLContextInfoKHR_st* data)
 {
     PFN_clGetGLContextInfoKHR pfn_clGetGLContextInfoKHR = NULL;
     test_icd_app_log("clGetGLContextInfoKHR(%p, %u, %u, %p, %p)\n",
                      context_properties,
                      data->param_name,
-                     data->param_value_size, 
+                     data->param_value_size,
                      data->param_value,
                      data->param_value_size_ret);
 
@@ -297,7 +298,7 @@ int test_clGetGLContextInfoKHR(const struct clGetGLContextInfoKHR_st* data)
 
     ret_val = pfn_clGetGLContextInfoKHR(context_properties,
                                     data->param_name,
-                                    data->param_value_size, 
+                                    data->param_value_size,
                                     data->param_value,
                                     data->param_value_size_ret);
 
@@ -309,7 +310,7 @@ int test_clGetGLContextInfoKHR(const struct clGetGLContextInfoKHR_st* data)
 int test_OpenGL_share()
 {
 	int i;
-    
+
     for(i=0;i<NUM_ITEMS_clCreateFromGLBuffer;i++)
 		test_clCreateFromGLBuffer(&clCreateFromGLBufferData[i]);
 
@@ -333,15 +334,15 @@ int test_OpenGL_share()
 
     for(i=0;i<NUM_ITEMS_clEnqueueAcquireGLObjects;i++)
 		test_clEnqueueAcquireGLObjects(&clEnqueueAcquireGLObjectsData[i]);
-        
+
     for(i=0;i<NUM_ITEMS_clEnqueueReleaseGLObjects;i++)
-		test_clEnqueueReleaseGLObjects(&clEnqueueReleaseGLObjectsData[i]);	
-    
+		test_clEnqueueReleaseGLObjects(&clEnqueueReleaseGLObjectsData[i]);
+
     for(i=0;i<NUM_ITEMS_clCreateEventFromGLsyncKHR;i++)
 		test_clCreateEventFromGLsyncKHR(&clCreateEventFromGLsyncKHRData[i]);
-    
+
     for(i=0;i<NUM_ITEMS_clGetGLContextInfoKHR;i++)
 		test_clGetGLContextInfoKHR(&clGetGLContextInfoKHRData[i]);
-    
+
     return 0;
 }
