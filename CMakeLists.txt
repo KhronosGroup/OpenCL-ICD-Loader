@@ -57,6 +57,8 @@ if (WIN32)
         loader/windows/icd_windows_envvars.c
         loader/windows/icd_windows_hkr.c
         loader/windows/icd_windows_hkr.h
+        loader/windows/icd_windows_apppackage.cpp
+        loader/windows/icd_windows_apppackage.h
         loader/windows/OpenCL.def
         loader/windows/OpenCL.rc)
     # Only add the DXSDK include directory if the environment variable is
@@ -78,7 +80,7 @@ add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 
 if (WIN32)
-    target_link_libraries (OpenCL cfgmgr32.lib)
+    target_link_libraries (OpenCL cfgmgr32.lib RuntimeObject.lib)
 
     option (OPENCL_ICD_LOADER_REQUIRE_WDK "Build with D3DKMT support, which requires the Windows WDK." ON)
     if (OPENCL_ICD_LOADER_REQUIRE_WDK)
