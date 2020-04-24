@@ -163,3 +163,9 @@ OPENCL_2.2 {
         clSetProgramReleaseCallback;
         clSetProgramSpecializationConstant;
 } OPENCL_2.1;
+
+OPENCL_EXPERIMENTAL {
+    global:
+        clCreateBufferWithProperties;
+        clCreateImageWithProperties;
+} OPENCL_2.2;

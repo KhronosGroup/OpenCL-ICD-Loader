@@ -102,5 +102,7 @@
 #define clEnqueueReleaseGLObjects                ___clEnqueueReleaseGLObjects
 #define clGetGLContextInfoKHR                    ___clGetGLContextInfoKHR
 #define clCreateEventFromGLsyncKHR               ___clCreateEventFromGLsyncKHR
+#define clCreateBufferWithProperties             ___clCreateBufferWithProperties
+#define clCreateImageWithProperties              ___clCreateImageWithProperties
 
 #endif /* __RENAME_API_H__ */

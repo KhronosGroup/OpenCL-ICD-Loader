@@ -151,6 +151,7 @@ struct clReleaseDevice_st
 
 
 #define NUM_ITEMS_clCreateBuffer 1
+#define NUM_ITEMS_clCreateBufferWithProperties 1
 #define NUM_ITEMS_clCreateSubBuffer 1
 #define NUM_ITEMS_clEnqueueReadBuffer 1
 #define NUM_ITEMS_clEnqueueWriteBuffer 1
@@ -174,6 +175,17 @@ struct clCreateBuffer_st
     void *host_ptr;
     cl_int *errcode_ret;
 };
+#ifdef CL_EXPERIMENTAL
+struct clCreateBufferWithProperties_st
+{
+    cl_context context;
+    const cl_mem_properties * properties;
+    cl_mem_flags flags;
+    size_t size;
+    void *host_ptr;
+    cl_int *errcode_ret;
+};
+#endif  // CL_EXPERIMENTAL
 struct clCreateSubBuffer_st 
 {
     cl_mem buffer;
@@ -473,6 +485,7 @@ struct clGetProgramBuildInfo_st
 #define NUM_ITEMS_clCreateImage2D 1
 #define NUM_ITEMS_clCreateImage3D 1
 #define NUM_ITEMS_clCreateImage 1
+#define NUM_ITEMS_clCreateImageWithProperties 1
 #define NUM_ITEMS_clGetSupportedImageFormats 1
 #define NUM_ITEMS_clEnqueueCopyImageToBuffer 1
 #define NUM_ITEMS_clEnqueueCopyBufferToImage 1
@@ -493,6 +506,19 @@ struct clCreateImage_st
     void *host_ptr;
     cl_int *errcode_ret;
 };
+
+#ifdef CL_EXPERIMENTAL
+struct clCreateImageWithProperties_st
+{
+    cl_context context;
+    const cl_mem_properties * properties;
+    cl_mem_flags flags;
+    const cl_image_format *image_format;
+    const cl_image_desc *image_desc;
+    void *host_ptr;
+    cl_int *errcode_ret;
+};
+#endif  // CL_EXPERIMENTAL
 
 struct clCreateImage2D_st 
 {

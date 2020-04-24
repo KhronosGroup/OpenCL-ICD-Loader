@@ -551,6 +551,56 @@ clCreateImage3D(cl_context              context,
     return obj;
 }
 
+#ifdef CL_EXPERIMENTAL
+
+CL_API_ENTRY cl_mem CL_API_CALL
+clCreateBufferWithProperties(cl_context                context ,
+                             const cl_mem_properties * properties,
+                             cl_mem_flags              flags ,
+                             size_t                    size ,
+                             void *                    host_ptr ,
+                             cl_int *                  errcode_ret) CL_API_SUFFIX__EXPERIMENTAL
+{
+    cl_mem obj = (cl_mem) malloc(sizeof(struct _cl_mem));
+    obj->dispatch = dispatchTable;
+    test_icd_stub_log("clCreateBufferWithProperties(%p, %p, %x, %u, %p, %p)\n",
+                      context,
+                      properties,
+                      flags,
+                      size,
+                      host_ptr,
+                      errcode_ret);
+
+    test_icd_stub_log("Value returned: %p\n", obj);
+    return obj;
+}
+
+CL_API_ENTRY cl_mem CL_API_CALL
+clCreateImageWithProperties(cl_context                context,
+                            const cl_mem_properties * properties,
+                            cl_mem_flags              flags,
+                            const cl_image_format *   image_format,
+                            const cl_image_desc *     image_desc,
+                            void *                    host_ptr,
+                            cl_int *                  errcode_ret) CL_API_SUFFIX__EXPERIMENTAL
+{
+    cl_mem obj = (cl_mem) malloc(sizeof(struct _cl_mem));
+    obj->dispatch = dispatchTable;
+    test_icd_stub_log("clCreateImageWithProperties(%p, %p, %x, %p, %p, %p, %p)\n",
+                      context,
+                      properties,
+                      flags,
+                      image_format,
+                      image_desc,
+                      host_ptr,
+                      errcode_ret);
+
+    test_icd_stub_log("Value returned: %p\n", obj);
+    return obj;
+}
+
+#endif  // CL_EXPERIMENTAL
+
 CL_API_ENTRY cl_int CL_API_CALL
 clRetainMemObject(cl_mem memobj) CL_API_SUFFIX__VERSION_1_0
 {
