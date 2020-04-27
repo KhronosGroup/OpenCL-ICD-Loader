@@ -175,7 +175,7 @@ struct clCreateBuffer_st
     void *host_ptr;
     cl_int *errcode_ret;
 };
-#ifdef CL_EXPERIMENTAL
+#ifdef CL_VERSION_3_0
 struct clCreateBufferWithProperties_st
 {
     cl_context context;
@@ -185,7 +185,7 @@ struct clCreateBufferWithProperties_st
     void *host_ptr;
     cl_int *errcode_ret;
 };
-#endif  // CL_EXPERIMENTAL
+#endif  // CL_VERSION_3_0
 struct clCreateSubBuffer_st 
 {
     cl_mem buffer;
@@ -507,7 +507,7 @@ struct clCreateImage_st
     cl_int *errcode_ret;
 };
 
-#ifdef CL_EXPERIMENTAL
+#ifdef CL_VERSION_3_0
 struct clCreateImageWithProperties_st
 {
     cl_context context;
@@ -518,7 +518,7 @@ struct clCreateImageWithProperties_st
     void *host_ptr;
     cl_int *errcode_ret;
 };
-#endif  // CL_EXPERIMENTAL
+#endif  // CL_VERSION_3_0
 
 struct clCreateImage2D_st 
 {

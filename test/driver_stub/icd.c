@@ -230,11 +230,14 @@ cl_int cliIcdDispatchTableCreate(CLIicdDispatchTable **outDispatchTable)
     ICD_DISPATCH_TABLE_ENTRY( NULL );
     ICD_DISPATCH_TABLE_ENTRY( NULL );
 
-#ifdef CL_EXPERIMENTAL
-    /* Experimental */
+#ifdef CL_VERSION_3_0
+    /* OpenCL 3.0 */
     ICD_DISPATCH_TABLE_ENTRY ( clCreateBufferWithProperties );
     ICD_DISPATCH_TABLE_ENTRY ( clCreateImageWithProperties );
-#endif  // CL_EXPERIMENTAL
+#else
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+#endif  // CL_VERSION_3_0
 
     // return success
     *outDispatchTable = dispatchTable;

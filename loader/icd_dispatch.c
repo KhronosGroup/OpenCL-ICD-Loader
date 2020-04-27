@@ -319,9 +319,10 @@ clCreateImage(cl_context              context,
         errcode_ret);
 }
 
-#ifdef CL_EXPERIMENTAL
+#ifdef CL_VERSION_3_0
 /* ICD loader entry points should not normally be ifdef'ed, but prevent
- * experimental entry points from being in general builds. */
+ * OpenCL 3.0 provisional entry points from being in general builds before the
+ * specification is finalized. */
 
 CL_API_ENTRY cl_mem CL_API_CALL
 clCreateBufferWithProperties(cl_context                context,
@@ -329,7 +330,7 @@ clCreateBufferWithProperties(cl_context                context,
                              cl_mem_flags              flags,
                              size_t                    size,
                              void *                    host_ptr,
-                             cl_int *                  errcode_ret) CL_API_SUFFIX__EXPERIMENTAL
+                             cl_int *                  errcode_ret) CL_API_SUFFIX__VERSION_3_0
 {
   KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
   return context->dispatch->clCreateBufferWithProperties(
@@ -348,7 +349,7 @@ clCreateImageWithProperties(cl_context                context,
                             const cl_image_format *   image_format,
                             const cl_image_desc *     image_desc,
                             void *                    host_ptr,
-                            cl_int *                  errcode_ret) CL_API_SUFFIX__EXPERIMENTAL
+                            cl_int *                  errcode_ret) CL_API_SUFFIX__VERSION_3_0
 {
   KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
   return context->dispatch->clCreateImageWithProperties(
@@ -361,7 +362,7 @@ clCreateImageWithProperties(cl_context                context,
       errcode_ret);
 }
 
-#endif  // CL_EXPERIMENTAL
+#endif  // CL_VERSION_3_0
 
 CL_API_ENTRY cl_int CL_API_CALL
 clRetainMemObject(cl_mem memobj) CL_API_SUFFIX__VERSION_1_0

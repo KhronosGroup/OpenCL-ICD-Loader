@@ -34,6 +34,14 @@ find_package (Threads REQUIRED)
 # advance. Use it with discretion.
 option (BUILD_SHARED_LIBS "Build shared libs" ON)
 
+# This option enables support for OpenCL 3.0 Provisional in the ICD loader.  It
+# is currently off by default while the specification is provisional, as it may
+# change.
+# NOTE: If setting this to ON on Windows you likely need to uncomment the last
+# two entries in loader/windows/OpenCL.def.  When this option is deleted those
+# entries should be permanently uncommented.
+option (ENABLE_OPENCL30_PROVISIONAL "Enable 3.0 provisional entry points" OFF)
+
 include(CheckFunctionExists)
 check_function_exists(secure_getenv HAVE_SECURE_GETENV)
 check_function_exists(__secure_getenv HAVE___SECURE_GETENV)
@@ -103,7 +111,11 @@ else()
 endif ()
 
 include_directories (${OPENCL_ICD_LOADER_HEADERS_DIR})
-add_definitions (-DCL_TARGET_OPENCL_VERSION=220)
+if (ENABLE_OPENCL30_PROVISIONAL)
+  add_definitions (-DCL_TARGET_OPENCL_VERSION=300)
+else()
+  add_definitions (-DCL_TARGET_OPENCL_VERSION=220)
+endif()
 
 target_include_directories (OpenCL PRIVATE ${CMAKE_CURRENT_BINARY_DIR} loader)
 target_link_libraries (OpenCL ${CMAKE_DL_LIBS})

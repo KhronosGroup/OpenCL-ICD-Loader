@@ -551,7 +551,7 @@ clCreateImage3D(cl_context              context,
     return obj;
 }
 
-#ifdef CL_EXPERIMENTAL
+#ifdef CL_VERSION_3_0
 
 CL_API_ENTRY cl_mem CL_API_CALL
 clCreateBufferWithProperties(cl_context                context ,
@@ -559,7 +559,7 @@ clCreateBufferWithProperties(cl_context                context ,
                              cl_mem_flags              flags ,
                              size_t                    size ,
                              void *                    host_ptr ,
-                             cl_int *                  errcode_ret) CL_API_SUFFIX__EXPERIMENTAL
+                             cl_int *                  errcode_ret) CL_API_SUFFIX__VERSION_3_0
 {
     cl_mem obj = (cl_mem) malloc(sizeof(struct _cl_mem));
     obj->dispatch = dispatchTable;
@@ -582,7 +582,7 @@ clCreateImageWithProperties(cl_context                context,
                             const cl_image_format *   image_format,
                             const cl_image_desc *     image_desc,
                             void *                    host_ptr,
-                            cl_int *                  errcode_ret) CL_API_SUFFIX__EXPERIMENTAL
+                            cl_int *                  errcode_ret) CL_API_SUFFIX__VERSION_3_0
 {
     cl_mem obj = (cl_mem) malloc(sizeof(struct _cl_mem));
     obj->dispatch = dispatchTable;
@@ -599,7 +599,7 @@ clCreateImageWithProperties(cl_context                context,
     return obj;
 }
 
-#endif  // CL_EXPERIMENTAL
+#endif  // CL_VERSION_3_0
 
 CL_API_ENTRY cl_int CL_API_CALL
 clRetainMemObject(cl_mem memobj) CL_API_SUFFIX__VERSION_1_0
