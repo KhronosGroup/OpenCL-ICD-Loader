@@ -33,6 +33,10 @@ By default, the OpenCL ICD Loader will look for OpenCL Headers in the `inc` dire
 The OpenCL ICD Loader uses CMake for its build system.
 If CMake is not provided by your build system or OS package manager, please consult the [CMake website](https://cmake.org).
 
+The Windows OpenCL ICD Loader requires the Windows SDK to check for and enumerate the OpenCLOn12 ICD.
+An OpenCL ICD Loader can be built without a dependency on the Windows SDK using the CMake variable `OPENCL_ICD_LOADER_DISABLE_OPENCLON12`.
+This variable should only be used when building an import lib to link with, and must be enabled when building an OpenCL ICD Loader for distribution!
+
 ### Build and Install Directories
 
 A common convention is to place the `build` directory in the top directory of the repository and to place the `install` directory as a child of the `build` directory.
