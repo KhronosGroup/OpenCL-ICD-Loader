@@ -37,9 +37,6 @@ option (BUILD_SHARED_LIBS "Build shared libs" ON)
 # This option enables support for OpenCL 3.0 Provisional in the ICD loader.  It
 # is currently off by default while the specification is provisional, as it may
 # change.
-# NOTE: If setting this to ON on Windows you likely need to uncomment the last
-# two entries in loader/windows/OpenCL.def.  When this option is deleted those
-# entries should be permanently uncommented.
 option (ENABLE_OPENCL30_PROVISIONAL "Enable 3.0 provisional entry points" OFF)
 
 include(CheckFunctionExists)
@@ -57,6 +54,17 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd_platform.h)
 
 if (WIN32)
+    # By default don't include OpenCL 3.0 symbol definitions (i.e. comment them
+    # out), but include them for OpenCL 3.0 builds.  Once the symbols are no
+    # longer provisional then they may be included unconditionally.
+    set(ENABLE_OPENCL30_SYMBOLS ";")
+    if (ENABLE_OPENCL30_PROVISIONAL)
+      set(ENABLE_OPENCL30_SYMBOLS "")
+    endif ()
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/loader/windows/OpenCL.def.in
+        ${CMAKE_CURRENT_BINARY_DIR}/loader/windows/OpenCL.def)
+
     list (APPEND OPENCL_ICD_LOADER_SOURCES 
         loader/windows/adapter.h
         loader/windows/icd_windows.c
@@ -68,7 +76,7 @@ if (WIN32)
         loader/windows/icd_windows_hkr.h
         loader/windows/icd_windows_apppackage.cpp
         loader/windows/icd_windows_apppackage.h
-        loader/windows/OpenCL.def
+        ${CMAKE_CURRENT_BINARY_DIR}/loader/windows/OpenCL.def
         loader/windows/OpenCL.rc)
     # Only add the DXSDK include directory if the environment variable is
     # defined.  Since the DXSDK has merged into the Windows SDK, this is
@@ -77,10 +85,23 @@ if (WIN32)
         include_directories ($ENV{DXSDK_DIR}/Include)
     endif ()
 else ()
+    # By default don't include OpenCL 3.0 symbol definitions (i.e. comment them
+    # out), but include them for OpenCL 3.0 builds.  Once the symbols are no
+    # longer provisional then they may be included unconditionally.
+    set(ENABLE_OPENCL30_SYMBOLS_START "/*")
+    set(ENABLE_OPENCL30_SYMBOLS_END "*/")
+    if (ENABLE_OPENCL30_PROVISIONAL)
+      set(ENABLE_OPENCL30_SYMBOLS_START "")
+      set(ENABLE_OPENCL30_SYMBOLS_END "")
+    endif ()
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/loader/linux/icd_exports.map.in
+        ${CMAKE_CURRENT_BINARY_DIR}/loader/linux/icd_exports.map)
+
     list (APPEND OPENCL_ICD_LOADER_SOURCES
         loader/linux/icd_linux.c
         loader/linux/icd_linux_envvars.c
-        loader/linux/icd_exports.map)
+        ${CMAKE_CURRENT_BINARY_DIR}/loader/linux/icd_exports.map)
 endif ()
 
 set (OPENCL_ICD_LOADER_HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/inc CACHE PATH "Path to OpenCL Headers")
@@ -105,7 +126,7 @@ else()
     if (APPLE)
         target_link_libraries (OpenCL ${CMAKE_THREAD_LIBS_INIT})
     else ()
-        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/loader/linux/icd_exports.map")
+        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-Wl,--version-script -Wl,${CMAKE_CURRENT_BINARY_DIR}/loader/linux/icd_exports.map")
         target_link_libraries (OpenCL ${CMAKE_THREAD_LIBS_INIT})
     endif ()
 endif ()

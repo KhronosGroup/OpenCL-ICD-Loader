@@ -161,5 +161,5 @@ clSetProgramReleaseCallback
 clSetProgramSpecializationConstant
 
 ; OpenCL 3.0 API
-;clCreateBufferWithProperties
-;clCreateImageWithProperties
+@ENABLE_OPENCL30_SYMBOLS@clCreateBufferWithProperties
+@ENABLE_OPENCL30_SYMBOLS@clCreateImageWithProperties
