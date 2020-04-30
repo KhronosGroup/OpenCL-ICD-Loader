@@ -48,6 +48,10 @@ using namespace Microsoft::WRL::Wrappers;
 
 extern "C" bool khrIcdOsVendorsEnumerateAppPackage()
 {
+#ifdef OPENCL_ICD_LOADER_DISABLE_OPENCLON12
+    KHR_ICD_TRACE("OpenCLOn12 is disabled\n");
+    return false;
+#else
     HRESULT hrInit = Windows::Foundation::Initialize(RO_INIT_MULTITHREADED);
     if (hrInit == RPC_E_CHANGED_MODE)
     {
@@ -164,4 +168,5 @@ extern "C" bool khrIcdOsVendorsEnumerateAppPackage()
         return true;
     }
     return false;
+#endif
 }
