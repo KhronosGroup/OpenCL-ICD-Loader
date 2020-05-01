@@ -110,7 +110,7 @@ add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 
 if (WIN32)
-    target_link_libraries (OpenCL cfgmgr32.lib RuntimeObject.lib)
+    target_link_libraries (OpenCL cfgmgr32.lib runtimeobject.lib)
 
     option (OPENCL_ICD_LOADER_DISABLE_OPENCLON12 "Disable support for OpenCLOn12. Support for OpenCLOn12 should only be disabled when building an import lib to link with, and must be enabled when building an ICD loader for distribution!" OFF)
     if (OPENCL_ICD_LOADER_DISABLE_OPENCLON12)
