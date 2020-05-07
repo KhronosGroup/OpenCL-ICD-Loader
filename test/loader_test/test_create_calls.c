@@ -60,6 +60,13 @@ const struct clCreateBuffer_st clCreateBufferData[NUM_ITEMS_clCreateBuffer] =
     {NULL, 0, 0, NULL, NULL}
 };
 
+#ifdef CL_VERSION_3_0
+const struct clCreateBufferWithProperties_st clCreateBufferWithPropertiesData[NUM_ITEMS_clCreateBufferWithProperties] =
+{
+    {NULL, NULL, 0, 0, NULL, NULL}
+};
+#endif  // CL_VERSION_3_0
+
 const struct clCreateSubBuffer_st clCreateSubBufferData[NUM_ITEMS_clCreateSubBuffer] =
 {
     {NULL, 0, 0, NULL, NULL}
@@ -69,6 +76,13 @@ const struct clCreateImage_st clCreateImageData[NUM_ITEMS_clCreateImage] =
 {
     { NULL, 0x0, NULL, NULL, NULL, NULL}
 };
+
+#ifdef CL_VERSION_3_0
+const struct clCreateImageWithProperties_st clCreateImageWithPropertiesData[NUM_ITEMS_clCreateImageWithProperties] =
+{
+    { NULL, NULL, 0x0, NULL, NULL, NULL, NULL}
+};
+#endif  // CL_VERSION_3_0
 
 const struct clCreateImage2D_st clCreateImage2DData[NUM_ITEMS_clCreateImage2D] =
 {
@@ -299,6 +313,33 @@ int test_clCreateBuffer(const struct clCreateBuffer_st *data)
 
 }
 
+#ifdef CL_VERSION_3_0
+int test_clCreateBufferWithProperties(const struct clCreateBufferWithProperties_st *data)
+{
+    test_icd_app_log("clCreateBufferWithProperties(%p, %p, %x, %u, %p, %p)\n",
+                     context,
+                     data->properties,
+                     data->flags,
+                     data->size,
+                     data->host_ptr,
+                     data->errcode_ret);
+
+    buffer = clCreateBufferWithProperties(context,
+                       data->properties,
+                       data->flags,
+                       data->size,
+                       data->host_ptr,
+                       data->errcode_ret);
+
+    clReleaseMemObjectData->memobj = buffer;
+
+    test_icd_app_log("Value returned: %p\n", buffer);
+
+    return 0;
+
+}
+#endif  // CL_VERSION_3_0
+
 int test_clCreateSubBuffer(const struct clCreateSubBuffer_st *data)
 {
     test_icd_app_log("clCreateSubBuffer(%p, %x, %u, %p, %p)\n",
@@ -345,6 +386,34 @@ int test_clCreateImage(const struct clCreateImage_st *data)
     return 0;
 
 }
+
+#ifdef CL_VERSION_3_0
+int test_clCreateImageWithProperties(const struct clCreateImageWithProperties_st *data)
+{
+    test_icd_app_log("clCreateImageWithProperties(%p, %p, %x, %p, %p, %p, %p)\n",
+                     context,
+                     data->properties,
+                     data->flags,
+                     data->image_format,
+                     data->image_desc,
+                     data->host_ptr,
+                     data->errcode_ret);
+
+    image = clCreateImageWithProperties(context,
+                        data->properties,
+                        data->flags,
+                        data->image_format,
+                        data->image_desc,
+                        data->host_ptr,
+                        data->errcode_ret);
+
+    clReleaseMemObjectDataImage[0].memobj = image;
+    test_icd_app_log("Value returned: %p\n", image);
+
+    return 0;
+
+}
+#endif  // CL_VERSION_3_0
 
 int test_clCreateImage2D(const struct clCreateImage2D_st *data)
 {
@@ -710,9 +779,17 @@ int test_create_calls()
 
     test_clCreateBuffer(clCreateBufferData);
 
+#ifdef CL_VERSION_3_0
+    test_clCreateBufferWithProperties(clCreateBufferWithPropertiesData);
+#endif
+
     test_clCreateSubBuffer(clCreateSubBufferData);
 
     test_clCreateImage(clCreateImageData);
+
+#ifdef CL_VERSION_3_0
+    test_clCreateImageWithProperties(clCreateImageWithPropertiesData);
+#endif
 
     test_clReleaseMemObject(clReleaseMemObjectDataImage);
 

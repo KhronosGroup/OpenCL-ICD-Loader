@@ -7,6 +7,9 @@
 #define CL_USE_DEPRECATED_OPENCL_1_0_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
+#define CL_USE_DEPRECATED_OPENCL_2_0_APIS
+#define CL_USE_DEPRECATED_OPENCL_2_1_APIS
+#define CL_USE_DEPRECATED_OPENCL_2_2_APIS
 
 // Need to rename all CL API functions to prevent ICD loader functions calling
 // themselves via the dispatch table. Include this before cl headers.
@@ -148,12 +151,15 @@ cl_int cliIcdDispatchTableCreate(CLIicdDispatchTable **outDispatchTable)
     ICD_DISPATCH_TABLE_ENTRY ( clEnqueueWriteBufferRect);
     ICD_DISPATCH_TABLE_ENTRY ( clEnqueueCopyBufferRect);
 
+    /* cl_ext_device_fission */
     ICD_DISPATCH_TABLE_ENTRY ( /*clCreateSubDevicesEXT*/NULL);
     ICD_DISPATCH_TABLE_ENTRY ( /*clRetainDeviceEXT*/ NULL);
     ICD_DISPATCH_TABLE_ENTRY ( /*clReleaseDevice*/NULL);
 
+    /* cl_khr_gl_event */
     ICD_DISPATCH_TABLE_ENTRY ( clCreateEventFromGLsyncKHR); 
 
+    /* OpenCL 1.2 */
     ICD_DISPATCH_TABLE_ENTRY ( clCreateSubDevices);
     ICD_DISPATCH_TABLE_ENTRY ( clRetainDevice);
     ICD_DISPATCH_TABLE_ENTRY ( clReleaseDevice);
@@ -170,6 +176,68 @@ cl_int cliIcdDispatchTableCreate(CLIicdDispatchTable **outDispatchTable)
     ICD_DISPATCH_TABLE_ENTRY ( clEnqueueBarrierWithWaitList);
     ICD_DISPATCH_TABLE_ENTRY ( clGetExtensionFunctionAddressForPlatform);
     ICD_DISPATCH_TABLE_ENTRY ( clCreateFromGLTexture);
+
+    /* cl_khr_d3d11_sharing */
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+
+    /* cl_khr_dx9_media_sharing */
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+
+    /* cl_khr_egl_image */
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+
+    /* cl_khr_egl_event */
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+
+    /* OpenCL 2.0 */
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+
+    /* cl_khr_sub_groups */
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+
+    /* OpenCL 2.1 */
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+
+    /* OpenCL 2.2 */
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+
+#ifdef CL_VERSION_3_0
+    /* OpenCL 3.0 */
+    ICD_DISPATCH_TABLE_ENTRY ( clCreateBufferWithProperties );
+    ICD_DISPATCH_TABLE_ENTRY ( clCreateImageWithProperties );
+#else
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
+#endif  // CL_VERSION_3_0
 
     // return success
     *outDispatchTable = dispatchTable;
