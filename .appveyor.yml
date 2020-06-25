@@ -15,6 +15,6 @@ before_build:
   - cmake -DOPENCL_ICD_LOADER_HEADERS_DIR=inc/OpenCL-Headers -H. -Bbuild -A%PLATFORM%
 
 build:
-  project: build\OPENCL_ICD_LOADER.sln
+  project: build\OpenCL-ICD-Loader.sln
   parallel: true
   verbosity: normal

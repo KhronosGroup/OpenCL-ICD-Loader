@@ -1,6 +1,6 @@
-cmake_minimum_required (VERSION 2.8.11)
+cmake_minimum_required (VERSION 3.1)
 
-project (OPENCL_ICD_LOADER)
+project (OpenCL-ICD-Loader VERSION 1.2)
 include (GNUInstallDirs)
 find_package (Threads REQUIRED)
 
@@ -108,6 +108,7 @@ set (OPENCL_ICD_LOADER_HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/inc CACHE PATH "P
 
 add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
+target_include_directories(OpenCL SYSTEM PUBLIC ${OPENCL_ICD_LOADER_HEADERS_DIR})
 
 if (WIN32)
     target_link_libraries (OpenCL cfgmgr32.lib runtimeobject.lib)
