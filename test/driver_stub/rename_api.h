@@ -104,5 +104,6 @@
 #define clCreateEventFromGLsyncKHR               ___clCreateEventFromGLsyncKHR
 #define clCreateBufferWithProperties             ___clCreateBufferWithProperties
 #define clCreateImageWithProperties              ___clCreateImageWithProperties
+#define clSetContextDestructorCallback           ___clSetContextDestructorCallback
 
 #endif /* __RENAME_API_H__ */

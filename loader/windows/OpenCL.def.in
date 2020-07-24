@@ -163,3 +163,4 @@ clSetProgramSpecializationConstant
 ; OpenCL 3.0 API
 @ENABLE_OPENCL30_SYMBOLS@clCreateBufferWithProperties
 @ENABLE_OPENCL30_SYMBOLS@clCreateImageWithProperties
+@ENABLE_OPENCL30_SYMBOLS@clSetContextDestructorCallback

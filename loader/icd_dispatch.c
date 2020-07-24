@@ -239,6 +239,26 @@ clGetContextInfo(cl_context         context,
         param_value_size_ret);
 }
 
+#ifdef CL_VERSION_3_0
+/* ICD loader entry points should not normally be ifdef'ed, but prevent
+ * OpenCL 3.0 provisional entry points from being in general builds before the
+ * specification is finalized. */
+
+CL_API_ENTRY cl_int CL_API_CALL
+clSetContextDestructorCallback(cl_context         context,
+                               void (CL_CALLBACK* pfn_notify)(cl_context context,
+                                                              void* user_data),
+                               void*              user_data) CL_API_SUFFIX__VERSION_3_0
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
+    return context->dispatch->clSetContextDestructorCallback(
+        context,
+        pfn_notify,
+        user_data);
+}
+
+#endif  // CL_VERSION_3_0
+
 // Command Queue APIs
 CL_API_ENTRY cl_command_queue CL_API_CALL
 clCreateCommandQueue(cl_context                     context, 
