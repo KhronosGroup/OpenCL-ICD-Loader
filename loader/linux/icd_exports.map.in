@@ -169,5 +169,6 @@ OPENCL_3.0 {
     global:
         clCreateBufferWithProperties;
         clCreateImageWithProperties;
+        clSetContextDestructorCallback;
 } OPENCL_2.2;
 @ENABLE_OPENCL30_SYMBOLS_END@

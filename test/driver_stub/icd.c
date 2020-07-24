@@ -234,7 +234,9 @@ cl_int cliIcdDispatchTableCreate(CLIicdDispatchTable **outDispatchTable)
     /* OpenCL 3.0 */
     ICD_DISPATCH_TABLE_ENTRY ( clCreateBufferWithProperties );
     ICD_DISPATCH_TABLE_ENTRY ( clCreateImageWithProperties );
+    ICD_DISPATCH_TABLE_ENTRY ( clSetContextDestructorCallback );
 #else
+    ICD_DISPATCH_TABLE_ENTRY( NULL );
     ICD_DISPATCH_TABLE_ENTRY( NULL );
     ICD_DISPATCH_TABLE_ENTRY( NULL );
 #endif  // CL_VERSION_3_0

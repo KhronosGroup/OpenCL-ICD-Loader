@@ -355,6 +355,30 @@ clGetContextInfo(cl_context         context,
     return return_value;
 }
 
+#ifdef CL_VERSION_3_0
+
+CL_API_ENTRY cl_int CL_API_CALL
+clSetContextDestructorCallback(cl_context         context,
+                               void (CL_CALLBACK* pfn_notify)(cl_context context,
+                                                              void* user_data),
+                               void*              user_data) CL_API_SUFFIX__VERSION_3_0
+{
+    cl_int return_value = CL_OUT_OF_RESOURCES;
+    test_icd_stub_log("clSetContextDestructorCallback(%p, %p, %p)\n",
+                      context,
+                      pfn_notify,
+                      user_data);
+    pfn_notify(context, NULL);
+    test_icd_stub_log("setcontextdestructor_callback(%p, %p)\n",
+               context,
+               NULL);
+
+    test_icd_stub_log("Value returned: %d\n", return_value);
+    return return_value;
+}
+
+#endif
+
 /* Command Queue APIs */
 CL_API_ENTRY cl_command_queue CL_API_CALL
 clCreateCommandQueue(cl_context                     context,

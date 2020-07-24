@@ -68,6 +68,15 @@ struct clGetContextInfo_st
     size_t *param_value_size_ret;
 };
 
+#ifdef CL_VERSION_3_0
+struct clSetContextDestructorCallback_st
+{
+    cl_context context;
+    void (CL_CALLBACK *pfn_notify)(cl_context context, void *user_data);
+    void *user_data;
+};
+#endif  // CL_VERSION_3_0
+
 struct clGetPlatformIDs_st 
 {
     cl_uint num_entries;
@@ -113,6 +122,7 @@ struct clReleaseCommandQueue_st
 #define NUM_ITEMS_clRetainContext 1
 #define NUM_ITEMS_clReleaseContext 1
 #define NUM_ITEMS_clGetContextInfo 1
+#define NUM_ITEMS_clSetContextDestructorCallback 1
 #define NUM_ITEMS_clGetPlatformIDs 1
 #define NUM_ITEMS_clGetPlatformInfo 1
 #define NUM_ITEMS_clGetDeviceIDs 1
