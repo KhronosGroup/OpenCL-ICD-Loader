@@ -92,7 +92,7 @@ target_include_directories(OpenCL PRIVATE include)
 
 
 if (WIN32)
-    target_link_libraries (OpenCL cfgmgr32.lib runtimeobject.lib)
+    target_link_libraries (OpenCL PRIVATE cfgmgr32.lib runtimeobject.lib)
 
     option (OPENCL_ICD_LOADER_DISABLE_OPENCLON12 "Disable support for OpenCLOn12. Support for OpenCLOn12 should only be disabled when building an import lib to link with, and must be enabled when building an ICD loader for distribution!" OFF)
     if (OPENCL_ICD_LOADER_DISABLE_OPENCLON12)
@@ -111,25 +111,39 @@ if (WIN32)
     endif()
 else()
     if (APPLE)
-        target_link_libraries (OpenCL ${CMAKE_THREAD_LIBS_INIT})
+        target_link_libraries (OpenCL PRIVATE ${CMAKE_THREAD_LIBS_INIT})
     else ()
-        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/loader/linux/icd_exports.map")
-        if (OPENCL_ICD_LOADER_PIC)
-            set_target_properties(OpenCL PROPERTIES POSITION_INDEPENDENT_CODE ON)
-        endif ()
+    set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/loader/linux/icd_exports.map")
+    if (OPENCL_ICD_LOADER_PIC)
+        set_target_properties(OpenCL PROPERTIES POSITION_INDEPENDENT_CODE ON)
+    endif ()
         target_link_libraries (OpenCL ${CMAKE_THREAD_LIBS_INIT})
     endif ()
 endif ()
 
-include_directories (${OPENCL_ICD_LOADER_HEADERS_DIR})
+find_package(OpenCLHeaders REQUIRED)
+if (TARGET OpenCL::OpenCLHeaders)
+    target_link_libraries (OpenCL PUBLIC OpenCL::OpenCLHeaders)
+    link_libraries(OpenCL::OpenCLHeaders)
+else ()
+    include_directories (${OPENCL_ICD_LOADER_HEADERS_DIR})
+endif ()
 add_definitions (-DCL_TARGET_OPENCL_VERSION=300)
 
 if (ENABLE_OPENCL_LAYERS)
     add_definitions (-DCL_ENABLE_LAYERS)
 endif ()
 
-target_include_directories (OpenCL PRIVATE ${CMAKE_CURRENT_BINARY_DIR} loader)
-target_link_libraries (OpenCL ${CMAKE_DL_LIBS})
+add_library (OpenCL::OpenCLICDLoader
+  ALIAS OpenCL
+)
+
+target_include_directories (OpenCL
+  PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}
+    loader
+)
+target_link_libraries (OpenCL PUBLIC ${CMAKE_DL_LIBS})
 
 option (OPENCL_ICD_LOADER_BUILD_TESTING "Enable support for OpenCL ICD Loader testing." OFF)
 
@@ -139,6 +153,47 @@ endif()
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR OPENCL_ICD_LOADER_BUILD_TESTING) AND BUILD_TESTING)
     add_subdirectory (test)
 endif()
+
+install(
+  TARGETS OpenCL
+  EXPORT OpenCLICDLoaderTargets
+)
+
+include(GNUInstallDirs)
+
+export(
+  EXPORT OpenCLICDLoaderTargets
+  FILE ${PROJECT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderTargets.cmake
+  NAMESPACE OpenCL::
+)
+file(
+  WRITE ${PROJECT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderConfig.cmake
+  "include(\"\${CMAKE_CURRENT_LIST_DIR}/OpenCLICDLoaderTargets.cmake\")"
+)
+
+set(config_package_location ${CMAKE_INSTALL_DATADIR}/cmake/OpenCLICDLoader)
+install(
+  EXPORT OpenCLICDLoaderTargets
+  FILE OpenCLICDLoaderTargets.cmake
+  NAMESPACE OpenCL::
+  DESTINATION ${config_package_location}
+)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderConfig.cmake
+  DESTINATION ${config_package_location}
+)
+
+unset(CMAKE_SIZEOF_VOID_P)
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  ${CMAKE_CURRENT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderConfigVersion.cmake
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderConfigVersion.cmake
+  DESTINATION ${config_package_location}
+)
 
 install (TARGETS OpenCL
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
