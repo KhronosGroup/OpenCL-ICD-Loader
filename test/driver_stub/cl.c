@@ -368,10 +368,10 @@ clSetContextDestructorCallback(cl_context         context,
                       context,
                       pfn_notify,
                       user_data);
-    pfn_notify(context, NULL);
+    pfn_notify(context, user_data);
     test_icd_stub_log("setcontextdestructor_callback(%p, %p)\n",
                context,
-               NULL);
+               user_data);
 
     test_icd_stub_log("Value returned: %d\n", return_value);
     return return_value;
@@ -713,10 +713,10 @@ clSetMemObjectDestructorCallback(cl_mem  memobj ,
                       memobj,
                       pfn_notify,
                       user_data);
-    pfn_notify(memobj, NULL);
+    pfn_notify(memobj, user_data);
     test_icd_stub_log("setmemobjectdestructor_callback(%p, %p)\n",
                memobj,
-               NULL);
+               user_data);
 
     test_icd_stub_log("Value returned: %d\n", return_value);
     return return_value;
