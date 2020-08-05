@@ -1478,7 +1478,7 @@ CL_API_ENTRY cl_int CL_API_CALL clUnloadPlatformCompiler(
 
 CL_API_ENTRY cl_int CL_API_CALL clGetKernelArgInfo(
     cl_kernel kernel,
-    cl_uint arg_indx,
+    cl_uint arg_index,
     cl_kernel_arg_info param_name,
     size_t param_value_size,
     void* param_value,
@@ -1487,7 +1487,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelArgInfo(
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clGetKernelArgInfo(
         kernel,
-        arg_indx,
+        arg_index,
         param_name,
         param_value_size,
         param_value,
@@ -1956,20 +1956,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMigrateMem(
 
 ///////////////////////////////////////////////////////////////////////////////
 
-CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback(
-    cl_program program,
-    void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
-    void* user_data) CL_API_SUFFIX__VERSION_2_2
-{
-    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
-    return program->dispatch->clSetProgramReleaseCallback(
-        program,
-        pfn_notify,
-        user_data);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 CL_API_ENTRY cl_int CL_API_CALL clSetProgramSpecializationConstant(
     cl_program program,
     cl_uint spec_id,
@@ -1982,6 +1968,20 @@ CL_API_ENTRY cl_int CL_API_CALL clSetProgramSpecializationConstant(
         spec_id,
         spec_size,
         spec_value);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback(
+    cl_program program,
+    void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
+    void* user_data) CL_EXT_SUFFIX__VERSION_2_2_DEPRECATED
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
+    return program->dispatch->clSetProgramReleaseCallback(
+        program,
+        pfn_notify,
+        user_data);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

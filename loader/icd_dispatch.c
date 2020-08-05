@@ -259,6 +259,18 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties(
         errcode_ret);
 }
 
+CL_API_ENTRY cl_int CL_API_CALL clSetContextDestructorCallback(
+    cl_context context,
+    void (CL_CALLBACK* pfn_notify)(cl_context context, void* user_data),
+    void* user_data) CL_API_SUFFIX__VERSION_3_0
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
+    return context->dispatch->clSetContextDestructorCallback(
+        context,
+        pfn_notify,
+        user_data);
+}
+
 #endif // CL_VERSION_3_0
 
 #ifdef __cplusplus
