@@ -164,11 +164,9 @@ OPENCL_2.2 {
         clSetProgramSpecializationConstant;
 } OPENCL_2.1;
 
-@ENABLE_OPENCL30_SYMBOLS_START@
 OPENCL_3.0 {
     global:
         clCreateBufferWithProperties;
         clCreateImageWithProperties;
         clSetContextDestructorCallback;
 } OPENCL_2.2;
-@ENABLE_OPENCL30_SYMBOLS_END@

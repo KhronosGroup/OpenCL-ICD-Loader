@@ -20,12 +20,10 @@ struct clGetContextInfo_st clGetContextInfoData[NUM_ITEMS_clGetContextInfo] =
     {NULL, 0, 0, NULL, NULL}
 };
 
-#ifdef CL_VERSION_3_0
 struct clSetContextDestructorCallback_st clSetContextDestructorCallbackData[NUM_ITEMS_clSetContextDestructorCallback] =
 {
     {NULL, setcontextdestructor_callback, NULL}
 };
-#endif  // CL_VERSION_3_0
 
 struct clGetPlatformInfo_st clGetPlatformInfoData[NUM_ITEMS_clGetPlatformInfo] =
 {
@@ -87,7 +85,6 @@ int test_clGetContextInfo(const struct clGetContextInfo_st* data)
 }
 
 
-#ifdef CL_VERSION_3_0
 int test_clSetContextDestructorCallback(
     const struct clSetContextDestructorCallback_st* data)
 {
@@ -108,7 +105,6 @@ int test_clSetContextDestructorCallback(
 
     return 0;
 }
-#endif  // CL_VERSION_3_0
 
 
 int test_clGetPlatformInfo(const struct clGetPlatformInfo_st* data)
@@ -199,11 +195,9 @@ int test_platforms()
         test_clRetainContext(&clRetainContextData[i]);
     }
 
-#ifdef CL_VERSION_3_0
     for (i = 0;i<NUM_ITEMS_clSetContextDestructorCallback;i++) {
         test_clSetContextDestructorCallback(&clSetContextDestructorCallbackData[i]);
     }
-#endif  // CL_VERSION_3_0
 
     for (i = 0;i<NUM_ITEMS_clGetContextInfo;i++) {
         test_clGetContextInfo(&clGetContextInfoData[i]);

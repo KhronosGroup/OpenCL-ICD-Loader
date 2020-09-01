@@ -216,11 +216,6 @@ CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform(
         function_name);
 }
 
-#ifdef CL_VERSION_3_0
-/* ICD loader entry points should not normally be ifdef'ed, but prevent
- * OpenCL 3.0 provisional entry points from being in general builds before the
- * specification is finalized. */
-
 CL_API_ENTRY cl_mem CL_API_CALL clCreateBufferWithProperties(
     cl_context context,
     const cl_mem_properties* properties,
@@ -270,8 +265,6 @@ CL_API_ENTRY cl_int CL_API_CALL clSetContextDestructorCallback(
         pfn_notify,
         user_data);
 }
-
-#endif // CL_VERSION_3_0
 
 #ifdef __cplusplus
 }
