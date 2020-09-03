@@ -163,8 +163,6 @@ install(
   EXPORT OpenCLICDLoaderTargets
 )
 
-include(GNUInstallDirs)
-
 export(
   EXPORT OpenCLICDLoaderTargets
   FILE ${PROJECT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderTargets.cmake
