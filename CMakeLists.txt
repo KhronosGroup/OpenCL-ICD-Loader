@@ -83,13 +83,8 @@ else ()
         loader/linux/icd_exports.map)
 endif ()
 
-set (OPENCL_ICD_LOADER_HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/inc CACHE PATH "Path to OpenCL Headers")
-
 add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
-target_include_directories(OpenCL SYSTEM PUBLIC ${OPENCL_ICD_LOADER_HEADERS_DIR})
-target_include_directories(OpenCL PRIVATE include)
-
 
 if (WIN32)
     target_link_libraries (OpenCL PRIVATE cfgmgr32.lib runtimeobject.lib)
@@ -121,18 +116,27 @@ else()
     endif ()
 endif ()
 
-find_package(OpenCLHeaders REQUIRED)
+find_package(OpenCLHeaders)
 if (TARGET OpenCL::OpenCLHeaders)
     target_link_libraries (OpenCL PUBLIC OpenCL::OpenCLHeaders)
     link_libraries(OpenCL::OpenCLHeaders)
 else ()
-    include_directories (${OPENCL_ICD_LOADER_HEADERS_DIR})
+  find_path(OpenCL_HEADERS_DIR
+    NAMES
+      CL/cl.h OpenCL/cl.h
+    PATH_SUFFIXES
+      include
+      OpenCL/common/inc
+  )
+  target_include_directories(OpenCL SYSTEM PUBLIC ${OpenCL_HEADERS_DIR})
+  include_directories(SYSTEM ${OpenCL_HEADERS_DIR})
 endif ()
+
 add_definitions (-DCL_TARGET_OPENCL_VERSION=300)
 
 if (ENABLE_OPENCL_LAYERS)
-    add_definitions (-DCL_ENABLE_LAYERS)
-endif ()
+    add_definitions (CL_ENABLE_LAYERS)
+endif()
 
 add_library (OpenCL::OpenCLICDLoader
   ALIAS OpenCL
