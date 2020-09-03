@@ -1,6 +1,6 @@
 os:
   - Visual Studio 2017
-  #- Visual Studio 2015
+  - Visual Studio 2019
 
 platform:
   - Win32
@@ -11,10 +11,16 @@ configuration:
   - Release
 
 before_build:
-  - git clone --depth=1 https://github.com/KhronosGroup/OpenCL-Headers inc/OpenCL-Headers
-  - cmake -DOPENCL_ICD_LOADER_HEADERS_DIR=inc/OpenCL-Headers -H. -Bbuild -A%PLATFORM%
+  - git clone https://github.com/MathiasMagnus/OpenCL-Headers --branch pkgconfig --single-branch
+  - cd OpenCL-Headers
+  - mkdir build
+  - mkdir install
+  - cd build
+  - cmake -A %PLATFORM%
+          -D CMAKE_INSTALL_PREFIX=../install
+          ..
 
 build:
   project: build\OpenCL-ICD-Loader.sln
   parallel: true
-  verbosity: normal
+  verbosity: minimal
