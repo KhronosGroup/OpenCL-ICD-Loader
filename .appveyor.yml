@@ -29,7 +29,7 @@ before_build:
   - cd build
   - cmake -A %PLATFORM%
           -D CMAKE_INSTALL_PREFIX=../install
-          -D CMAKE_PREFIX_PATH=../../OpenCL-Headers/install
+          -D CMAKE_PREFIX_PATH=C:/projects/opencl-icd-loader/OpenCL-Headers/install
           ..
 
 build:
