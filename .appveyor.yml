@@ -23,7 +23,7 @@ before_build:
           --target INSTALL
   - cd ..\..\
   - git clone https://github.com/MathiasMagnus/OpenCL-ICD-Loader --branch pkgconfig --single-branch
-  - cd OpenCL-Headers
+  - cd OpenCL-ICD-Loader
   - mkdir build
   - mkdir install
   - cd build
