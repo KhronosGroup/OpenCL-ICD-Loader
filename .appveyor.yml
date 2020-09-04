@@ -19,6 +19,18 @@ before_build:
   - cmake -A %PLATFORM%
           -D CMAKE_INSTALL_PREFIX=../install
           ..
+  - cmake --build .
+          --target INSTALL
+  - cd ..\..\
+  - git clone https://github.com/MathiasMagnus/OpenCL-ICD-Loader --branch pkgconfig --single-branch
+  - cd OpenCL-Headers
+  - mkdir build
+  - mkdir install
+  - cd build
+  - cmake -A %PLATFORM%
+          -D CMAKE_INSTALL_PREFIX=../install
+          -D CMAKE_PREFIX_PATH=../../OpenCL-Headers/install
+          ..
 
 build:
   project: build\OpenCL-ICD-Loader.sln
