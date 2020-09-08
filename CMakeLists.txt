@@ -117,9 +117,9 @@ else()
 endif ()
 
 find_package(OpenCLHeaders)
-if (TARGET OpenCL::OpenCLHeaders)
-    target_link_libraries (OpenCL PUBLIC OpenCL::OpenCLHeaders)
-    link_libraries(OpenCL::OpenCLHeaders)
+if (TARGET OpenCL::Headers)
+  target_link_libraries (OpenCL PUBLIC OpenCL::Headers)
+  link_libraries(OpenCL::Headers)
 else ()
   find_path(OpenCL_HEADERS_DIR
     NAMES
@@ -137,10 +137,6 @@ add_definitions (-DCL_TARGET_OPENCL_VERSION=300)
 if (ENABLE_OPENCL_LAYERS)
     add_definitions (CL_ENABLE_LAYERS)
 endif()
-
-add_library (OpenCL::OpenCLICDLoader
-  ALIAS OpenCL
-)
 
 target_include_directories (OpenCL
   PRIVATE
