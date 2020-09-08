@@ -50,6 +50,7 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd.h
     loader/icd_dispatch.c
     loader/icd_dispatch.h
+    loader/icd_dispatch_generated.c
     loader/icd_envvars.h
     loader/icd_platform.h)
 
