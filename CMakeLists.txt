@@ -1,7 +1,6 @@
 cmake_minimum_required (VERSION 3.1)
 
 project (OpenCL-ICD-Loader VERSION 1.2)
-include (GNUInstallDirs)
 find_package (Threads REQUIRED)
 
 set(CMAKE_C_STANDARD 99)
@@ -153,6 +152,8 @@ endif()
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR OPENCL_ICD_LOADER_BUILD_TESTING) AND BUILD_TESTING)
     add_subdirectory (test)
 endif()
+
+include (GNUInstallDirs)
 
 install(
   TARGETS OpenCL
