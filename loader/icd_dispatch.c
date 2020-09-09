@@ -150,7 +150,7 @@ static inline cl_int clGetPlatformIDs_body(
 CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs_disp(
     cl_uint num_entries,
     cl_platform_id* platforms,
-    cl_uint* num_platforms) CL_API_SUFFIX__VERSION_1_0
+    cl_uint* num_platforms)
 {
     return clGetPlatformIDs_body(
         num_entries,
@@ -161,7 +161,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs_disp(
 CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs(
     cl_uint num_entries,
     cl_platform_id* platforms,
-    cl_uint* num_platforms) CL_API_SUFFIX__VERSION_1_0
+    cl_uint* num_platforms)
 {
     // initialize the platforms (in case they have not been already)
     khrIcdInitialize();
@@ -216,14 +216,14 @@ static inline void* clGetExtensionFunctionAddress_body(
 }
 
 CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress_disp(
-    const char* function_name) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
+    const char* function_name)
 {
     return clGetExtensionFunctionAddress_body(
         function_name);
 }
 
 CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress(
-    const char* function_name) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
+    const char* function_name)
 {
     // make sure the ICD is initialized
     khrIcdInitialize();
@@ -239,7 +239,7 @@ CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress(
 
 static inline void* clGetExtensionFunctionAddressForPlatform_body(
     cl_platform_id platform,
-    const char* function_name) CL_API_SUFFIX__VERSION_1_2
+    const char* function_name)
 {
     void* function_address = NULL;
 
@@ -263,7 +263,7 @@ static inline void* clGetExtensionFunctionAddressForPlatform_body(
 
 CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_disp(
     cl_platform_id platform,
-    const char* function_name) CL_API_SUFFIX__VERSION_1_2
+    const char* function_name)
 {
     return clGetExtensionFunctionAddressForPlatform_body(
         platform,
@@ -272,7 +272,7 @@ CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_disp(
 
 CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform(
     cl_platform_id platform,
-    const char* function_name) CL_API_SUFFIX__VERSION_1_2
+    const char* function_name)
 {
     // make sure the ICD is initialized
     khrIcdInitialize();
