@@ -4,9 +4,6 @@ apiskip = {
     'clGetPlatformIDs',                         # to query platforms
     'clGetExtensionFunctionAddress',            # to return ICD-aware extensions
     'clGetExtensionFunctionAddressForPlatform', # to return ICD-aware extensions
-    'clCreateBufferWithProperties',             # only until OpenCL 3.0 is final
-    'clCreateImageWithProperties',              # only until OpenCL 3.0 is final
-    'clSetContextDestructorCallback',           # only until OpenCL 3.0 is final
     }
 
 # Handles, and mappings to errors when handles are invalid:
