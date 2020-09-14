@@ -19,7 +19,7 @@
 #include "icd.h"
 #include "icd_dispatch.h"
 #include "icd_envvars.h"
-#include "icd_layer.h"
+#include "cl_icd_layer.h"
 #include <stdlib.h>
 #include <string.h>
 

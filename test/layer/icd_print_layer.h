@@ -16,8 +16,8 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
-#ifndef __ICD_LAYER_H
-#define __ICD_LAYER_H
+#ifndef __ICD_PRINT_LAYER_H
+#define __ICD_PRINT_LAYER_H
 
 #ifndef CL_USE_DEPRECATED_OPENCL_1_0_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_0_APIS
@@ -43,24 +43,21 @@
 #define CL_USE_DEPRECATED_OPENCL_2_2_APIS
 #endif
 
-#include <CL/cl.h>
-#include <CL/cl_icd.h>
+#include <stdio.h>
+#include "cl_icd_layer.h"
 
-typedef cl_uint cl_layer_info;
-typedef cl_uint cl_layer_api_version;
-#define CL_LAYER_API_VERSION 0x0001
-#define CL_LAYER_API_VERSION_100 100
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-CL_API_ENTRY typedef cl_int (CL_API_CALL *pfn_clGetLayerInfo)(
-    cl_layer_info  param_name,
-    size_t         param_value_size,
-    void          *param_value,
-    size_t        *param_value_size_ret);
+extern struct _cl_icd_dispatch dispatch;
 
-CL_API_ENTRY typedef cl_int (CL_API_CALL *pfn_clInitLayer)(
-    cl_uint                         num_entries,
-    const struct _cl_icd_dispatch  *target_dispatch,
-    cl_uint                        *num_entries_ret,
-    const struct _cl_icd_dispatch **layer_dispatch);
+extern const struct _cl_icd_dispatch *tdispatch;
 
-#endif /* __ICD_LAYER_H */
+extern void _init_dispatch(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __ICD_PRINT_LAYER_H */
