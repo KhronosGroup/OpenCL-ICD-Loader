@@ -19,9 +19,16 @@
 #include <stdbool.h>
 #include <windows.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 extern const LUID ZeroLuid;
 
 BOOL adapterAdd(const char* szName, LUID luid);
 
 // Do not free the memory returned by this function.
 const char* getOpenCLRegKeyName(void);
+
+#ifdef __cplusplus
+}
+#endif
