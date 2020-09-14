@@ -47,7 +47,8 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd_dispatch.h
     loader/icd_dispatch_generated.c
     loader/icd_envvars.h
-    loader/icd_platform.h)
+    loader/icd_platform.h
+    loader/icd_layer.h)
 
 if (WIN32)
     list (APPEND OPENCL_ICD_LOADER_SOURCES 

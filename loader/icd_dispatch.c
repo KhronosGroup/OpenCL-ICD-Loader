@@ -101,16 +101,13 @@ static void* khrIcdGetExtensionFunctionAddress(const char* function_name)
 extern "C" {
 #endif
 
-CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs(
+static inline cl_int clGetPlatformIDs_body(
     cl_uint num_entries,
     cl_platform_id* platforms,
-    cl_uint* num_platforms) CL_API_SUFFIX__VERSION_1_0
+    cl_uint* num_platforms)
 {
     KHRicdVendor* vendor = NULL;
     cl_uint i;
-
-    // initialize the platforms (in case they have not been already)
-    khrIcdInitialize();
 
     if (!num_entries && platforms)
     {
@@ -150,17 +147,43 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs(
     return CL_SUCCESS;
 }
 
-CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress(
-    const char* function_name) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs_disp(
+    cl_uint num_entries,
+    cl_platform_id* platforms,
+    cl_uint* num_platforms) CL_API_SUFFIX__VERSION_1_0
+{
+    return clGetPlatformIDs_body(
+        num_entries,
+        platforms,
+        num_platforms);
+}
+
+CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs(
+    cl_uint num_entries,
+    cl_platform_id* platforms,
+    cl_uint* num_platforms) CL_API_SUFFIX__VERSION_1_0
+{
+    // initialize the platforms (in case they have not been already)
+    khrIcdInitialize();
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetPlatformIDs(
+            num_entries,
+            platforms,
+            num_platforms);
+    return clGetPlatformIDs_body(
+        num_entries,
+        platforms,
+        num_platforms);
+}
+
+static inline void* clGetExtensionFunctionAddress_body(
+    const char* function_name)
 {
     void* function_address = NULL;
     size_t function_name_length = 0;
     KHRicdVendor* vendor = NULL;
 
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(function_name, NULL);
-
-    // make sure the ICD is initialized
-    khrIcdInitialize();
 
     // check if this is an ICD-aware extension
     function_address = khrIcdGetExtensionFunctionAddress(function_name);
@@ -189,16 +212,33 @@ CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress(
     return NULL;
 }
 
-CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform(
+CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress_disp(
+    const char* function_name) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+{
+    return clGetExtensionFunctionAddress_body(
+        function_name);
+}
+
+CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress(
+    const char* function_name) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+{
+    // make sure the ICD is initialized
+    khrIcdInitialize();
+
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetExtensionFunctionAddress(
+            function_name);
+    return clGetExtensionFunctionAddress_body(
+        function_name);
+}
+
+static inline void* clGetExtensionFunctionAddressForPlatform_body(
     cl_platform_id platform,
     const char* function_name) CL_API_SUFFIX__VERSION_1_2
 {
     void* function_address = NULL;
 
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(function_name, NULL);
-
-    // make sure the ICD is initialized
-    khrIcdInitialize();
 
     // check if this is an ICD-aware extension
     function_address = khrIcdGetExtensionFunctionAddress(function_name);
@@ -212,6 +252,30 @@ CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform(
 
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, NULL);
     return platform->dispatch->clGetExtensionFunctionAddressForPlatform(
+        platform,
+        function_name);
+}
+
+CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_disp(
+    cl_platform_id platform,
+    const char* function_name) CL_API_SUFFIX__VERSION_1_2
+{
+    return clGetExtensionFunctionAddressForPlatform_body(
+        platform,
+        function_name);
+}
+
+CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform(
+    cl_platform_id platform,
+    const char* function_name) CL_API_SUFFIX__VERSION_1_2
+{
+    // make sure the ICD is initialized
+    khrIcdInitialize();
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetExtensionFunctionAddressForPlatform(
+            platform,
+            function_name);
+    return clGetExtensionFunctionAddressForPlatform_body(
         platform,
         function_name);
 }
