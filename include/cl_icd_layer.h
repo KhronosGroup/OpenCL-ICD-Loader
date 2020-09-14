@@ -22,6 +22,10 @@
 #include <CL/cl.h>
 #include <CL/cl_icd.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef cl_uint cl_layer_info;
 typedef cl_uint cl_layer_api_version;
 #define CL_LAYER_API_VERSION 0x0001
@@ -38,5 +42,9 @@ CL_API_ENTRY typedef cl_int (CL_API_CALL *pfn_clInitLayer)(
     const struct _cl_icd_dispatch  *target_dispatch,
     cl_uint                        *num_entries_ret,
     const struct _cl_icd_dispatch **layer_dispatch);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __ICD_LAYER_H */
