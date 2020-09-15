@@ -7,4 +7,16 @@ if (ENABLE_OPENCL_LAYERS)
     add_subdirectory (layer)
 endif ()
 
-add_test (NAME opencl_icd_loader_test COMMAND icd_loader_test)
+set_target_properties (IcdLog OpenCLDriverStub icd_loader_test
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+    PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+)
+
+add_test (
+    NAME opencl_icd_loader_test
+    COMMAND icd_loader_test
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+)
