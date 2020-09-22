@@ -44,7 +44,6 @@ void khrIcdOsVendorsEnumerate(void)
     char* envPath = NULL;
 
     khrIcdVendorsEnumerateEnv();
-    khrIcdLayersEnumerateEnv();
 
     envPath = khrIcd_secure_getenv("OCL_ICD_VENDORS");
     if (NULL != envPath)
@@ -142,6 +141,7 @@ void khrIcdOsVendorsEnumerate(void)
     {
         khrIcd_free_getenv(envPath);
     }
+    khrIcdLayersEnumerateEnv();
 }
 
 // go through the list of vendors only once

@@ -114,7 +114,6 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     DWORD dwIndex;
 
     khrIcdVendorsEnumerateEnv();
-    khrIcdLayersEnumerateEnv();
 
     status |= khrIcdOsVendorsEnumerateDXGK();
     if (!status)
@@ -240,6 +239,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     {
         KHR_ICD_TRACE("Failed to close platforms key %s, ignoring\n", platformsName);
     }
+    khrIcdLayersEnumerateEnv();
     return status;
 }
 
