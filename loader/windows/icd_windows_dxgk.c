@@ -33,6 +33,7 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
 {
     bool ret = false;
     int result = 0;
+
     // Get handle to GDI Runtime
     HMODULE h = LoadLibrary("gdi32.dll");
     if (h == NULL)
@@ -41,7 +42,6 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
     if(GetProcAddress(h, "D3DKMTSubmitPresentBltToHwQueue")) // OS Version check
     {
         LoaderEnumAdapters2 EnumAdapters;
-
         NTSTATUS status = STATUS_SUCCESS;
 
         char cszLibraryName[MAX_PATH] = { 0 };
@@ -63,7 +63,6 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
         {
             EnumAdapters.adapter_count = 0;
             EnumAdapters.adapters = NULL;
-
             status = pEnumAdapters2(&EnumAdapters);
             if (status == STATUS_BUFFER_TOO_SMALL)
             {
@@ -83,7 +82,6 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             KHR_ICD_TRACE("Allocation failure for adapters buffer\n");
             goto out;
         }
-
         status = pEnumAdapters2(&EnumAdapters);
         if (!NT_SUCCESS(status))
         {
@@ -92,9 +90,7 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
         }
         const char* cszOpenCLRegKeyName = getOpenCLRegKeyName();
         const int szOpenCLRegKeyName = (int)(strlen(cszOpenCLRegKeyName) + 1)*sizeof(cszOpenCLRegKeyName[0]);
-
         for (UINT AdapterIndex = 0; AdapterIndex < EnumAdapters.adapter_count; AdapterIndex++)
-
         {
             LoaderQueryRegistryInfo queryArgs = {0};
             LoaderQueryRegistryInfo* pQueryArgs = &queryArgs;
@@ -136,7 +132,6 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
                     continue;
                 }
             }
-
             if (NT_SUCCESS(status) && pQueryArgs->status == LOADER_QUERY_REGISTRY_STATUS_BUFFER_OVERFLOW)
             {
                 ULONG queryBufferSize = sizeof(LoaderQueryRegistryInfo) + queryArgs.output_value_size;

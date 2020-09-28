@@ -84,7 +84,6 @@ if (WIN32)
     # only required in rare cases.
     if (DEFINED ENV{DXSDK_DIR} AND NOT (MINGW OR MSYS OR CYGWIN))
         include_directories ($ENV{DXSDK_DIR}/Include)
-        include_directories ($ENV{WDK}/km)
     endif ()
 else ()
     # By default don't include OpenCL 3.0 symbol definitions (i.e. comment them
@@ -113,7 +112,6 @@ set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 target_include_directories(OpenCL SYSTEM PUBLIC ${OPENCL_ICD_LOADER_HEADERS_DIR})
 
 if (WIN32)
-
     target_link_libraries (OpenCL cfgmgr32.lib runtimeobject.lib)
 
     option (OPENCL_ICD_LOADER_DISABLE_OPENCLON12 "Disable support for OpenCLOn12. Support for OpenCLOn12 should only be disabled when building an import lib to link with, and must be enabled when building an ICD loader for distribution!" OFF)
