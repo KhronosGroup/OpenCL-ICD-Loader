@@ -154,7 +154,7 @@ int test_clEnqueueMigrateMemObjects(const struct clEnqueueMigrateMemObjects_st* 
                      &event);
 
     ret_val=clEnqueueMigrateMemObjects(command_queue,
-            data->num_mem_objects, 
+            (cl_uint)data->num_mem_objects, 
             data->mem_objects,
             data->flags,
             data->num_events_in_wait_list,
