@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 The Khronos Group Inc.
+ * Copyright (c) 2016-2020 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 #define OPENCL_ICD_LOADER_VERSION_MAJOR 2
 #define OPENCL_ICD_LOADER_VERSION_MINOR 2
-#define OPENCL_ICD_LOADER_VERSION_REV   5
+#define OPENCL_ICD_LOADER_VERSION_REV   9
 
 #ifdef RC_INVOKED
 
@@ -48,7 +48,7 @@ BEGIN
         BEGIN
             VALUE "FileDescription" ,"OpenCL Client DLL"
             VALUE "ProductName"     ,"Khronos OpenCL ICD Loader"
-            VALUE "LegalCopyright"  ,"Copyright \251 The Khronos Group Inc 2016-2019"
+            VALUE "LegalCopyright"  ,"Copyright \251 The Khronos Group Inc 2016-2020"
             VALUE "FileVersion"     ,OPENCL_ICD_LOADER_VERSION_STRING ".0"
             VALUE "CompanyName"     ,"Khronos Group"
             VALUE "InternalName"    ,"OpenCL"

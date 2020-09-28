@@ -20,6 +20,7 @@
 #include "icd_windows.h"
 #include "icd_windows_hkr.h"
 #include "icd_windows_dxgk.h"
+#include "icd_windows_apppackage.h"
 #include <stdio.h>
 #include <winreg.h>
 
@@ -118,6 +119,8 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
             KHR_ICD_TRACE("Failed to enumerate HKR entries, continuing\n");
         }
     }
+    
+    status |= khrIcdOsVendorsEnumerateAppPackage();
 
     KHR_ICD_TRACE("Opening key HKLM\\%s...\n", platformsName);
     result = RegOpenKeyExA(
@@ -249,7 +252,12 @@ void khrIcdOsVendorsEnumerateOnce()
 // dynamically load a library.  returns NULL on failure
 void *khrIcdOsLibraryLoad(const char *libraryName)
 {
-    return (void *)LoadLibraryA(libraryName);
+    HMODULE hTemp = LoadLibraryExA(libraryName, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+    if (!hTemp && GetLastError() == ERROR_INVALID_PARAMETER)
+    {
+        hTemp = LoadLibraryExA(libraryName, NULL, 0);
+    }
+    return (void*)hTemp;
 }
 
 // get a function pointer from a loaded library.  returns NULL on failure.

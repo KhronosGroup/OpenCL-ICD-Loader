@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 The Khronos Group Inc.
+ * Copyright (c) 2017-2019 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,10 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
-#ifndef _ICD_PLATFORM_H_
-#define _ICD_PLATFORM_H_
+#include <stdbool.h>
+#include "icd_windows.h"
 
-#if defined(__linux__) || defined(__APPLE__)
-
-#define PATH_SEPARATOR  ':'
-#define DIRECTORY_SYMBOL '/'
-#ifdef __ANDROID__
-#define ICD_VENDOR_PATH "/system/vendor/Khronos/OpenCL/vendors";
-#else
-#define ICD_VENDOR_PATH "/etc/OpenCL/vendors";
-#endif // ANDROID
-
-#elif defined(_WIN32)
-
-#define PATH_SEPARATOR ';'
-#define DIRECTORY_SYMBOL '\\'
-
+#ifdef __cplusplus
+extern "C"
 #endif
-
-#endif
+bool khrIcdOsVendorsEnumerateAppPackage(void);

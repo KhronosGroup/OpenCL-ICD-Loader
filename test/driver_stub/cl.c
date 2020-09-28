@@ -355,6 +355,30 @@ clGetContextInfo(cl_context         context,
     return return_value;
 }
 
+#ifdef CL_VERSION_3_0
+
+CL_API_ENTRY cl_int CL_API_CALL
+clSetContextDestructorCallback(cl_context         context,
+                               void (CL_CALLBACK* pfn_notify)(cl_context context,
+                                                              void* user_data),
+                               void*              user_data) CL_API_SUFFIX__VERSION_3_0
+{
+    cl_int return_value = CL_OUT_OF_RESOURCES;
+    test_icd_stub_log("clSetContextDestructorCallback(%p, %p, %p)\n",
+                      context,
+                      pfn_notify,
+                      user_data);
+    pfn_notify(context, user_data);
+    test_icd_stub_log("setcontextdestructor_callback(%p, %p)\n",
+               context,
+               user_data);
+
+    test_icd_stub_log("Value returned: %d\n", return_value);
+    return return_value;
+}
+
+#endif
+
 /* Command Queue APIs */
 CL_API_ENTRY cl_command_queue CL_API_CALL
 clCreateCommandQueue(cl_context                     context,
@@ -551,6 +575,56 @@ clCreateImage3D(cl_context              context,
     return obj;
 }
 
+#ifdef CL_VERSION_3_0
+
+CL_API_ENTRY cl_mem CL_API_CALL
+clCreateBufferWithProperties(cl_context                context ,
+                             const cl_mem_properties * properties,
+                             cl_mem_flags              flags ,
+                             size_t                    size ,
+                             void *                    host_ptr ,
+                             cl_int *                  errcode_ret) CL_API_SUFFIX__VERSION_3_0
+{
+    cl_mem obj = (cl_mem) malloc(sizeof(struct _cl_mem));
+    obj->dispatch = dispatchTable;
+    test_icd_stub_log("clCreateBufferWithProperties(%p, %p, %x, %u, %p, %p)\n",
+                      context,
+                      properties,
+                      flags,
+                      size,
+                      host_ptr,
+                      errcode_ret);
+
+    test_icd_stub_log("Value returned: %p\n", obj);
+    return obj;
+}
+
+CL_API_ENTRY cl_mem CL_API_CALL
+clCreateImageWithProperties(cl_context                context,
+                            const cl_mem_properties * properties,
+                            cl_mem_flags              flags,
+                            const cl_image_format *   image_format,
+                            const cl_image_desc *     image_desc,
+                            void *                    host_ptr,
+                            cl_int *                  errcode_ret) CL_API_SUFFIX__VERSION_3_0
+{
+    cl_mem obj = (cl_mem) malloc(sizeof(struct _cl_mem));
+    obj->dispatch = dispatchTable;
+    test_icd_stub_log("clCreateImageWithProperties(%p, %p, %x, %p, %p, %p, %p)\n",
+                      context,
+                      properties,
+                      flags,
+                      image_format,
+                      image_desc,
+                      host_ptr,
+                      errcode_ret);
+
+    test_icd_stub_log("Value returned: %p\n", obj);
+    return obj;
+}
+
+#endif  // CL_VERSION_3_0
+
 CL_API_ENTRY cl_int CL_API_CALL
 clRetainMemObject(cl_mem memobj) CL_API_SUFFIX__VERSION_1_0
 {
@@ -639,10 +713,10 @@ clSetMemObjectDestructorCallback(cl_mem  memobj ,
                       memobj,
                       pfn_notify,
                       user_data);
-    pfn_notify(memobj, NULL);
+    pfn_notify(memobj, user_data);
     test_icd_stub_log("setmemobjectdestructor_callback(%p, %p)\n",
                memobj,
-               NULL);
+               user_data);
 
     test_icd_stub_log("Value returned: %d\n", return_value);
     return return_value;

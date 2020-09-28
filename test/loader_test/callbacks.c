@@ -11,6 +11,11 @@ void CL_CALLBACK createcontext_callback(const char* _a, const void* _b, size_t _
                     _d);
 }
 
+void CL_CALLBACK setcontextdestructor_callback(cl_context _a, void* _b)
+{
+    test_icd_app_log("setcontextdestructor_callback(%p, %p)\n", _a, _b);
+}
+
 void CL_CALLBACK setmemobjectdestructor_callback(cl_mem _a, void* _b)
 {
     test_icd_app_log("setmemobjectdestructor_callback(%p, %p)\n", 
