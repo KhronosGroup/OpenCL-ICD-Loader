@@ -16,6 +16,8 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
+#include <initguid.h>
+
 #include "icd.h"
 #include "icd_windows.h"
 #include "icd_windows_hkr.h"
@@ -25,7 +27,6 @@
 #include <windows.h>
 #include <winreg.h>
 
-#include <initguid.h>
 #include <dxgi.h>
 typedef HRESULT (WINAPI *PFN_CREATE_DXGI_FACTORY)(REFIID, void **);
 
