@@ -4741,62 +4741,6 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties_disp(
 
 ///////////////////////////////////////////////////////////////////////////////
 
-CL_API_ENTRY cl_int CL_API_CALL clSetContextDestructorCallback(
-    cl_context context,
-    void (CL_CALLBACK* pfn_notify)(cl_context context, void* user_data),
-    void* user_data) CL_API_SUFFIX__VERSION_3_0
-{
-    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
-    return context->dispatch->clSetContextDestructorCallback(
-        context,
-        pfn_notify,
-        user_data);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-CL_API_ENTRY cl_mem CL_API_CALL clCreateBufferWithProperties(
-    cl_context context,
-    const cl_mem_properties* properties,
-    cl_mem_flags flags,
-    size_t size,
-    void* host_ptr,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_3_0
-{
-    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
-    return context->dispatch->clCreateBufferWithProperties(
-        context,
-        properties,
-        flags,
-        size,
-        host_ptr,
-        errcode_ret);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties(
-    cl_context context,
-    const cl_mem_properties* properties,
-    cl_mem_flags flags,
-    const cl_image_format* image_format,
-    const cl_image_desc* image_desc,
-    void* host_ptr,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_3_0
-{
-    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
-    return context->dispatch->clCreateImageWithProperties(
-        context,
-        properties,
-        flags,
-        image_format,
-        image_desc,
-        host_ptr,
-        errcode_ret);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 // cl_ext_device_fission
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT(
