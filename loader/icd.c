@@ -210,7 +210,7 @@ void khrIcdLayerAdd(const char *libraryName)
     {
         goto Done;
     }
-    KHR_ICD_TRACE("attempting to add vendor %s...\n", libraryName);
+    KHR_ICD_TRACE("attempting to add layer %s...\n", libraryName);
 
     // load its library and query its function pointers
     library = khrIcdOsLibraryLoad(libraryName);
@@ -225,7 +225,7 @@ void khrIcdLayerAdd(const char *libraryName)
     {
         if (layerIterator->library == library)
         {
-            KHR_ICD_TRACE("already loaded vendor %s, nothing to do here\n", libraryName);
+            KHR_ICD_TRACE("already loaded layer %s, nothing to do here\n", libraryName);
             goto Done;
         }
     }
@@ -238,7 +238,7 @@ void khrIcdLayerAdd(const char *libraryName)
         goto Done;
     }
 
-    // use that function to get the clIcdGetPlatformIDsKHR function pointer
+    // use that function to get the clInitLayer function pointer
     p_clInitLayer = (pfn_clInitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clInitLayer");
     if (!p_clInitLayer)
     {
