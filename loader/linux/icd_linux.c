@@ -141,7 +141,9 @@ void khrIcdOsVendorsEnumerate(void)
     {
         khrIcd_free_getenv(envPath);
     }
+#if defined(CL_ENABLE_LAYERS)
     khrIcdLayersEnumerateEnv();
+#endif // defined(CL_ENABLE_LAYERS)
 }
 
 // go through the list of vendors only once

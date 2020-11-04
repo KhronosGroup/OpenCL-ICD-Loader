@@ -60,6 +60,9 @@ extern "C" {
           invalid = 'NULL'
 %>
 %for disp in [0, 1]:
+%  if disp == 1:
+#if defined(CL_ENABLE_LAYERS)
+%  endif
 ${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + ("", "_disp")[disp]}(
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
@@ -73,6 +76,7 @@ ${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + (""
     khrIcdInitialize();
 %endif
 %if disp == 0:
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.${api.Name}(
 %for i, param in enumerate(api.Params):
@@ -82,6 +86,7 @@ ${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + (""
             ${param.Name});
 %  endif
 %endfor
+#endif // defined(CL_ENABLE_LAYERS)
 %endif
 %if api.RetType in apihandles or api.RetType == "void*":
 ## clCreateContext is a special case, since it calls through
@@ -140,10 +145,14 @@ ${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + (""
 %  endif
 %endfor
 }
+%  if disp == 1:
+#endif // defined(CL_ENABLE_LAYERS)
+%  endif
 
 ///////////////////////////////////////////////////////////////////////////////
 %endfor
 %else:
+#if defined(CL_ENABLE_LAYERS)
 extern CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + "_disp"}(
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
@@ -152,6 +161,7 @@ extern CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + "_disp"}(
     ${param.Type} ${param.Name}${param.TypeEnd}) ${api.Suffix};
 %  endif
 %endfor
+#endif // defined(CL_ENABLE_LAYERS)
 
 %endif
 %endfor
@@ -191,6 +201,9 @@ win32extensions = {
           invalid = 'NULL'
 %>
 %for disp in [0, 1]:
+%  if disp == 1:
+#if defined(CL_ENABLE_LAYERS)
+%  endif
 ${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + ("", "_disp")[disp]}(
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
@@ -201,6 +214,7 @@ ${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + (""
 %endfor
 {
 %if disp == 0:
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.${api.Name}(
 %for i, param in enumerate(api.Params):
@@ -210,6 +224,7 @@ ${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + (""
             ${param.Name});
 %  endif
 %endfor
+#endif // defined(CL_ENABLE_LAYERS)
 %endif
 %if api.RetType in apihandles or api.RetType == "void*":
 %  if False:
@@ -239,6 +254,9 @@ ${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + (""
 %  endif
 %endfor
 }
+%  if disp == 1:
+#endif // defined(CL_ENABLE_LAYERS)
+%  endif
 %endfor
 %endfor
 
@@ -249,6 +267,7 @@ ${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + (""
 ///////////////////////////////////////////////////////////////////////////////
 
 %endfor
+#if defined(CL_ENABLE_LAYERS)
 struct _cl_icd_dispatch khrMasterDispatch = {
     &clGetPlatformIDs_disp,
     &clGetPlatformInfo_disp,
@@ -453,6 +472,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clCreateImageWithProperties_disp,
     &clSetContextDestructorCallback_disp
 };
+#endif // defined(CL_ENABLE_LAYERS)
 #ifdef __cplusplus
 }
 #endif

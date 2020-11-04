@@ -239,7 +239,9 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     {
         KHR_ICD_TRACE("Failed to close platforms key %s, ignoring\n", platformsName);
     }
+#if defined(CL_ENABLE_LAYERS)
     khrIcdLayersEnumerateEnv();
+#endif // defined(CL_ENABLE_LAYERS)
     return status;
 }
 

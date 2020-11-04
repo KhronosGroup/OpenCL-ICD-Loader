@@ -165,11 +165,14 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs(
 {
     // initialize the platforms (in case they have not been already)
     khrIcdInitialize();
+
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetPlatformIDs(
             num_entries,
             platforms,
             num_platforms);
+#endif // defined(CL_ENABLE_LAYERS)
     return clGetPlatformIDs_body(
         num_entries,
         platforms,
@@ -225,9 +228,11 @@ CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress(
     // make sure the ICD is initialized
     khrIcdInitialize();
 
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetExtensionFunctionAddress(
             function_name);
+#endif // defined(CL_ENABLE_LAYERS)
     return clGetExtensionFunctionAddress_body(
         function_name);
 }
@@ -271,10 +276,12 @@ CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform(
 {
     // make sure the ICD is initialized
     khrIcdInitialize();
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetExtensionFunctionAddressForPlatform(
             platform,
             function_name);
+#endif // defined(CL_ENABLE_LAYERS)
     return clGetExtensionFunctionAddressForPlatform_body(
         platform,
         function_name);

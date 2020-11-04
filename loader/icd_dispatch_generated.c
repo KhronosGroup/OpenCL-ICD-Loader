@@ -25,10 +25,12 @@ extern "C" {
 
 ///////////////////////////////////////////////////////////////////////////////
 // Core APIs:
+#if defined(CL_ENABLE_LAYERS)
 extern CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs_disp(
     cl_uint num_entries,
     cl_platform_id* platforms,
     cl_uint* num_platforms) CL_API_SUFFIX__VERSION_1_0;
+#endif // defined(CL_ENABLE_LAYERS)
 
 
 CL_API_ENTRY cl_int CL_API_CALL clGetPlatformInfo(
@@ -38,6 +40,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPlatformInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetPlatformInfo(
             platform,
@@ -45,6 +48,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPlatformInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     return platform->dispatch->clGetPlatformInfo(
         platform,
@@ -55,6 +59,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPlatformInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetPlatformInfo_disp(
     cl_platform_id platform,
     cl_platform_info param_name,
@@ -70,6 +75,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetPlatformInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -80,6 +86,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
     cl_device_id* devices,
     cl_uint* num_devices) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetDeviceIDs(
             platform,
@@ -87,6 +94,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
             num_entries,
             devices,
             num_devices);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     return platform->dispatch->clGetDeviceIDs(
         platform,
@@ -97,6 +105,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs_disp(
     cl_platform_id platform,
     cl_device_type device_type,
@@ -112,6 +121,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs_disp(
         devices,
         num_devices);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -122,6 +132,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetDeviceInfo(
             device,
@@ -129,6 +140,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clGetDeviceInfo(
         device,
@@ -139,6 +151,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceInfo_disp(
     cl_device_id device,
     cl_device_info param_name,
@@ -154,6 +167,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -165,6 +179,7 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContext(
     void* user_data,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateContext(
             properties,
@@ -173,6 +188,7 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContext(
             pfn_notify,
             user_data,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     if (num_devices == 0 || devices == NULL) {
         KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_VALUE);
     }
@@ -187,6 +203,7 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContext(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_context CL_API_CALL clCreateContext_disp(
     const cl_context_properties* properties,
     cl_uint num_devices,
@@ -207,6 +224,7 @@ static CL_API_ENTRY cl_context CL_API_CALL clCreateContext_disp(
         user_data,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -218,6 +236,7 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType(
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     khrIcdInitialize();
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateContextFromType(
             properties,
@@ -225,6 +244,7 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType(
             pfn_notify,
             user_data,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     cl_platform_id platform = NULL;
     khrIcdContextPropertiesGetPlatform(properties, &platform);
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(platform, CL_INVALID_PLATFORM);
@@ -237,6 +257,7 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType_disp(
     const cl_context_properties* properties,
     cl_device_type device_type,
@@ -255,21 +276,25 @@ static CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType_disp(
         user_data,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainContext(
     cl_context context) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainContext(
             context);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
     return context->dispatch->clRetainContext(
         context);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clRetainContext_disp(
     cl_context context) CL_API_SUFFIX__VERSION_1_0
 {
@@ -277,21 +302,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clRetainContext_disp(
     return context->dispatch->clRetainContext(
         context);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseContext(
     cl_context context) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseContext(
             context);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
     return context->dispatch->clReleaseContext(
         context);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clReleaseContext_disp(
     cl_context context) CL_API_SUFFIX__VERSION_1_0
 {
@@ -299,6 +328,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clReleaseContext_disp(
     return context->dispatch->clReleaseContext(
         context);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -309,6 +339,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetContextInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetContextInfo(
             context,
@@ -316,6 +347,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetContextInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
     return context->dispatch->clGetContextInfo(
         context,
@@ -326,6 +358,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetContextInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetContextInfo_disp(
     cl_context context,
     cl_context_info param_name,
@@ -341,21 +374,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetContextInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainCommandQueue(
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainCommandQueue(
             command_queue);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clRetainCommandQueue(
         command_queue);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clRetainCommandQueue_disp(
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
 {
@@ -363,21 +400,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clRetainCommandQueue_disp(
     return command_queue->dispatch->clRetainCommandQueue(
         command_queue);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseCommandQueue(
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseCommandQueue(
             command_queue);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clReleaseCommandQueue(
         command_queue);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clReleaseCommandQueue_disp(
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
 {
@@ -385,6 +426,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clReleaseCommandQueue_disp(
     return command_queue->dispatch->clReleaseCommandQueue(
         command_queue);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -395,6 +437,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetCommandQueueInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetCommandQueueInfo(
             command_queue,
@@ -402,6 +445,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetCommandQueueInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clGetCommandQueueInfo(
         command_queue,
@@ -412,6 +456,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetCommandQueueInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetCommandQueueInfo_disp(
     cl_command_queue command_queue,
     cl_command_queue_info param_name,
@@ -427,6 +472,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetCommandQueueInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -437,6 +483,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateBuffer(
     void* host_ptr,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateBuffer(
             context,
@@ -444,6 +491,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateBuffer(
             size,
             host_ptr,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateBuffer(
         context,
@@ -454,6 +502,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateBuffer_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -469,21 +518,25 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateBuffer_disp(
         host_ptr,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainMemObject(
     cl_mem memobj) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainMemObject(
             memobj);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
     return memobj->dispatch->clRetainMemObject(
         memobj);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clRetainMemObject_disp(
     cl_mem memobj) CL_API_SUFFIX__VERSION_1_0
 {
@@ -491,21 +544,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clRetainMemObject_disp(
     return memobj->dispatch->clRetainMemObject(
         memobj);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseMemObject(
     cl_mem memobj) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseMemObject(
             memobj);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
     return memobj->dispatch->clReleaseMemObject(
         memobj);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clReleaseMemObject_disp(
     cl_mem memobj) CL_API_SUFFIX__VERSION_1_0
 {
@@ -513,6 +570,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clReleaseMemObject_disp(
     return memobj->dispatch->clReleaseMemObject(
         memobj);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -524,6 +582,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetSupportedImageFormats(
     cl_image_format* image_formats,
     cl_uint* num_image_formats) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetSupportedImageFormats(
             context,
@@ -532,6 +591,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetSupportedImageFormats(
             num_entries,
             image_formats,
             num_image_formats);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
     return context->dispatch->clGetSupportedImageFormats(
         context,
@@ -543,6 +603,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetSupportedImageFormats(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetSupportedImageFormats_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -560,6 +621,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetSupportedImageFormats_disp(
         image_formats,
         num_image_formats);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -570,6 +632,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetMemObjectInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetMemObjectInfo(
             memobj,
@@ -577,6 +640,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetMemObjectInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
     return memobj->dispatch->clGetMemObjectInfo(
         memobj,
@@ -587,6 +651,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetMemObjectInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetMemObjectInfo_disp(
     cl_mem memobj,
     cl_mem_info param_name,
@@ -602,6 +667,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetMemObjectInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -612,6 +678,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetImageInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetImageInfo(
             image,
@@ -619,6 +686,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetImageInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(image, CL_INVALID_MEM_OBJECT);
     return image->dispatch->clGetImageInfo(
         image,
@@ -629,6 +697,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetImageInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetImageInfo_disp(
     cl_mem image,
     cl_image_info param_name,
@@ -644,21 +713,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetImageInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainSampler(
     cl_sampler sampler) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainSampler(
             sampler);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(sampler, CL_INVALID_SAMPLER);
     return sampler->dispatch->clRetainSampler(
         sampler);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clRetainSampler_disp(
     cl_sampler sampler) CL_API_SUFFIX__VERSION_1_0
 {
@@ -666,21 +739,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clRetainSampler_disp(
     return sampler->dispatch->clRetainSampler(
         sampler);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseSampler(
     cl_sampler sampler) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseSampler(
             sampler);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(sampler, CL_INVALID_SAMPLER);
     return sampler->dispatch->clReleaseSampler(
         sampler);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clReleaseSampler_disp(
     cl_sampler sampler) CL_API_SUFFIX__VERSION_1_0
 {
@@ -688,6 +765,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clReleaseSampler_disp(
     return sampler->dispatch->clReleaseSampler(
         sampler);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -698,6 +776,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetSamplerInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetSamplerInfo(
             sampler,
@@ -705,6 +784,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetSamplerInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(sampler, CL_INVALID_SAMPLER);
     return sampler->dispatch->clGetSamplerInfo(
         sampler,
@@ -715,6 +795,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetSamplerInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetSamplerInfo_disp(
     cl_sampler sampler,
     cl_sampler_info param_name,
@@ -730,6 +811,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetSamplerInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -740,6 +822,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithSource(
     const size_t* lengths,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateProgramWithSource(
             context,
@@ -747,6 +830,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithSource(
             strings,
             lengths,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateProgramWithSource(
         context,
@@ -757,6 +841,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithSource(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithSource_disp(
     cl_context context,
     cl_uint count,
@@ -772,6 +857,7 @@ static CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithSource_disp(
         lengths,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -784,6 +870,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBinary(
     cl_int* binary_status,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateProgramWithBinary(
             context,
@@ -793,6 +880,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBinary(
             binaries,
             binary_status,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateProgramWithBinary(
         context,
@@ -805,6 +893,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBinary(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBinary_disp(
     cl_context context,
     cl_uint num_devices,
@@ -824,21 +913,25 @@ static CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBinary_disp(
         binary_status,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainProgram(
     cl_program program) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainProgram(
             program);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clRetainProgram(
         program);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clRetainProgram_disp(
     cl_program program) CL_API_SUFFIX__VERSION_1_0
 {
@@ -846,21 +939,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clRetainProgram_disp(
     return program->dispatch->clRetainProgram(
         program);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseProgram(
     cl_program program) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseProgram(
             program);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clReleaseProgram(
         program);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clReleaseProgram_disp(
     cl_program program) CL_API_SUFFIX__VERSION_1_0
 {
@@ -868,6 +965,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clReleaseProgram_disp(
     return program->dispatch->clReleaseProgram(
         program);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -879,6 +977,7 @@ CL_API_ENTRY cl_int CL_API_CALL clBuildProgram(
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
     void* user_data) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clBuildProgram(
             program,
@@ -887,6 +986,7 @@ CL_API_ENTRY cl_int CL_API_CALL clBuildProgram(
             options,
             pfn_notify,
             user_data);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clBuildProgram(
         program,
@@ -898,6 +998,7 @@ CL_API_ENTRY cl_int CL_API_CALL clBuildProgram(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clBuildProgram_disp(
     cl_program program,
     cl_uint num_devices,
@@ -915,6 +1016,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clBuildProgram_disp(
         pfn_notify,
         user_data);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -925,6 +1027,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetProgramInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetProgramInfo(
             program,
@@ -932,6 +1035,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetProgramInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clGetProgramInfo(
         program,
@@ -942,6 +1046,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetProgramInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetProgramInfo_disp(
     cl_program program,
     cl_program_info param_name,
@@ -957,6 +1062,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetProgramInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -968,6 +1074,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetProgramBuildInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetProgramBuildInfo(
             program,
@@ -976,6 +1083,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetProgramBuildInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clGetProgramBuildInfo(
         program,
@@ -987,6 +1095,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetProgramBuildInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetProgramBuildInfo_disp(
     cl_program program,
     cl_device_id device,
@@ -1004,6 +1113,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetProgramBuildInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1012,11 +1122,13 @@ CL_API_ENTRY cl_kernel CL_API_CALL clCreateKernel(
     const char* kernel_name,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateKernel(
             program,
             kernel_name,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(program, CL_INVALID_PROGRAM);
     return program->dispatch->clCreateKernel(
         program,
@@ -1025,6 +1137,7 @@ CL_API_ENTRY cl_kernel CL_API_CALL clCreateKernel(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_kernel CL_API_CALL clCreateKernel_disp(
     cl_program program,
     const char* kernel_name,
@@ -1036,6 +1149,7 @@ static CL_API_ENTRY cl_kernel CL_API_CALL clCreateKernel_disp(
         kernel_name,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1045,12 +1159,14 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateKernelsInProgram(
     cl_kernel* kernels,
     cl_uint* num_kernels_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateKernelsInProgram(
             program,
             num_kernels,
             kernels,
             num_kernels_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clCreateKernelsInProgram(
         program,
@@ -1060,6 +1176,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateKernelsInProgram(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clCreateKernelsInProgram_disp(
     cl_program program,
     cl_uint num_kernels,
@@ -1073,21 +1190,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clCreateKernelsInProgram_disp(
         kernels,
         num_kernels_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainKernel(
     cl_kernel kernel) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainKernel(
             kernel);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clRetainKernel(
         kernel);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clRetainKernel_disp(
     cl_kernel kernel) CL_API_SUFFIX__VERSION_1_0
 {
@@ -1095,21 +1216,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clRetainKernel_disp(
     return kernel->dispatch->clRetainKernel(
         kernel);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseKernel(
     cl_kernel kernel) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseKernel(
             kernel);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clReleaseKernel(
         kernel);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clReleaseKernel_disp(
     cl_kernel kernel) CL_API_SUFFIX__VERSION_1_0
 {
@@ -1117,6 +1242,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clReleaseKernel_disp(
     return kernel->dispatch->clReleaseKernel(
         kernel);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1126,12 +1252,14 @@ CL_API_ENTRY cl_int CL_API_CALL clSetKernelArg(
     size_t arg_size,
     const void* arg_value) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetKernelArg(
             kernel,
             arg_index,
             arg_size,
             arg_value);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clSetKernelArg(
         kernel,
@@ -1141,6 +1269,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetKernelArg(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clSetKernelArg_disp(
     cl_kernel kernel,
     cl_uint arg_index,
@@ -1154,6 +1283,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clSetKernelArg_disp(
         arg_size,
         arg_value);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1164,6 +1294,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetKernelInfo(
             kernel,
@@ -1171,6 +1302,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clGetKernelInfo(
         kernel,
@@ -1181,6 +1313,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetKernelInfo_disp(
     cl_kernel kernel,
     cl_kernel_info param_name,
@@ -1196,6 +1329,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetKernelInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1207,6 +1341,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelWorkGroupInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetKernelWorkGroupInfo(
             kernel,
@@ -1215,6 +1350,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelWorkGroupInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clGetKernelWorkGroupInfo(
         kernel,
@@ -1226,6 +1362,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelWorkGroupInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetKernelWorkGroupInfo_disp(
     cl_kernel kernel,
     cl_device_id device,
@@ -1243,6 +1380,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetKernelWorkGroupInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1250,10 +1388,12 @@ CL_API_ENTRY cl_int CL_API_CALL clWaitForEvents(
     cl_uint num_events,
     const cl_event* event_list) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clWaitForEvents(
             num_events,
             event_list);
+#endif // defined(CL_ENABLE_LAYERS)
     if (num_events == 0 || event_list == NULL) {
         return CL_INVALID_VALUE;
     }
@@ -1264,6 +1404,7 @@ CL_API_ENTRY cl_int CL_API_CALL clWaitForEvents(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clWaitForEvents_disp(
     cl_uint num_events,
     const cl_event* event_list) CL_API_SUFFIX__VERSION_1_0
@@ -1276,6 +1417,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clWaitForEvents_disp(
         num_events,
         event_list);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1286,6 +1428,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetEventInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetEventInfo(
             event,
@@ -1293,6 +1436,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetEventInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
     return event->dispatch->clGetEventInfo(
         event,
@@ -1303,6 +1447,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetEventInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetEventInfo_disp(
     cl_event event,
     cl_event_info param_name,
@@ -1318,21 +1463,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetEventInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainEvent(
     cl_event event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainEvent(
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
     return event->dispatch->clRetainEvent(
         event);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clRetainEvent_disp(
     cl_event event) CL_API_SUFFIX__VERSION_1_0
 {
@@ -1340,21 +1489,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clRetainEvent_disp(
     return event->dispatch->clRetainEvent(
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseEvent(
     cl_event event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseEvent(
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
     return event->dispatch->clReleaseEvent(
         event);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clReleaseEvent_disp(
     cl_event event) CL_API_SUFFIX__VERSION_1_0
 {
@@ -1362,6 +1515,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clReleaseEvent_disp(
     return event->dispatch->clReleaseEvent(
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1372,6 +1526,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetEventProfilingInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetEventProfilingInfo(
             event,
@@ -1379,6 +1534,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetEventProfilingInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
     return event->dispatch->clGetEventProfilingInfo(
         event,
@@ -1389,6 +1545,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetEventProfilingInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetEventProfilingInfo_disp(
     cl_event event,
     cl_profiling_info param_name,
@@ -1404,21 +1561,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetEventProfilingInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clFlush(
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clFlush(
             command_queue);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clFlush(
         command_queue);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clFlush_disp(
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
 {
@@ -1426,21 +1587,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clFlush_disp(
     return command_queue->dispatch->clFlush(
         command_queue);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clFinish(
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clFinish(
             command_queue);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clFinish(
         command_queue);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clFinish_disp(
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
 {
@@ -1448,6 +1613,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clFinish_disp(
     return command_queue->dispatch->clFinish(
         command_queue);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1462,6 +1628,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBuffer(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReadBuffer(
             command_queue,
@@ -1473,6 +1640,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBuffer(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReadBuffer(
         command_queue,
@@ -1487,6 +1655,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBuffer_disp(
     cl_command_queue command_queue,
     cl_mem buffer,
@@ -1510,6 +1679,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBuffer_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1524,6 +1694,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBuffer(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueWriteBuffer(
             command_queue,
@@ -1535,6 +1706,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBuffer(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueWriteBuffer(
         command_queue,
@@ -1549,6 +1721,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBuffer_disp(
     cl_command_queue command_queue,
     cl_mem buffer,
@@ -1572,6 +1745,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBuffer_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1586,6 +1760,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBuffer(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueCopyBuffer(
             command_queue,
@@ -1597,6 +1772,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBuffer(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueCopyBuffer(
         command_queue,
@@ -1611,6 +1787,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBuffer_disp(
     cl_command_queue command_queue,
     cl_mem src_buffer,
@@ -1634,6 +1811,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBuffer_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1650,6 +1828,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadImage(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReadImage(
             command_queue,
@@ -1663,6 +1842,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadImage(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReadImage(
         command_queue,
@@ -1679,6 +1859,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadImage(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadImage_disp(
     cl_command_queue command_queue,
     cl_mem image,
@@ -1706,6 +1887,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadImage_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1722,6 +1904,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteImage(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueWriteImage(
             command_queue,
@@ -1735,6 +1918,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteImage(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueWriteImage(
         command_queue,
@@ -1751,6 +1935,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteImage(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteImage_disp(
     cl_command_queue command_queue,
     cl_mem image,
@@ -1778,6 +1963,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteImage_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1792,6 +1978,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImage(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueCopyImage(
             command_queue,
@@ -1803,6 +1990,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImage(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueCopyImage(
         command_queue,
@@ -1817,6 +2005,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImage(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImage_disp(
     cl_command_queue command_queue,
     cl_mem src_image,
@@ -1840,6 +2029,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImage_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1854,6 +2044,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImageToBuffer(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueCopyImageToBuffer(
             command_queue,
@@ -1865,6 +2056,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImageToBuffer(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueCopyImageToBuffer(
         command_queue,
@@ -1879,6 +2071,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImageToBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImageToBuffer_disp(
     cl_command_queue command_queue,
     cl_mem src_image,
@@ -1902,6 +2095,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImageToBuffer_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1916,6 +2110,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferToImage(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueCopyBufferToImage(
             command_queue,
@@ -1927,6 +2122,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferToImage(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueCopyBufferToImage(
         command_queue,
@@ -1941,6 +2137,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferToImage(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferToImage_disp(
     cl_command_queue command_queue,
     cl_mem src_buffer,
@@ -1964,6 +2161,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferToImage_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1979,6 +2177,7 @@ CL_API_ENTRY void* CL_API_CALL clEnqueueMapBuffer(
     cl_event* event,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueMapBuffer(
             command_queue,
@@ -1991,6 +2190,7 @@ CL_API_ENTRY void* CL_API_CALL clEnqueueMapBuffer(
             event_wait_list,
             event,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueMapBuffer(
         command_queue,
@@ -2006,6 +2206,7 @@ CL_API_ENTRY void* CL_API_CALL clEnqueueMapBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY void* CL_API_CALL clEnqueueMapBuffer_disp(
     cl_command_queue command_queue,
     cl_mem buffer,
@@ -2031,6 +2232,7 @@ static CL_API_ENTRY void* CL_API_CALL clEnqueueMapBuffer_disp(
         event,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2048,6 +2250,7 @@ CL_API_ENTRY void* CL_API_CALL clEnqueueMapImage(
     cl_event* event,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueMapImage(
             command_queue,
@@ -2062,6 +2265,7 @@ CL_API_ENTRY void* CL_API_CALL clEnqueueMapImage(
             event_wait_list,
             event,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueMapImage(
         command_queue,
@@ -2079,6 +2283,7 @@ CL_API_ENTRY void* CL_API_CALL clEnqueueMapImage(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY void* CL_API_CALL clEnqueueMapImage_disp(
     cl_command_queue command_queue,
     cl_mem image,
@@ -2108,6 +2313,7 @@ static CL_API_ENTRY void* CL_API_CALL clEnqueueMapImage_disp(
         event,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2119,6 +2325,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueUnmapMemObject(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueUnmapMemObject(
             command_queue,
@@ -2127,6 +2334,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueUnmapMemObject(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueUnmapMemObject(
         command_queue,
@@ -2138,6 +2346,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueUnmapMemObject(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueUnmapMemObject_disp(
     cl_command_queue command_queue,
     cl_mem memobj,
@@ -2155,6 +2364,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueUnmapMemObject_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2169,6 +2379,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueNDRangeKernel(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueNDRangeKernel(
             command_queue,
@@ -2180,6 +2391,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueNDRangeKernel(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueNDRangeKernel(
         command_queue,
@@ -2194,6 +2406,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueNDRangeKernel(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueNDRangeKernel_disp(
     cl_command_queue command_queue,
     cl_kernel kernel,
@@ -2217,6 +2430,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueNDRangeKernel_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2232,6 +2446,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueNativeKernel(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueNativeKernel(
             command_queue,
@@ -2244,6 +2459,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueNativeKernel(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueNativeKernel(
         command_queue,
@@ -2259,6 +2475,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueNativeKernel(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueNativeKernel_disp(
     cl_command_queue command_queue,
     void (CL_CALLBACK* user_func)(void*),
@@ -2284,6 +2501,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueNativeKernel_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2293,12 +2511,14 @@ CL_API_ENTRY cl_int CL_API_CALL clSetCommandQueueProperty(
     cl_bool enable,
     cl_command_queue_properties* old_properties) CL_EXT_SUFFIX__VERSION_1_0_DEPRECATED
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetCommandQueueProperty(
             command_queue,
             properties,
             enable,
             old_properties);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clSetCommandQueueProperty(
         command_queue,
@@ -2308,6 +2528,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetCommandQueueProperty(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clSetCommandQueueProperty_disp(
     cl_command_queue command_queue,
     cl_command_queue_properties properties,
@@ -2321,6 +2542,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clSetCommandQueueProperty_disp(
         enable,
         old_properties);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2334,6 +2556,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage2D(
     void* host_ptr,
     cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateImage2D(
             context,
@@ -2344,6 +2567,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage2D(
             image_row_pitch,
             host_ptr,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateImage2D(
         context,
@@ -2357,6 +2581,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage2D(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateImage2D_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -2378,6 +2603,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateImage2D_disp(
         host_ptr,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2393,6 +2619,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D(
     void* host_ptr,
     cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateImage3D(
             context,
@@ -2405,6 +2632,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D(
             image_slice_pitch,
             host_ptr,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateImage3D(
         context,
@@ -2420,6 +2648,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -2445,6 +2674,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D_disp(
         host_ptr,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2452,10 +2682,12 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker(
     cl_command_queue command_queue,
     cl_event* event) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueMarker(
             command_queue,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueMarker(
         command_queue,
@@ -2463,6 +2695,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker_disp(
     cl_command_queue command_queue,
     cl_event* event) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
@@ -2472,6 +2705,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker_disp(
         command_queue,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2480,11 +2714,13 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents(
     cl_uint num_events,
     const cl_event* event_list) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueWaitForEvents(
             command_queue,
             num_events,
             event_list);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueWaitForEvents(
         command_queue,
@@ -2493,6 +2729,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents_disp(
     cl_command_queue command_queue,
     cl_uint num_events,
@@ -2504,21 +2741,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents_disp(
         num_events,
         event_list);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrier(
     cl_command_queue command_queue) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueBarrier(
             command_queue);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueBarrier(
         command_queue);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrier_disp(
     cl_command_queue command_queue) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
 {
@@ -2526,30 +2767,37 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrier_disp(
     return command_queue->dispatch->clEnqueueBarrier(
         command_queue);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clUnloadCompiler(
     void ) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clUnloadCompiler(
             );
+#endif // defined(CL_ENABLE_LAYERS)
     // Nothing!
     return CL_SUCCESS;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clUnloadCompiler_disp(
     void ) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
 {
     // Nothing!
     return CL_SUCCESS;
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 extern CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress_disp(
     const char* func_name) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED;
+#endif // defined(CL_ENABLE_LAYERS)
 
 
 CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueue(
@@ -2558,12 +2806,14 @@ CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueue(
     cl_command_queue_properties properties,
     cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateCommandQueue(
             context,
             device,
             properties,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateCommandQueue(
         context,
@@ -2573,6 +2823,7 @@ CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueue(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueue_disp(
     cl_context context,
     cl_device_id device,
@@ -2586,6 +2837,7 @@ static CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueue_disp(
         properties,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2596,6 +2848,7 @@ CL_API_ENTRY cl_sampler CL_API_CALL clCreateSampler(
     cl_filter_mode filter_mode,
     cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateSampler(
             context,
@@ -2603,6 +2856,7 @@ CL_API_ENTRY cl_sampler CL_API_CALL clCreateSampler(
             addressing_mode,
             filter_mode,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateSampler(
         context,
@@ -2613,6 +2867,7 @@ CL_API_ENTRY cl_sampler CL_API_CALL clCreateSampler(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_sampler CL_API_CALL clCreateSampler_disp(
     cl_context context,
     cl_bool normalized_coords,
@@ -2628,6 +2883,7 @@ static CL_API_ENTRY cl_sampler CL_API_CALL clCreateSampler_disp(
         filter_mode,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2638,6 +2894,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueTask(
     const cl_event* event_wait_list,
     cl_event* event) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueTask(
             command_queue,
@@ -2645,6 +2902,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueTask(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueTask(
         command_queue,
@@ -2655,6 +2913,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueTask(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueTask_disp(
     cl_command_queue command_queue,
     cl_kernel kernel,
@@ -2670,6 +2929,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueTask_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2680,6 +2940,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateSubBuffer(
     const void* buffer_create_info,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateSubBuffer(
             buffer,
@@ -2687,6 +2948,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateSubBuffer(
             buffer_create_type,
             buffer_create_info,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(buffer, CL_INVALID_MEM_OBJECT);
     return buffer->dispatch->clCreateSubBuffer(
         buffer,
@@ -2697,6 +2959,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateSubBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateSubBuffer_disp(
     cl_mem buffer,
     cl_mem_flags flags,
@@ -2712,6 +2975,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateSubBuffer_disp(
         buffer_create_info,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2720,11 +2984,13 @@ CL_API_ENTRY cl_int CL_API_CALL clSetMemObjectDestructorCallback(
     void (CL_CALLBACK* pfn_notify)(cl_mem memobj, void* user_data),
     void* user_data) CL_API_SUFFIX__VERSION_1_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetMemObjectDestructorCallback(
             memobj,
             pfn_notify,
             user_data);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
     return memobj->dispatch->clSetMemObjectDestructorCallback(
         memobj,
@@ -2733,6 +2999,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetMemObjectDestructorCallback(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clSetMemObjectDestructorCallback_disp(
     cl_mem memobj,
     void (CL_CALLBACK* pfn_notify)(cl_mem memobj, void* user_data),
@@ -2744,6 +3011,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clSetMemObjectDestructorCallback_disp(
         pfn_notify,
         user_data);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2751,10 +3019,12 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateUserEvent(
     cl_context context,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateUserEvent(
             context,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateUserEvent(
         context,
@@ -2762,6 +3032,7 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateUserEvent(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_event CL_API_CALL clCreateUserEvent_disp(
     cl_context context,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1
@@ -2771,6 +3042,7 @@ static CL_API_ENTRY cl_event CL_API_CALL clCreateUserEvent_disp(
         context,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2778,10 +3050,12 @@ CL_API_ENTRY cl_int CL_API_CALL clSetUserEventStatus(
     cl_event event,
     cl_int execution_status) CL_API_SUFFIX__VERSION_1_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetUserEventStatus(
             event,
             execution_status);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
     return event->dispatch->clSetUserEventStatus(
         event,
@@ -2789,6 +3063,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetUserEventStatus(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clSetUserEventStatus_disp(
     cl_event event,
     cl_int execution_status) CL_API_SUFFIX__VERSION_1_1
@@ -2798,6 +3073,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clSetUserEventStatus_disp(
         event,
         execution_status);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2807,12 +3083,14 @@ CL_API_ENTRY cl_int CL_API_CALL clSetEventCallback(
     void (CL_CALLBACK* pfn_notify)(cl_event event, cl_int event_command_status, void *user_data),
     void* user_data) CL_API_SUFFIX__VERSION_1_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetEventCallback(
             event,
             command_exec_callback_type,
             pfn_notify,
             user_data);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
     return event->dispatch->clSetEventCallback(
         event,
@@ -2822,6 +3100,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetEventCallback(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clSetEventCallback_disp(
     cl_event event,
     cl_int command_exec_callback_type,
@@ -2835,6 +3114,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clSetEventCallback_disp(
         pfn_notify,
         user_data);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2854,6 +3134,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReadBufferRect(
             command_queue,
@@ -2870,6 +3151,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReadBufferRect(
         command_queue,
@@ -2889,6 +3171,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect_disp(
     cl_command_queue command_queue,
     cl_mem buffer,
@@ -2922,6 +3205,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2941,6 +3225,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueWriteBufferRect(
             command_queue,
@@ -2957,6 +3242,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueWriteBufferRect(
         command_queue,
@@ -2976,6 +3262,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect_disp(
     cl_command_queue command_queue,
     cl_mem buffer,
@@ -3009,6 +3296,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3027,6 +3315,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferRect(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueCopyBufferRect(
             command_queue,
@@ -3042,6 +3331,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferRect(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueCopyBufferRect(
         command_queue,
@@ -3060,6 +3350,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferRect(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferRect_disp(
     cl_command_queue command_queue,
     cl_mem src_buffer,
@@ -3091,6 +3382,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferRect_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3101,6 +3393,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevices(
     cl_device_id* out_devices,
     cl_uint* num_devices_ret) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateSubDevices(
             in_device,
@@ -3108,6 +3401,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevices(
             num_devices,
             out_devices,
             num_devices_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_device, CL_INVALID_DEVICE);
     return in_device->dispatch->clCreateSubDevices(
         in_device,
@@ -3118,6 +3412,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevices(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevices_disp(
     cl_device_id in_device,
     const cl_device_partition_property* properties,
@@ -3133,21 +3428,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevices_disp(
         out_devices,
         num_devices_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainDevice(
     cl_device_id device) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainDevice(
             device);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clRetainDevice(
         device);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clRetainDevice_disp(
     cl_device_id device) CL_API_SUFFIX__VERSION_1_2
 {
@@ -3155,21 +3454,25 @@ static CL_API_ENTRY cl_int CL_API_CALL clRetainDevice_disp(
     return device->dispatch->clRetainDevice(
         device);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseDevice(
     cl_device_id device) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseDevice(
             device);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clReleaseDevice(
         device);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clReleaseDevice_disp(
     cl_device_id device) CL_API_SUFFIX__VERSION_1_2
 {
@@ -3177,6 +3480,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clReleaseDevice_disp(
     return device->dispatch->clReleaseDevice(
         device);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3188,6 +3492,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage(
     void* host_ptr,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateImage(
             context,
@@ -3196,6 +3501,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage(
             image_desc,
             host_ptr,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateImage(
         context,
@@ -3207,6 +3513,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateImage_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -3224,6 +3531,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateImage_disp(
         host_ptr,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3234,6 +3542,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBuiltInKernels(
     const char* kernel_names,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateProgramWithBuiltInKernels(
             context,
@@ -3241,6 +3550,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBuiltInKernels(
             device_list,
             kernel_names,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateProgramWithBuiltInKernels(
         context,
@@ -3251,6 +3561,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBuiltInKernels(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBuiltInKernels_disp(
     cl_context context,
     cl_uint num_devices,
@@ -3266,6 +3577,7 @@ static CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBuiltInKernels_dis
         kernel_names,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3280,6 +3592,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCompileProgram(
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
     void* user_data) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCompileProgram(
             program,
@@ -3291,6 +3604,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCompileProgram(
             header_include_names,
             pfn_notify,
             user_data);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clCompileProgram(
         program,
@@ -3305,6 +3619,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCompileProgram(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clCompileProgram_disp(
     cl_program program,
     cl_uint num_devices,
@@ -3328,6 +3643,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clCompileProgram_disp(
         pfn_notify,
         user_data);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3342,6 +3658,7 @@ CL_API_ENTRY cl_program CL_API_CALL clLinkProgram(
     void* user_data,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clLinkProgram(
             context,
@@ -3353,6 +3670,7 @@ CL_API_ENTRY cl_program CL_API_CALL clLinkProgram(
             pfn_notify,
             user_data,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clLinkProgram(
         context,
@@ -3367,6 +3685,7 @@ CL_API_ENTRY cl_program CL_API_CALL clLinkProgram(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_program CL_API_CALL clLinkProgram_disp(
     cl_context context,
     cl_uint num_devices,
@@ -3390,21 +3709,25 @@ static CL_API_ENTRY cl_program CL_API_CALL clLinkProgram_disp(
         user_data,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clUnloadPlatformCompiler(
     cl_platform_id platform) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clUnloadPlatformCompiler(
             platform);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     return platform->dispatch->clUnloadPlatformCompiler(
         platform);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clUnloadPlatformCompiler_disp(
     cl_platform_id platform) CL_API_SUFFIX__VERSION_1_2
 {
@@ -3412,6 +3735,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clUnloadPlatformCompiler_disp(
     return platform->dispatch->clUnloadPlatformCompiler(
         platform);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3423,6 +3747,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelArgInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetKernelArgInfo(
             kernel,
@@ -3431,6 +3756,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelArgInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clGetKernelArgInfo(
         kernel,
@@ -3442,6 +3768,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelArgInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetKernelArgInfo_disp(
     cl_kernel kernel,
     cl_uint arg_index,
@@ -3459,6 +3786,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetKernelArgInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3473,6 +3801,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillBuffer(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueFillBuffer(
             command_queue,
@@ -3484,6 +3813,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillBuffer(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueFillBuffer(
         command_queue,
@@ -3498,6 +3828,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillBuffer_disp(
     cl_command_queue command_queue,
     cl_mem buffer,
@@ -3521,6 +3852,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillBuffer_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3534,6 +3866,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillImage(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueFillImage(
             command_queue,
@@ -3544,6 +3877,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillImage(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueFillImage(
         command_queue,
@@ -3557,6 +3891,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillImage(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillImage_disp(
     cl_command_queue command_queue,
     cl_mem image,
@@ -3578,6 +3913,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillImage_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3590,6 +3926,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMigrateMemObjects(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueMigrateMemObjects(
             command_queue,
@@ -3599,6 +3936,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMigrateMemObjects(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueMigrateMemObjects(
         command_queue,
@@ -3611,6 +3949,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMigrateMemObjects(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueMigrateMemObjects_disp(
     cl_command_queue command_queue,
     cl_uint num_mem_objects,
@@ -3630,6 +3969,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueMigrateMemObjects_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3639,12 +3979,14 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarkerWithWaitList(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueMarkerWithWaitList(
             command_queue,
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueMarkerWithWaitList(
         command_queue,
@@ -3654,6 +3996,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarkerWithWaitList(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarkerWithWaitList_disp(
     cl_command_queue command_queue,
     cl_uint num_events_in_wait_list,
@@ -3667,6 +4010,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarkerWithWaitList_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3676,12 +4020,14 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrierWithWaitList(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueBarrierWithWaitList(
             command_queue,
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueBarrierWithWaitList(
         command_queue,
@@ -3691,6 +4037,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrierWithWaitList(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrierWithWaitList_disp(
     cl_command_queue command_queue,
     cl_uint num_events_in_wait_list,
@@ -3704,11 +4051,14 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrierWithWaitList_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 extern CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_disp(
     cl_platform_id platform,
     const char* func_name) CL_API_SUFFIX__VERSION_1_2;
+#endif // defined(CL_ENABLE_LAYERS)
 
 
 CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties(
@@ -3717,12 +4067,14 @@ CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties(
     const cl_queue_properties* properties,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_2_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateCommandQueueWithProperties(
             context,
             device,
             properties,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateCommandQueueWithProperties(
         context,
@@ -3732,6 +4084,7 @@ CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties_disp(
     cl_context context,
     cl_device_id device,
@@ -3745,6 +4098,7 @@ static CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueueWithPropert
         properties,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3756,6 +4110,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreatePipe(
     const cl_pipe_properties* properties,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_2_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreatePipe(
             context,
@@ -3764,6 +4119,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreatePipe(
             pipe_max_packets,
             properties,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreatePipe(
         context,
@@ -3775,6 +4131,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreatePipe(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreatePipe_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -3792,6 +4149,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreatePipe_disp(
         properties,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3802,6 +4160,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPipeInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_2_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetPipeInfo(
             pipe,
@@ -3809,6 +4168,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPipeInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(pipe, CL_INVALID_MEM_OBJECT);
     return pipe->dispatch->clGetPipeInfo(
         pipe,
@@ -3819,6 +4179,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPipeInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetPipeInfo_disp(
     cl_mem pipe,
     cl_pipe_info param_name,
@@ -3834,6 +4195,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetPipeInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3843,12 +4205,14 @@ CL_API_ENTRY void* CL_API_CALL clSVMAlloc(
     size_t size,
     cl_uint alignment) CL_API_SUFFIX__VERSION_2_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSVMAlloc(
             context,
             flags,
             size,
             alignment);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, NULL);
     return context->dispatch->clSVMAlloc(
         context,
@@ -3858,6 +4222,7 @@ CL_API_ENTRY void* CL_API_CALL clSVMAlloc(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY void* CL_API_CALL clSVMAlloc_disp(
     cl_context context,
     cl_svm_mem_flags flags,
@@ -3871,6 +4236,7 @@ static CL_API_ENTRY void* CL_API_CALL clSVMAlloc_disp(
         size,
         alignment);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3878,10 +4244,12 @@ CL_API_ENTRY void CL_API_CALL clSVMFree(
     cl_context context,
     void* svm_pointer) CL_API_SUFFIX__VERSION_2_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSVMFree(
             context,
             svm_pointer);
+#endif // defined(CL_ENABLE_LAYERS)
     if (context == NULL) return;
     context->dispatch->clSVMFree(
         context,
@@ -3889,6 +4257,7 @@ CL_API_ENTRY void CL_API_CALL clSVMFree(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY void CL_API_CALL clSVMFree_disp(
     cl_context context,
     void* svm_pointer) CL_API_SUFFIX__VERSION_2_0
@@ -3898,6 +4267,7 @@ static CL_API_ENTRY void CL_API_CALL clSVMFree_disp(
         context,
         svm_pointer);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3906,11 +4276,13 @@ CL_API_ENTRY cl_sampler CL_API_CALL clCreateSamplerWithProperties(
     const cl_sampler_properties* sampler_properties,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_2_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateSamplerWithProperties(
             context,
             sampler_properties,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateSamplerWithProperties(
         context,
@@ -3919,6 +4291,7 @@ CL_API_ENTRY cl_sampler CL_API_CALL clCreateSamplerWithProperties(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_sampler CL_API_CALL clCreateSamplerWithProperties_disp(
     cl_context context,
     const cl_sampler_properties* sampler_properties,
@@ -3930,6 +4303,7 @@ static CL_API_ENTRY cl_sampler CL_API_CALL clCreateSamplerWithProperties_disp(
         sampler_properties,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3938,11 +4312,13 @@ CL_API_ENTRY cl_int CL_API_CALL clSetKernelArgSVMPointer(
     cl_uint arg_index,
     const void* arg_value) CL_API_SUFFIX__VERSION_2_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetKernelArgSVMPointer(
             kernel,
             arg_index,
             arg_value);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clSetKernelArgSVMPointer(
         kernel,
@@ -3951,6 +4327,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetKernelArgSVMPointer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clSetKernelArgSVMPointer_disp(
     cl_kernel kernel,
     cl_uint arg_index,
@@ -3962,6 +4339,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clSetKernelArgSVMPointer_disp(
         arg_index,
         arg_value);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3971,12 +4349,14 @@ CL_API_ENTRY cl_int CL_API_CALL clSetKernelExecInfo(
     size_t param_value_size,
     const void* param_value) CL_API_SUFFIX__VERSION_2_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetKernelExecInfo(
             kernel,
             param_name,
             param_value_size,
             param_value);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clSetKernelExecInfo(
         kernel,
@@ -3986,6 +4366,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetKernelExecInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clSetKernelExecInfo_disp(
     cl_kernel kernel,
     cl_kernel_exec_info param_name,
@@ -3999,6 +4380,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clSetKernelExecInfo_disp(
         param_value_size,
         param_value);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4012,6 +4394,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMFree(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_2_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueSVMFree(
             command_queue,
@@ -4022,6 +4405,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMFree(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueSVMFree(
         command_queue,
@@ -4035,6 +4419,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMFree(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMFree_disp(
     cl_command_queue command_queue,
     cl_uint num_svm_pointers,
@@ -4056,6 +4441,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMFree_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4069,6 +4455,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemcpy(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_2_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueSVMMemcpy(
             command_queue,
@@ -4079,6 +4466,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemcpy(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueSVMMemcpy(
         command_queue,
@@ -4092,6 +4480,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemcpy(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemcpy_disp(
     cl_command_queue command_queue,
     cl_bool blocking_copy,
@@ -4113,6 +4502,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemcpy_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4126,6 +4516,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemFill(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_2_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueSVMMemFill(
             command_queue,
@@ -4136,6 +4527,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemFill(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueSVMMemFill(
         command_queue,
@@ -4149,6 +4541,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemFill(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemFill_disp(
     cl_command_queue command_queue,
     void* svm_ptr,
@@ -4170,6 +4563,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemFill_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4183,6 +4577,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMap(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_2_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueSVMMap(
             command_queue,
@@ -4193,6 +4588,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMap(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueSVMMap(
         command_queue,
@@ -4206,6 +4602,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMap(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMap_disp(
     cl_command_queue command_queue,
     cl_bool blocking_map,
@@ -4227,6 +4624,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMap_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4237,6 +4635,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMUnmap(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_2_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueSVMUnmap(
             command_queue,
@@ -4244,6 +4643,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMUnmap(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueSVMUnmap(
         command_queue,
@@ -4254,6 +4654,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMUnmap(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMUnmap_disp(
     cl_command_queue command_queue,
     void* svm_ptr,
@@ -4269,6 +4670,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMUnmap_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4277,11 +4679,13 @@ CL_API_ENTRY cl_int CL_API_CALL clSetDefaultDeviceCommandQueue(
     cl_device_id device,
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_2_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetDefaultDeviceCommandQueue(
             context,
             device,
             command_queue);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
     return context->dispatch->clSetDefaultDeviceCommandQueue(
         context,
@@ -4290,6 +4694,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetDefaultDeviceCommandQueue(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clSetDefaultDeviceCommandQueue_disp(
     cl_context context,
     cl_device_id device,
@@ -4301,6 +4706,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clSetDefaultDeviceCommandQueue_disp(
         device,
         command_queue);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4309,11 +4715,13 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceAndHostTimer(
     cl_ulong* device_timestamp,
     cl_ulong* host_timestamp) CL_API_SUFFIX__VERSION_2_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetDeviceAndHostTimer(
             device,
             device_timestamp,
             host_timestamp);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clGetDeviceAndHostTimer(
         device,
@@ -4322,6 +4730,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceAndHostTimer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceAndHostTimer_disp(
     cl_device_id device,
     cl_ulong* device_timestamp,
@@ -4333,6 +4742,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceAndHostTimer_disp(
         device_timestamp,
         host_timestamp);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4340,10 +4750,12 @@ CL_API_ENTRY cl_int CL_API_CALL clGetHostTimer(
     cl_device_id device,
     cl_ulong* host_timestamp) CL_API_SUFFIX__VERSION_2_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetHostTimer(
             device,
             host_timestamp);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clGetHostTimer(
         device,
@@ -4351,6 +4763,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetHostTimer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetHostTimer_disp(
     cl_device_id device,
     cl_ulong* host_timestamp) CL_API_SUFFIX__VERSION_2_1
@@ -4360,6 +4773,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetHostTimer_disp(
         device,
         host_timestamp);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4369,12 +4783,14 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithIL(
     size_t length,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_2_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateProgramWithIL(
             context,
             il,
             length,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateProgramWithIL(
         context,
@@ -4384,6 +4800,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithIL(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithIL_disp(
     cl_context context,
     const void* il,
@@ -4397,6 +4814,7 @@ static CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithIL_disp(
         length,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4404,10 +4822,12 @@ CL_API_ENTRY cl_kernel CL_API_CALL clCloneKernel(
     cl_kernel source_kernel,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_2_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCloneKernel(
             source_kernel,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(source_kernel, CL_INVALID_KERNEL);
     return source_kernel->dispatch->clCloneKernel(
         source_kernel,
@@ -4415,6 +4835,7 @@ CL_API_ENTRY cl_kernel CL_API_CALL clCloneKernel(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_kernel CL_API_CALL clCloneKernel_disp(
     cl_kernel source_kernel,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_2_1
@@ -4424,6 +4845,7 @@ static CL_API_ENTRY cl_kernel CL_API_CALL clCloneKernel_disp(
         source_kernel,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4437,6 +4859,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_2_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetKernelSubGroupInfo(
             kernel,
@@ -4447,6 +4870,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clGetKernelSubGroupInfo(
         kernel,
@@ -4460,6 +4884,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfo_disp(
     cl_kernel kernel,
     cl_device_id device,
@@ -4481,6 +4906,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4494,6 +4920,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMigrateMem(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_2_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueSVMMigrateMem(
             command_queue,
@@ -4504,6 +4931,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMigrateMem(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueSVMMigrateMem(
         command_queue,
@@ -4517,6 +4945,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMigrateMem(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMigrateMem_disp(
     cl_command_queue command_queue,
     cl_uint num_svm_pointers,
@@ -4538,6 +4967,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMigrateMem_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4547,12 +4977,14 @@ CL_API_ENTRY cl_int CL_API_CALL clSetProgramSpecializationConstant(
     size_t spec_size,
     const void* spec_value) CL_API_SUFFIX__VERSION_2_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetProgramSpecializationConstant(
             program,
             spec_id,
             spec_size,
             spec_value);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clSetProgramSpecializationConstant(
         program,
@@ -4562,6 +4994,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetProgramSpecializationConstant(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clSetProgramSpecializationConstant_disp(
     cl_program program,
     cl_uint spec_id,
@@ -4575,6 +5008,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clSetProgramSpecializationConstant_disp(
         spec_size,
         spec_value);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4583,11 +5017,13 @@ CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback(
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
     void* user_data) CL_EXT_SUFFIX__VERSION_2_2_DEPRECATED
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetProgramReleaseCallback(
             program,
             pfn_notify,
             user_data);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clSetProgramReleaseCallback(
         program,
@@ -4596,6 +5032,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback_disp(
     cl_program program,
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
@@ -4607,6 +5044,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback_disp(
         pfn_notify,
         user_data);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4615,11 +5053,13 @@ CL_API_ENTRY cl_int CL_API_CALL clSetContextDestructorCallback(
     void (CL_CALLBACK* pfn_notify)(cl_context context, void* user_data),
     void* user_data) CL_API_SUFFIX__VERSION_3_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetContextDestructorCallback(
             context,
             pfn_notify,
             user_data);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
     return context->dispatch->clSetContextDestructorCallback(
         context,
@@ -4628,6 +5068,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetContextDestructorCallback(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clSetContextDestructorCallback_disp(
     cl_context context,
     void (CL_CALLBACK* pfn_notify)(cl_context context, void* user_data),
@@ -4639,6 +5080,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clSetContextDestructorCallback_disp(
         pfn_notify,
         user_data);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4650,6 +5092,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateBufferWithProperties(
     void* host_ptr,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_3_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateBufferWithProperties(
             context,
@@ -4658,6 +5101,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateBufferWithProperties(
             size,
             host_ptr,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateBufferWithProperties(
         context,
@@ -4669,6 +5113,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateBufferWithProperties(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateBufferWithProperties_disp(
     cl_context context,
     const cl_mem_properties* properties,
@@ -4686,6 +5131,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateBufferWithProperties_disp(
         host_ptr,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4698,6 +5144,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties(
     void* host_ptr,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_3_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateImageWithProperties(
             context,
@@ -4707,6 +5154,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties(
             image_desc,
             host_ptr,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateImageWithProperties(
         context,
@@ -4719,6 +5167,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties_disp(
     cl_context context,
     const cl_mem_properties* properties,
@@ -4738,6 +5187,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties_disp(
         host_ptr,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4746,13 +5196,16 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties_disp(
 CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT(
     cl_device_id device) CL_EXT_SUFFIX__VERSION_1_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseDeviceEXT(
             device);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clReleaseDeviceEXT(
         device);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT_disp(
     cl_device_id device) CL_EXT_SUFFIX__VERSION_1_1
 {
@@ -4760,17 +5213,21 @@ static CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT_disp(
     return device->dispatch->clReleaseDeviceEXT(
         device);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainDeviceEXT(
     cl_device_id device) CL_EXT_SUFFIX__VERSION_1_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainDeviceEXT(
             device);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clRetainDeviceEXT(
         device);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clRetainDeviceEXT_disp(
     cl_device_id device) CL_EXT_SUFFIX__VERSION_1_1
 {
@@ -4778,6 +5235,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clRetainDeviceEXT_disp(
     return device->dispatch->clRetainDeviceEXT(
         device);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT(
     cl_device_id in_device,
@@ -4786,6 +5244,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT(
     cl_device_id* out_devices,
     cl_uint* num_devices) CL_EXT_SUFFIX__VERSION_1_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateSubDevicesEXT(
             in_device,
@@ -4793,6 +5252,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT(
             num_entries,
             out_devices,
             num_devices);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_device, CL_INVALID_DEVICE);
     return in_device->dispatch->clCreateSubDevicesEXT(
         in_device,
@@ -4801,6 +5261,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT(
         out_devices,
         num_devices);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT_disp(
     cl_device_id in_device,
     const cl_device_partition_property_ext* properties,
@@ -4816,6 +5277,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT_disp(
         out_devices,
         num_devices);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4832,6 +5294,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR(
     cl_device_id* devices,
     cl_uint* num_devices) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetDeviceIDsFromD3D10KHR(
             platform,
@@ -4841,6 +5304,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR(
             num_entries,
             devices,
             num_devices);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     return platform->dispatch->clGetDeviceIDsFromD3D10KHR(
         platform,
@@ -4851,6 +5315,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR(
         devices,
         num_devices);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR_disp(
     cl_platform_id platform,
     cl_d3d10_device_source_khr d3d_device_source,
@@ -4870,6 +5335,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR_disp(
         devices,
         num_devices);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10BufferKHR(
     cl_context context,
@@ -4877,12 +5343,14 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10BufferKHR(
     ID3D10Buffer* resource,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromD3D10BufferKHR(
             context,
             flags,
             resource,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromD3D10BufferKHR(
         context,
@@ -4890,6 +5358,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10BufferKHR(
         resource,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10BufferKHR_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -4903,6 +5372,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10BufferKHR_disp(
         resource,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR(
     cl_context context,
@@ -4911,6 +5381,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR(
     UINT subresource,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromD3D10Texture2DKHR(
             context,
@@ -4918,6 +5389,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR(
             resource,
             subresource,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromD3D10Texture2DKHR(
         context,
@@ -4926,6 +5398,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR(
         subresource,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -4941,6 +5414,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR_disp(
         subresource,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR(
     cl_context context,
@@ -4949,6 +5423,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR(
     UINT subresource,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromD3D10Texture3DKHR(
             context,
@@ -4956,6 +5431,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR(
             resource,
             subresource,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromD3D10Texture3DKHR(
         context,
@@ -4964,6 +5440,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR(
         subresource,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -4979,6 +5456,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR_disp(
         subresource,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR(
     cl_command_queue command_queue,
@@ -4988,6 +5466,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueAcquireD3D10ObjectsKHR(
             command_queue,
@@ -4996,6 +5475,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueAcquireD3D10ObjectsKHR(
         command_queue,
@@ -5005,6 +5485,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR(
         event_wait_list,
         event);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR_disp(
     cl_command_queue command_queue,
     cl_uint num_objects,
@@ -5022,6 +5503,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR(
     cl_command_queue command_queue,
@@ -5031,6 +5513,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReleaseD3D10ObjectsKHR(
             command_queue,
@@ -5039,6 +5522,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReleaseD3D10ObjectsKHR(
         command_queue,
@@ -5048,6 +5532,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR(
         event_wait_list,
         event);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR_disp(
     cl_command_queue command_queue,
     cl_uint num_objects,
@@ -5065,6 +5550,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 #endif // defined(_WIN32)
 
@@ -5083,6 +5569,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR(
     cl_device_id* devices,
     cl_uint* num_devices) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetDeviceIDsFromD3D11KHR(
             platform,
@@ -5092,6 +5579,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR(
             num_entries,
             devices,
             num_devices);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     return platform->dispatch->clGetDeviceIDsFromD3D11KHR(
         platform,
@@ -5102,6 +5590,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR(
         devices,
         num_devices);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR_disp(
     cl_platform_id platform,
     cl_d3d11_device_source_khr d3d_device_source,
@@ -5121,6 +5610,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR_disp(
         devices,
         num_devices);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11BufferKHR(
     cl_context context,
@@ -5128,12 +5618,14 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11BufferKHR(
     ID3D11Buffer* resource,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromD3D11BufferKHR(
             context,
             flags,
             resource,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromD3D11BufferKHR(
         context,
@@ -5141,6 +5633,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11BufferKHR(
         resource,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11BufferKHR_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -5154,6 +5647,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11BufferKHR_disp(
         resource,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR(
     cl_context context,
@@ -5162,6 +5656,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR(
     UINT subresource,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromD3D11Texture2DKHR(
             context,
@@ -5169,6 +5664,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR(
             resource,
             subresource,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromD3D11Texture2DKHR(
         context,
@@ -5177,6 +5673,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR(
         subresource,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -5192,6 +5689,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR_disp(
         subresource,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR(
     cl_context context,
@@ -5200,6 +5698,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR(
     UINT subresource,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromD3D11Texture3DKHR(
             context,
@@ -5207,6 +5706,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR(
             resource,
             subresource,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromD3D11Texture3DKHR(
         context,
@@ -5215,6 +5715,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR(
         subresource,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -5230,6 +5731,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR_disp(
         subresource,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR(
     cl_command_queue command_queue,
@@ -5239,6 +5741,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueAcquireD3D11ObjectsKHR(
             command_queue,
@@ -5247,6 +5750,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueAcquireD3D11ObjectsKHR(
         command_queue,
@@ -5256,6 +5760,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR(
         event_wait_list,
         event);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR_disp(
     cl_command_queue command_queue,
     cl_uint num_objects,
@@ -5273,6 +5778,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR(
     cl_command_queue command_queue,
@@ -5282,6 +5788,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReleaseD3D11ObjectsKHR(
             command_queue,
@@ -5290,6 +5797,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReleaseD3D11ObjectsKHR(
         command_queue,
@@ -5299,6 +5807,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR(
         event_wait_list,
         event);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR_disp(
     cl_command_queue command_queue,
     cl_uint num_objects,
@@ -5316,6 +5825,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 #endif // defined(_WIN32)
 
@@ -5335,6 +5845,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR(
     cl_device_id* devices,
     cl_uint* num_devices) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetDeviceIDsFromDX9MediaAdapterKHR(
             platform,
@@ -5345,6 +5856,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR(
             num_entries,
             devices,
             num_devices);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     return platform->dispatch->clGetDeviceIDsFromDX9MediaAdapterKHR(
         platform,
@@ -5356,6 +5868,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR(
         devices,
         num_devices);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR_disp(
     cl_platform_id platform,
     cl_uint num_media_adapters,
@@ -5377,6 +5890,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR_disp
         devices,
         num_devices);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR(
     cl_context context,
@@ -5386,6 +5900,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR(
     cl_uint plane,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromDX9MediaSurfaceKHR(
             context,
@@ -5394,6 +5909,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR(
             surface_info,
             plane,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromDX9MediaSurfaceKHR(
         context,
@@ -5403,6 +5919,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR(
         plane,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -5420,6 +5937,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR_disp(
         plane,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR(
     cl_command_queue command_queue,
@@ -5429,6 +5947,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueAcquireDX9MediaSurfacesKHR(
             command_queue,
@@ -5437,6 +5956,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueAcquireDX9MediaSurfacesKHR(
         command_queue,
@@ -5446,6 +5966,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR(
         event_wait_list,
         event);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR_disp(
     cl_command_queue command_queue,
     cl_uint num_objects,
@@ -5463,6 +5984,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR(
     cl_command_queue command_queue,
@@ -5472,6 +5994,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReleaseDX9MediaSurfacesKHR(
             command_queue,
@@ -5480,6 +6003,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReleaseDX9MediaSurfacesKHR(
         command_queue,
@@ -5489,6 +6013,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR(
         event_wait_list,
         event);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR_disp(
     cl_command_queue command_queue,
     cl_uint num_objects,
@@ -5506,6 +6031,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 #endif // defined(_WIN32)
 
@@ -5519,12 +6045,14 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromEGLSyncKHR(
     CLeglDisplayKHR display,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateEventFromEGLSyncKHR(
             context,
             sync,
             display,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateEventFromEGLSyncKHR(
         context,
@@ -5532,6 +6060,7 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromEGLSyncKHR(
         display,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromEGLSyncKHR_disp(
     cl_context context,
     CLeglSyncKHR sync,
@@ -5545,6 +6074,7 @@ static CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromEGLSyncKHR_disp(
         display,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -5558,6 +6088,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromEGLImageKHR(
     const cl_egl_image_properties_khr* properties,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromEGLImageKHR(
             context,
@@ -5566,6 +6097,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromEGLImageKHR(
             flags,
             properties,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromEGLImageKHR(
         context,
@@ -5575,6 +6107,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromEGLImageKHR(
         properties,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromEGLImageKHR_disp(
     cl_context context,
     CLeglDisplayKHR egldisplay,
@@ -5592,6 +6125,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromEGLImageKHR_disp(
         properties,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR(
     cl_command_queue command_queue,
@@ -5601,6 +6135,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueAcquireEGLObjectsKHR(
             command_queue,
@@ -5609,6 +6144,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueAcquireEGLObjectsKHR(
         command_queue,
@@ -5618,6 +6154,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR(
         event_wait_list,
         event);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR_disp(
     cl_command_queue command_queue,
     cl_uint num_objects,
@@ -5635,6 +6172,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR(
     cl_command_queue command_queue,
@@ -5644,6 +6182,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReleaseEGLObjectsKHR(
             command_queue,
@@ -5652,6 +6191,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReleaseEGLObjectsKHR(
         command_queue,
@@ -5661,6 +6201,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR(
         event_wait_list,
         event);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR_disp(
     cl_command_queue command_queue,
     cl_uint num_objects,
@@ -5678,6 +6219,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -5688,17 +6230,20 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromGLsyncKHR(
     cl_GLsync sync,
     cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateEventFromGLsyncKHR(
             context,
             sync,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateEventFromGLsyncKHR(
         context,
         sync,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromGLsyncKHR_disp(
     cl_context context,
     cl_GLsync sync,
@@ -5710,6 +6255,7 @@ static CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromGLsyncKHR_disp(
         sync,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -5722,6 +6268,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLContextInfoKHR(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetGLContextInfoKHR(
             properties,
@@ -5729,6 +6276,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLContextInfoKHR(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     cl_platform_id platform = NULL;
     khrIcdContextPropertiesGetPlatform(properties, &platform);
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
@@ -5739,6 +6287,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLContextInfoKHR(
         param_value,
         param_value_size_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetGLContextInfoKHR_disp(
     const cl_context_properties* properties,
     cl_gl_context_info param_name,
@@ -5756,6 +6305,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetGLContextInfoKHR_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLBuffer(
     cl_context context,
@@ -5763,12 +6313,14 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLBuffer(
     cl_GLuint bufobj,
     int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromGLBuffer(
             context,
             flags,
             bufobj,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromGLBuffer(
         context,
@@ -5776,6 +6328,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLBuffer(
         bufobj,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLBuffer_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -5789,6 +6342,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLBuffer_disp(
         bufobj,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture(
     cl_context context,
@@ -5798,6 +6352,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture(
     cl_GLuint texture,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromGLTexture(
             context,
@@ -5806,6 +6361,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture(
             miplevel,
             texture,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromGLTexture(
         context,
@@ -5815,6 +6371,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture(
         texture,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -5832,6 +6389,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture_disp(
         texture,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
     cl_context context,
@@ -5841,6 +6399,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
     cl_GLuint texture,
     cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromGLTexture2D(
             context,
@@ -5849,6 +6408,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
             miplevel,
             texture,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromGLTexture2D(
         context,
@@ -5858,6 +6418,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
         texture,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -5875,6 +6436,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D_disp(
         texture,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
     cl_context context,
@@ -5884,6 +6446,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
     cl_GLuint texture,
     cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromGLTexture3D(
             context,
@@ -5892,6 +6455,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
             miplevel,
             texture,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromGLTexture3D(
         context,
@@ -5901,6 +6465,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
         texture,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -5918,6 +6483,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D_disp(
         texture,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer(
     cl_context context,
@@ -5925,12 +6491,14 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer(
     cl_GLuint renderbuffer,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromGLRenderbuffer(
             context,
             flags,
             renderbuffer,
             errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromGLRenderbuffer(
         context,
@@ -5938,6 +6506,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer(
         renderbuffer,
         errcode_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer_disp(
     cl_context context,
     cl_mem_flags flags,
@@ -5951,23 +6520,27 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer_disp(
         renderbuffer,
         errcode_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clGetGLObjectInfo(
     cl_mem memobj,
     cl_gl_object_type* gl_object_type,
     cl_GLuint* gl_object_name) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetGLObjectInfo(
             memobj,
             gl_object_type,
             gl_object_name);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
     return memobj->dispatch->clGetGLObjectInfo(
         memobj,
         gl_object_type,
         gl_object_name);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetGLObjectInfo_disp(
     cl_mem memobj,
     cl_gl_object_type* gl_object_type,
@@ -5979,6 +6552,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetGLObjectInfo_disp(
         gl_object_type,
         gl_object_name);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clGetGLTextureInfo(
     cl_mem memobj,
@@ -5987,6 +6561,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLTextureInfo(
     void* param_value,
     size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetGLTextureInfo(
             memobj,
@@ -5994,6 +6569,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLTextureInfo(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
     return memobj->dispatch->clGetGLTextureInfo(
         memobj,
@@ -6002,6 +6578,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLTextureInfo(
         param_value,
         param_value_size_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetGLTextureInfo_disp(
     cl_mem memobj,
     cl_gl_texture_info param_name,
@@ -6017,6 +6594,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetGLTextureInfo_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireGLObjects(
     cl_command_queue command_queue,
@@ -6026,6 +6604,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireGLObjects(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueAcquireGLObjects(
             command_queue,
@@ -6034,6 +6613,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireGLObjects(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueAcquireGLObjects(
         command_queue,
@@ -6043,6 +6623,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireGLObjects(
         event_wait_list,
         event);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireGLObjects_disp(
     cl_command_queue command_queue,
     cl_uint num_objects,
@@ -6060,6 +6641,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireGLObjects_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseGLObjects(
     cl_command_queue command_queue,
@@ -6069,6 +6651,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseGLObjects(
     const cl_event* event_wait_list,
     cl_event* event) CL_API_SUFFIX__VERSION_1_0
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReleaseGLObjects(
             command_queue,
@@ -6077,6 +6660,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseGLObjects(
             num_events_in_wait_list,
             event_wait_list,
             event);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReleaseGLObjects(
         command_queue,
@@ -6086,6 +6670,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseGLObjects(
         event_wait_list,
         event);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseGLObjects_disp(
     cl_command_queue command_queue,
     cl_uint num_objects,
@@ -6103,6 +6688,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseGLObjects_disp(
         event_wait_list,
         event);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -6118,6 +6704,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfoKHR(
     void* param_value,
     size_t* param_value_size_ret) CL_EXT_SUFFIX__VERSION_2_0_DEPRECATED
 {
+#if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetKernelSubGroupInfoKHR(
             in_kernel,
@@ -6128,6 +6715,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfoKHR(
             param_value_size,
             param_value,
             param_value_size_ret);
+#endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_kernel, CL_INVALID_KERNEL);
     return in_kernel->dispatch->clGetKernelSubGroupInfoKHR(
         in_kernel,
@@ -6139,6 +6727,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfoKHR(
         param_value,
         param_value_size_ret);
 }
+#if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_disp(
     cl_kernel in_kernel,
     cl_device_id in_device,
@@ -6160,9 +6749,11 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_disp(
         param_value,
         param_value_size_ret);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#if defined(CL_ENABLE_LAYERS)
 struct _cl_icd_dispatch khrMasterDispatch = {
     &clGetPlatformIDs_disp,
     &clGetPlatformInfo_disp,
@@ -6367,6 +6958,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clCreateImageWithProperties_disp,
     &clSetContextDestructorCallback_disp
 };
+#endif // defined(CL_ENABLE_LAYERS)
 #ifdef __cplusplus
 }
 #endif

@@ -19,12 +19,16 @@
 #include "icd.h"
 #include "icd_dispatch.h"
 #include "icd_envvars.h"
+#if defined(CL_ENABLE_LAYERS)
 #include "cl_icd_layer.h"
+#endif // defined(CL_ENABLE_LAYERS)
 #include <stdlib.h>
 #include <string.h>
 
 KHRicdVendor *khrIcdVendors = NULL;
+#if defined(CL_ENABLE_LAYERS)
 struct KHRLayer *khrFirstLayer = NULL;
+#endif // defined(CL_ENABLE_LAYERS)
 
 // entrypoint to initialize the ICD and add all vendors
 void khrIcdInitialize(void)
@@ -191,6 +195,7 @@ Done:
     }
 }
 
+#if defined(CL_ENABLE_LAYERS)
 void khrIcdLayerAdd(const char *libraryName)
 {
     void *library = NULL;
@@ -311,6 +316,7 @@ Done:
         free(layer);
     }
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 // Get next file or dirname given a string list or registry key path.
 // Note: the input string may be modified!
@@ -352,6 +358,7 @@ void khrIcdVendorsEnumerateEnv(void)
     }
 }
 
+#if defined(CL_ENABLE_LAYERS)
 void khrIcdLayersEnumerateEnv(void)
 {
     char* layerFilenames = khrIcd_secure_getenv("OCL_ICD_LAYERS");
@@ -372,6 +379,7 @@ void khrIcdLayersEnumerateEnv(void)
         khrIcd_free_getenv(layerFilenames);
     }
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 void khrIcdContextPropertiesGetPlatform(const cl_context_properties *properties, cl_platform_id *outPlatform)
 {
