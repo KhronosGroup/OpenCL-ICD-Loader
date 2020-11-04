@@ -52,14 +52,14 @@ clInitLayer(
     cl_uint                         num_entries,
     const struct _cl_icd_dispatch  *target_dispatch,
     cl_uint                        *num_entries_out,
-    const struct _cl_icd_dispatch **layer_dispatch) {
-  if (!target_dispatch || !layer_dispatch ||!num_entries_out || num_entries < sizeof(dispatch)/sizeof(dispatch.clGetPlatformIDs))
-    return -1;
+    const struct _cl_icd_dispatch **layer_dispatch_ret) {
+  if (!target_dispatch || !layer_dispatch_ret ||!num_entries_out || num_entries < sizeof(dispatch)/sizeof(dispatch.clGetPlatformIDs))
+    return CL_INVALID_VALUE;
 
   _init_dispatch();
 
   tdispatch = target_dispatch;
-  *layer_dispatch = &dispatch;
+  *layer_dispatch_ret = &dispatch;
   *num_entries_out = sizeof(dispatch)/sizeof(dispatch.clGetPlatformIDs);
   return CL_SUCCESS;
 }

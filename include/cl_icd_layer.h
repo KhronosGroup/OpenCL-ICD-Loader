@@ -47,13 +47,13 @@ extern CL_API_ENTRY cl_int CL_API_CALL
 clInitLayer(cl_uint                         num_entries,
             const struct _cl_icd_dispatch  *target_dispatch,
             cl_uint                        *num_entries_ret,
-            const struct _cl_icd_dispatch **layer_dispatch);
+            const struct _cl_icd_dispatch **layer_dispatch_ret);
 
 CL_API_ENTRY typedef cl_int
 (CL_API_CALL *pfn_clInitLayer)(cl_uint                         num_entries,
                                const struct _cl_icd_dispatch  *target_dispatch,
                                cl_uint                        *num_entries_ret,
-                               const struct _cl_icd_dispatch **layer_dispatch);
+                               const struct _cl_icd_dispatch **layer_dispatch_ret);
 
 #ifdef __cplusplus
 }
