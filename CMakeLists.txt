@@ -34,10 +34,10 @@ find_package (Threads REQUIRED)
 # advance. Use it with discretion.
 option (BUILD_SHARED_LIBS "Build shared libs" ON)
 
-# This option enables support for OpenCL layers in the ICD loader.  It is
-# currently off by default while the specification is being formalized, as it
-# may change.
-option (ENABLE_OPENCL_LAYERS "Enable 3.0 provisional entry points" OFF)
+# This option enables/disables support for OpenCL layers in the ICD loader.
+# It is currently needed default while the specification is being formalized,
+# and to study the performance impact.
+option (ENABLE_OPENCL_LAYERS "Enable OpenCL Layers" ON)
 
 include(CheckFunctionExists)
 check_function_exists(secure_getenv HAVE_SECURE_GETENV)
