@@ -108,6 +108,23 @@ The CMake-generated build files may be able to invoke the OpenCL ICD Loader test
 
 Manually remove the file or registry keys added during Test Setup.
 
+## About Layers
+
+Layers have been added as an experimental feature in the OpenCL ICD Loader. We do not
+expect the API or ABI to change significantly, but the OpenCL Working Group reserves
+the right to do so. The layer support can also be completely deactivated during
+configuration by using the `ENABLE_OPENCL_LAYERS` (`ON` by default) cmake variable:
+
+```bash
+cmake -DENABLE_OPENCL_LAYERS=OFF
+```
+
+For now, runtime configuration of layers is done using the `OCL_ICD_LAYERS` environment
+variable. A colon (Linux) or semicolon (Windows) list of layers to use can be provided
+through this environment variable.
+
+We are looking for feedback.
+
 ## Support
 
 Please create a GitHub issue to report an issue or ask questions.
