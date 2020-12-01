@@ -28,7 +28,7 @@ extern "C" {
 
 typedef cl_uint cl_layer_info;
 typedef cl_uint cl_layer_api_version;
-#define CL_LAYER_API_VERSION 0x0001
+#define CL_LAYER_API_VERSION 0x4240
 #define CL_LAYER_API_VERSION_100 100
 
 extern CL_API_ENTRY cl_int CL_API_CALL
