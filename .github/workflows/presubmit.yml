@@ -1,0 +1,24 @@
+name: Presubmit
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build ${{ matrix.os }} ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04] # TODO: add macos-11.0
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Dependencies
+        uses: actions/checkout@v2
+        with:
+          repository: KhronosGroup/OpenCL-Headers
+          path: inc
+      - run: mkdir -p build
+      - run: cd build
+      - run: cmake ..
+        working-directory: build
+      - run: cmake --build .
+        working-directory: build
