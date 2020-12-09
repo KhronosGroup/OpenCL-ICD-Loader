@@ -18,7 +18,7 @@
 
 #include <initguid.h>
 
-#include "icd.h"
+#include "../icd.h"
 #include "icd_windows.h"
 #include "icd_windows_hkr.h"
 #include "icd_windows_dxgk.h"

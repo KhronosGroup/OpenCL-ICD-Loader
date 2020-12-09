@@ -1,0 +1,10 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=$<TARGET_PROPERTY:OpenCL::OpenCLHeaders,INTERFACE_INCLUDE_DIRECTORIES>
+
+Name: OpenCL
+Description: OpenCL Installable Client Driver Loader
+Version: @PROJECT_VERSION@
+Libs: ${libdir}/$<TARGET_LINKER_FILE_NAME:OpenCL> @CMAKE_THREAD_LIBS_INIT@ -l@CMAKE_DL_LIBS@
+Cflags: -I$<JOIN:$<TARGET_PROPERTY:OpenCL,INTERFACE_INCLUDE_DIRECTORIES>, -I>

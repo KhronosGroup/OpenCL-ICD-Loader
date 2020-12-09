@@ -17,8 +17,14 @@ jobs:
           repository: KhronosGroup/OpenCL-Headers
           path: inc
       - run: mkdir -p build
-      - run: cd build
-      - run: cmake ..
+      - run: cd inc
+      - run: cmake . -DCMAKE_INSTALL_PREFIX=$(pwd)
+        working-directory: inc
+      - run: make install
+        working-directory: inc
+      - run: cd ../build
+        working-directory: build
+      - run: cmake .. -DOpenCLHeaders_DIR=/home/runner/work/OpenCL-ICD-Loader/OpenCL-ICD-Loader/inc/share/cmake/OpenCLHeaders -DBUILD_TESTING=OFF
         working-directory: build
       - run: cmake --build .
         working-directory: build
