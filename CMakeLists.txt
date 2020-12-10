@@ -34,6 +34,11 @@ find_package (Threads REQUIRED)
 # advance. Use it with discretion.
 option (BUILD_SHARED_LIBS "Build shared libs" ON)
 
+# This option enables/disables support for OpenCL layers in the ICD loader.
+# It is currently needed default while the specification is being formalized,
+# and to study the performance impact.
+option (ENABLE_OPENCL_LAYERS "Enable OpenCL Layers" ON)
+
 include(CheckFunctionExists)
 check_function_exists(secure_getenv HAVE_SECURE_GETENV)
 check_function_exists(__secure_getenv HAVE___SECURE_GETENV)
@@ -48,6 +53,11 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd_dispatch_generated.c
     loader/icd_envvars.h
     loader/icd_platform.h)
+
+if (ENABLE_OPENCL_LAYERS)
+    list (APPEND OPENCL_ICD_LOADER_SOURCES
+        include/cl_icd_layer.h)
+endif ()
 
 if (WIN32)
     list (APPEND OPENCL_ICD_LOADER_SOURCES 
@@ -81,6 +91,8 @@ set (OPENCL_ICD_LOADER_HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/inc CACHE PATH "P
 add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 target_include_directories(OpenCL SYSTEM PUBLIC ${OPENCL_ICD_LOADER_HEADERS_DIR})
+target_include_directories(OpenCL PRIVATE include)
+
 
 if (WIN32)
     target_link_libraries (OpenCL cfgmgr32.lib runtimeobject.lib)
@@ -114,6 +126,10 @@ endif ()
 
 include_directories (${OPENCL_ICD_LOADER_HEADERS_DIR})
 add_definitions (-DCL_TARGET_OPENCL_VERSION=300)
+
+if (ENABLE_OPENCL_LAYERS)
+    add_definitions (-DCL_ENABLE_LAYERS)
+endif ()
 
 target_include_directories (OpenCL PRIVATE ${CMAKE_CURRENT_BINARY_DIR} loader)
 target_link_libraries (OpenCL ${CMAKE_DL_LIBS})

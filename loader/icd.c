@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 The Khronos Group Inc.
+ * Copyright (c) 2016-2020 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,16 @@
 #include "icd.h"
 #include "icd_dispatch.h"
 #include "icd_envvars.h"
+#if defined(CL_ENABLE_LAYERS)
+#include "cl_icd_layer.h"
+#endif // defined(CL_ENABLE_LAYERS)
 #include <stdlib.h>
 #include <string.h>
 
 KHRicdVendor *khrIcdVendors = NULL;
+#if defined(CL_ENABLE_LAYERS)
+struct KHRLayer *khrFirstLayer = NULL;
+#endif // defined(CL_ENABLE_LAYERS)
 
 // entrypoint to initialize the ICD and add all vendors
 void khrIcdInitialize(void)
@@ -189,6 +195,129 @@ Done:
     }
 }
 
+#if defined(CL_ENABLE_LAYERS)
+void khrIcdLayerAdd(const char *libraryName)
+{
+    void *library = NULL;
+    cl_int result = CL_SUCCESS;
+    pfn_clGetLayerInfo p_clGetLayerInfo = NULL;
+    pfn_clInitLayer p_clInitLayer = NULL;
+    struct KHRLayer *layerIterator = NULL;
+    struct KHRLayer *layer = NULL;
+    cl_layer_api_version api_version = 0;
+    const struct _cl_icd_dispatch *targetDispatch = NULL;
+    const struct _cl_icd_dispatch *layerDispatch = NULL;
+    cl_uint layerDispatchNumEntries = 0;
+    cl_uint loaderDispatchNumEntries = 0;
+
+    // require that the library name be valid
+    if (!libraryName)
+    {
+        goto Done;
+    }
+    KHR_ICD_TRACE("attempting to add layer %s...\n", libraryName);
+
+    // load its library and query its function pointers
+    library = khrIcdOsLibraryLoad(libraryName);
+    if (!library)
+    {
+        KHR_ICD_TRACE("failed to load library %s\n", libraryName);
+        goto Done;
+    }
+
+    // ensure that we haven't already loaded this layer
+    for (layerIterator = khrFirstLayer; layerIterator; layerIterator = layerIterator->next)
+    {
+        if (layerIterator->library == library)
+        {
+            KHR_ICD_TRACE("already loaded layer %s, nothing to do here\n", libraryName);
+            goto Done;
+        }
+    }
+
+    // get the library's clGetLayerInfo pointer
+    p_clGetLayerInfo = (pfn_clGetLayerInfo)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clGetLayerInfo");
+    if (!p_clGetLayerInfo)
+    {
+        KHR_ICD_TRACE("failed to get function address clGetLayerInfo\n");
+        goto Done;
+    }
+
+    // use that function to get the clInitLayer function pointer
+    p_clInitLayer = (pfn_clInitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clInitLayer");
+    if (!p_clInitLayer)
+    {
+        KHR_ICD_TRACE("failed to get function address clInitLayer\n");
+        goto Done;
+    }
+
+    result = p_clGetLayerInfo(CL_LAYER_API_VERSION, sizeof(api_version), &api_version, NULL);
+    if (CL_SUCCESS != result)
+    {
+        KHR_ICD_TRACE("failed to query layer version\n");
+        goto Done;
+    }
+
+    if (CL_LAYER_API_VERSION_100 != api_version)
+    {
+        KHR_ICD_TRACE("unsupported api version\n");
+        goto Done;
+    }
+
+    layer = (struct KHRLayer*)calloc(sizeof(struct KHRLayer), 1);
+    if (!layer)
+    {
+        KHR_ICD_TRACE("failed to allocate memory\n");
+        goto Done;
+    }
+
+    if (khrFirstLayer) {
+        targetDispatch = &(khrFirstLayer->dispatch);
+    } else {
+        targetDispatch = &khrMasterDispatch;
+    }
+
+    loaderDispatchNumEntries = sizeof(khrMasterDispatch)/sizeof(void*);
+    result = p_clInitLayer(
+        loaderDispatchNumEntries,
+        targetDispatch,
+        &layerDispatchNumEntries,
+        &layerDispatch);
+    if (CL_SUCCESS != result)
+    {
+        KHR_ICD_TRACE("failed to initialize layer\n");
+        goto Done;
+    }
+
+    layer->next = khrFirstLayer;
+    khrFirstLayer = layer;
+    layer->library = library;
+
+    cl_uint limit = layerDispatchNumEntries < loaderDispatchNumEntries ? layerDispatchNumEntries : loaderDispatchNumEntries;
+
+    for (cl_uint i = 0; i < limit; i++) {
+        ((void **)&(layer->dispatch))[i] =
+            ((void **)layerDispatch)[i] ?
+                ((void **)layerDispatch)[i] : ((void **)targetDispatch)[i];
+    }
+    for (cl_uint i = limit; i < loaderDispatchNumEntries; i++) {
+        ((void **)&(layer->dispatch))[i] = ((void **)targetDispatch)[i];
+    }
+
+    KHR_ICD_TRACE("successfully added layer %s\n", libraryName);
+    return;
+Done:
+    if (library)
+    {
+        khrIcdOsLibraryUnload(library);
+    }
+    if (layer)
+    {
+        free(layer);
+    }
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 // Get next file or dirname given a string list or registry key path.
 // Note: the input string may be modified!
 static char *loader_get_next_path(char *path) {
@@ -228,6 +357,29 @@ void khrIcdVendorsEnumerateEnv(void)
         khrIcd_free_getenv(icdFilenames);
     }
 }
+
+#if defined(CL_ENABLE_LAYERS)
+void khrIcdLayersEnumerateEnv(void)
+{
+    char* layerFilenames = khrIcd_secure_getenv("OCL_ICD_LAYERS");
+    char* cur_file = NULL;
+    char* next_file = NULL;
+    if (layerFilenames)
+    {
+        KHR_ICD_TRACE("Found OCL_ICD_LAYERS environment variable.\n");
+
+        next_file = layerFilenames;
+        while (NULL != next_file && *next_file != '\0') {
+            cur_file = next_file;
+            next_file = loader_get_next_path(cur_file);
+
+            khrIcdLayerAdd(cur_file);
+        }
+
+        khrIcd_free_getenv(layerFilenames);
+    }
+}
+#endif // defined(CL_ENABLE_LAYERS)
 
 void khrIcdContextPropertiesGetPlatform(const cl_context_properties *properties, cl_platform_id *outPlatform)
 {

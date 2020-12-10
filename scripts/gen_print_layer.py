@@ -25,11 +25,11 @@ if __name__ == "__main__":
     (coreapis, extapis) = gen.get_apis(spec, apisigs)
 
     try:
-        # Create the loader cpp file from the API dictionary:
-        test = open(args.directory + '/icd_dispatch_generated.c', 'wb')
-        icd_dispatch_generated_template = Template(filename='icd_dispatch_generated.c.mako')
+        # Create the layer cpp file from the API dictionary:
+        test = open(args.directory + '/icd_print_layer_generated.c', 'wb')
+        icd_layer_generated_template = Template(filename='icd_print_layer_generated.c.mako')
         test.write(
-          icd_dispatch_generated_template.render_unicode(
+          icd_layer_generated_template.render_unicode(
               spec=spec,
               apisigs=apisigs,
               coreapis=coreapis,

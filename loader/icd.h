@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 The Khronos Group Inc.
+ * Copyright (c) 2016-2020 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@
 
 #include <CL/cl.h>
 #include <CL/cl_ext.h>
+#include <CL/cl_icd.h>
 
 /*
  * type definitions
@@ -83,6 +84,28 @@ struct KHRicdVendorRec
 // the global state
 extern KHRicdVendor * khrIcdVendors;
 
+#if defined(CL_ENABLE_LAYERS)
+/*
+ * KHRLayer
+ *
+ * Data for a single Layer
+ */
+struct KHRLayer;
+struct KHRLayer
+{
+    // the loaded library object (true type varies on Linux versus Windows)
+    void *library;
+    // the dispatch table of the layer
+    struct _cl_icd_dispatch dispatch;
+    // The next layer in the chain
+    struct KHRLayer *next;
+};
+
+// the global layer state
+extern struct KHRLayer * khrFirstLayer;
+extern struct _cl_icd_dispatch khrMasterDispatch;
+#endif // defined(CL_ENABLE_LAYERS)
+
 /* 
  * khrIcd interface
  */
@@ -104,6 +127,12 @@ void khrIcdVendorsEnumerateEnv(void);
 
 // add a vendor's implementation to the list of libraries
 void khrIcdVendorAdd(const char *libraryName);
+
+// read layers from environment variables
+void khrIcdLayersEnumerateEnv(void);
+
+// add a layer to the layer chain
+void khrIcdLayerAdd(const char *libraryName);
 
 // dynamically load a library.  returns NULL on failure
 // n.b, this call is OS-specific

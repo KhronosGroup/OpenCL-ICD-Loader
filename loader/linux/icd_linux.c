@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 The Khronos Group Inc.
+ * Copyright (c) 2016-2020 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -141,6 +141,9 @@ void khrIcdOsVendorsEnumerate(void)
     {
         khrIcd_free_getenv(envPath);
     }
+#if defined(CL_ENABLE_LAYERS)
+    khrIcdLayersEnumerateEnv();
+#endif // defined(CL_ENABLE_LAYERS)
 }
 
 // go through the list of vendors only once
