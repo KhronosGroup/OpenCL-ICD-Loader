@@ -5,6 +5,7 @@ include (GNUInstallDirs)
 find_package (Threads REQUIRED)
 
 set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 # The option below allows building the ICD Loader library as a shared library
 # (ON, default) or a static library (OFF).
 #
