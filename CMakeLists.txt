@@ -4,6 +4,7 @@ project (OpenCL-ICD-Loader VERSION 1.2)
 include (GNUInstallDirs)
 find_package (Threads REQUIRED)
 
+set(CMAKE_C_STANDARD 99)
 # The option below allows building the ICD Loader library as a shared library
 # (ON, default) or a static library (OFF).
 #
