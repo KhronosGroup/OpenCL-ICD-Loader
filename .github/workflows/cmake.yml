@@ -31,7 +31,7 @@ jobs:
         repository: KhronosGroup/OpenCL-Headers
         path: $GITHUB_WORKSPACE/external/OpenCL-Headers
     - name: Build & install OpenCL-Headers
-    - run: cmake
+      run: cmake
         -G "${{matrix.GEN}}"
         -D CMAKE_BUILD_TYPE=${{matrix.VAR}}
         -D CMAKE_C_FLAGS="-w -m${{matrix.BIN}}"
@@ -40,8 +40,8 @@ jobs:
         -D CMAKE_C_EXTENSIONS=${{matrix.EXT}}
         -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
         -S $GITHUB_WORKSPACE
-        -B $GITHUB_WORKSPACE/external/OpenCL-Headers/build
-    - run: cmake
+        -B $GITHUB_WORKSPACE/external/OpenCL-Headers/build &&
+        cmake
         --build $GITHUB_WORKSPACE/external/OpenCL-Headers/build
         --target install
         --
