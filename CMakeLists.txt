@@ -118,7 +118,6 @@ endif ()
 find_package(OpenCLHeaders)
 if (TARGET OpenCL::Headers)
   target_link_libraries (OpenCL PUBLIC OpenCL::Headers)
-  link_libraries(OpenCL::Headers)
 else ()
   find_path(OpenCL_HEADERS_DIR
     NAMES
@@ -128,7 +127,6 @@ else ()
       OpenCL/common/inc
   )
   target_include_directories(OpenCL SYSTEM PUBLIC ${OpenCL_HEADERS_DIR})
-  include_directories(SYSTEM ${OpenCL_HEADERS_DIR})
 endif ()
 
 add_definitions (-DCL_TARGET_OPENCL_VERSION=300)
