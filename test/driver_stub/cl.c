@@ -897,7 +897,7 @@ clCompileProgram(cl_program            program ,
                  const cl_device_id *  device_list ,
                  const char *          options ,
                  cl_uint               num_input_headers ,
-                 const cl_program *    input_headers,
+                 const cl_program *    /*input_headers*/,
                  const char **         header_include_names ,
                  void (CL_CALLBACK *   pfn_notify)(cl_program  program , void *  user_data),
                  void *                user_data) CL_API_SUFFIX__VERSION_1_2
