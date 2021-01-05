@@ -7,4 +7,4 @@ endif ()
 
 add_library (OpenCLDriverStub ${OPENCL_DRIVER_STUB_SOURCES})
 
-target_link_libraries (OpenCLDriverStub IcdLog)
+target_link_libraries (OpenCLDriverStub IcdLog OpenCL::Headers)
