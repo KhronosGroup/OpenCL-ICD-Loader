@@ -1,4 +1,5 @@
 add_library (IcdLog icd_test_log.c)
+target_link_libraries (IcdLog OpenCL::Headers)
 if (WIN32)
     target_compile_definitions (IcdLog PRIVATE _CRT_SECURE_NO_WARNINGS)
 endif()

@@ -127,10 +127,13 @@ else ()
   target_include_directories(OpenCL SYSTEM PUBLIC ${OpenCL_HEADERS_DIR})
 endif ()
 
-add_definitions (-DCL_TARGET_OPENCL_VERSION=300)
+target_compile_definitions(OpenCL PUBLIC CL_TARGET_OPENCL_VERSION=300)
 
 if (ENABLE_OPENCL_LAYERS)
-    add_definitions (CL_ENABLE_LAYERS)
+  target_compile_definitions(OpenCL PUBLIC CL_ENABLE_LAYERS)
+  target_include_directories(OpenCL PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include/mylib>)
 endif()
 
 target_include_directories (OpenCL
