@@ -897,12 +897,15 @@ clCompileProgram(cl_program            program ,
                  const cl_device_id *  device_list ,
                  const char *          options ,
                  cl_uint               num_input_headers ,
+#if defined(_WIN32)
                  const cl_program *    input_headers,
+#else
+                 const cl_program *,
+#endif
                  const char **         header_include_names ,
                  void (CL_CALLBACK *   pfn_notify)(cl_program  program , void *  user_data),
                  void *                user_data) CL_API_SUFFIX__VERSION_1_2
 {
-    (void*)input_headers; // Triggers -Werror=unused-parameter on GCC, symbolic (nameless) arg triggers error C2055 on MSVC
     cl_int return_value = CL_OUT_OF_RESOURCES;
     test_icd_stub_log("clCompileProgram(%p, %u, %p, %p, %u, %p, %p, %p)\n",
                       program,
