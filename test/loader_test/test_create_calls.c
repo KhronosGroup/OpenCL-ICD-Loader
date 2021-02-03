@@ -148,7 +148,7 @@ int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
 {
     cl_int ret_val;
     size_t param_val_ret_size;
-    #define PLATFORM_NAME_SIZE 40
+    #define PLATFORM_NAME_SIZE 80
     char platform_name[PLATFORM_NAME_SIZE];
     cl_uint i;    
 
