@@ -20,3 +20,7 @@ add_test (
     COMMAND icd_loader_test
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
 )
+set_tests_properties(opencl_icd_loader_test
+    PROPERTIES
+        ENVIRONMENT OCL_ICD_FILENAMES=$<TARGET_FILE:OpenCLDriverStub>
+)
