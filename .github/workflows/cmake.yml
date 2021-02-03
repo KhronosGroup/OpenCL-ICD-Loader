@@ -73,7 +73,7 @@ jobs:
         -j`nproc`
 
     - name: Test
-      working-directory: $GITHUB_WORKSPACE/build
+      working-directory: ./build
       shell: bash
       run: ctest --parallel `nproc`
 
