@@ -73,7 +73,7 @@ jobs:
         -j`nproc`
 
     - name: Test
-      working-directory: ${{runner.workspace}}/OpenCL-Headers/build
+      working-directory: $GITHUB_WORKSPACE/build
       shell: bash
       run: ctest --parallel `nproc`
 
