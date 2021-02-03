@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         VER: [7, 8, 9]
-        EXT: [OFF] # ON = icd_linux.c:66 error: ‘DT_UNKNOWN’ undeclared (first use in this function)
+        EXT: [ON] # OFF = icd_linux.c:66 error: ‘DT_UNKNOWN’ undeclared (first use in this function)
         GEN: [Unix Makefiles, Ninja]
         VAR: [Debug, Release]
         STD: [99, 11] # 90 results in errors
