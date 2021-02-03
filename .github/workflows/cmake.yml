@@ -74,7 +74,7 @@ jobs:
         -j`nproc`
 
     - name: Test
-      working-directory: ./build
+      working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
       shell: bash
       run: ctest --parallel `nproc`
 
@@ -172,7 +172,7 @@ jobs:
         cmake --build %GITHUB_WORKSPACE%\build --config Debug
 
     - name: Test
-      working-directory: ${{runner.workspace}}/OpenCL-Headers/build
+      working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
       shell: cmd
       run: |
         ctest -C Release --parallel %NUMBER_OF_PROCESSORS%
@@ -233,7 +233,7 @@ jobs:
         cmake --build $GITHUB_WORKSPACE/build --config Debug
 
     - name: Test
-      working-directory: ${{runner.workspace}}/OpenCL-Headers/build
+      working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
       shell: bash
       run: ctest -C Release --parallel `sysctl -n hw.logicalcpu`
 
