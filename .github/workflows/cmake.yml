@@ -49,12 +49,13 @@ jobs:
 
     - name: Configure CMake
       shell: bash
+      # no -Werror during configuration because:
+      # warning: ISO C forbids assignment between function pointer and ‘void *’ [-Wpedantic]
+      # warning: unused parameter [-Wunused-parameter]
       run: cmake
         -G "${{matrix.GEN}}"
         -D BUILD_TESTING=ON
         -D CMAKE_BUILD_TYPE=${{matrix.VAR}}
-        # warning: ISO C forbids assignment between function pointer and ‘void *’ [-Wpedantic]
-        # warning: unused parameter [-Wunused-parameter]
         -D CMAKE_C_FLAGS="-Wall -Wextra -pedantic -m${{matrix.BIN}}"
         -D CMAKE_C_COMPILER=gcc-${{matrix.VER}}
         -D CMAKE_C_STANDARD=${{matrix.STD}}
@@ -299,12 +300,13 @@ jobs:
         # Install Ninja only if it's the selected generator and it's not available.
 
     - name: Configure CMake
+      # no -Werror during configuration because:
+      # warning: ISO C forbids assignment between function pointer and ‘void *’ [-Wpedantic]
+      # warning: unused parameter [-Wunused-parameter]
       shell: bash
       run: cmake
         -G "${{matrix.GEN}}"
         -D BUILD_TESTING=ON
-        # warning: ISO C forbids assignment between function pointer and ‘void *’ [-Wpedantic]
-        # warning: unused parameter [-Wunused-parameter]
         -D CMAKE_C_FLAGS="-Wall -Wextra -pedantic -Wno-format"
         -D CMAKE_C_COMPILER=/usr/local/bin/gcc-${{matrix.VER}}
         -D CMAKE_C_STANDARD=${{matrix.STD}}
