@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 jobs:
   linux-gcc:
+    if: false
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -86,7 +87,6 @@ jobs:
         -j`nproc`
 
   windows-msvc:
-    if: false
     runs-on: windows-latest
     strategy:
       matrix:
