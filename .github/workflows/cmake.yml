@@ -98,7 +98,7 @@ jobs:
 
     steps:
     - name: Checkout OpenCL-ICD-Loader
-      uses: 
+      uses: actions/checkout@v2
 
     - name: Checkout OpenCL-Headers
       uses: actions/checkout@v2
