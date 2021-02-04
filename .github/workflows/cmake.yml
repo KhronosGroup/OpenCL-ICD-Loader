@@ -76,7 +76,7 @@ jobs:
     - name: Test
       working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
       shell: bash
-      run: ctest --parallel `nproc`
+      run: ctest --output-on-failure --parallel `nproc`
 
     - name: Install
       shell: bash
@@ -182,7 +182,7 @@ jobs:
       working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
       shell: cmd
       run: |
-        ctest -C Release --parallel %NUMBER_OF_PROCESSORS%
+        ctest -C Release --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
 
     - name: Install
       shell: cmd
@@ -242,7 +242,7 @@ jobs:
     - name: Test
       working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
       shell: bash
-      run: ctest -C Release --parallel `sysctl -n hw.logicalcpu`
+      run: ctest -C Release --output-on-failure --parallel `sysctl -n hw.logicalcpu`
 
     - name: Install (Xcode)
       if: matrix.GEN == 'Xcode'
