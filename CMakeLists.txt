@@ -82,7 +82,7 @@ else ()
         loader/linux/icd_exports.map)
 endif ()
 
-add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
+add_library (OpenCL STATIC ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 
 if (WIN32)
