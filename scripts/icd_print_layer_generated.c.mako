@@ -32,7 +32,11 @@ static CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + "_wrap"}(
 %endfor
 {
 printf("${api.Name}\n");
+%  if api.Name == "clSVMFree":
+tdispatch->${api.Name}(
+%  else:
 return tdispatch->${api.Name}(
+%  endif
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
             ${param.Name},
