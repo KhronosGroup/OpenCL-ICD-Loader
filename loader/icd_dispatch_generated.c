@@ -4246,7 +4246,7 @@ CL_API_ENTRY void CL_API_CALL clSVMFree(
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
-        return khrFirstLayer->dispatch.clSVMFree(
+        khrFirstLayer->dispatch.clSVMFree(
             context,
             svm_pointer);
 #endif // defined(CL_ENABLE_LAYERS)
