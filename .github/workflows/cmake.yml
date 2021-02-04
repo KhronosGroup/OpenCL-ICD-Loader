@@ -98,10 +98,10 @@ jobs:
 
     steps:
     - name: Checkout OpenCL-ICD-Loader
-      uses: actions/checkout@v2
+      uses: 
 
-    - name: 
-      uses: Checkout OpenCL-ICD-Loader
+    - name: Checkout OpenCL-Headers
+      uses: actions/checkout@v2
       with:
         repository: KhronosGroup/OpenCL-Headers
         path: external/OpenCL-Headers
