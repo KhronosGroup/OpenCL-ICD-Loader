@@ -87,6 +87,7 @@ jobs:
         -j`nproc`
 
   windows-msvc:
+    if: false
     runs-on: windows-latest
     strategy:
       fail-fast: false
@@ -191,7 +192,6 @@ jobs:
         cmake --build %GITHUB_WORKSPACE%/build --config Release --target install
 
   macos-gcc:
-    if: false
     runs-on: macos-latest
     strategy:
       matrix:
