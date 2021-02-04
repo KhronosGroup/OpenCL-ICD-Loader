@@ -113,7 +113,7 @@ else()
     endif ()
 endif ()
 
-find_package(OpenCLHeaders CONFIG)
+find_package(OpenCLHeaders CONFIG NO_SYSTEM_ENVIRONMENT_PATH)
 if (TARGET OpenCL::Headers)
   target_link_libraries (OpenCL PUBLIC OpenCL::Headers)
 else ()
