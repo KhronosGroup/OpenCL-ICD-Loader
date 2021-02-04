@@ -243,7 +243,6 @@ jobs:
       # warning: unused parameter [-Wunused-parameter]
       shell: bash
       run: cmake
-        --debug-find
         -G "${{matrix.GEN}}"
         -D BUILD_TESTING=ON
         -D CMAKE_C_FLAGS="-Wall -Wextra -pedantic -Wno-format"
