@@ -184,7 +184,7 @@ jobs:
       working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
       shell: cmd
       run: |
-        dir %GITHUB_WORKSPACE%\build
+        dir %GITHUB_WORKSPACE%\build\Release
         ctest -C Release --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
 
     - name: Install
