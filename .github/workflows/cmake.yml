@@ -88,7 +88,6 @@ jobs:
 
   windows-msvc:
     runs-on: windows-latest
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -181,6 +180,7 @@ jobs:
         cmake --build %GITHUB_WORKSPACE%\build --config Debug
 
     - name: Test
+      continue-on-error: true
       working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
       shell: cmd
       run: |
