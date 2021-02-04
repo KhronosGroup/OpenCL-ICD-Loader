@@ -102,9 +102,10 @@ jobs:
     - name: Create Build Environment
       shell: cmd
       run: |
+        cmake --version;
+        set;
         cmake -E make_directory $GITHUB_WORKSPACE/build;
         cmake -E make_directory $GITHUB_WORKSPACE/install;
-        set;
 
     - uses: actions/checkout@v2
       with:
