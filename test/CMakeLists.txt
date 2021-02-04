@@ -9,18 +9,26 @@ endif ()
 
 set_target_properties (IcdLog OpenCLDriverStub icd_loader_test
     PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-    PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+        PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 )
-
 add_test (
     NAME opencl_icd_loader_test
     COMMAND icd_loader_test
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
 )
-set_tests_properties(opencl_icd_loader_test
-    PROPERTIES
-        ENVIRONMENT OCL_ICD_FILENAMES=$<TARGET_FILE:OpenCLDriverStub>
-)
+get_property(GENERATOR_IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(GENERATOR_IS_MULTI_CONFIG)
+    set_tests_properties(opencl_icd_loader_test
+        PROPERTIES
+            ENVIRONMENT OCL_ICD_FILENAMES=$<TARGET_FILE:OpenCLDriverStub>
+            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>"
+    )
+else()
+    set_tests_properties(opencl_icd_loader_test
+        PROPERTIES
+            ENVIRONMENT OCL_ICD_FILENAMES=$<TARGET_FILE:OpenCLDriverStub>
+            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+    )
+endif()
