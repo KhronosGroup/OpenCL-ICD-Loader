@@ -185,7 +185,10 @@ jobs:
       shell: cmd
       run: |
         dir %GITHUB_WORKSPACE%\build\Release
+        ctest -C Release --show-only=json-v1
         ctest -C Release --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
+        ctest -C Debug --show-only=json-v1
+        ctest -C Debug --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
 
     - name: Install
       shell: cmd
