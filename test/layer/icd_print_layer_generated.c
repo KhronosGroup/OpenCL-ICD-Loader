@@ -1604,7 +1604,7 @@ static CL_API_ENTRY void CL_API_CALL clSVMFree_wrap(
     void* svm_pointer) CL_API_SUFFIX__VERSION_2_0
 {
 printf("clSVMFree\n");
-return tdispatch->clSVMFree(
+tdispatch->clSVMFree(
             context,
             svm_pointer);
 }
