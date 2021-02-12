@@ -56,11 +56,6 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd_envvars.h
     loader/icd_platform.h)
 
-if (ENABLE_OPENCL_LAYERS)
-    list (APPEND OPENCL_ICD_LOADER_SOURCES
-        include/cl_icd_layer.h)
-endif ()
-
 if (WIN32)
     list (APPEND OPENCL_ICD_LOADER_SOURCES 
         loader/windows/adapter.h
