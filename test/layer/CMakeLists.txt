@@ -2,8 +2,7 @@ get_filename_component(PARENT_DIR ../../ ABSOLUTE)
 set (OPENCL_PRINT_LAYER_SOURCES
     icd_print_layer.c
     icd_print_layer.h
-    icd_print_layer_generated.c
-    ${PARENT_DIR}/include/cl_icd_layer.h)
+    icd_print_layer_generated.c)
 
 if (WIN32)
     list (APPEND OPENCL_PRINT_LAYER_SOURCES icd_print_layer.def)

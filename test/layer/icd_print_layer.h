@@ -44,7 +44,7 @@
 #endif
 
 #include <stdio.h>
-#include "cl_icd_layer.h"
+#include <CL/cl_layer.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -20,7 +20,7 @@
 #include "icd_dispatch.h"
 #include "icd_envvars.h"
 #if defined(CL_ENABLE_LAYERS)
-#include "cl_icd_layer.h"
+#include <CL/cl_layer.h>
 #endif // defined(CL_ENABLE_LAYERS)
 #include <stdlib.h>
 #include <string.h>
