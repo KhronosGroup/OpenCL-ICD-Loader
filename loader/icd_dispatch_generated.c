@@ -2509,7 +2509,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetCommandQueueProperty(
     cl_command_queue command_queue,
     cl_command_queue_properties properties,
     cl_bool enable,
-    cl_command_queue_properties* old_properties) CL_EXT_SUFFIX__VERSION_1_0_DEPRECATED
+    cl_command_queue_properties* old_properties) CL_API_SUFFIX__VERSION_1_0_DEPRECATED
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -2533,7 +2533,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clSetCommandQueueProperty_disp(
     cl_command_queue command_queue,
     cl_command_queue_properties properties,
     cl_bool enable,
-    cl_command_queue_properties* old_properties) CL_EXT_SUFFIX__VERSION_1_0_DEPRECATED
+    cl_command_queue_properties* old_properties) CL_API_SUFFIX__VERSION_1_0_DEPRECATED
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clSetCommandQueueProperty(
@@ -2554,7 +2554,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage2D(
     size_t image_height,
     size_t image_row_pitch,
     void* host_ptr,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -2590,7 +2590,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateImage2D_disp(
     size_t image_height,
     size_t image_row_pitch,
     void* host_ptr,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateImage2D(
@@ -2617,7 +2617,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D(
     size_t image_row_pitch,
     size_t image_slice_pitch,
     void* host_ptr,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -2659,7 +2659,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D_disp(
     size_t image_row_pitch,
     size_t image_slice_pitch,
     void* host_ptr,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateImage3D(
@@ -2680,7 +2680,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D_disp(
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker(
     cl_command_queue command_queue,
-    cl_event* event) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_event* event) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -2698,7 +2698,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker(
 #if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker_disp(
     cl_command_queue command_queue,
-    cl_event* event) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_event* event) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueMarker(
@@ -2712,7 +2712,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker_disp(
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents(
     cl_command_queue command_queue,
     cl_uint num_events,
-    const cl_event* event_list) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    const cl_event* event_list) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -2733,7 +2733,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents(
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents_disp(
     cl_command_queue command_queue,
     cl_uint num_events,
-    const cl_event* event_list) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    const cl_event* event_list) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueWaitForEvents(
@@ -2746,7 +2746,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents_disp(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrier(
-    cl_command_queue command_queue) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -2761,7 +2761,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrier(
 ///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrier_disp(
-    cl_command_queue command_queue) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueBarrier(
@@ -2772,7 +2772,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrier_disp(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clUnloadCompiler(
-    void ) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    void ) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -2786,7 +2786,7 @@ CL_API_ENTRY cl_int CL_API_CALL clUnloadCompiler(
 ///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clUnloadCompiler_disp(
-    void ) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    void ) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
     // Nothing!
     return CL_SUCCESS;
@@ -2796,7 +2796,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clUnloadCompiler_disp(
 ///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 extern CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress_disp(
-    const char* func_name) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED;
+    const char* func_name) CL_API_SUFFIX__VERSION_1_1_DEPRECATED;
 #endif // defined(CL_ENABLE_LAYERS)
 
 
@@ -2804,7 +2804,7 @@ CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueue(
     cl_context context,
     cl_device_id device,
     cl_command_queue_properties properties,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2_DEPRECATED
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -2828,7 +2828,7 @@ static CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueue_disp(
     cl_context context,
     cl_device_id device,
     cl_command_queue_properties properties,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2_DEPRECATED
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateCommandQueue(
@@ -2846,7 +2846,7 @@ CL_API_ENTRY cl_sampler CL_API_CALL clCreateSampler(
     cl_bool normalized_coords,
     cl_addressing_mode addressing_mode,
     cl_filter_mode filter_mode,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2_DEPRECATED
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -2873,7 +2873,7 @@ static CL_API_ENTRY cl_sampler CL_API_CALL clCreateSampler_disp(
     cl_bool normalized_coords,
     cl_addressing_mode addressing_mode,
     cl_filter_mode filter_mode,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2_DEPRECATED
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateSampler(
@@ -2892,7 +2892,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueTask(
     cl_kernel kernel,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
+    cl_event* event) CL_API_SUFFIX__VERSION_1_2_DEPRECATED
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -2919,7 +2919,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueTask_disp(
     cl_kernel kernel,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
+    cl_event* event) CL_API_SUFFIX__VERSION_1_2_DEPRECATED
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueTask(
@@ -3122,8 +3122,8 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect(
     cl_command_queue command_queue,
     cl_mem buffer,
     cl_bool blocking_read,
-    const size_t* buffer_offset,
-    const size_t* host_offset,
+    const size_t* buffer_origin,
+    const size_t* host_origin,
     const size_t* region,
     size_t buffer_row_pitch,
     size_t buffer_slice_pitch,
@@ -3140,8 +3140,8 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect(
             command_queue,
             buffer,
             blocking_read,
-            buffer_offset,
-            host_offset,
+            buffer_origin,
+            host_origin,
             region,
             buffer_row_pitch,
             buffer_slice_pitch,
@@ -3157,8 +3157,8 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect(
         command_queue,
         buffer,
         blocking_read,
-        buffer_offset,
-        host_offset,
+        buffer_origin,
+        host_origin,
         region,
         buffer_row_pitch,
         buffer_slice_pitch,
@@ -3176,8 +3176,8 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect_disp(
     cl_command_queue command_queue,
     cl_mem buffer,
     cl_bool blocking_read,
-    const size_t* buffer_offset,
-    const size_t* host_offset,
+    const size_t* buffer_origin,
+    const size_t* host_origin,
     const size_t* region,
     size_t buffer_row_pitch,
     size_t buffer_slice_pitch,
@@ -3193,8 +3193,8 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect_disp(
         command_queue,
         buffer,
         blocking_read,
-        buffer_offset,
-        host_offset,
+        buffer_origin,
+        host_origin,
         region,
         buffer_row_pitch,
         buffer_slice_pitch,
@@ -3213,8 +3213,8 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect(
     cl_command_queue command_queue,
     cl_mem buffer,
     cl_bool blocking_write,
-    const size_t* buffer_offset,
-    const size_t* host_offset,
+    const size_t* buffer_origin,
+    const size_t* host_origin,
     const size_t* region,
     size_t buffer_row_pitch,
     size_t buffer_slice_pitch,
@@ -3231,8 +3231,8 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect(
             command_queue,
             buffer,
             blocking_write,
-            buffer_offset,
-            host_offset,
+            buffer_origin,
+            host_origin,
             region,
             buffer_row_pitch,
             buffer_slice_pitch,
@@ -3248,8 +3248,8 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect(
         command_queue,
         buffer,
         blocking_write,
-        buffer_offset,
-        host_offset,
+        buffer_origin,
+        host_origin,
         region,
         buffer_row_pitch,
         buffer_slice_pitch,
@@ -3267,8 +3267,8 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect_disp(
     cl_command_queue command_queue,
     cl_mem buffer,
     cl_bool blocking_write,
-    const size_t* buffer_offset,
-    const size_t* host_offset,
+    const size_t* buffer_origin,
+    const size_t* host_origin,
     const size_t* region,
     size_t buffer_row_pitch,
     size_t buffer_slice_pitch,
@@ -3284,8 +3284,8 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect_disp(
         command_queue,
         buffer,
         blocking_write,
-        buffer_offset,
-        host_offset,
+        buffer_origin,
+        host_origin,
         region,
         buffer_row_pitch,
         buffer_slice_pitch,
@@ -5018,7 +5018,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clSetProgramSpecializationConstant_disp(
 CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback(
     cl_program program,
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
-    void* user_data) CL_EXT_SUFFIX__VERSION_2_2_DEPRECATED
+    void* user_data) CL_API_SUFFIX__VERSION_2_2_DEPRECATED
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -5039,7 +5039,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback(
 static CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback_disp(
     cl_program program,
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
-    void* user_data) CL_EXT_SUFFIX__VERSION_2_2_DEPRECATED
+    void* user_data) CL_API_SUFFIX__VERSION_2_2_DEPRECATED
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clSetProgramReleaseCallback(
@@ -5197,7 +5197,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties_disp(
 // cl_ext_device_fission
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT(
-    cl_device_id device) CL_EXT_SUFFIX__VERSION_1_1
+    cl_device_id device) CL_API_SUFFIX__VERSION_1_1
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -5210,7 +5210,7 @@ CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT(
 }
 #if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT_disp(
-    cl_device_id device) CL_EXT_SUFFIX__VERSION_1_1
+    cl_device_id device) CL_API_SUFFIX__VERSION_1_1
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clReleaseDeviceEXT(
@@ -5219,7 +5219,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainDeviceEXT(
-    cl_device_id device) CL_EXT_SUFFIX__VERSION_1_1
+    cl_device_id device) CL_API_SUFFIX__VERSION_1_1
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -5232,7 +5232,7 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainDeviceEXT(
 }
 #if defined(CL_ENABLE_LAYERS)
 static CL_API_ENTRY cl_int CL_API_CALL clRetainDeviceEXT_disp(
-    cl_device_id device) CL_EXT_SUFFIX__VERSION_1_1
+    cl_device_id device) CL_API_SUFFIX__VERSION_1_1
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clRetainDeviceEXT(
@@ -5245,7 +5245,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT(
     const cl_device_partition_property_ext* properties,
     cl_uint num_entries,
     cl_device_id* out_devices,
-    cl_uint* num_devices) CL_EXT_SUFFIX__VERSION_1_1
+    cl_uint* num_devices) CL_API_SUFFIX__VERSION_1_1
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -5270,7 +5270,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT_disp(
     const cl_device_partition_property_ext* properties,
     cl_uint num_entries,
     cl_device_id* out_devices,
-    cl_uint* num_devices) CL_EXT_SUFFIX__VERSION_1_1
+    cl_uint* num_devices) CL_API_SUFFIX__VERSION_1_1
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_device, CL_INVALID_DEVICE);
     return in_device->dispatch->clCreateSubDevicesEXT(
@@ -6231,7 +6231,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR_disp(
 CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromGLsyncKHR(
     cl_context context,
     cl_GLsync sync,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -6250,7 +6250,7 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromGLsyncKHR(
 static CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromGLsyncKHR_disp(
     cl_context context,
     cl_GLsync sync,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateEventFromGLsyncKHR(
@@ -6400,7 +6400,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
     cl_GLenum target,
     cl_GLint miplevel,
     cl_GLuint texture,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -6428,7 +6428,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D_disp(
     cl_GLenum target,
     cl_GLint miplevel,
     cl_GLuint texture,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromGLTexture2D(
@@ -6447,7 +6447,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
     cl_GLenum target,
     cl_GLint miplevel,
     cl_GLuint texture,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -6475,7 +6475,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D_disp(
     cl_GLenum target,
     cl_GLint miplevel,
     cl_GLuint texture,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromGLTexture3D(
@@ -6705,7 +6705,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfoKHR(
     const void* input_value,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_EXT_SUFFIX__VERSION_2_0_DEPRECATED
+    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_2_0_DEPRECATED
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -6739,7 +6739,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_disp(
     const void* input_value,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_EXT_SUFFIX__VERSION_2_0_DEPRECATED
+    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_2_0_DEPRECATED
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_kernel, CL_INVALID_KERNEL);
     return in_kernel->dispatch->clGetKernelSubGroupInfoKHR(

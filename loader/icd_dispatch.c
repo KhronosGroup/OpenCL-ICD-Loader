@@ -216,14 +216,14 @@ static inline void* clGetExtensionFunctionAddress_body(
 }
 
 CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress_disp(
-    const char* function_name) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    const char* function_name) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
     return clGetExtensionFunctionAddress_body(
         function_name);
 }
 
 CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress(
-    const char* function_name) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    const char* function_name) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
     // make sure the ICD is initialized
     khrIcdInitialize();

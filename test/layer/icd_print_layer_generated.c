@@ -943,7 +943,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clSetCommandQueueProperty_wrap(
     cl_command_queue command_queue,
     cl_command_queue_properties properties,
     cl_bool enable,
-    cl_command_queue_properties* old_properties) CL_EXT_SUFFIX__VERSION_1_0_DEPRECATED
+    cl_command_queue_properties* old_properties) CL_API_SUFFIX__VERSION_1_0_DEPRECATED
 {
 printf("clSetCommandQueueProperty\n");
 return tdispatch->clSetCommandQueueProperty(
@@ -962,7 +962,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateImage2D_wrap(
     size_t image_height,
     size_t image_row_pitch,
     void* host_ptr,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 printf("clCreateImage2D\n");
 return tdispatch->clCreateImage2D(
@@ -987,7 +987,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D_wrap(
     size_t image_row_pitch,
     size_t image_slice_pitch,
     void* host_ptr,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 printf("clCreateImage3D\n");
 return tdispatch->clCreateImage3D(
@@ -1006,7 +1006,7 @@ return tdispatch->clCreateImage3D(
 ///////////////////////////////////////////////////////////////////////////////
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker_wrap(
     cl_command_queue command_queue,
-    cl_event* event) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_event* event) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 printf("clEnqueueMarker\n");
 return tdispatch->clEnqueueMarker(
@@ -1018,7 +1018,7 @@ return tdispatch->clEnqueueMarker(
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents_wrap(
     cl_command_queue command_queue,
     cl_uint num_events,
-    const cl_event* event_list) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    const cl_event* event_list) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 printf("clEnqueueWaitForEvents\n");
 return tdispatch->clEnqueueWaitForEvents(
@@ -1029,7 +1029,7 @@ return tdispatch->clEnqueueWaitForEvents(
 
 ///////////////////////////////////////////////////////////////////////////////
 static CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrier_wrap(
-    cl_command_queue command_queue) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 printf("clEnqueueBarrier\n");
 return tdispatch->clEnqueueBarrier(
@@ -1038,7 +1038,7 @@ return tdispatch->clEnqueueBarrier(
 
 ///////////////////////////////////////////////////////////////////////////////
 static CL_API_ENTRY cl_int CL_API_CALL clUnloadCompiler_wrap(
-    void ) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    void ) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 printf("clUnloadCompiler\n");
 return tdispatch->clUnloadCompiler(
@@ -1047,7 +1047,7 @@ return tdispatch->clUnloadCompiler(
 
 ///////////////////////////////////////////////////////////////////////////////
 static CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress_wrap(
-    const char* func_name) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    const char* func_name) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 printf("clGetExtensionFunctionAddress\n");
 return tdispatch->clGetExtensionFunctionAddress(
@@ -1059,7 +1059,7 @@ static CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueue_wrap(
     cl_context context,
     cl_device_id device,
     cl_command_queue_properties properties,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2_DEPRECATED
 {
 printf("clCreateCommandQueue\n");
 return tdispatch->clCreateCommandQueue(
@@ -1075,7 +1075,7 @@ static CL_API_ENTRY cl_sampler CL_API_CALL clCreateSampler_wrap(
     cl_bool normalized_coords,
     cl_addressing_mode addressing_mode,
     cl_filter_mode filter_mode,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2_DEPRECATED
 {
 printf("clCreateSampler\n");
 return tdispatch->clCreateSampler(
@@ -1092,7 +1092,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueTask_wrap(
     cl_kernel kernel,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
+    cl_event* event) CL_API_SUFFIX__VERSION_1_2_DEPRECATED
 {
 printf("clEnqueueTask\n");
 return tdispatch->clEnqueueTask(
@@ -1175,8 +1175,8 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect_wrap(
     cl_command_queue command_queue,
     cl_mem buffer,
     cl_bool blocking_read,
-    const size_t* buffer_offset,
-    const size_t* host_offset,
+    const size_t* buffer_origin,
+    const size_t* host_origin,
     const size_t* region,
     size_t buffer_row_pitch,
     size_t buffer_slice_pitch,
@@ -1192,8 +1192,8 @@ return tdispatch->clEnqueueReadBufferRect(
             command_queue,
             buffer,
             blocking_read,
-            buffer_offset,
-            host_offset,
+            buffer_origin,
+            host_origin,
             region,
             buffer_row_pitch,
             buffer_slice_pitch,
@@ -1210,8 +1210,8 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect_wrap(
     cl_command_queue command_queue,
     cl_mem buffer,
     cl_bool blocking_write,
-    const size_t* buffer_offset,
-    const size_t* host_offset,
+    const size_t* buffer_origin,
+    const size_t* host_origin,
     const size_t* region,
     size_t buffer_row_pitch,
     size_t buffer_slice_pitch,
@@ -1227,8 +1227,8 @@ return tdispatch->clEnqueueWriteBufferRect(
             command_queue,
             buffer,
             blocking_write,
-            buffer_offset,
-            host_offset,
+            buffer_origin,
+            host_origin,
             region,
             buffer_row_pitch,
             buffer_slice_pitch,
@@ -1887,7 +1887,7 @@ return tdispatch->clSetProgramSpecializationConstant(
 static CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback_wrap(
     cl_program program,
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
-    void* user_data) CL_EXT_SUFFIX__VERSION_2_2_DEPRECATED
+    void* user_data) CL_API_SUFFIX__VERSION_2_2_DEPRECATED
 {
 printf("clSetProgramReleaseCallback\n");
 return tdispatch->clSetProgramReleaseCallback(
@@ -1953,14 +1953,14 @@ return tdispatch->clCreateImageWithProperties(
 
 // cl_ext_device_fission
 static CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT_wrap(
-    cl_device_id device) CL_EXT_SUFFIX__VERSION_1_1
+    cl_device_id device) CL_API_SUFFIX__VERSION_1_1
 {
 printf("clReleaseDeviceEXT\n");
 return tdispatch->clReleaseDeviceEXT(
             device);
 }
 static CL_API_ENTRY cl_int CL_API_CALL clRetainDeviceEXT_wrap(
-    cl_device_id device) CL_EXT_SUFFIX__VERSION_1_1
+    cl_device_id device) CL_API_SUFFIX__VERSION_1_1
 {
 printf("clRetainDeviceEXT\n");
 return tdispatch->clRetainDeviceEXT(
@@ -1971,7 +1971,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT_wrap(
     const cl_device_partition_property_ext* properties,
     cl_uint num_entries,
     cl_device_id* out_devices,
-    cl_uint* num_devices) CL_EXT_SUFFIX__VERSION_1_1
+    cl_uint* num_devices) CL_API_SUFFIX__VERSION_1_1
 {
 printf("clCreateSubDevicesEXT\n");
 return tdispatch->clCreateSubDevicesEXT(
@@ -2348,7 +2348,7 @@ return tdispatch->clEnqueueReleaseEGLObjectsKHR(
 static CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromGLsyncKHR_wrap(
     cl_context context,
     cl_GLsync sync,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1
 {
 printf("clCreateEventFromGLsyncKHR\n");
 return tdispatch->clCreateEventFromGLsyncKHR(
@@ -2411,7 +2411,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D_wrap(
     cl_GLenum target,
     cl_GLint miplevel,
     cl_GLuint texture,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 printf("clCreateFromGLTexture2D\n");
 return tdispatch->clCreateFromGLTexture2D(
@@ -2428,7 +2428,7 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D_wrap(
     cl_GLenum target,
     cl_GLint miplevel,
     cl_GLuint texture,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 printf("clCreateFromGLTexture3D\n");
 return tdispatch->clCreateFromGLTexture3D(
@@ -2524,7 +2524,7 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_wrap(
     const void* input_value,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_EXT_SUFFIX__VERSION_2_0_DEPRECATED
+    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_2_0_DEPRECATED
 {
 printf("clGetKernelSubGroupInfoKHR\n");
 return tdispatch->clGetKernelSubGroupInfoKHR(
