@@ -56,7 +56,6 @@
 #include <CL/cl_dx9_media_sharing.h>
 #endif
 #include <CL/cl_gl.h>
-#include <CL/cl_gl_ext.h>
 #include <CL/cl_ext.h>
 #include <CL/cl_egl.h>
 #include <CL/cl_icd.h>
