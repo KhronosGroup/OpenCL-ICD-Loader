@@ -1,5 +1,4 @@
 #include <CL/cl_gl.h>
-#include <CL/cl_gl_ext.h>
 #include <platform/icd_test_log.h>
 
 // Need to rename all CL API functions to prevent ICD loader functions calling

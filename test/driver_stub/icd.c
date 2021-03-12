@@ -17,7 +17,6 @@
 
 #include "CL/cl.h"
 #include "CL/cl_gl.h"
-#include "CL/cl_gl_ext.h"
 
 /*
  * Prototypes for deprecated functions no longer present in cl.h
