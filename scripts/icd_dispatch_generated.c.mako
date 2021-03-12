@@ -68,7 +68,7 @@ ${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + (""
 %  if i < len(api.Params)-1:
     ${param.Type} ${param.Name}${param.TypeEnd},
 %  else:
-    ${param.Type} ${param.Name}${param.TypeEnd}) ${api.Suffix}
+    ${param.Type} ${param.Name}${param.TypeEnd})
 %  endif
 %endfor
 {
@@ -218,7 +218,7 @@ ${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + (""
 %  if i < len(api.Params)-1:
     ${param.Type} ${param.Name}${param.TypeEnd},
 %  else:
-    ${param.Type} ${param.Name}${param.TypeEnd}) ${api.Suffix}
+    ${param.Type} ${param.Name}${param.TypeEnd})
 %  endif
 %endfor
 {
