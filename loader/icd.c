@@ -361,12 +361,12 @@ void khrIcdVendorsEnumerateEnv(void)
 #if defined(CL_ENABLE_LAYERS)
 void khrIcdLayersEnumerateEnv(void)
 {
-    char* layerFilenames = khrIcd_secure_getenv("OCL_ICD_LAYERS");
+    char* layerFilenames = khrIcd_secure_getenv("OPENCL_LAYERS");
     char* cur_file = NULL;
     char* next_file = NULL;
     if (layerFilenames)
     {
-        KHR_ICD_TRACE("Found OCL_ICD_LAYERS environment variable.\n");
+        KHR_ICD_TRACE("Found OPENCL_LAYERS environment variable.\n");
 
         next_file = layerFilenames;
         while (NULL != next_file && *next_file != '\0') {
