@@ -15,7 +15,7 @@ extern cl_event event;
 extern cl_context  context;
 extern cl_command_queue command_queue;
 extern cl_device_id devices;
-int ret_val;
+static int ret_val;
 extern void CL_CALLBACK setevent_callback(cl_event _a, cl_int _b, void* _c);
 extern void CL_CALLBACK setprintf_callback(cl_context _a, cl_uint _b, char* _c, void* _d );
 
