@@ -19,6 +19,18 @@
 #include <stdbool.h>
 #include <windows.h>
 
+#ifdef _LP64
+#define PRIDW_PREFIX
+#define PRIUL_PREFIX
+#else
+#define PRIDW_PREFIX "l"
+#define PRIUL_PREFIX "l"
+#endif
+#define PRIuDW PRIDW_PREFIX "u"
+#define PRIxDW PRIDW_PREFIX "x"
+#define PRIuUL PRIUL_PREFIX "u"
+#define PRIxUL PRIUL_PREFIX "x"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
