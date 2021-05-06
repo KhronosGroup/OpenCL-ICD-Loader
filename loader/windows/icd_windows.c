@@ -151,7 +151,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
             DWORD dwValueSize = sizeof(dwValue);
 
             // read the value name
-            KHR_ICD_TRACE("Reading value %lu...\n", dwIndex);
+            KHR_ICD_TRACE("Reading value %"PRIuDW"...\n", dwIndex);
             result = RegEnumValueA(
                   platformsKey,
                   dwIndex,
@@ -164,7 +164,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
             // if RegEnumKeyEx fails, we are done with the enumeration
             if (ERROR_SUCCESS != result)
             {
-                KHR_ICD_TRACE("Failed to read value %lu, done reading key.\n", dwIndex);
+                KHR_ICD_TRACE("Failed to read value %"PRIuDW", done reading key.\n", dwIndex);
                 break;
             }
             KHR_ICD_TRACE("Value %s found...\n", cszLibraryName);
