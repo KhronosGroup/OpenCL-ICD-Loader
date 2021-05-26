@@ -73,6 +73,13 @@ Notes:
 
 * Some users may prefer to use a CMake GUI frontend, such as `cmake-gui` or `ccmake`, vs. the command-line CMake.
 
+### Building on QNX
+
+QNX is using its own build system. The proper build environment must be set
+under the QNX host development system (Linux, Win64, MacOS) by invoking
+the shell/batch script provided with QNX installation. Current building environment
+under the "build-qnx" supports QNX SDP 7.0, QNX SDP 7.1 and upcoming QNX SDP 7.2.
+
 ## OpenCL ICD Loader Tests
 
 OpenCL ICD Loader Tests can be run using `ctest`, which is a companion to CMake.
