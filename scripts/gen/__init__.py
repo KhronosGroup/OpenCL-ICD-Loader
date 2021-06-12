@@ -92,6 +92,12 @@ def get_apisigs(spec):
             ptypeend = ptypeend.strip()
             pname = pname.strip()
             plist.append(ApiParam(ptype, ptypeend, pname))
+
+        # For an empty parameter list (for e.g. clUnloadCompiler), add a single
+        # unnamed void parameter to make generation easier.
+        if len(plist) == 0:
+            plist.append(ApiParam("void", "", ""))
+
         apisigs[name] = ApiSignature(name, ret, plist, suffix)
     return apisigs
 
