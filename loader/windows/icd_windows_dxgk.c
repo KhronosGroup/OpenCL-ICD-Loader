@@ -155,7 +155,7 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
                     ret |= adapterAdd(cszLibraryName, EnumAdapters.adapters[AdapterIndex].luid);
                 }
             }
-            else if (status == STATUS_INVALID_PARAMETER)
+            else if (status == (NTSTATUS)STATUS_INVALID_PARAMETER)
             {
                 free(pQueryBuffer);
                 goto out;
