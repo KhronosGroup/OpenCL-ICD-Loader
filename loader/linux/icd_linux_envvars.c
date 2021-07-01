@@ -32,7 +32,7 @@ char *khrIcd_getenv(const char *name) {
 }
 
 char *khrIcd_secure_getenv(const char *name) {
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(__QNXNTO__)
     // Apple does not appear to have a secure getenv implementation.
     // The main difference between secure getenv and getenv is that secure getenv
     // returns NULL if the process is being run with elevated privileges by a normal user.

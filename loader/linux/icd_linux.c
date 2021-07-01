@@ -27,6 +27,16 @@
 #include <dirent.h>
 #include <pthread.h>
 
+#if !defined(DT_REG)
+/* Try universal POSIX way if DT_REG definition is not available */
+#if !defined(_POSIX_C_SOURCE)
+#define _POSIX_C_SOURCE 1
+#endif /* _POSIX_C_SOURCE */
+/* For _POSIX_PATH_MAX */
+#include <limits.h>
+#include <sys/stat.h>
+#endif /* !DT_REG */
+
 static pthread_once_t initialized = PTHREAD_ONCE_INIT;
 
 /*
@@ -61,11 +71,34 @@ void khrIcdOsVendorsEnumerate(void)
         // attempt to load all files in the directory
         for (dirEntry = readdir(dir); dirEntry; dirEntry = readdir(dir) )
         {
+#if defined(DT_REG)
             switch(dirEntry->d_type)
             {
             case DT_UNKNOWN:
             case DT_REG:
             case DT_LNK:
+#else
+            char vendor_filename[_POSIX_PATH_MAX];
+            struct stat st;
+
+            if (snprintf(vendor_filename, sizeof(vendor_filename), "%s/%s", vendorPath,
+                dirEntry->d_name) >= (int)sizeof(vendor_filename))
+            {
+                KHR_ICD_TRACE("File path is too long %s/%s, skipping\n", vendorPath, dirEntry->d_name);
+                continue;
+            }
+
+            if (stat(vendor_filename, &st) != 0)
+            {
+                KHR_ICD_TRACE("Cannot stat file name %s, skipping\n", vendor_filename);
+                continue;
+            }
+
+            switch(st.st_mode & S_IFMT)
+            {
+            case S_IFREG:
+            case S_IFLNK:
+#endif /* DT_REG */
                 {
                     const char* extension = ".icd";
                     FILE *fin = NULL;
