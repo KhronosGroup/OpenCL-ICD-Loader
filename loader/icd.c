@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 The Khronos Group Inc.
+ * Copyright (c) 2016-2021 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 #include "icd.h"
 #include "icd_dispatch.h"
 #include "icd_envvars.h"
+#include "icd_device_visible.h"
 #if defined(CL_ENABLE_LAYERS)
 #include <CL/cl_layer.h>
 #endif // defined(CL_ENABLE_LAYERS)
@@ -122,6 +123,12 @@ void khrIcdVendorAdd(const char *libraryName)
         {
             continue;
         }
+
+        if (!khrIcdCheckPlatformVisible(libraryName, i))
+        {
+            continue;
+        }
+
         result = platforms[i]->dispatch->clGetPlatformInfo(
             platforms[i],
             CL_PLATFORM_ICD_SUFFIX_KHR,
@@ -179,8 +186,9 @@ void khrIcdVendorAdd(const char *libraryName)
             *prevNextPointer = vendor;
         }
 
-        KHR_ICD_TRACE("successfully added vendor %s with suffix %s\n", libraryName, suffix);
+        khrIcdVisibilitySetPlatform(libraryName, i, platforms[i]);
 
+        KHR_ICD_TRACE("successfully added vendor %s with suffix %s\n", libraryName, suffix);
     }
 
 Done:
