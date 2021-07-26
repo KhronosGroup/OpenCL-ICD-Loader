@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 The Khronos Group Inc.
+ * Copyright (c) 2016-2021 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 
 #include "icd.h"
 #include "icd_envvars.h"
+#include "icd_device_visible.h"
 
 #include <dlfcn.h>
 #include <stdio.h>
@@ -35,13 +36,16 @@ static pthread_once_t initialized = PTHREAD_ONCE_INIT;
  *
  */
 
-// go through the list of vendors in the two configuration files
+// go through the OPENCL_VISIBLE_DEVICES env variable and go through the list
+// of vendors in the two configuration files
 void khrIcdOsVendorsEnumerate(void)
 {
     DIR *dir = NULL;
     struct dirent *dirEntry = NULL;
     char* vendorPath = ICD_VENDOR_PATH;
     char* envPath = NULL;
+    // go through the list in OPENCL_VISIBLE_DEVICES env variable
+    khrIcdOsGetOpenCLVisibleDevices();
 
     khrIcdVendorsEnumerateEnv();
 
@@ -121,8 +125,14 @@ void khrIcdOsVendorsEnumerate(void)
                     // ignore a newline at the end of the file
                     if (buffer[bufferSize-1] == '\n') buffer[bufferSize-1] = '\0';
 
+                    khrIcdVisibilityReplaceLibraryName(dirEntry->d_name, buffer);
+                    khrIcdVisibilityReplaceLibraryName(fileName, buffer);
+
                     // load the string read from the file
-                    khrIcdVendorAdd(buffer);
+                    if (khrIcdCheckLibraryVisible(buffer))
+                    {
+                        khrIcdVendorAdd(buffer);
+                    }
 
                     free(fileName);
                     free(buffer);

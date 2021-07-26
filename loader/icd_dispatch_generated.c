@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2020 The Khronos Group Inc.
+ * Copyright (c) 2012-2021 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,9 @@
  */
 
 #include "icd_dispatch.h"
+#include "icd_envvars.h"
 #include "icd.h"
+#include "icd_device_visible.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -96,12 +98,81 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
             num_devices);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
-    return platform->dispatch->clGetDeviceIDs(
+    cl_uint num_all_devices = 0;
+    cl_device_id *all_devices = NULL;
+    cl_uint i;
+    cl_int result;
+
+    if (!num_entries && devices)
+    {
+        return CL_INVALID_VALUE;
+    }
+    if (!devices && !num_devices)
+    {
+        return CL_INVALID_VALUE;
+    }
+
+    if (num_devices)
+    {
+        *num_devices = 0;
+    }
+    for (i = 0; i < num_entries && devices; ++i)
+    {
+        devices[i] = NULL;
+    }
+
+
+    result = platform->dispatch->clGetDeviceIDs(
         platform,
         device_type,
-        num_entries,
-        devices,
-        num_devices);
+        0,
+        NULL,
+        &num_all_devices);
+
+    if (CL_SUCCESS != result)
+    {
+        return result;
+    }
+    if (!num_all_devices)
+    {
+        return CL_DEVICE_NOT_FOUND;
+    }
+    all_devices = (cl_device_id*)malloc(sizeof(cl_device_id) * num_all_devices);
+    if (!all_devices)
+    {
+        return CL_OUT_OF_HOST_MEMORY;
+    }
+    result = platform->dispatch->clGetDeviceIDs(
+        platform,
+        device_type,
+        num_all_devices,
+        all_devices,
+        NULL);
+    if (CL_SUCCESS != result)
+    {
+        free(all_devices);
+        return result;
+    }
+
+    result = CL_DEVICE_NOT_FOUND;
+    for (i = 0; i < num_all_devices; ++i)
+    {
+        if (khrIcdCheckDeviceVisible(platform, all_devices[i]))
+        {
+            result = CL_SUCCESS;
+            if (num_entries && devices)
+            {
+                *(devices++) = all_devices[i];
+                --num_entries;
+            }
+            if (num_devices)
+            {
+                ++(*num_devices);
+            }
+        }
+    }
+    free(all_devices);
+    return result;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -235,6 +306,12 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType(
     void* user_data,
     cl_int* errcode_ret)
 {
+    cl_platform_id platform = NULL;
+    cl_uint num_devices = 0;
+    cl_device_id *devices = NULL;
+    cl_context context = NULL;
+    cl_int result;
+
     khrIcdInitialize();
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -245,15 +322,56 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType(
             user_data,
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
-    cl_platform_id platform = NULL;
     khrIcdContextPropertiesGetPlatform(properties, &platform);
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(platform, CL_INVALID_PLATFORM);
-    return platform->dispatch->clCreateContextFromType(
+
+    result = clGetDeviceIDs(platform, device_type, 0, NULL, &num_devices);
+    if (CL_SUCCESS != result)
+    {
+        if (*errcode_ret)
+        {
+            *errcode_ret = result;
+        }
+        return NULL;
+    }
+    if (!num_devices)
+    {
+        if (*errcode_ret)
+        {
+            *errcode_ret = CL_DEVICE_NOT_FOUND;
+        }
+        return NULL;
+    }
+    devices = (cl_device_id*)malloc(sizeof(cl_device_id) * num_devices);
+    if (!devices)
+    {
+        if (*errcode_ret)
+        {
+            *errcode_ret = CL_OUT_OF_HOST_MEMORY;
+        }
+        return NULL;
+    }
+    result = clGetDeviceIDs(platform, device_type, num_devices, devices, NULL);
+    if (CL_SUCCESS != result)
+    {
+        free(devices);
+        if (*errcode_ret)
+        {
+            *errcode_ret = result;
+        }
+        return NULL;
+    }
+
+    context = platform->dispatch->clCreateContext(
         properties,
-        device_type,
+        num_devices,
+        devices,
         pfn_notify,
         user_data,
         errcode_ret);
+    free(devices);
+    return context;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
