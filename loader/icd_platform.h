@@ -24,9 +24,11 @@
 #define PATH_SEPARATOR  ':'
 #define DIRECTORY_SYMBOL '/'
 #ifdef __ANDROID__
-#define ICD_VENDOR_PATH "/system/vendor/Khronos/OpenCL/vendors";
+#define ICD_VENDOR_PATH "/system/vendor/Khronos/OpenCL/vendors"
+#define LAYER_PATH "/system/vendor/Khronos/OpenCL/layers"
 #else
-#define ICD_VENDOR_PATH "/etc/OpenCL/vendors";
+#define ICD_VENDOR_PATH "/etc/OpenCL/vendors"
+#define LAYER_PATH "/etc/OpenCL/layers"
 #endif // ANDROID
 
 #elif defined(_WIN32)
