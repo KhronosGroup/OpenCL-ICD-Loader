@@ -50,6 +50,7 @@ build:cmake-minimum:
   script:
   # Clone, configure, build, install OpenCL-Headers
     - git clone
+      --depth 1
       --branch develop_stream
       git@projects.streamhpc.com:Khronos/OpenCL-Headers.git
       $DEPS_DIR/OpenCL-Headers
@@ -90,6 +91,7 @@ build:cmake-latest:
   script:
     # Clone, configure, build, install OpenCL-Headers
     - git clone
+      --depth 1
       --branch develop_stream
       git@projects.streamhpc.com:Khronos/OpenCL-Headers.git
       $DEPS_DIR/OpenCL-Headers
