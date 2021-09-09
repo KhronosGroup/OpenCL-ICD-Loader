@@ -48,11 +48,12 @@ build:cmake-minimum:
   # NOTE 2: Lack of space in -H<folder> -B<folder> is important!
   #         https://stackoverflow.com/a/20611964/1476661
   script:
-  # Clone, configure, build, install OpenCL-Headers
+    # Clone, configure, build, install OpenCL-Headers
+    # NOTE: OpenCL-Headers URL set in repo settings
     - git clone
       --depth 1
       --branch develop_stream
-      git@projects.streamhpc.com:Khronos/OpenCL-Headers.git
+      https://gitlab-ci-token:${CI_JOB_TOKEN}@${OPENCL_HEADERS_GIT_URL}
       $DEPS_DIR/OpenCL-Headers
     - cmake
       -G Ninja
@@ -90,10 +91,11 @@ build:cmake-latest:
   stage: build
   script:
     # Clone, configure, build, install OpenCL-Headers
+    # NOTE: OpenCL-Headers URL set in repo settings
     - git clone
       --depth 1
       --branch develop_stream
-      git@projects.streamhpc.com:Khronos/OpenCL-Headers.git
+      https://gitlab-ci-token:${CI_JOB_TOKEN}@${OPENCL_HEADERS_GIT_URL}
       $DEPS_DIR/OpenCL-Headers
     - cmake
       -G "Ninja Multi-Config"
