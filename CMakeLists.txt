@@ -135,9 +135,9 @@ target_compile_definitions(OpenCL PUBLIC CL_TARGET_OPENCL_VERSION=300)
 
 if (ENABLE_OPENCL_LAYERS)
   target_compile_definitions(OpenCL PUBLIC CL_ENABLE_LAYERS)
-  target_include_directories(OpenCL PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include/mylib>)
+  #target_include_directories(OpenCL PUBLIC
+  #  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  #  $<INSTALL_INTERFACE:include>)
 endif()
 
 target_include_directories (OpenCL
