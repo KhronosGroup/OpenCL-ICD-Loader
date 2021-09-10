@@ -67,8 +67,6 @@ if (WIN32)
         loader/windows/icd_windows_envvars.c
         loader/windows/icd_windows_hkr.c
         loader/windows/icd_windows_hkr.h
-        loader/windows/icd_windows_apppackage.cpp
-        loader/windows/icd_windows_apppackage.h
         loader/windows/OpenCL.def
         loader/windows/OpenCL.rc)
     # Only add the DXSDK include directory if the environment variable is
@@ -92,8 +90,12 @@ if (WIN32)
 
     option (OPENCL_ICD_LOADER_DISABLE_OPENCLON12 "Disable support for OpenCLOn12. Support for OpenCLOn12 should only be disabled when building an import lib to link with, and must be enabled when building an ICD loader for distribution!" OFF)
     if (OPENCL_ICD_LOADER_DISABLE_OPENCLON12)
-        target_compile_definitions(OpenCL PRIVATE OPENCL_ICD_LOADER_DISABLE_OPENCLON12)
-    endif()
+        target_compile_definitions (OpenCL PRIVATE OPENCL_ICD_LOADER_DISABLE_OPENCLON12)
+    else ()
+        enable_language (CXX)
+        set_target_properties (OpenCL PROPERTIES SOURCES
+            "${OPENCL_ICD_LOADER_SOURCES};loader/windows/icd_windows_apppackage.cpp;loader/windows/icd_windows_apppackage.h")
+    endif ()
 
     if(NOT USE_DYNAMIC_VCXX_RUNTIME)
         string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
