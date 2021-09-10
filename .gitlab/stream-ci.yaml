@@ -83,6 +83,7 @@ build:cmake-minimum:
     paths:
       - build/
       - install/
+      - $DEPS_DIR/OpenCL-Headers/install
     exclude:
       - build/**/CMakeFiles/
     expire_in: 2 weeks
@@ -134,6 +135,7 @@ build:cmake-latest:
     paths:
       - build/
       - install/
+      - $DEPS_DIR/OpenCL-Headers/install
     exclude:
       - build/**/CMakeFiles/
     expire_in: 2 weeks
@@ -165,3 +167,57 @@ test:cmake-latest:
     - cd $BUILD_DIR
     - ctest --output-on-failure -C Debug
     - ctest --output-on-failure -C Release 
+
+
+###################
+##               ##
+## Consume stage ##
+##               ##
+###################
+
+consume:cmake-minimum:
+  extends: .toolchain-matrix-minimum
+  stage: consume
+  needs:
+    - build:cmake-minimum
+    - test:cmake-minimum
+  # NOTE 1: CMake creates build and install folders as needed.
+  # NOTE 2: Lack of space in -H<folder> -B<folder> is important!
+  #         https://stackoverflow.com/a/20611964/1476661
+  script:
+    - cmake
+      -G Ninja
+      -D CMAKE_C_COMPILER=$COMPILER
+      -D CMAKE_BUILD_TYPE=Release
+      -D CMAKE_PREFIX_PATH="$DEPS_DIR/OpenCL-Headers/install;$INSTALL_DIR"
+      -D DRIVER_STUB_PATH=""
+      -B$CI_PROJECT_DIR/downstream/bare
+      -H$CI_PROJECT_DIR/tests/pkgconfig/bare
+    - cmake
+      --build downstream/bare
+    - cd downstream/bare ;
+      ctest ;
+      cd -
+
+consume:cmake-latest:
+  extends: .toolchain-matrix-latest
+  stage: consume
+  needs:
+    - build:cmake-latest
+    - test:cmake-latest
+  script:
+    - cmake
+      -G "Ninja Multi-Config"
+      -D CMAKE_C_COMPILER=$COMPILER
+      -D CMAKE_PREFIX_PATH="$DEPS_DIR/OpenCL-Headers/install;$INSTALL_DIR"
+      -B $CI_PROJECT_DIR/downstream/bare
+      -S $CI_PROJECT_DIR/tests/pkgconfig/bare
+    - cmake
+      --build downstream/bare
+      --config Debug
+    - cmake
+      --build downstream/bare
+      --config Release
+    - cd downstream/bare
+    - ctest -C Debug
+    - ctest -C Release
