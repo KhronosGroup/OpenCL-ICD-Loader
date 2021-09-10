@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 3.1)
 
-project (OpenCL-ICD-Loader VERSION 1.2)
+project (OpenCL-ICD-Loader
+    VERSION 1.2
+    LANGUAGES C)
 find_package (Threads REQUIRED)
 
 set(CMAKE_C_STANDARD 99)
