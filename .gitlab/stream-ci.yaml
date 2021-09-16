@@ -192,7 +192,7 @@ consume:cmake-minimum:
       -D CMAKE_PREFIX_PATH="$DEPS_DIR/OpenCL-Headers/install;$INSTALL_DIR"
       -D DRIVER_STUB_PATH=""
       -B$CI_PROJECT_DIR/downstream/bare
-      -H$CI_PROJECT_DIR/tests/pkgconfig/bare
+      -H$CI_PROJECT_DIR/test/pkgconfig/bare
     - cmake
       --build downstream/bare
     - cd downstream/bare ;
@@ -211,7 +211,7 @@ consume:cmake-latest:
       -D CMAKE_C_COMPILER=$COMPILER
       -D CMAKE_PREFIX_PATH="$DEPS_DIR/OpenCL-Headers/install;$INSTALL_DIR"
       -B $CI_PROJECT_DIR/downstream/bare
-      -S $CI_PROJECT_DIR/tests/pkgconfig/bare
+      -S $CI_PROJECT_DIR/test/pkgconfig/bare
     - cmake
       --build downstream/bare
       --config Debug
