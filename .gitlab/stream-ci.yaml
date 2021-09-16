@@ -190,7 +190,7 @@ consume:cmake-minimum:
       -D CMAKE_C_COMPILER=$COMPILER
       -D CMAKE_BUILD_TYPE=Release
       -D CMAKE_PREFIX_PATH="$DEPS_DIR/OpenCL-Headers/install;$INSTALL_DIR"
-      -D DRIVER_STUB_PATH=""
+      -D DRIVER_STUB_PATH=$BUILD_DIR/libOpenCLDriverStub.so
       -B$CI_PROJECT_DIR/downstream/bare
       -H$CI_PROJECT_DIR/test/pkgconfig/bare
     - cmake
@@ -210,6 +210,7 @@ consume:cmake-latest:
       -G "Ninja Multi-Config"
       -D CMAKE_C_COMPILER=$COMPILER
       -D CMAKE_PREFIX_PATH="$DEPS_DIR/OpenCL-Headers/install;$INSTALL_DIR"
+      -D DRIVER_STUB_PATH=$BUILD_DIR/libOpenCLDriverStub.so
       -B $CI_PROJECT_DIR/downstream/bare
       -S $CI_PROJECT_DIR/test/pkgconfig/bare
     - cmake
