@@ -7,7 +7,9 @@ project(PkgConfigTest
 find_package(OpenCL
   REQUIRED
   CONFIG
-  COMPONENTS Headers
+  COMPONENTS
+    Headers
+    OpenCL
 )
 
 add_executable(${PROJECT_NAME}
@@ -15,7 +17,9 @@ add_executable(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-  OpenCL::Headers
+  PRIVATE
+    OpenCL::Headers
+    OpenCL::OpenCL
 )
 
 target_compile_definitions(${PROJECT_NAME}
