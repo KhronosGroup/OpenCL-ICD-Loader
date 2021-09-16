@@ -131,7 +131,7 @@ else ()
   target_include_directories(OpenCL SYSTEM PUBLIC ${OpenCL_HEADERS_DIR})
 endif ()
 
-target_compile_definitions(OpenCL PUBLIC CL_TARGET_OPENCL_VERSION=300)
+target_compile_definitions(OpenCL PRIVATE CL_TARGET_OPENCL_VERSION=300)
 
 if (ENABLE_OPENCL_LAYERS)
   target_compile_definitions(OpenCL PUBLIC CL_ENABLE_LAYERS)
