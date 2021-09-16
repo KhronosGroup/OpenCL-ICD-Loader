@@ -196,8 +196,7 @@ consume:cmake-minimum:
     - cmake
       --build downstream/bare
     - cd downstream/bare ;
-      ctest ;
-      cd -
+      ctest --output-on-failure
 
 consume:cmake-latest:
   extends: .toolchain-matrix-latest
@@ -220,5 +219,5 @@ consume:cmake-latest:
       --build downstream/bare
       --config Release
     - cd downstream/bare
-    - ctest -C Debug
-    - ctest -C Release
+    - ctest --output-on-failure -C Debug
+    - ctest --output-on-failure -C Release
