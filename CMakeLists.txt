@@ -1,8 +1,14 @@
 cmake_minimum_required (VERSION 3.1)
 
+# Include gudard for including this project multiple times
+if(TARGET OpenCL)
+  return()
+endif()
+
 project (OpenCL-ICD-Loader
     VERSION 1.2
     LANGUAGES C)
+
 find_package (Threads REQUIRED)
 
 set(CMAKE_C_STANDARD 99)
@@ -83,6 +89,7 @@ else ()
 endif ()
 
 add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
+add_library (OpenCL::OpenCL ALIAS OpenCL)
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 
 if (WIN32)
@@ -117,27 +124,16 @@ else()
     endif ()
 endif ()
 
-find_package(OpenCLHeaders CONFIG NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
-if (TARGET OpenCL::Headers)
-  target_link_libraries (OpenCL PUBLIC OpenCL::Headers)
-else ()
-  find_path(OpenCL_HEADERS_DIR
-    NAMES
-      CL/cl.h OpenCL/cl.h
-    PATH_SUFFIXES
-      include
-      OpenCL/common/inc
-  )
-  target_include_directories(OpenCL SYSTEM PUBLIC ${OpenCL_HEADERS_DIR})
+if (NOT TARGET OpenCL::Headers)
+  find_package(OpenCLHeaders REQUIRED)
 endif ()
+
+target_link_libraries (OpenCL PUBLIC OpenCL::Headers)
 
 target_compile_definitions(OpenCL PRIVATE CL_TARGET_OPENCL_VERSION=300)
 
 if (ENABLE_OPENCL_LAYERS)
   target_compile_definitions(OpenCL PUBLIC CL_ENABLE_LAYERS)
-  #target_include_directories(OpenCL PUBLIC
-  #  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  #  $<INSTALL_INTERFACE:include>)
 endif()
 
 target_include_directories (OpenCL
