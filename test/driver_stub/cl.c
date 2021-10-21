@@ -171,7 +171,7 @@ clGetDeviceIDs(cl_platform_id   platform,
 {
     cl_int ret = CL_SUCCESS;
 
-    if ((num_entries > 1 /*|| num_entries < 0*/) && devices != NULL) {
+    if (num_entries > 1 && devices != NULL) {
         ret = CL_INVALID_VALUE;
         goto done;
     }
