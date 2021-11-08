@@ -438,10 +438,9 @@ int test_buffer_object()
         test_clEnqueueCopyBufferRect(&clEnqueueCopyBufferRectData[i]);
     }
 
-    // Segfaults inside test_icd_app_log at vfprintf
-    //for (i=0; i<NUM_ITEMS_clEnqueueMapBuffer; i++) {
-    //    test_clEnqueueMapBuffer(&clEnqueueMapBufferData[i]);
-    //}
+    for (i=0; i<NUM_ITEMS_clEnqueueMapBuffer; i++) {
+        test_clEnqueueMapBuffer(&clEnqueueMapBufferData[i]);
+    }
 
     for (i=0; i<NUM_ITEMS_clRetainMemObject; i++) {
         test_clRetainMemObject(&clRetainMemObjectData[i]);
@@ -461,4 +460,3 @@ int test_buffer_object()
 
     return 0;
 }
-

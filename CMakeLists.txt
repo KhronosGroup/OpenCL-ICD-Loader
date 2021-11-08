@@ -64,7 +64,7 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd_platform.h)
 
 if (WIN32)
-    list (APPEND OPENCL_ICD_LOADER_SOURCES 
+    list (APPEND OPENCL_ICD_LOADER_SOURCES
         loader/windows/adapter.h
         loader/windows/icd_windows.c
         loader/windows/icd_windows.h
@@ -103,17 +103,6 @@ if (WIN32)
         set_target_properties (OpenCL PROPERTIES SOURCES
             "${OPENCL_ICD_LOADER_SOURCES};loader/windows/icd_windows_apppackage.cpp;loader/windows/icd_windows_apppackage.h")
     endif ()
-
-    if(NOT USE_DYNAMIC_VCXX_RUNTIME)
-        string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
-        string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
-        string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL}")
-        string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL}")
-        string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
-        string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
-        string(REPLACE "/MDd" "/MTd" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
-        string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-    endif()
 else()
     target_link_libraries (OpenCL PRIVATE ${CMAKE_THREAD_LIBS_INIT})
     if (NOT APPLE)

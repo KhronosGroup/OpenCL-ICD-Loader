@@ -98,12 +98,12 @@ void adapterFree(WinAdapter *pWinAdapter)
 }
 
 /*
- * 
+ *
  * Vendor enumeration functions
  *
  */
 
-// go through the list of vendors in the registry and call khrIcdVendorAdd 
+// go through the list of vendors in the registry and call khrIcdVendorAdd
 // for each vendor encountered
 BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVOID *lpContext)
 {
@@ -125,7 +125,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
             KHR_ICD_TRACE("Failed to enumerate HKR entries, continuing\n");
         }
     }
-    
+
     status |= khrIcdOsVendorsEnumerateAppPackage();
 
     KHR_ICD_TRACE("Opening key HKLM\\%s...\n", platformsName);
@@ -168,7 +168,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
                 break;
             }
             KHR_ICD_TRACE("Value %s found...\n", cszLibraryName);
-        
+
             // Require that the value be a DWORD and equal zero
             if (REG_DWORD != dwLibraryNameType)
             {
@@ -193,7 +193,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
         PFN_CREATE_DXGI_FACTORY pCreateDXGIFactory = (PFN_CREATE_DXGI_FACTORY)GetProcAddress(hDXGI, "CreateDXGIFactory");
         if (pCreateDXGIFactory)
         {
-            HRESULT hr = pCreateDXGIFactory(&IID_IDXGIFactory, &pFactory);
+            HRESULT hr = pCreateDXGIFactory(&IID_IDXGIFactory, (void **)&pFactory);
             if (SUCCEEDED(hr))
             {
                 UINT i = 0;
@@ -250,9 +250,9 @@ void khrIcdOsVendorsEnumerateOnce()
 {
     InitOnceExecuteOnce(&initialized, khrIcdOsVendorsEnumerate, NULL, NULL);
 }
- 
+
 /*
- * 
+ *
  * Dynamic library loading functions
  *
  */

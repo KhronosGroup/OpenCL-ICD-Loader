@@ -349,10 +349,9 @@ int test_image_objects()
         test_clEnqueueCopyBufferToImage(&clEnqueueCopyBufferToImageData[i]);
     }
 
-    // Segfaults when freeing the returned pointer
-    //for (i = 0; i<NUM_ITEMS_clEnqueueMapImage; i++) {
-    //    test_clEnqueueMapImage(&clEnqueueMapImageData[i]);
-    //}
+    for (i = 0; i<NUM_ITEMS_clEnqueueMapImage; i++) {
+        test_clEnqueueMapImage(&clEnqueueMapImageData[i]);
+    }
 
     for (i = 0; i<NUM_ITEMS_clEnqueueReadImage; i++) {
         test_clEnqueueReadImage(&clEnqueueReadImageData[i]);

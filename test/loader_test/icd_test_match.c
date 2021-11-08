@@ -35,7 +35,6 @@ int test_icd_match()
 
 End:
     free(app_log);
-    //free(stub_log);
+    free(stub_log);
     return error;
 }
-
