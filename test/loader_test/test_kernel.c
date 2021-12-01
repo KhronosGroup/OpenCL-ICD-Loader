@@ -168,7 +168,7 @@ int test_clEnqueueMigrateMemObjects(const struct clEnqueueMigrateMemObjects_st* 
 
 struct clEnqueueNDRangeKernel_st clEnqueueNDRangeKernelData[NUM_ITEMS_clEnqueueNDRangeKernel] =
 {
-    {NULL, NULL, 0, NULL, NULL, NULL, 0, NULL}
+    {NULL, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL}
 };
 
 int test_clEnqueueNDRangeKernel(const struct clEnqueueNDRangeKernel_st* data)
