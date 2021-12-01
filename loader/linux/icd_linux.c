@@ -64,7 +64,7 @@ void khrIcdOsVendorsEnumerate(void)
         {
             struct stat statBuff;
             stat(dirEntry->d_name, &statBuff);
-            if(S_ISREG(statBuff.st_mode) || S_ISLNK(statBuff.st_mode))
+            if (S_ISREG(statBuff.st_mode) || S_ISLNK(statBuff.st_mode))
             {
                 const char* extension = ".icd";
                 FILE *fin = NULL;
