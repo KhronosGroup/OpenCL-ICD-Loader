@@ -24,6 +24,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 #include <pthread.h>
 
@@ -61,76 +62,74 @@ void khrIcdOsVendorsEnumerate(void)
         // attempt to load all files in the directory
         for (dirEntry = readdir(dir); dirEntry; dirEntry = readdir(dir) )
         {
-            switch(dirEntry->d_type)
+            struct stat statBuff;
+            stat(dirEntry->d_name, &statBuff);
+            if(S_ISREG(statBuff.st_mode) || S_ISLNK(statBuff.st_mode))
             {
-            case DT_UNKNOWN:
-            case DT_REG:
-            case DT_LNK:
+                const char* extension = ".icd";
+                FILE *fin = NULL;
+                char* fileName = NULL;
+                char* buffer = NULL;
+                long bufferSize = 0;
+
+                // make sure the file name ends in .icd
+                if (strlen(extension) > strlen(dirEntry->d_name) )
                 {
-                    const char* extension = ".icd";
-                    FILE *fin = NULL;
-                    char* fileName = NULL;
-                    char* buffer = NULL;
-                    long bufferSize = 0;
+                    continue;
+                }
+                if (strcmp(dirEntry->d_name + strlen(dirEntry->d_name) - strlen(extension), extension) )
+                {
+                    continue;
+                }
 
-                    // make sure the file name ends in .icd
-                    if (strlen(extension) > strlen(dirEntry->d_name) )
-                    {
-                        break;
-                    }
-                    if (strcmp(dirEntry->d_name + strlen(dirEntry->d_name) - strlen(extension), extension) )
-                    {
-                        break;
-                    }
+                // allocate space for the full path of the vendor library name
+                fileName = malloc(strlen(dirEntry->d_name) + strlen(vendorPath) + 2);
+                if (!fileName)
+                {
+                    KHR_ICD_TRACE("Failed allocate space for ICD file path\n");
+                    continue;
+                }
+                sprintf(fileName, "%s/%s", vendorPath, dirEntry->d_name);
 
-                    // allocate space for the full path of the vendor library name
-                    fileName = malloc(strlen(dirEntry->d_name) + strlen(vendorPath) + 2);
-                    if (!fileName)
-                    {
-                        KHR_ICD_TRACE("Failed allocate space for ICD file path\n");
-                        break;
-                    }
-                    sprintf(fileName, "%s/%s", vendorPath, dirEntry->d_name);
+                // open the file and read its contents
+                fin = fopen(fileName, "r");
+                if (!fin)
+                {
+                    free(fileName);
+                    continue;
+                }
+                fseek(fin, 0, SEEK_END);
+                bufferSize = ftell(fin);
 
-                    // open the file and read its contents
-                    fin = fopen(fileName, "r");
-                    if (!fin)
-                    {
-                        free(fileName);
-                        break;
-                    }
-                    fseek(fin, 0, SEEK_END);
-                    bufferSize = ftell(fin);
-
-                    buffer = malloc(bufferSize+1);
-                    if (!buffer)
-                    {
-                        free(fileName);
-                        fclose(fin);
-                        break;
-                    }
-                    memset(buffer, 0, bufferSize+1);
-                    fseek(fin, 0, SEEK_SET);
-                    if (bufferSize != (long)fread(buffer, 1, bufferSize, fin) )
-                    {
-                        free(fileName);
-                        free(buffer);
-                        fclose(fin);
-                        break;
-                    }
-                    // ignore a newline at the end of the file
-                    if (buffer[bufferSize-1] == '\n') buffer[bufferSize-1] = '\0';
-
-                    // load the string read from the file
-                    khrIcdVendorAdd(buffer);
-
+                buffer = malloc(bufferSize+1);
+                if (!buffer)
+                {
+                    free(fileName);
+                    fclose(fin);
+                    continue;
+                }
+                memset(buffer, 0, bufferSize+1);
+                fseek(fin, 0, SEEK_SET);
+                if (bufferSize != (long)fread(buffer, 1, bufferSize, fin) )
+                {
                     free(fileName);
                     free(buffer);
                     fclose(fin);
+                    continue;
                 }
-                break;
-            default:
-                break;
+                // ignore a newline at the end of the file
+                if (buffer[bufferSize-1] == '\n') buffer[bufferSize-1] = '\0';
+
+                // load the string read from the file
+                khrIcdVendorAdd(buffer);
+
+                free(fileName);
+                free(buffer);
+                fclose(fin);
+            }
+            else
+            {
+                continue;
             }
         }
 
