@@ -40,7 +40,7 @@ void khrIcdOsVendorsEnumerate(void)
 {
     DIR *dir = NULL;
     struct dirent *dirEntry = NULL;
-    char* vendorPath = ICD_VENDOR_PATH;
+    const char* vendorPath = ICD_VENDOR_PATH;
     char* envPath = NULL;
 
     khrIcdVendorsEnumerateEnv();
