@@ -30,7 +30,7 @@
 static pthread_once_t initialized = PTHREAD_ONCE_INIT;
 
 /*
- * 
+ *
  * Vendor enumeration functions
  *
  */
@@ -52,7 +52,7 @@ void khrIcdOsVendorsEnumerate(void)
     }
 
     dir = opendir(vendorPath);
-    if (NULL == dir) 
+    if (NULL == dir)
     {
         KHR_ICD_TRACE("Failed to open path %s, continuing\n", vendorPath);
     }
@@ -153,7 +153,7 @@ void khrIcdOsVendorsEnumerateOnce(void)
 }
 
 /*
- * 
+ *
  * Dynamic library loading functions
  *
  */
