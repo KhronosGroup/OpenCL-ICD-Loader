@@ -902,6 +902,7 @@ clCompileProgram(cl_program            program ,
                  void (CL_CALLBACK *   pfn_notify)(cl_program  program , void *  user_data),
                  void *                user_data) CL_API_SUFFIX__VERSION_1_2
 {
+    (void)input_headers;
     cl_int return_value = CL_OUT_OF_RESOURCES;
     test_icd_stub_log("clCompileProgram(%p, %u, %p, %p, %u, %p, %p, %p)\n",
                       program,

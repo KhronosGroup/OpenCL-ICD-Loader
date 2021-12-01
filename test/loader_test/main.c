@@ -18,6 +18,8 @@ extern int test_icd_match();
 
 int main(int argc, char **argv)
 {
+    (void)argc;
+    (void)argv;
     test_icd_initialize_app_log();
     test_icd_initialize_stub_log();
 

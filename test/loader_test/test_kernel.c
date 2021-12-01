@@ -26,6 +26,7 @@ struct clRetainKernel_st clRetainKernelData[NUM_ITEMS_clRetainKernel] =
 
 int test_clRetainKernel(const struct clRetainKernel_st* data)
 {
+    (void)data;
     test_icd_app_log("clRetainKernel(%p)\n", kernel);
 		
     ret_val=clRetainKernel(kernel);
@@ -345,6 +346,7 @@ struct clRetainEvent_st clRetainEventData[NUM_ITEMS_clRetainEvent] =
 
 int test_clRetainEvent(const struct clRetainEvent_st* data)
 {
+    (void)data;
     test_icd_app_log("clRetainEvent(%p)\n", event);
 
     ret_val=clRetainEvent(event);
@@ -361,6 +363,7 @@ struct clEnqueueMarker_st clEnqueueMarkerData[NUM_ITEMS_clEnqueueMarker] =
 
 int test_clEnqueueMarker(const struct clEnqueueMarker_st* data)
 {
+    (void)data;
     test_icd_app_log("clEnqueueMarker(%p, %p)\n", command_queue, &event);
 
     ret_val = clEnqueueMarker(command_queue, &event);
@@ -443,6 +446,7 @@ struct clEnqueueBarrier_st clEnqueueBarrierData[NUM_ITEMS_clEnqueueBarrier] =
 
 int test_clEnqueueBarrier(const struct clEnqueueBarrier_st* data)
 {
+    (void)data;
     test_icd_app_log("clEnqueueBarrier(%p)\n", command_queue);
 
     ret_val = clEnqueueBarrier(command_queue);
@@ -483,6 +487,7 @@ struct clFlush_st clFlushData[NUM_ITEMS_clFlush] =
 
 int test_clFlush(const struct clFlush_st* data)
 {
+    (void)data;
     test_icd_app_log("clFlush(%p)\n", command_queue);
 
     ret_val=clFlush(command_queue);
@@ -499,6 +504,7 @@ struct clFinish_st clFinishData[NUM_ITEMS_clFinish] =
 
 int test_clFinish(const struct clFinish_st* data)
 {
+    (void)data;
     test_icd_app_log("clFinish(%p)\n", command_queue);
 
     ret_val=clFinish(command_queue);
