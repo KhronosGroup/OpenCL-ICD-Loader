@@ -4,10 +4,10 @@ on: [push, pull_request]
 
 jobs:
   linux-gcc:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
-        VER: [7, 8, 9]
+        VER: [7, 9, 10]
         EXT: [ON] # OFF = icd_linux.c:66 error: ‘DT_UNKNOWN’ undeclared (first use in this function)
         GEN: [Unix Makefiles, Ninja]
         VAR: [Debug, Release]
@@ -31,7 +31,8 @@ jobs:
         cmake -E make_directory $GITHUB_WORKSPACE/downstream/pkgconfig/bare;
         cmake -E make_directory $GITHUB_WORKSPACE/downstream/pkgconfig/sdk;
         if [[ "${{matrix.GEN}}" == "Ninja" && ! `which ninja` ]]; then sudo apt install -y ninja-build; fi;
-        if [[ "${{matrix.BIN}}" == "32" ]]; then sudo apt install -y gcc-multilib gcc-8-multilib gcc-9-multilib; fi
+        if [[ "${{matrix.VER}}" == "7" ]]; then sudo apt install -y gcc-7; fi
+        if [[ "${{matrix.BIN}}" == "32" ]]; then sudo apt install -y gcc-multilib gcc-7-multilib gcc-8-multilib gcc-9-multilib; fi
       # Install Ninja only if it's the selected generator and it's not available.
 
     - name: Build & install OpenCL-Headers
@@ -197,7 +198,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        VER: [8, 9]
+        VER: [9, 10, 11]
         EXT: [ON, OFF]
         GEN: [Xcode, Ninja Multi-Config]
         STD: [99, 11] # 90 results in errors
