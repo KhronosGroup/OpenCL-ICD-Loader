@@ -31,7 +31,7 @@ jobs:
         cmake -E make_directory $GITHUB_WORKSPACE/downstream/pkgconfig/bare;
         cmake -E make_directory $GITHUB_WORKSPACE/downstream/pkgconfig/sdk;
         if [[ "${{matrix.GEN}}" == "Ninja" && ! `which ninja` ]]; then sudo apt install -y ninja-build; fi;
-        if [[ "${{matrix.VER}}" == "7" ]]; then sudo apt install -y gcc-7; fi
+        if [[ "${{matrix.VER}}" == "7" ]]; then sudo apt install -y gcc-7; fi;
         if [[ "${{matrix.BIN}}" == "32" ]]; then sudo apt install -y gcc-multilib gcc-7-multilib gcc-8-multilib gcc-9-multilib; fi
       # Install Ninja only if it's the selected generator and it's not available.
 
