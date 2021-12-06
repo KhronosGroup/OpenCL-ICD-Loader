@@ -36,6 +36,7 @@ jobs:
         if [[ "${{matrix.GEN}}" == "Ninja" && ! `which ninja` ]]; then sudo apt install -y ninja-build; fi;
         sudo apt install -y gcc-${{matrix.VER}};
         if [[ "${{matrix.BIN}}" == "32" ]]; then sudo apt install -y gcc-${{matrix.VER}}-multilib; fi;
+        mkdir -p /opt/Kitware/CMake;
         wget -c $CMAKE_URL -O - | tar -xz --directory /opt/Kitware/CMake;
         mv /opt/Kitware/CMake/cmake-${{ matrix.CMAKE }}-Linux-x86_64 /opt/Kitware/CMake/${{ matrix.CMAKE }};
       # Install Ninja only if it's the selected generator and it's not available.
