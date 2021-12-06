@@ -1,0 +1,109 @@
+name: Windows
+
+on: [push, pull_request]
+
+jobs:
+  windows-msvc:
+    if: false
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        VER: [v140, v141, v142]
+        EXT: [ON] # OFF: error C2079: 'statbuf' uses undefined struct 'stat'
+        GEN: [Visual Studio 16 2019, Ninja Multi-Config]
+        BIN: [x64, x86]
+        #STD Proper 11, 17 incoming: https://devblogs.microsoft.com/cppblog/c11-and-c17-standard-support-arriving-in-msvc/
+
+    steps:
+    - name: Checkout OpenCL-ICD-Loader
+      uses: actions/checkout@v2
+
+    - name: Checkout OpenCL-Headers
+      uses: actions/checkout@v2
+      with:
+        repository: KhronosGroup/OpenCL-Headers
+        path: external/OpenCL-Headers
+
+    - name: Read build environment
+      shell: cmd
+      run: |
+        cmake --version
+        set
+
+    - name: Build & install OpenCL-Headers (MSBuild)
+      if: matrix.GEN == 'Visual Studio 16 2019'
+      shell: cmd
+      run: |
+        if /I "${{matrix.EXT}}"=="ON" (set C_FLAGS="/W4 /WX") else (set C_FLAGS="/W4 /WX /Za /wd4001")
+        if /I "${{matrix.BIN}}"=="x86" (set BIN=Win32) else (set BIN=x64)
+        cmake -G "${{matrix.GEN}}" -A %BIN% -T ${{matrix.VER}} -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE%\external\OpenCL-Headers -B %GITHUB_WORKSPACE%\external\OpenCL-Headers\build
+        cmake --build %GITHUB_WORKSPACE%/external/OpenCL-Headers/build --target install --config Release -- /verbosity:minimal /maxCpuCount /noLogo
+
+    - name: Build & install OpenCL-Headers (Ninja Multi-Config)
+      if: matrix.GEN == 'Ninja Multi-Config'
+      shell: cmd
+      run: |
+        if /I "${{matrix.VER}}"=="v140" (set VER=14.0)
+        if /I "${{matrix.VER}}"=="v141" (set VER=14.1)
+        if /I "${{matrix.VER}}"=="v142" (set VER=14.2)
+        if /I "${{matrix.EXT}}"=="ON" (set C_FLAGS="/W4 /WX") else (set C_FLAGS="/W4 /WX /Za /wd4001")
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.BIN}} /vcvars_ver=%VER%
+        cmake -G "${{matrix.GEN}}" -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE%\external\OpenCL-Headers -B %GITHUB_WORKSPACE%\external\OpenCL-Headers\build
+        cmake --build %GITHUB_WORKSPACE%/external/OpenCL-Headers/build --target install -- -j%NUMBER_OF_PROCESSORS%
+
+    - name: Configure (MSBuild)
+      if: matrix.GEN == 'Visual Studio 16 2019'
+      shell: cmd
+      # no /WX during configuration because:
+      # warning C4459: declaration of 'platform' hides global declaration
+      # warning C4100: 'input_headers': unreferenced formal parameter
+      run: |
+        if /I "${{matrix.EXT}}"=="ON" (set C_FLAGS="/W4") else (set C_FLAGS="/W4 /Za /wd4001")
+        if /I "${{matrix.BIN}}"=="x86" (set BIN=Win32) else (set BIN=x64)
+        cmake -G "${{matrix.GEN}}" -A %BIN% -T ${{matrix.VER}} -D BUILD_TESTING=ON -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\install -D CMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%\build
+
+    - name: Configure (Ninja Multi-Config)
+      if: matrix.GEN == 'Ninja Multi-Config'
+      shell: cmd
+      # no /WX during configuration because:
+      # warning C4459: declaration of 'platform' hides global declaration
+      # warning C4100: 'input_headers': unreferenced formal parameter
+      run: |
+        if /I "${{matrix.VER}}"=="v140" (set VER=14.0)
+        if /I "${{matrix.VER}}"=="v141" (set VER=14.1)
+        if /I "${{matrix.VER}}"=="v142" (set VER=14.2)
+        if /I "${{matrix.EXT}}"=="ON" (set C_FLAGS="/W4") else (set C_FLAGS="/W4 /Za /wd4001")
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.BIN}} /vcvars_ver=%VER%
+        cmake -G "${{matrix.GEN}}" -D BUILD_TESTING=ON -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\install -D CMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%\build
+
+    - name: Build (MSBuild)
+      if: matrix.GEN == 'Visual Studio 16 2019'
+      shell: cmd
+      run: |
+        cmake --build %GITHUB_WORKSPACE%\build --config Release -- /verbosity:minimal /maxCpuCount /noLogo
+        cmake --build %GITHUB_WORKSPACE%\build --config Debug -- /verbosity:minimal /maxCpuCount /noLogo
+
+    - name: Build (Ninja)
+      if: matrix.GEN == 'Ninja Multi-Config'
+      shell: cmd
+      run: |
+        if /I "${{matrix.VER}}"=="v140" set VER=14.0
+        if /I "${{matrix.VER}}"=="v141" set VER=14.1
+        if /I "${{matrix.VER}}"=="v142" set VER=14.2
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.BIN}} /vcvars_ver=%VER%
+        cmake --build %GITHUB_WORKSPACE%\build --config Release
+        cmake --build %GITHUB_WORKSPACE%\build --config Debug
+
+    - name: Test
+      continue-on-error: true
+      working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
+      shell: cmd
+      run: |
+        ctest -C Release --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
+        ctest -C Debug --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
+
+    - name: Install
+      shell: cmd
+      run: |
+        cmake --build %GITHUB_WORKSPACE%/build --config Release --target install

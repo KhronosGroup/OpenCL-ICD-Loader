@@ -1,0 +1,128 @@
+name: Linux
+
+on: [push, pull_request]
+
+jobs:
+  linux-gcc:
+    runs-on: ${{ matrix.OS }}
+    strategy:
+      matrix:
+        OS : [ubuntu-18.04, ubuntu-20.04]
+        VER: [7, 8, 9, 10]
+        EXT: [ON] # OFF = icd_linux.c:66 error: ‘DT_UNKNOWN’ undeclared (first use in this function)
+        GEN: [Unix Makefiles, Ninja]
+        VAR: [Debug, Release]
+        STD: [99, 11] # 90 results in errors
+        BIN: [32, 64]
+        CMAKE: [3.1.3, 3.21.2]
+      env:
+        CMAKE_URL: https://github.com/Kitware/CMake/releases/download/v${{ matrix.CMAKE }}/cmake-${{ matrix.CMAKE }}-Linux-x86_64.tar.gz
+        CMAKE_EXE: /opt/Kitware/CMake/${{ matrix.CMAKE }}/bin/cmake
+        CTEST_EXE: /opt/Kitware/CMake/${{ matrix.CMAKE }}/bin/ctest
+
+
+    steps:
+    - name: Checkout OpenCL-ICD-Loader
+      uses: actions/checkout@v2
+
+    - name: Checkout OpenCL-Headers
+      uses: actions/checkout@v2
+      with:
+        repository: KhronosGroup/OpenCL-Headers
+        path: external/OpenCL-Headers
+
+    - name: Create Build Environment
+      run: sudo apt-get update -q;
+        if [[ "${{matrix.GEN}}" == "Ninja" && ! `which ninja` ]]; then sudo apt install -y ninja-build; fi;
+        sudo apt install -y gcc-${{matrix.VER}};
+        if [[ "${{matrix.BIN}}" == "32" ]]; then sudo apt install -y gcc-${{matrix.VER}}-multilib; fi;
+        wget -c $CMAKE_URL -O - | tar -xz --directory /opt/Kitware/CMake;
+        mv /opt/Kitware/CMake/cmake-${{ matrix.CMAKE }}-Linux-x86_64 /opt/Kitware/CMake/${{ matrix.CMAKE }};
+      # Install Ninja only if it's the selected generator and it's not available.
+
+    - name: Build & install OpenCL-Headers
+      run: $CMAKE_EXE
+        -G "${{matrix.GEN}}"
+        -D CMAKE_BUILD_TYPE=${{matrix.VAR}}
+        -D CMAKE_C_FLAGS="-w -m${{matrix.BIN}}"
+        -D CMAKE_C_COMPILER=gcc-${{matrix.VER}}
+        -D CMAKE_C_STANDARD=${{matrix.STD}}
+        -D CMAKE_C_EXTENSIONS=${{matrix.EXT}}
+        -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
+        -B$GITHUB_WORKSPACE/external/OpenCL-Headers/build
+        -H$GITHUB_WORKSPACE/external/OpenCL-Headers &&
+        $CMAKE_EXE
+        --build $GITHUB_WORKSPACE/external/OpenCL-Headers/build
+        --target install
+        --
+        -j`nproc`
+
+    - name: Configure
+      shell: bash
+      # no -Werror during configuration because:
+      # warning: ISO C forbids assignment between function pointer and ‘void *’ [-Wpedantic]
+      # warning: unused parameter [-Wunused-parameter]
+      run: $CMAKE_EXE
+        -G "${{matrix.GEN}}"
+        -D BUILD_TESTING=ON
+        -D CMAKE_BUILD_TYPE=${{matrix.VAR}}
+        -D CMAKE_C_FLAGS="-Wall -Wextra -pedantic -m${{matrix.BIN}}"
+        -D CMAKE_C_COMPILER=gcc-${{matrix.VER}}
+        -D CMAKE_C_STANDARD=${{matrix.STD}}
+        -D CMAKE_C_EXTENSIONS=${{matrix.EXT}}
+        -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/install
+        -D CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
+        -B$GITHUB_WORKSPACE/build
+        -H$GITHUB_WORKSPACE
+
+    - name: Build
+      shell: bash
+      run: $CMAKE_EXE
+        --build $GITHUB_WORKSPACE/build
+        --
+        -j`nproc`
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
+      shell: bash
+      run: $CTEST_EXE --output-on-failure --parallel `nproc`
+
+    - name: Install
+      shell: bash
+      run: $CMAKE_EXE
+        --build $GITHUB_WORKSPACE/build
+        --target install
+        --
+        -j`nproc`
+
+    - name: "Consume (standalone): Configure/Build/Test"
+      shell: bash
+      run: $CMAKE_EXE
+        -G "${{matrix.GEN}}"
+        -D CMAKE_C_COMPILER=gcc-${{matrix.VER}}
+        -D CMAKE_BUILD_TYPE=${{matrix.VAR}}
+        -D CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/external/OpenCL-Headers/install;$GITHUB_WORKSPACE/install"
+        -D DRIVER_STUB_PATH=$GITHUB_WORKSPACE/build/libOpenCLDriverStub.so
+        -B$GITHUB_WORKSPACE/downstream/pkgconfig/bare
+        -H$CI_PROJECT_DIR/test/pkgconfig/bare ;
+        $CMAKE_EXE
+        --build $GITHUB_WORKSPACE/downstream/pkgconfig/bare ;
+        cd downstream/bare ;
+        $CTEST_EXE --output-on-failure
+
+    - name: "Consume (SDK): Configure/Build/Test"
+      shell: bash
+      run: - $CMAKE_EXE -E make_directory $GITHUB_WORKSPACE/install/share/cmake/OpenCL ;
+        echo -e 'include("/home/runner/work/OpenCL-ICD-Loader/OpenCL-ICD-Loader/external/OpenCL-Headers/install/share/cmake/OpenCLHeaders/OpenCLHeadersTargets.cmake")\ninclude("${CMAKE_CURRENT_LIST_DIR}/../OpenCLICDLoader/OpenCLICDLoaderTargets.cmake")' > $GITHUB_WORKSPACE/install/share/cmake/OpenCL/OpenCLConfig.cmake ;
+        $CMAKE_EXE
+        -G "${{matrix.GEN}}"
+        -D CMAKE_C_COMPILER=gcc-${{matrix.VER}}
+        -D CMAKE_BUILD_TYPE=${{matrix.VAR}}
+        -D CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/external/OpenCL-Headers/install;$GITHUB_WORKSPACE/install"
+        -D DRIVER_STUB_PATH=$GITHUB_WORKSPACE/build/libOpenCLDriverStub.so
+        -B$GITHUB_WORKSPACE/downstream/pkgconfig/sdk
+        -H$CI_PROJECT_DIR/test/pkgconfig/sdk ;
+        $CMAKE_EXE
+        --build $GITHUB_WORKSPACE/downstream/pkgconfig/sdk ;
+        cd downstream/sdk ;
+        $CTEST_EXE --output-on-failure
