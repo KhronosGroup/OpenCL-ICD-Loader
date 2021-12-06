@@ -10,7 +10,7 @@ jobs:
         OS : [ubuntu-18.04, ubuntu-20.04]
         VER: [7, 8, 9, 10]
         EXT: [ON] # OFF = icd_linux.c:66 error: ‘DT_UNKNOWN’ undeclared (first use in this function)
-        GEN: [Unix Makefiles, Ninja]
+        GEN: [Unix Makefiles] # No ninja for now
         VAR: [Debug, Release]
         STD: [99, 11] # 90 results in errors
         BIN: [32, 64]
@@ -38,7 +38,7 @@ jobs:
         if [[ "${{matrix.BIN}}" == "32" ]]; then sudo apt install -y gcc-${{matrix.VER}}-multilib; fi;
         mkdir -p /opt/Kitware/CMake;
         wget -c $CMAKE_URL -O - | tar -xz --directory /opt/Kitware/CMake;
-        mv /opt/Kitware/CMake/cmake-${{ matrix.CMAKE }}-Linux-x86_64 /opt/Kitware/CMake/${{ matrix.CMAKE }};
+        mv /opt/Kitware/CMake/cmake-${{ matrix.CMAKE }}-Linux-x86_64 /opt/Kitware/CMake/${{ matrix.CMAKE }}
       # Install Ninja only if it's the selected generator and it's not available.
 
     - name: Build & install OpenCL-Headers
