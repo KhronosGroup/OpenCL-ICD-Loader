@@ -104,11 +104,11 @@ jobs:
         -D CMAKE_BUILD_TYPE=${{matrix.VAR}}
         -D CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/external/OpenCL-Headers/install;$GITHUB_WORKSPACE/install"
         -D DRIVER_STUB_PATH=$GITHUB_WORKSPACE/build/libOpenCLDriverStub.so
-        -B$GITHUB_WORKSPACE/downstream/pkgconfig/bare
+        -B$GITHUB_WORKSPACE/build/downstream/bare
         -H$GITHUB_WORKSPACE/test/pkgconfig/bare ;
         $CMAKE_EXE
-        --build $GITHUB_WORKSPACE/downstream/pkgconfig/bare ;
-        cd downstream/bare ;
+        --build $GITHUB_WORKSPACE/build/downstream/bare ;
+        cd $GITHUB_WORKSPACE/build/downstream/bare ;
         $CTEST_EXE --output-on-failure
 
     - name: "Consume (SDK): Configure/Build/Test"
@@ -121,9 +121,9 @@ jobs:
         -D CMAKE_BUILD_TYPE=${{matrix.VAR}}
         -D CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/external/OpenCL-Headers/install;$GITHUB_WORKSPACE/install"
         -D DRIVER_STUB_PATH=$GITHUB_WORKSPACE/build/libOpenCLDriverStub.so
-        -B$GITHUB_WORKSPACE/downstream/pkgconfig/sdk
+        -B$GITHUB_WORKSPACE/build/downstream/sdk
         -H$GITHUB_WORKSPACE/test/pkgconfig/sdk ;
         $CMAKE_EXE
-        --build $GITHUB_WORKSPACE/downstream/pkgconfig/sdk ;
-        cd downstream/sdk ;
+        --build $GITHUB_WORKSPACE/build/downstream/sdk ;
+        cd $GITHUB_WORKSPACE/build/downstream/sdk ;
         $CTEST_EXE --output-on-failure
