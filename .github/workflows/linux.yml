@@ -105,7 +105,7 @@ jobs:
         -D CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/external/OpenCL-Headers/install;$GITHUB_WORKSPACE/install"
         -D DRIVER_STUB_PATH=$GITHUB_WORKSPACE/build/libOpenCLDriverStub.so
         -B$GITHUB_WORKSPACE/downstream/pkgconfig/bare
-        -H$CI_PROJECT_DIR/test/pkgconfig/bare ;
+        -H$GITHUB_WORKSPACE/test/pkgconfig/bare ;
         $CMAKE_EXE
         --build $GITHUB_WORKSPACE/downstream/pkgconfig/bare ;
         cd downstream/bare ;
@@ -122,7 +122,7 @@ jobs:
         -D CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/external/OpenCL-Headers/install;$GITHUB_WORKSPACE/install"
         -D DRIVER_STUB_PATH=$GITHUB_WORKSPACE/build/libOpenCLDriverStub.so
         -B$GITHUB_WORKSPACE/downstream/pkgconfig/sdk
-        -H$CI_PROJECT_DIR/test/pkgconfig/sdk ;
+        -H$GITHUB_WORKSPACE/test/pkgconfig/sdk ;
         $CMAKE_EXE
         --build $GITHUB_WORKSPACE/downstream/pkgconfig/sdk ;
         cd downstream/sdk ;
