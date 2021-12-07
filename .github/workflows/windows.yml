@@ -42,7 +42,7 @@ jobs:
         Remove-Item ~\Downloads\*
         & ${env:CMAKE_EXE} --version
         & ${env:NINJA_EXE} --version
-        Get-ChildItem "C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
+        Get-ChildItem "C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise" -rec -fil vcvarsall.bat
 
     - name: Build & install OpenCL-Headers (MSBuild)
       if: matrix.GEN == 'Visual Studio 17 2022'
