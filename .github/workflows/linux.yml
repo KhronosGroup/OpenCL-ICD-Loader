@@ -169,7 +169,7 @@ jobs:
       run: sudo apt-get update -q;
         if [[ "${{matrix.GEN}}" =~ "Ninja" && ! `which ninja` ]]; then sudo apt install -y ninja-build; fi;
         if [[ "${{matrix.COMPILER}}" =~ "gcc-11" ]]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi;
-        if [[ "${{matrix.COMPILER}}" =~ "clang-13" ]]; then wget -q -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -; apt-add-repository -y 'deb [arch=amd64] https://apt.llvm.org/focal/ llvm-toolchain-focal-13 main'; fi;
+        if [[ "${{matrix.COMPILER}}" =~ "clang-13" ]]; then wget -q -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -; sudo apt-add-repository -y 'deb [arch=amd64] https://apt.llvm.org/focal/ llvm-toolchain-focal-13 main'; fi;
         sudo apt install -y ${{matrix.COMPILER}};
         if [[ "${{matrix.BIN}}" == "32" && "${{matrix.COMPILER}}" =~ "gcc" ]]; then sudo apt install -y ${{matrix.COMPILER}}-multilib; fi;
         if [[ "${{matrix.BIN}}" == "32" && "${{matrix.COMPILER}}" =~ "clang" ]]; then sudo apt install -y gcc-multilib ; fi;
