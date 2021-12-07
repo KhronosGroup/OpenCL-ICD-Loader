@@ -37,6 +37,7 @@ jobs:
         Remove-Item ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip
         Rename-Item C:\Tools\Kitware\CMake\* ${{matrix.CMAKE}}
         & ${env:CMAKE_EXE} --version
+        Get-ChildItem "C:\Program Files (x86)\Microsoft Visual Studio\2022" -Recurse -Filter ninja.exe
 
     - name: Build & install OpenCL-Headers (MSBuild)
       if: matrix.GEN == 'Visual Studio 17 2022'
