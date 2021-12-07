@@ -36,6 +36,7 @@ jobs:
         if [[ "${{matrix.GEN}}" =~ "Ninja" && ! `which ninja` ]]; then sudo apt install -y ninja-build; fi;
         sudo apt install -y ${{matrix.COMPILER}};
         if [[ "${{matrix.BIN}}" == "32" && "${{matrix.COMPILER}}" =~ "gcc" ]]; then sudo apt install -y ${{matrix.COMPILER}}-multilib; fi;
+        if [[ "${{matrix.BIN}}" == "32" && "${{matrix.COMPILER}}" =~ "clang" ]]; then sudo apt install -y gcc-multilib ; fi;
         mkdir -p /opt/Kitware/CMake;
         wget -c $CMAKE_URL -O - | tar -xz --directory /opt/Kitware/CMake;
         mv /opt/Kitware/CMake/cmake-${{ matrix.CMAKE }}-* /opt/Kitware/CMake/${{ matrix.CMAKE }}
