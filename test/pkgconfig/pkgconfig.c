@@ -19,7 +19,6 @@ void checkErr(cl_int err, const char * name)
 
 int main()
 {
-    int CRT_err = 0;
     cl_int CL_err = CL_SUCCESS;
     cl_uint numPlatforms = 0;
 
