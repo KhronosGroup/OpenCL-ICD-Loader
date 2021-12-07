@@ -133,8 +133,8 @@ jobs:
         %CMAKE_EXE% --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Release
         %CMAKE_EXE% --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Debug
         cd %GITHUB_WORKSPACE%/test/pkgconfig/bare
-        %CMAKE_EXE% --output-on-failure -C Release
-        %CMAKE_EXE% --output-on-failure -C Debug
+        %CTEST_EXE% --output-on-failure -C Release
+        %CTEST_EXE% --output-on-failure -C Debug
 
     - name: "Consume (MSBuild SDK): Configure/Build/Test"
       shell: cmd
@@ -147,8 +147,8 @@ jobs:
         %CMAKE_EXE% --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Release
         %CMAKE_EXE% --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Debug
         cd %GITHUB_WORKSPACE%/test/pkgconfig/bare
-        %CMAKE_EXE% --output-on-failure -C Release
-        %CMAKE_EXE% --output-on-failure -C Debug
+        %CTEST_EXE% --output-on-failure -C Release
+        %CTEST_EXE% --output-on-failure -C Debug
 
     - name: "Consume (Ninja-Multi-Config standalone): Configure/Build/Test"
       shell: cmd
@@ -163,8 +163,8 @@ jobs:
         %CMAKE_EXE% --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Release
         %CMAKE_EXE% --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Debug
         cd %GITHUB_WORKSPACE%/test/pkgconfig/bare
-        %CMAKE_EXE% --output-on-failure -C Release
-        %CMAKE_EXE% --output-on-failure -C Debug
+        %CTEST_EXE% --output-on-failure -C Release
+        %CTEST_EXE% --output-on-failure -C Debug
 
     - name: "Consume (Ninja-Multi-Config SDK): Configure/Build/Test"
       shell: cmd
@@ -180,5 +180,5 @@ jobs:
         %CMAKE_EXE% --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Release
         %CMAKE_EXE% --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Debug
         cd %GITHUB_WORKSPACE%/test/pkgconfig/bare
-        %CMAKE_EXE% --output-on-failure -C Release
-        %CMAKE_EXE% --output-on-failure -C Debug
+        %CTEST_EXE% --output-on-failure -C Release
+        %CTEST_EXE% --output-on-failure -C Debug
