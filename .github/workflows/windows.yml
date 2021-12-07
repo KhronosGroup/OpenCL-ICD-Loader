@@ -4,9 +4,9 @@ on: [push, pull_request]
 
 jobs:
   msvc:
+    if: false
     runs-on: windows-2022
     strategy:
-      fail-fast: false
       matrix:
         VER: [v141, v142, v143]
         EXT: [ON] # OFF: error C2079: 'statbuf' uses undefined struct 'stat'

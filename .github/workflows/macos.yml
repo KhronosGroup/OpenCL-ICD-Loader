@@ -4,7 +4,6 @@ on: [push, pull_request]
 
 jobs:
   macos-gcc:
-    if: false
     runs-on: macos-latest
     strategy:
       matrix:
