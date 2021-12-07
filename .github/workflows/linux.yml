@@ -222,8 +222,8 @@ jobs:
       working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
       shell: bash
       run: |
-        $CTEST_EXE --output-on-failure --config Release --parallel `nproc`;
-        $CTEST_EXE --output-on-failure --config Debug   --parallel `nproc`;
+        $CTEST_EXE --output-on-failure -C Release --parallel `nproc`;
+        $CTEST_EXE --output-on-failure -C Debug   --parallel `nproc`;
 
     - name: Install
       shell: bash
@@ -249,8 +249,8 @@ jobs:
         $CMAKE_EXE --build $GITHUB_WORKSPACE/build/downstream/bare --config Release;
         $CMAKE_EXE --build $GITHUB_WORKSPACE/build/downstream/bare --config Debug;
         cd $GITHUB_WORKSPACE/build/downstream/bare;
-        $CTEST_EXE --output-on-failure --config Release;
-        $CTEST_EXE --output-on-failure --config Debug;
+        $CTEST_EXE --output-on-failure -C Release;
+        $CTEST_EXE --output-on-failure -C Debug;
 
     - name: "Consume (SDK): Configure/Build/Test"
       shell: bash
@@ -269,5 +269,5 @@ jobs:
         $CMAKE_EXE --build $GITHUB_WORKSPACE/build/downstream/sdk --config Release;
         $CMAKE_EXE --build $GITHUB_WORKSPACE/build/downstream/sdk --config Debug;
         cd $GITHUB_WORKSPACE/build/downstream/sdk;
-        $CTEST_EXE --output-on-failure --config Release;
-        $CTEST_EXE --output-on-failure --config Debug;
+        $CTEST_EXE --output-on-failure -C Release;
+        $CTEST_EXE --output-on-failure -C Debug;
