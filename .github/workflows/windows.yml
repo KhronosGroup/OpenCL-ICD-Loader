@@ -32,7 +32,7 @@ jobs:
     - name: Create Build Environment
       shell: pwsh
       run: |
-        Invoke-WebRequest $CMAKE_URL -OutFile ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip;
+        Invoke-WebRequest ${env:CMAKE_URL} -OutFile ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip;
         Expand-Archive ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip -DestinationPath C:\Tools\Kitware\CMake\
         Remove-Item ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip;
         Rename-Item C:\Tools\Kitware\CMake\* ${{matrix.CMAKE}}
