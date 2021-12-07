@@ -32,12 +32,11 @@ jobs:
     - name: Create Build Environment
       shell: pwsh
       run: |
-        Invoke-WebRequest ${env:CMAKE_URL} -OutFile ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip;
+        Invoke-WebRequest ${env:CMAKE_URL} -OutFile ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip
         Expand-Archive ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip -DestinationPath C:\Tools\Kitware\CMake\
-        Remove-Item ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip;
+        Remove-Item ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip
         Rename-Item C:\Tools\Kitware\CMake\* ${{matrix.CMAKE}}
-        ${env:CMAKE_EXE} --version
-        set
+        & ${env:CMAKE_EXE} --version
 
     - name: Build & install OpenCL-Headers (MSBuild)
       if: matrix.GEN == 'Visual Studio 17 2022'
