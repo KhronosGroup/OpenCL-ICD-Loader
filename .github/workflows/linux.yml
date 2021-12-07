@@ -4,7 +4,6 @@ on: [push, pull_request]
 
 jobs:
   cmake-minimum:
-    if: false
     runs-on: ${{ matrix.OS }}
     strategy:
       matrix:
