@@ -143,7 +143,7 @@ jobs:
     strategy:
       matrix:
         OS : [ubuntu-20.04]
-        COMP: [gcc-9, gcc-11, clang-11, clang-13]
+        COMPILER: [gcc-9, gcc-11, clang-11, clang-13]
         EXT: [ON] # OFF = icd_linux.c:66 error: ‘DT_UNKNOWN’ undeclared (first use in this function)
         GEN: [Ninja Multi-Config]
         STD: [99, 11, 17]
