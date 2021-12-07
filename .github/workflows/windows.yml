@@ -36,7 +36,7 @@ jobs:
         Expand-Archive ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip -DestinationPath C:\Tools\Kitware\CMake\
         Remove-Item ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip;
         Rename-Item C:\Tools\Kitware\CMake\* ${{matrix.CMAKE}}
-        %CMAKE_EXE% --version
+        ${env:CMAKE_EXE} --version
         set
 
     - name: Build & install OpenCL-Headers (MSBuild)
