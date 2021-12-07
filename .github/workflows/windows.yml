@@ -3,17 +3,21 @@ name: Windows
 on: [push, pull_request]
 
 jobs:
-  windows-msvc:
-    if: false
-    runs-on: windows-latest
+  msvc:
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
-        VER: [v140, v141, v142]
+        VER: [v140, v141, v142, v143]
         EXT: [ON] # OFF: error C2079: 'statbuf' uses undefined struct 'stat'
-        GEN: [Visual Studio 16 2019, Ninja Multi-Config]
+        GEN: [Visual Studio 17 2022, Ninja Multi-Config]
         BIN: [x64, x86]
-        #STD Proper 11, 17 incoming: https://devblogs.microsoft.com/cppblog/c11-and-c17-standard-support-arriving-in-msvc/
+        STD: [90, 11, 17]
+        CMAKE: [3.22.0]
+    env:
+      CMAKE_URL: https://github.com/Kitware/CMake/releases/download/v${{matrix.CMAKE}}/cmake-${{matrix.CMAKE}}-windows-x86_64.zip
+      CMAKE_EXE: C:\Tools\Kitware\CMake\${{matrix.CMAKE}}\bin\cmake.exe
+      CTEST_EXE: C:\Tools\Kitware\CMake\${{matrix.CMAKE}}\bin\ctest.exe
 
     steps:
     - name: Checkout OpenCL-ICD-Loader
@@ -25,43 +29,48 @@ jobs:
         repository: KhronosGroup/OpenCL-Headers
         path: external/OpenCL-Headers
 
-    - name: Read build environment
-      shell: cmd
+    - name: Create Build Environment
+      shell: pwsh
       run: |
-        cmake --version
+        Invoke-WebRequest $CMAKE_URL -OutFile ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip;
+        Expand-Archive ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip -DestinationPath C:\Tools\Kitware\CMake\
+        Remove-Item ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip;
+        Rename-Item C:\Tools\Kitware\CMake\* ${{matrix.CMAKE}}
+        $CMAKE_EXE --version
         set
 
     - name: Build & install OpenCL-Headers (MSBuild)
-      if: matrix.GEN == 'Visual Studio 16 2019'
+      if: matrix.GEN == 'Visual Studio 17 2022'
       shell: cmd
       run: |
-        if /I "${{matrix.EXT}}"=="ON" (set C_FLAGS="/W4 /WX") else (set C_FLAGS="/W4 /WX /Za /wd4001")
+        set C_FLAGS="/W4 /WX"
         if /I "${{matrix.BIN}}"=="x86" (set BIN=Win32) else (set BIN=x64)
-        cmake -G "${{matrix.GEN}}" -A %BIN% -T ${{matrix.VER}} -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE%\external\OpenCL-Headers -B %GITHUB_WORKSPACE%\external\OpenCL-Headers\build
-        cmake --build %GITHUB_WORKSPACE%/external/OpenCL-Headers/build --target install --config Release -- /verbosity:minimal /maxCpuCount /noLogo
+        $CMAKE_EXE -G "${{matrix.GEN}}" -A %BIN% -T ${{matrix.VER}} -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_STANDARD=${{matrix.STD}} -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE%\external\OpenCL-Headers -B %GITHUB_WORKSPACE%\external\OpenCL-Headers\build
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%/external/OpenCL-Headers/build --target install --config Release -- /verbosity:minimal /maxCpuCount /noLogo
 
     - name: Build & install OpenCL-Headers (Ninja Multi-Config)
       if: matrix.GEN == 'Ninja Multi-Config'
       shell: cmd
       run: |
+        set C_FLAGS="/W4 /WX"
         if /I "${{matrix.VER}}"=="v140" (set VER=14.0)
         if /I "${{matrix.VER}}"=="v141" (set VER=14.1)
         if /I "${{matrix.VER}}"=="v142" (set VER=14.2)
-        if /I "${{matrix.EXT}}"=="ON" (set C_FLAGS="/W4 /WX") else (set C_FLAGS="/W4 /WX /Za /wd4001")
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.BIN}} /vcvars_ver=%VER%
-        cmake -G "${{matrix.GEN}}" -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE%\external\OpenCL-Headers -B %GITHUB_WORKSPACE%\external\OpenCL-Headers\build
-        cmake --build %GITHUB_WORKSPACE%/external/OpenCL-Headers/build --target install -- -j%NUMBER_OF_PROCESSORS%
+        if /I "${{matrix.VER}}"=="v143" (set VER=14.3)
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.BIN}} /vcvars_ver=%VER%
+        $CMAKE_EXE -G "${{matrix.GEN}}" -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_STANDARD=${{matrix.STD}} -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE%\external\OpenCL-Headers -B %GITHUB_WORKSPACE%\external\OpenCL-Headers\build
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%/external/OpenCL-Headers/build --target install -- -j%NUMBER_OF_PROCESSORS%
 
     - name: Configure (MSBuild)
-      if: matrix.GEN == 'Visual Studio 16 2019'
+      if: matrix.GEN == 'Visual Studio 17 2022'
       shell: cmd
       # no /WX during configuration because:
       # warning C4459: declaration of 'platform' hides global declaration
       # warning C4100: 'input_headers': unreferenced formal parameter
       run: |
-        if /I "${{matrix.EXT}}"=="ON" (set C_FLAGS="/W4") else (set C_FLAGS="/W4 /Za /wd4001")
+        set C_FLAGS="/W4"
         if /I "${{matrix.BIN}}"=="x86" (set BIN=Win32) else (set BIN=x64)
-        cmake -G "${{matrix.GEN}}" -A %BIN% -T ${{matrix.VER}} -D BUILD_TESTING=ON -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\install -D CMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%\build
+        $CMAKE_EXE -G "${{matrix.GEN}}" -A %BIN% -T ${{matrix.VER}} -D BUILD_TESTING=ON -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_STANDARD=${{matrix.STD}} -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\install -D CMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%\build
 
     - name: Configure (Ninja Multi-Config)
       if: matrix.GEN == 'Ninja Multi-Config'
@@ -70,19 +79,20 @@ jobs:
       # warning C4459: declaration of 'platform' hides global declaration
       # warning C4100: 'input_headers': unreferenced formal parameter
       run: |
+        set C_FLAGS="/W4"
         if /I "${{matrix.VER}}"=="v140" (set VER=14.0)
         if /I "${{matrix.VER}}"=="v141" (set VER=14.1)
         if /I "${{matrix.VER}}"=="v142" (set VER=14.2)
-        if /I "${{matrix.EXT}}"=="ON" (set C_FLAGS="/W4") else (set C_FLAGS="/W4 /Za /wd4001")
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.BIN}} /vcvars_ver=%VER%
-        cmake -G "${{matrix.GEN}}" -D BUILD_TESTING=ON -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\install -D CMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%\build
+        if /I "${{matrix.VER}}"=="v143" (set VER=14.3)
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.BIN}} /vcvars_ver=%VER%
+        $CMAKE_EXE -G "${{matrix.GEN}}" -D BUILD_TESTING=ON -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_STANDARD=${{matrix.STD}} -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\install -D CMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%\build
 
     - name: Build (MSBuild)
-      if: matrix.GEN == 'Visual Studio 16 2019'
+      if: matrix.GEN == 'Visual Studio 17 2022'
       shell: cmd
       run: |
-        cmake --build %GITHUB_WORKSPACE%\build --config Release -- /verbosity:minimal /maxCpuCount /noLogo
-        cmake --build %GITHUB_WORKSPACE%\build --config Debug -- /verbosity:minimal /maxCpuCount /noLogo
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%\build --config Release -- /verbosity:minimal /maxCpuCount /noLogo
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%\build --config Debug -- /verbosity:minimal /maxCpuCount /noLogo
 
     - name: Build (Ninja)
       if: matrix.GEN == 'Ninja Multi-Config'
@@ -91,19 +101,79 @@ jobs:
         if /I "${{matrix.VER}}"=="v140" set VER=14.0
         if /I "${{matrix.VER}}"=="v141" set VER=14.1
         if /I "${{matrix.VER}}"=="v142" set VER=14.2
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.BIN}} /vcvars_ver=%VER%
-        cmake --build %GITHUB_WORKSPACE%\build --config Release
-        cmake --build %GITHUB_WORKSPACE%\build --config Debug
+        if /I "${{matrix.VER}}"=="v143" set VER=14.3
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.BIN}} /vcvars_ver=%VER%
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%\build --config Release
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%\build --config Debug
 
     - name: Test
-      continue-on-error: true
       working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
       shell: cmd
       run: |
-        ctest -C Release --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
-        ctest -C Debug --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
+        $CTEST_EXE -C Release --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
+        $CTEST_EXE -C Debug --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
 
     - name: Install
       shell: cmd
       run: |
-        cmake --build %GITHUB_WORKSPACE%/build --config Release --target install
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%/build --config Release --target install
+
+    - name: "Consume (MSBuild standalone): Configure/Build/Test"
+      shell: cmd
+      run: |
+        set C_FLAGS="/W4"
+        if /I "${{matrix.BIN}}"=="x86" (set BIN=Win32) else (set BIN=x64)
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.BIN}} /vcvars_ver=%VER%
+        $CMAKE_EXE -G "${{matrix.GEN}}" -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_STANDARD=${{matrix.STD}} -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\install -D CMAKE_PREFIX_PATH="%GITHUB_WORKSPACE%\external\OpenCL-Headers\install;%GITHUB_WORKSPACE%\install" -D DRIVER_STUB_PATH=%GITHUB_WORKSPACE%/build/Release/OpenCLDriverStub.dll -B %GITHUB_WORKSPACE%/build/downstream/bare -S %GITHUB_WORKSPACE%/test/pkgconfig/bare
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Release
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Debug
+        cd %GITHUB_WORKSPACE%/test/pkgconfig/bare
+        $CTEST_EXE --output-on-failure -C Release
+        $CTEST_EXE --output-on-failure -C Debug
+
+    - name: "Consume (MSBuild SDK): Configure/Build/Test"
+      shell: cmd
+      run: |
+        set C_FLAGS="/W4"
+        if /I "${{matrix.BIN}}"=="x86" (set BIN=Win32) else (set BIN=x64)
+        $CMAKE_EXE -E make_directory $GITHUB_WORKSPACE/install/share/cmake/OpenCL
+        echo -e 'include("/home/runner/work/OpenCL-ICD-Loader/OpenCL-ICD-Loader/external/OpenCL-Headers/install/share/cmake/OpenCLHeaders/OpenCLHeadersTargets.cmake")\ninclude("${CMAKE_CURRENT_LIST_DIR}/../OpenCLICDLoader/OpenCLICDLoaderTargets.cmake")' > $GITHUB_WORKSPACE/install/share/cmake/OpenCL/OpenCLConfig.cmake
+        $CMAKE_EXE -G "${{matrix.GEN}}" -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_STANDARD=${{matrix.STD}} -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\install -D CMAKE_PREFIX_PATH="%GITHUB_WORKSPACE%\external\OpenCL-Headers\install;%GITHUB_WORKSPACE%\install" -D DRIVER_STUB_PATH=%GITHUB_WORKSPACE%/build/Release/OpenCLDriverStub.dll -B %GITHUB_WORKSPACE%/build/downstream/bare -S %GITHUB_WORKSPACE%/test/pkgconfig/bare
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Release
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Debug
+        cd %GITHUB_WORKSPACE%/test/pkgconfig/bare
+        $CTEST_EXE --output-on-failure -C Release
+        $CTEST_EXE --output-on-failure -C Debug
+
+    - name: "Consume (Ninja-Multi-Config standalone): Configure/Build/Test"
+      shell: cmd
+      run: |
+        set C_FLAGS="/W4"
+        if /I "${{matrix.VER}}"=="v140" (set VER=14.0)
+        if /I "${{matrix.VER}}"=="v141" (set VER=14.1)
+        if /I "${{matrix.VER}}"=="v142" (set VER=14.2)
+        if /I "${{matrix.VER}}"=="v143" (set VER=14.3)
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.BIN}} /vcvars_ver=%VER%
+        $CMAKE_EXE -G "${{matrix.GEN}}" -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_STANDARD=${{matrix.STD}} -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\install -D CMAKE_PREFIX_PATH="%GITHUB_WORKSPACE%\external\OpenCL-Headers\install;%GITHUB_WORKSPACE%\install" -D DRIVER_STUB_PATH=%GITHUB_WORKSPACE%/build/Release/OpenCLDriverStub.dll -B %GITHUB_WORKSPACE%/build/downstream/bare -S %GITHUB_WORKSPACE%/test/pkgconfig/bare
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Release
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Debug
+        cd %GITHUB_WORKSPACE%/test/pkgconfig/bare
+        $CTEST_EXE --output-on-failure -C Release
+        $CTEST_EXE --output-on-failure -C Debug
+
+    - name: "Consume (Ninja-Multi-Config SDK): Configure/Build/Test"
+      shell: cmd
+      run: |
+        set C_FLAGS="/W4"
+        if /I "${{matrix.VER}}"=="v140" (set VER=14.0)
+        if /I "${{matrix.VER}}"=="v141" (set VER=14.1)
+        if /I "${{matrix.VER}}"=="v142" (set VER=14.2)
+        if /I "${{matrix.VER}}"=="v143" (set VER=14.3)
+        $CMAKE_EXE -E make_directory $GITHUB_WORKSPACE/install/share/cmake/OpenCL
+        echo -e 'include("/home/runner/work/OpenCL-ICD-Loader/OpenCL-ICD-Loader/external/OpenCL-Headers/install/share/cmake/OpenCLHeaders/OpenCLHeadersTargets.cmake")\ninclude("${CMAKE_CURRENT_LIST_DIR}/../OpenCLICDLoader/OpenCLICDLoaderTargets.cmake")' > $GITHUB_WORKSPACE/install/share/cmake/OpenCL/OpenCLConfig.cmake
+        $CMAKE_EXE -G "${{matrix.GEN}}" -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_STANDARD=${{matrix.STD}} -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\install -D CMAKE_PREFIX_PATH="%GITHUB_WORKSPACE%\external\OpenCL-Headers\install;%GITHUB_WORKSPACE%\install" -D DRIVER_STUB_PATH=%GITHUB_WORKSPACE%/build/Release/OpenCLDriverStub.dll -B %GITHUB_WORKSPACE%/build/downstream/bare -S %GITHUB_WORKSPACE%/test/pkgconfig/bare
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Release
+        $CMAKE_EXE --build %GITHUB_WORKSPACE%/test/pkgconfig/bare --config Debug
+        cd %GITHUB_WORKSPACE%/test/pkgconfig/bare
+        $CTEST_EXE --output-on-failure -C Release
+        $CTEST_EXE --output-on-failure -C Debug
