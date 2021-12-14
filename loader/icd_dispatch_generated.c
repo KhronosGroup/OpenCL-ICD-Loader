@@ -78,52 +78,15 @@ static CL_API_ENTRY cl_int CL_API_CALL clGetPlatformInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
-
-CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
+#if defined(CL_ENABLE_LAYERS)
+extern CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs_disp(
     cl_platform_id platform,
     cl_device_type device_type,
     cl_uint num_entries,
     cl_device_id* devices,
-    cl_uint* num_devices)
-{
-#if defined(CL_ENABLE_LAYERS)
-    if (khrFirstLayer)
-        return khrFirstLayer->dispatch.clGetDeviceIDs(
-            platform,
-            device_type,
-            num_entries,
-            devices,
-            num_devices);
-#endif // defined(CL_ENABLE_LAYERS)
-    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
-    return platform->dispatch->clGetDeviceIDs(
-        platform,
-        device_type,
-        num_entries,
-        devices,
-        num_devices);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-#if defined(CL_ENABLE_LAYERS)
-static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs_disp(
-    cl_platform_id platform,
-    cl_device_type device_type,
-    cl_uint num_entries,
-    cl_device_id* devices,
-    cl_uint* num_devices)
-{
-    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
-    return platform->dispatch->clGetDeviceIDs(
-        platform,
-        device_type,
-        num_entries,
-        devices,
-        num_devices);
-}
+    cl_uint* num_devices) CL_API_SUFFIX__VERSION_1_0;
 #endif // defined(CL_ENABLE_LAYERS)
 
-///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetDeviceInfo(
     cl_device_id device,
@@ -227,55 +190,13 @@ static CL_API_ENTRY cl_context CL_API_CALL clCreateContext_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
-
-CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType(
+#if defined(CL_ENABLE_LAYERS)
+extern CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType_disp(
     const cl_context_properties* properties,
     cl_device_type device_type,
     void (CL_CALLBACK* pfn_notify)(const char* errinfo, const void* private_info, size_t cb, void* user_data),
     void* user_data,
-    cl_int* errcode_ret)
-{
-    khrIcdInitialize();
-#if defined(CL_ENABLE_LAYERS)
-    if (khrFirstLayer)
-        return khrFirstLayer->dispatch.clCreateContextFromType(
-            properties,
-            device_type,
-            pfn_notify,
-            user_data,
-            errcode_ret);
-#endif // defined(CL_ENABLE_LAYERS)
-    cl_platform_id platform = NULL;
-    khrIcdContextPropertiesGetPlatform(properties, &platform);
-    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(platform, CL_INVALID_PLATFORM);
-    return platform->dispatch->clCreateContextFromType(
-        properties,
-        device_type,
-        pfn_notify,
-        user_data,
-        errcode_ret);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-#if defined(CL_ENABLE_LAYERS)
-static CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType_disp(
-    const cl_context_properties* properties,
-    cl_device_type device_type,
-    void (CL_CALLBACK* pfn_notify)(const char* errinfo, const void* private_info, size_t cb, void* user_data),
-    void* user_data,
-    cl_int* errcode_ret)
-{
-    khrIcdInitialize();
-    cl_platform_id platform = NULL;
-    khrIcdContextPropertiesGetPlatform(properties, &platform);
-    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(platform, CL_INVALID_PLATFORM);
-    return platform->dispatch->clCreateContextFromType(
-        properties,
-        device_type,
-        pfn_notify,
-        user_data,
-        errcode_ret);
-}
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0;
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////

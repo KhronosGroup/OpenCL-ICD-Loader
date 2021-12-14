@@ -50,6 +50,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/loader/icd_cmake_config.h.in
 set (OPENCL_ICD_LOADER_SOURCES
     loader/icd.c
     loader/icd.h
+    loader/icd_device_visible.h
+    loader/icd_device_visible.c
     loader/icd_dispatch.c
     loader/icd_dispatch.h
     loader/icd_dispatch_generated.c

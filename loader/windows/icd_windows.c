@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 The Khronos Group Inc.
+ * Copyright (c) 2016-2021 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 #include <initguid.h>
 
 #include "icd.h"
+#include "icd_device_visible.h"
 #include "icd_windows.h"
 #include "icd_windows_hkr.h"
 #include "icd_windows_dxgk.h"
@@ -103,8 +104,8 @@ void adapterFree(WinAdapter *pWinAdapter)
  *
  */
 
-// go through the list of vendors in the registry and call khrIcdVendorAdd 
-// for each vendor encountered
+// go through the OPENCL_VISIBLE_DEVICES env variable and list of vendors in the
+// registry and call khrIcdVendorAdd for each vendor encountered
 BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVOID *lpContext)
 {
     LONG result;
@@ -112,6 +113,8 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     const char* platformsName = "SOFTWARE\\Khronos\\OpenCL\\Vendors";
     HKEY platformsKey = NULL;
     DWORD dwIndex;
+    // go through the list in OPENCL_VISIBLE_DEVICES env variable
+    khrIcdOsGetOpenCLVisibleDevices();
 
     khrIcdVendorsEnumerateEnv();
 

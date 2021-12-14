@@ -2,6 +2,8 @@
 # APIs to skip - they need to be done "manually":
 apiskip = {
     'clGetPlatformIDs',                         # to query platforms
+    'clGetDeviceIDs',                           # to qeery devices
+    'clCreateContextFromType',                  # to create context from type
     'clGetExtensionFunctionAddress',            # to return ICD-aware extensions
     'clGetExtensionFunctionAddressForPlatform', # to return ICD-aware extensions
     }
