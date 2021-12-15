@@ -17,6 +17,7 @@ const struct clGetSamplerInfo_st clGetSamplerInfoData[NUM_ITEMS_clGetSamplerInfo
 
 int test_clRetainSampler(const struct clRetainSampler_st *data)
 {
+   (void)data;
     cl_int ret_val;
 
     test_icd_app_log("clRetainSampler(%p)\n", sampler);

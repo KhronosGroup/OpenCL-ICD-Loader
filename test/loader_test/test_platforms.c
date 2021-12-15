@@ -49,6 +49,7 @@ struct clRetainDevice_st clRetainDeviceData[NUM_ITEMS_clRetainDevice] =
 
 int test_clRetainContext(const struct clRetainContext_st* data)
 {
+    (void)data;
     cl_int ret_val;
 
     test_icd_app_log("clRetainContext(%p)\n", context);
@@ -176,6 +177,7 @@ int test_clCreateSubDevices(const struct clCreateSubDevices_st* data)
 
 int test_clRetainDevice(const struct clRetainDevice_st* data)
 {
+    (void)data;
     cl_int ret_val;
 
     test_icd_app_log("clRetainDevice(%p)\n", devices);

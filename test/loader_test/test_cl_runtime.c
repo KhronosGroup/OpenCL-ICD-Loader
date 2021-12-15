@@ -14,6 +14,7 @@ const struct clGetCommandQueueInfo_st clGetCommandQueueInfoData[NUM_ITEMS_clGetC
 
 int test_clRetainCommandQueue(const struct clRetainCommandQueue_st *data)
 {
+    (void)data;
     cl_int ret_val;
 
     test_icd_app_log("clRetainCommandQueue(%p)\n", command_queue);
