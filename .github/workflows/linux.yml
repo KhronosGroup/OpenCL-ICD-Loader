@@ -141,7 +141,6 @@ jobs:
 
 
   cmake-latest:
-    if: false
     runs-on: ${{ matrix.OS }}
     strategy:
       matrix:
