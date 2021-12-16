@@ -60,36 +60,43 @@ void khrIcdOsVendorsEnumerate(void)
     else
     {
         // attempt to load all files in the directory
-        for (dirEntry = readdir(dir); dirEntry; dirEntry = readdir(dir) )
+        for (dirEntry = readdir(dir); dirEntry; dirEntry = readdir(dir))
         {
             struct stat statBuff;
-            stat(dirEntry->d_name, &statBuff);
+            const char* extension = ".icd";
+            char* fileName = NULL;
+
+            // make sure the file name ends in .icd
+            if (strlen(extension) > strlen(dirEntry->d_name))
+            {
+                continue;
+            }
+            if (strcmp(dirEntry->d_name + strlen(dirEntry->d_name) - strlen(extension), extension))
+            {
+                continue;
+            }
+
+            // allocate space for the full path of the vendor library name
+            fileName = malloc(strlen(dirEntry->d_name) + strlen(vendorPath) + 2);
+            if (!fileName)
+            {
+                KHR_ICD_TRACE("Failed allocate space for ICD file path\n");
+                continue;
+            }
+            sprintf(fileName, "%s/%s", vendorPath, dirEntry->d_name);
+
+            if (stat(fileName, &statBuff))
+            {
+                KHR_ICD_TRACE("Failed stat for: %s, continuing\n", fileName);
+                free(fileName);
+                continue;
+            }
+
             if (S_ISREG(statBuff.st_mode) || S_ISLNK(statBuff.st_mode))
             {
-                const char* extension = ".icd";
                 FILE *fin = NULL;
-                char* fileName = NULL;
                 char* buffer = NULL;
                 long bufferSize = 0;
-
-                // make sure the file name ends in .icd
-                if (strlen(extension) > strlen(dirEntry->d_name) )
-                {
-                    continue;
-                }
-                if (strcmp(dirEntry->d_name + strlen(dirEntry->d_name) - strlen(extension), extension) )
-                {
-                    continue;
-                }
-
-                // allocate space for the full path of the vendor library name
-                fileName = malloc(strlen(dirEntry->d_name) + strlen(vendorPath) + 2);
-                if (!fileName)
-                {
-                    KHR_ICD_TRACE("Failed allocate space for ICD file path\n");
-                    continue;
-                }
-                sprintf(fileName, "%s/%s", vendorPath, dirEntry->d_name);
 
                 // open the file and read its contents
                 fin = fopen(fileName, "r");
@@ -110,7 +117,7 @@ void khrIcdOsVendorsEnumerate(void)
                 }
                 memset(buffer, 0, bufferSize+1);
                 fseek(fin, 0, SEEK_SET);
-                if (bufferSize != (long)fread(buffer, 1, bufferSize, fin) )
+                if (bufferSize != (long)fread(buffer, 1, bufferSize, fin))
                 {
                     free(fileName);
                     free(buffer);
@@ -129,6 +136,8 @@ void khrIcdOsVendorsEnumerate(void)
             }
             else
             {
+                KHR_ICD_TRACE("File %s is not a regular file nor symbolic link, continuing\n", fileName);
+                free(fileName);
                 continue;
             }
         }
