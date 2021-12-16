@@ -19,7 +19,8 @@ jobs:
     - name: Checkout OpenCL-Headers
       uses: actions/checkout@v2
       with:
-        repository: KhronosGroup/OpenCL-Headers
+        repository: StreamHPC/OpenCL-Headers
+        ref: develop_stream
         path: external/OpenCL-Headers
 
     - name: Create Build Environment
