@@ -10,7 +10,7 @@ struct driverStubextFunc_st
     void *func;
 };
 
-#define EXT_FUNC(name) { #name, (void*)(name) }
+#define EXT_FUNC(name) { #name, (void*)(intptr_t)(name) }
 
 static struct driverStubextFunc_st clExtensions[] = 
 {
