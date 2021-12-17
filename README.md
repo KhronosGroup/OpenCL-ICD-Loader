@@ -30,6 +30,7 @@ The OpenCL *Installable Client Driver* extension (`cl_khr_icd`) is described in 
 
 The OpenCL ICD Loader requires:
 - the [OpenCL Headers](https://github.com/KhronosGroup/OpenCL-Headers/).
+  - It is recommended to install the headers via CMake, however a convenience shorthand is provided. Providing `OPENCL_ICD_LOADER_HEADERS_DIR` to CMake, one may specify the location of OpenCL Headers. By default, the OpenCL ICD Loader will look for OpenCL Headers in the inc directory.
 - The OpenCL ICD Loader uses CMake for its build system.
 If CMake is not provided by your build system or OS package manager, please consult the [CMake website](https://cmake.org).
 - The Windows OpenCL ICD Loader requires the Windows SDK to check for and enumerate the OpenCLOn12 ICD.
