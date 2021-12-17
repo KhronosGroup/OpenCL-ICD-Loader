@@ -64,6 +64,7 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd_platform.h)
 
 if (WIN32)
+    enable_language (CXX)
     list (APPEND OPENCL_ICD_LOADER_SOURCES
         loader/windows/adapter.h
         loader/windows/icd_windows.c
@@ -73,6 +74,8 @@ if (WIN32)
         loader/windows/icd_windows_envvars.c
         loader/windows/icd_windows_hkr.c
         loader/windows/icd_windows_hkr.h
+        loader/windows/icd_windows_apppackage.cpp
+        loader/windows/icd_windows_apppackage.h
         loader/windows/OpenCL.def
         loader/windows/OpenCL.rc)
     # Only add the DXSDK include directory if the environment variable is
@@ -98,13 +101,6 @@ if (WIN32)
     target_link_libraries (OpenCL PRIVATE cfgmgr32.lib runtimeobject.lib)
 
     option (OPENCL_ICD_LOADER_DISABLE_OPENCLON12 "Disable support for OpenCLOn12. Support for OpenCLOn12 should only be disabled when building an import lib to link with, and must be enabled when building an ICD loader for distribution!" OFF)
-    if (OPENCL_ICD_LOADER_DISABLE_OPENCLON12)
-        target_compile_definitions (OpenCL PRIVATE OPENCL_ICD_LOADER_DISABLE_OPENCLON12)
-    else ()
-        enable_language (CXX)
-        set_target_properties (OpenCL PROPERTIES SOURCES
-            "${OPENCL_ICD_LOADER_SOURCES};loader/windows/icd_windows_apppackage.cpp;loader/windows/icd_windows_apppackage.h")
-    endif ()
 else()
     target_link_libraries (OpenCL PRIVATE ${CMAKE_THREAD_LIBS_INIT})
     if (NOT APPLE)
@@ -128,9 +124,12 @@ else ()
     target_link_libraries (OpenCL PUBLIC OpenCL::Headers)
 endif ()
 
-if (ENABLE_OPENCL_LAYERS)
-  target_compile_definitions(OpenCL PUBLIC CL_ENABLE_LAYERS)
-endif()
+target_compile_definitions (OpenCL
+  PRIVATE
+    CL_TARGET_OPENCL_VERSION=300
+    $<$<BOOL:${ENABLE_OPENCL_LAYERS}>:CL_ENABLE_LAYERS>
+    $<$<BOOL:${OPENCL_ICD_LOADER_DISABLE_OPENCLON12}>:OPENCL_ICD_LOADER_DISABLE_OPENCLON12>
+)
 
 target_include_directories (OpenCL
   PRIVATE
