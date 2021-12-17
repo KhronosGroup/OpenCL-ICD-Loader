@@ -88,6 +88,8 @@ else ()
         loader/linux/icd_exports.map)
 endif ()
 
+set (OPENCL_ICD_LOADER_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to OpenCL Headers")
+
 add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
 add_library (OpenCL::OpenCL ALIAS OpenCL)
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
@@ -113,13 +115,18 @@ else()
     endif ()
 endif ()
 
-if (NOT TARGET OpenCL::Headers)
-  find_package(OpenCLHeaders REQUIRED)
+if (EXISTS ${OPENCL_ICD_LOADER_HEADERS_DIR}/CL/cl.h)
+    message (STATUS "Defining OpenCL::Headers through OPENCL_ICD_LOADER_HEADERS_DIR")
+    add_library (OpenCLHeaders INTERFACE)
+    add_library (OpenCL::Headers ALIAS OpenCLHeaders)
+    target_include_directories (OpenCLHeaders INTERFACE ${OPENCL_ICD_LOADER_HEADERS_DIR})
+    target_include_directories (OpenCL PUBLIC ${OPENCL_ICD_LOADER_HEADERS_DIR})
+else ()
+    if (NOT TARGET OpenCL::Headers)
+        find_package (OpenCLHeaders REQUIRED)
+    endif ()
+    target_link_libraries (OpenCL PUBLIC OpenCL::Headers)
 endif ()
-
-target_link_libraries (OpenCL PUBLIC OpenCL::Headers)
-
-target_compile_definitions(OpenCL PRIVATE CL_TARGET_OPENCL_VERSION=300)
 
 if (ENABLE_OPENCL_LAYERS)
   target_compile_definitions(OpenCL PUBLIC CL_ENABLE_LAYERS)
