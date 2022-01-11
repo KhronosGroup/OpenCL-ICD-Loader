@@ -92,8 +92,8 @@ ${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + (""
 %  endif
 %endfor
 %  if api.Name == "clSVMFree":
-        return;
     }
+    else
 %  endif
 #endif // defined(CL_ENABLE_LAYERS)
 %endif
@@ -120,7 +120,7 @@ ${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + (""
 %  endif
 %elif api.Name == "clSVMFree":
 ## clSVMFree has no return value or errcode_ret:
-    if (${handle.Name} == NULL) return;
+    if (${handle.Name} != NULL)
 ## clWaitForEvents is a special case, since it calls through
 ## the dispatch table via the first "event":
 %elif api.Name == "clWaitForEvents":

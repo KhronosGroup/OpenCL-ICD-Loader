@@ -6394,100 +6394,6 @@ static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
-CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
-    cl_context context,
-    cl_mem_flags flags,
-    cl_GLenum target,
-    cl_GLint miplevel,
-    cl_GLuint texture,
-    cl_int* errcode_ret)
-{
-#if defined(CL_ENABLE_LAYERS)
-    if (khrFirstLayer)
-        return khrFirstLayer->dispatch.clCreateFromGLTexture2D(
-            context,
-            flags,
-            target,
-            miplevel,
-            texture,
-            errcode_ret);
-#endif // defined(CL_ENABLE_LAYERS)
-    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
-    return context->dispatch->clCreateFromGLTexture2D(
-        context,
-        flags,
-        target,
-        miplevel,
-        texture,
-        errcode_ret);
-}
-#if defined(CL_ENABLE_LAYERS)
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D_disp(
-    cl_context context,
-    cl_mem_flags flags,
-    cl_GLenum target,
-    cl_GLint miplevel,
-    cl_GLuint texture,
-    cl_int* errcode_ret)
-{
-    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
-    return context->dispatch->clCreateFromGLTexture2D(
-        context,
-        flags,
-        target,
-        miplevel,
-        texture,
-        errcode_ret);
-}
-#endif // defined(CL_ENABLE_LAYERS)
-
-CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
-    cl_context context,
-    cl_mem_flags flags,
-    cl_GLenum target,
-    cl_GLint miplevel,
-    cl_GLuint texture,
-    cl_int* errcode_ret)
-{
-#if defined(CL_ENABLE_LAYERS)
-    if (khrFirstLayer)
-        return khrFirstLayer->dispatch.clCreateFromGLTexture3D(
-            context,
-            flags,
-            target,
-            miplevel,
-            texture,
-            errcode_ret);
-#endif // defined(CL_ENABLE_LAYERS)
-    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
-    return context->dispatch->clCreateFromGLTexture3D(
-        context,
-        flags,
-        target,
-        miplevel,
-        texture,
-        errcode_ret);
-}
-#if defined(CL_ENABLE_LAYERS)
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D_disp(
-    cl_context context,
-    cl_mem_flags flags,
-    cl_GLenum target,
-    cl_GLint miplevel,
-    cl_GLuint texture,
-    cl_int* errcode_ret)
-{
-    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
-    return context->dispatch->clCreateFromGLTexture3D(
-        context,
-        flags,
-        target,
-        miplevel,
-        texture,
-        errcode_ret);
-}
-#endif // defined(CL_ENABLE_LAYERS)
-
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer(
     cl_context context,
     cl_mem_flags flags,
@@ -6690,6 +6596,100 @@ static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseGLObjects_disp(
         num_events_in_wait_list,
         event_wait_list,
         event);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLenum target,
+    cl_GLint miplevel,
+    cl_GLuint texture,
+    cl_int* errcode_ret)
+{
+#if defined(CL_ENABLE_LAYERS)
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromGLTexture2D(
+            context,
+            flags,
+            target,
+            miplevel,
+            texture,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return context->dispatch->clCreateFromGLTexture2D(
+        context,
+        flags,
+        target,
+        miplevel,
+        texture,
+        errcode_ret);
+}
+#if defined(CL_ENABLE_LAYERS)
+static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D_disp(
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLenum target,
+    cl_GLint miplevel,
+    cl_GLuint texture,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return context->dispatch->clCreateFromGLTexture2D(
+        context,
+        flags,
+        target,
+        miplevel,
+        texture,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLenum target,
+    cl_GLint miplevel,
+    cl_GLuint texture,
+    cl_int* errcode_ret)
+{
+#if defined(CL_ENABLE_LAYERS)
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromGLTexture3D(
+            context,
+            flags,
+            target,
+            miplevel,
+            texture,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LAYERS)
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return context->dispatch->clCreateFromGLTexture3D(
+        context,
+        flags,
+        target,
+        miplevel,
+        texture,
+        errcode_ret);
+}
+#if defined(CL_ENABLE_LAYERS)
+static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D_disp(
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLenum target,
+    cl_GLint miplevel,
+    cl_GLuint texture,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return context->dispatch->clCreateFromGLTexture3D(
+        context,
+        flags,
+        target,
+        miplevel,
+        texture,
+        errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
