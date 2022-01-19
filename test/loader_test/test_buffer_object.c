@@ -461,4 +461,3 @@ int test_buffer_object()
 
     return 0;
 }
-

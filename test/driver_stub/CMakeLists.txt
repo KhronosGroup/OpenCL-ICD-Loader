@@ -7,4 +7,6 @@ endif ()
 
 add_library (OpenCLDriverStub ${OPENCL_DRIVER_STUB_SOURCES})
 
-target_link_libraries (OpenCLDriverStub IcdLog)
+target_link_libraries (OpenCLDriverStub IcdLog OpenCL::Headers)
+
+target_compile_definitions (OpenCLDriverStub PRIVATE CL_TARGET_OPENCL_VERSION=300)

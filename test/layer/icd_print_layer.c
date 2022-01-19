@@ -18,7 +18,7 @@
 
 #include "icd_print_layer.h"
 
-struct _cl_icd_dispatch dispatch = {NULL};
+struct _cl_icd_dispatch dispatch;
 
 const struct _cl_icd_dispatch *tdispatch;
 
