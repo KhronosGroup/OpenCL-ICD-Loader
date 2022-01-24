@@ -41,7 +41,6 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # may be useful to simplify the build and distribution of the application. E.g.
 # in test farms, or in cases where the end-user system configs are known in
 # advance. Use it with discretion.
-include(CMakeDependentOption)
 if(DEFINED BUILD_SHARED_LIBS)
   set(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT ${BUILD_SHARED_LIBS})
 else()
