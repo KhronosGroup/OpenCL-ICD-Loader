@@ -41,7 +41,13 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # may be useful to simplify the build and distribution of the application. E.g.
 # in test farms, or in cases where the end-user system configs are known in
 # advance. Use it with discretion.
-option (OPENCL_ICD_LOADER_BUILD_SHARED_LIBS "Build shared libs" ON)
+include(CMakeDependentOption)
+if(DEFINED BUILD_SHARED_LIBS)
+  set(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT ${BUILD_SHARED_LIBS})
+else()
+  set(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT ON)
+endif()
+  option(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS "Build OpenCL ICD Loader as shared library" ${OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT})
 
 # This option enables/disables support for OpenCL layers in the ICD loader.
 # It is currently needed default while the specification is being formalized,
