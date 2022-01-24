@@ -101,11 +101,11 @@ set (OPENCL_ICD_LOADER_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH 
 
 if (${OPENCL_ICD_LOADER_BUILD_SHARED_LIBS} OR ${BUILD_SHARED_LIBS})
   add_library (OpenCL SHARED ${OPENCL_ICD_LOADER_SOURCES})
-  add_library (OpenCL::OpenCL ALIAS OpenCL)
 else()
   add_library (OpenCL SHARED ${OPENCL_ICD_LOADER_SOURCES})
-  add_library (OpenCL::OpenCL ALIAS OpenCL)
 endif()
+
+add_library (OpenCL::OpenCL ALIAS OpenCL)
 
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 
