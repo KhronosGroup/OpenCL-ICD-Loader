@@ -11,7 +11,12 @@ else ()
     endif ()
 endif ()
 
-add_library (PrintLayer ${OPENCL_PRINT_LAYER_SOURCES})
+if (${OPENCL_ICD_LOADER_BUILD_SHARED_LIBS})
+    add_library (PrintLayer SHARED ${OPENCL_PRINT_LAYER_SOURCES})
+else()
+    add_library (PrintLayer STATIC ${OPENCL_PRINT_LAYER_SOURCES})
+endif()
+
 target_include_directories(PrintLayer PRIVATE ${PARENT_DIR}/include)
 target_link_libraries(PrintLayer PUBLIC OpenCL::Headers)
 target_compile_definitions (PrintLayer PRIVATE CL_TARGET_OPENCL_VERSION=300)
