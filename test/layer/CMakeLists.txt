@@ -11,7 +11,8 @@ else ()
     endif ()
 endif ()
 
-add_library (PrintLayer ${OPENCL_PRINT_LAYER_SOURCES})
+add_library (PrintLayer SHARED ${OPENCL_PRINT_LAYER_SOURCES})
+
 target_include_directories(PrintLayer PRIVATE ${PARENT_DIR}/include)
 target_link_libraries(PrintLayer PUBLIC OpenCL::Headers)
 target_compile_definitions (PrintLayer PRIVATE CL_TARGET_OPENCL_VERSION=300)

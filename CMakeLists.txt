@@ -41,7 +41,12 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # may be useful to simplify the build and distribution of the application. E.g.
 # in test farms, or in cases where the end-user system configs are known in
 # advance. Use it with discretion.
-option (BUILD_SHARED_LIBS "Build shared libs" ON)
+if(DEFINED BUILD_SHARED_LIBS)
+  set(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT ${BUILD_SHARED_LIBS})
+else()
+  set(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT ON)
+endif()
+  option(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS "Build OpenCL ICD Loader as shared library" ${OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT})
 
 # This option enables/disables support for OpenCL layers in the ICD loader.
 # It is currently needed default while the specification is being formalized,
@@ -93,8 +98,14 @@ endif ()
 
 set (OPENCL_ICD_LOADER_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to OpenCL Headers")
 
-add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
+if (${OPENCL_ICD_LOADER_BUILD_SHARED_LIBS})
+  add_library (OpenCL SHARED ${OPENCL_ICD_LOADER_SOURCES})
+else()
+  add_library (OpenCL STATIC ${OPENCL_ICD_LOADER_SOURCES})
+endif()
+
 add_library (OpenCL::OpenCL ALIAS OpenCL)
+
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 
 if (WIN32)
