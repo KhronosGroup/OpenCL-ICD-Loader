@@ -45,7 +45,7 @@ static inline void khrIcdOsDirEntryValidateAndAdd(const char *d_name, const char
     struct stat statBuff;
     char* fileName = NULL;
 
-    // make sure the file name ends in .icd
+    // make sure the file name ends in `extension` (eg. .icd, or .lay)
     if (strlen(extension) > strlen(d_name))
     {
         return;
