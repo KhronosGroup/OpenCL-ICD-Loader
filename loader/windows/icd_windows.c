@@ -133,7 +133,10 @@ static BOOL layerAdd(const char* szName, DWORD priority)
 
         WinLayer* pNewBegin = malloc(newCapacity * sizeof(*pWinLayerBegin));
         if (!pNewBegin)
+        {
+            KHR_ICD_TRACE("Failed allocate space for Layers array\n");
             result = FALSE;
+        }
         else
         {
             if (pWinLayerBegin)
