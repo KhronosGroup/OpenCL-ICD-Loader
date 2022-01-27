@@ -154,7 +154,10 @@ static BOOL layerAdd(const char* szName, DWORD priority)
         size_t nameLen = (strlen(szName) + 1)*sizeof(szName[0]);
         pWinLayerEnd->szName = malloc(nameLen);
         if (!pWinLayerEnd->szName)
+        {
+            KHR_ICD_TRACE("Failed allocate space for Layer file path\n");
             result = FALSE;
+        }
         else
         {
             memcpy(pWinLayerEnd->szName, szName, nameLen);
