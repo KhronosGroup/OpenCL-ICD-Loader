@@ -38,7 +38,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     # To pull the latest registry file from GitHub, pass:
-    # -registry "https://raw.githubusercontent.com/KhronosGroup/OpenCL-Registry/master/xml/cl.xml"
+    # -registry "https://raw.githubusercontent.com/KhronosGroup/OpenCL-Docs/main/xml/cl.xml"
 
     parser.add_argument('-registry', action='store',
                         default='cl.xml',
