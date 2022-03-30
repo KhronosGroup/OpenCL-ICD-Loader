@@ -26,6 +26,8 @@
 #include <string.h>
 
 KHRicdVendor *khrIcdVendors = NULL;
+char *khrEnableTrace = NULL;
+
 #if defined(CL_ENABLE_LAYERS)
 struct KHRLayer *khrFirstLayer = NULL;
 #endif // defined(CL_ENABLE_LAYERS)
@@ -33,6 +35,7 @@ struct KHRLayer *khrFirstLayer = NULL;
 // entrypoint to initialize the ICD and add all vendors
 void khrIcdInitialize(void)
 {
+    khrEnableTrace = khrIcd_getenv("OCL_ICD_ENABLE_TRACE");
     // enumerate vendors present on the system
     khrIcdOsVendorsEnumerateOnce();
 }

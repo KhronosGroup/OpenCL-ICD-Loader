@@ -17,7 +17,10 @@
  */
 
 #include "icd_dispatch.h"
+#include "icd_envvars.h"
 #include "icd.h"
+
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {
