@@ -84,7 +84,7 @@ struct KHRicdVendorRec
 
 // the global state
 extern KHRicdVendor * khrIcdVendors;
-extern char *khrEnableTrace;
+extern int khrEnableTrace;
 
 #if defined(CL_ENABLE_LAYERS)
 /*
@@ -155,57 +155,51 @@ void khrIcdContextPropertiesGetPlatform(
 
 // internal tracing macros
 #define KHR_ICD_TRACE(...) \
-if (khrEnableTrace && strcmp(khrEnableTrace, "True") == 0) \
-{ \
+if (khrEnableTrace) \
     do \
     { \
         fprintf(stderr, "KHR ICD trace at %s:%d: ", __FILE__, __LINE__); \
         fprintf(stderr, __VA_ARGS__); \
-    } while (0); \
-}
+    } while (0);
 
 #ifdef _WIN32
 #define KHR_ICD_WIDE_TRACE(...) \
-if (khrEnableTrace && strcmp(khrEnableTrace, "True") == 0) \
-{ \
+if (khrEnableTrace) \
     do \
     { \
         fwprintf(stderr, L"KHR ICD trace at %hs:%d: ", __FILE__, __LINE__); \
         fwprintf(stderr, __VA_ARGS__); \
-    } while (0); \
-}
+    } while (0);
+
 #else
 #define KHR_ICD_WIDE_TRACE(...)
 #endif
 
 #define KHR_ICD_ASSERT(x) \
-if (khrEnableTrace && strcmp(khrEnableTrace, "True") == 0) \
-{ \
+if (khrEnableTrace) \
     do \
     { \
         if (!(x)) \
         { \
             fprintf(stderr, "KHR ICD assert at %s:%d: %s failed", __FILE__, __LINE__, #x); \
         } \
-    } while (0); \
-}
+    } while (0);
+
 // if handle is NULL then return invalid_handle_error_code
 #define KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(handle,invalid_handle_error_code) \
-if (khrEnableTrace && strcmp(khrEnableTrace, "True") == 0) \
-{ \
+if (khrEnableTrace) \
     do \
     { \
         if (!handle) \
         { \
             return invalid_handle_error_code; \
         } \
-    } while (0); \
-}
+    } while (0);
+
 // if handle is NULL then set errcode_ret to invalid_handle_error and return NULL 
 // (NULL being an invalid handle)
 #define KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(handle,invalid_handle_error) \
-if (khrEnableTrace && strcmp(khrEnableTrace, "True") == 0) \
-{ \
+if (khrEnableTrace) \
     do \
     { \
         if (!handle) \
@@ -216,7 +210,6 @@ if (khrEnableTrace && strcmp(khrEnableTrace, "True") == 0) \
             } \
             return NULL; \
         } \
-    } while (0); \
-}
+    } while (0);
 
 #endif
