@@ -32,8 +32,8 @@ int khrEnableTrace = 0;
 struct KHRLayer *khrFirstLayer = NULL;
 #endif // defined(CL_ENABLE_LAYERS)
 
-// entrypoint to initialize the ICD and add all vendors
-void khrIcdInitialize(void)
+// entrypoint to check and initialize trace.
+void khrIcdInitializeTrace(void)
 {
     char *enableTrace = khrIcd_getenv("OCL_ICD_ENABLE_TRACE");
     if (enableTrace && (strcmp(enableTrace, "True") == 0 ||
@@ -41,9 +41,14 @@ void khrIcdInitialize(void)
             strcmp(enableTrace, "T") == 0 ||
             strcmp(enableTrace, "1") == 0))
     {
-	khrEnableTrace = 1;
+        khrEnableTrace = 1;
     }
+}
 
+// entrypoint to initialize the ICD and add all vendors
+void khrIcdInitialize(void)
+{
+    khrIcdInitializeTrace();
     // enumerate vendors present on the system
     khrIcdOsVendorsEnumerateOnce();
 }
