@@ -19,8 +19,6 @@
 #include "icd_dispatch.h"
 #include "icd.h"
 
-#include <string.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
