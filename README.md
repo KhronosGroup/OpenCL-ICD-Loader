@@ -146,4 +146,4 @@ The following debug environment variables are available for use with the OpenCL 
 | OCL_ICD_FILENAMES                 | Specifies a list of additional ICDs to load.  The ICDs will be enumerated first, before any ICDs discovered via default mechanisms. | `export OCL_ICD_FILENAMES=libVendorA.so:libVendorB.so`<br/><br/>`set OCL_ICD_FILENAMES=vendor_a.dll;vendor_b.dll` |
 | OCL_ICD_VENDORS                   | On Linux and Android, specifies a directory to scan for ICDs to enumerate in place of the default `/etc/OpenCL/vendors'. |  `export OCL_ICD_VENDORS=/my/local/icd/search/path` |
 | OPENCL_LAYERS                    | Specifies a list of layers to load. |  `export OPENCL_LAYERS=libLayerA.so:libLayerB.so`<br/><br/>`set OPENCL_LAYERS=libLayerA.dll;libLayerB.dll` |
-| OCL_ICD_ENABLE_TRACE             | Enable the trace machanism          |  `export OCL_ICD_ENABLE_TRACE=True`<br/>`true, T, 1 can also be used here.`  |
+| OCL_ICD_ENABLE_TRACE             | Enable the trace mechanism          |  `export OCL_ICD_ENABLE_TRACE=True`<br/><br/>`set OCL_ICD_ENABLE_TRACE=True`<br/>`true, T, 1 can also be used here.`  |
