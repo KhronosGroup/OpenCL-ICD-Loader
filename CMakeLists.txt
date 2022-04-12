@@ -166,6 +166,11 @@ install(
   LIBRARY
     DESTINATION ${CMAKE_INSTALL_LIBDIR} # obtained from GNUInstallDirs
 )
+install(
+  FILES $<TARGET_PDB_FILE:OpenCL>
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
+  OPTIONAL
+)
 
 export(
   EXPORT OpenCLICDLoaderTargets
