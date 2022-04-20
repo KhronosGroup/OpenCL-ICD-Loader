@@ -265,6 +265,10 @@ void *khrIcdOsLibraryLoad(const char *libraryName)
     {
         hTemp = LoadLibraryExA(libraryName, NULL, 0);
     }
+    if (!hTemp)
+    {
+        KHR_ICD_TRACE("Failed to load driver. Windows error code is %d.\n", GetLastError());
+    }
     return (void*)hTemp;
 }
 

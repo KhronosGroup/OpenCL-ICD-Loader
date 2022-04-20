@@ -36,6 +36,7 @@
 #include <CL/cl.h>
 #include <CL/cl_ext.h>
 #include <CL/cl_icd.h>
+#include <stdio.h>
 
 /*
  * type definitions
@@ -83,6 +84,7 @@ struct KHRicdVendorRec
 
 // the global state
 extern KHRicdVendor * khrIcdVendors;
+extern int khrEnableTrace;
 
 #if defined(CL_ENABLE_LAYERS)
 /*
@@ -152,52 +154,62 @@ void khrIcdContextPropertiesGetPlatform(
     cl_platform_id *outPlatform);
 
 // internal tracing macros
-#if 0
-    #include <stdio.h>
-    #define KHR_ICD_TRACE(...) \
-    do \
+#define KHR_ICD_TRACE(...) \
+do \
+{ \
+    if (khrEnableTrace) \
     { \
         fprintf(stderr, "KHR ICD trace at %s:%d: ", __FILE__, __LINE__); \
         fprintf(stderr, __VA_ARGS__); \
-    } while (0)
+    } \
+} while (0)
+
 #ifdef _WIN32
 #define KHR_ICD_WIDE_TRACE(...) \
-    do \
+do \
+{ \
+    if (khrEnableTrace) \
     { \
         fwprintf(stderr, L"KHR ICD trace at %hs:%d: ", __FILE__, __LINE__); \
         fwprintf(stderr, __VA_ARGS__); \
-    } while (0)
+    } \
+} while (0)
+
 #else
 #define KHR_ICD_WIDE_TRACE(...)
 #endif
-    #define KHR_ICD_ASSERT(x) \
-    do \
+
+#define KHR_ICD_ASSERT(x) \
+do \
+{ \
+    if (khrEnableTrace) \
     { \
         if (!(x)) \
         { \
             fprintf(stderr, "KHR ICD assert at %s:%d: %s failed", __FILE__, __LINE__, #x); \
         } \
-    } while (0)
-#else
-    #define KHR_ICD_TRACE(...)
-    #define KHR_ICD_WIDE_TRACE(...)
-    #define KHR_ICD_ASSERT(x)
-#endif
+    } \
+} while (0)
 
 // if handle is NULL then return invalid_handle_error_code
 #define KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(handle,invalid_handle_error_code) \
-    do \
+do \
+{ \
+    if (khrEnableTrace) \
     { \
         if (!handle) \
         { \
             return invalid_handle_error_code; \
         } \
-    } while (0)
+    }\
+} while (0)
 
 // if handle is NULL then set errcode_ret to invalid_handle_error and return NULL 
 // (NULL being an invalid handle)
 #define KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(handle,invalid_handle_error) \
-    do \
+do \
+{ \
+    if (khrEnableTrace) \
     { \
         if (!handle) \
         { \
@@ -207,8 +219,7 @@ void khrIcdContextPropertiesGetPlatform(
             } \
             return NULL; \
         } \
-    } while (0)
-
+    }\
+} while (0)
 
 #endif
-

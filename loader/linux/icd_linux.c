@@ -169,7 +169,12 @@ void khrIcdOsVendorsEnumerateOnce(void)
 // dynamically load a library.  returns NULL on failure
 void *khrIcdOsLibraryLoad(const char *libraryName)
 {
-    return dlopen (libraryName, RTLD_NOW);
+    void* ret = dlopen (libraryName, RTLD_NOW);
+    if (NULL == ret)
+    {
+        KHR_ICD_TRACE("Failed to load driver because %s.\n", dlerror());
+    }
+    return ret;
 }
 
 // get a function pointer from a loaded library.  returns NULL on failure.
