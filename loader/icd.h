@@ -84,7 +84,14 @@ struct KHRicdVendorRec
 
 // the global state
 extern KHRicdVendor * khrIcdVendors;
-extern int khrEnableTrace;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern int khrEnableTrace;
+#ifdef __cplusplus
+}
+#endif
 
 #if defined(CL_ENABLE_LAYERS)
 /*
