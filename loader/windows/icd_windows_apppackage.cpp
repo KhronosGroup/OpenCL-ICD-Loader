@@ -19,10 +19,6 @@
 #include "icd.h"
 #include "icd_windows.h"
 
-extern "C" {
-    int khrEnableTrace;
-}
-
 #ifdef OPENCL_ICD_LOADER_DISABLE_OPENCLON12
 
 extern "C" bool khrIcdOsVendorsEnumerateAppPackage()
