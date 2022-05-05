@@ -202,13 +202,10 @@ do \
 #define KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(handle,invalid_handle_error_code) \
 do \
 { \
-    if (khrEnableTrace) \
+    if (!handle) \
     { \
-        if (!handle) \
-        { \
-            return invalid_handle_error_code; \
-        } \
-    }\
+        return invalid_handle_error_code; \
+    } \
 } while (0)
 
 // if handle is NULL then set errcode_ret to invalid_handle_error and return NULL 
@@ -216,17 +213,14 @@ do \
 #define KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(handle,invalid_handle_error) \
 do \
 { \
-    if (khrEnableTrace) \
+    if (!handle) \
     { \
-        if (!handle) \
+        if (errcode_ret) \
         { \
-            if (errcode_ret) \
-            { \
-                *errcode_ret = invalid_handle_error; \
-            } \
-            return NULL; \
+            *errcode_ret = invalid_handle_error; \
         } \
-    }\
+        return NULL; \
+    } \
 } while (0)
 
 #endif
