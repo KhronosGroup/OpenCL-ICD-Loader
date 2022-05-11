@@ -320,6 +320,10 @@ void khrIcdLayerAdd(const char *libraryName)
     }
 
     KHR_ICD_TRACE("successfully added layer %s\n", libraryName);
+#ifdef CL_LAYER_INFO
+    layer->libraryName = libraryName;
+    layer->p_clGetLayerInfo = (void *)(size_t)p_clGetLayerInfo;
+#endif
     return;
 Done:
     if (library)

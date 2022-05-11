@@ -163,6 +163,46 @@ target_include_directories (OpenCL
 )
 target_link_libraries (OpenCL PUBLIC ${CMAKE_DL_LIBS})
 
+if (ENABLE_OPENCL_LAYERS)
+
+  set (OPENCL_LAYER_INFO_SOURCES
+      loader/cllayerinfo.c
+      ${OPENCL_ICD_LOADER_SOURCES}
+  )
+
+  add_executable(cllayerinfo ${OPENCL_LAYER_INFO_SOURCES})
+
+  add_executable(OpenCL::cllayerinfo ALIAS cllayerinfo)
+
+  target_compile_definitions (cllayerinfo
+    PRIVATE
+      CL_LAYER_INFO
+      CL_TARGET_OPENCL_VERSION=300
+      $<$<BOOL:${ENABLE_OPENCL_LAYERS}>:CL_ENABLE_LAYERS>
+      $<$<BOOL:${OPENCL_ICD_LOADER_DISABLE_OPENCLON12}>:TRUE>
+  )
+
+  if (EXISTS ${OPENCL_ICD_LOADER_HEADERS_DIR}/CL/cl.h)
+      target_include_directories (cllayerinfo PUBLIC $<BUILD_INTERFACE:${OPENCL_ICD_LOADER_HEADERS_DIR}>)
+  else ()
+      target_link_libraries (cllayerinfo PUBLIC OpenCL::Headers)
+  endif ()
+
+  if (WIN32)
+    target_link_libraries (cllayerinfo PRIVATE cfgmgr32.lib runtimeobject.lib)
+  else ()
+    target_link_libraries (cllayerinfo PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+  endif ()
+
+  target_link_libraries (cllayerinfo PUBLIC ${CMAKE_DL_LIBS})
+
+  target_include_directories (cllayerinfo
+    PRIVATE
+      ${CMAKE_CURRENT_BINARY_DIR}
+      loader
+  )
+endif ()
+
 option (OPENCL_ICD_LOADER_BUILD_TESTING "Enable support for OpenCL ICD Loader testing." OFF)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR OPENCL_ICD_LOADER_BUILD_TESTING)
