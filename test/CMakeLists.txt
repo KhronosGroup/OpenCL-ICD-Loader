@@ -18,6 +18,14 @@ add_test (
     NAME opencl_icd_loader_test
     COMMAND icd_loader_test
 )
+
+if (ENABLE_OPENCL_LAYERS)
+    add_test (
+        NAME cllayerinfo_test
+        COMMAND cllayerinfo
+    )
+endif ()
+
 get_property(GENERATOR_IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if(GENERATOR_IS_MULTI_CONFIG)
     set_tests_properties(opencl_icd_loader_test
@@ -25,10 +33,24 @@ if(GENERATOR_IS_MULTI_CONFIG)
             ENVIRONMENT OCL_ICD_FILENAMES=$<TARGET_FILE:OpenCLDriverStub>
             WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>"
     )
+    if (ENABLE_OPENCL_LAYERS)
+        set_tests_properties(cllayerinfo_test
+            PROPERTIES
+                ENVIRONMENT OPENCL_LAYERS=$<TARGET_FILE:PrintLayer>
+                WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>"
+        )
+    endif()
 else()
     set_tests_properties(opencl_icd_loader_test
         PROPERTIES
             ENVIRONMENT OCL_ICD_FILENAMES=$<TARGET_FILE:OpenCLDriverStub>
             WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     )
+    if (ENABLE_OPENCL_LAYERS)
+        set_tests_properties(cllayerinfo_test
+            PROPERTIES
+                ENVIRONMENT OPENCL_LAYERS=$<TARGET_FILE:PrintLayer>
+                WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+        )
+    endif()
 endif()
