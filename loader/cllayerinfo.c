@@ -148,12 +148,13 @@ int main (int argc, char *argv[])
     khrIcdInitialize();
     restore_outputs();
     if (!khrFirstLayer)
-        return 0;
+        goto end;
     const struct KHRLayer *layer = khrFirstLayer;
     while (layer) {
         printLayerInfo(layer);
         layer = layer->next;
     }
+end:
     silence_layers();
     return 0;
 }
