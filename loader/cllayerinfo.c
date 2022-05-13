@@ -61,7 +61,8 @@ int stdout_bak, stderr_bak;
 #endif
 
 static inline int
-silence_stream(FILE *file, int fd) {
+silence_stream(FILE *file, int fd)
+{
     int new_fd, fd_bak;
     fflush(file);
     fd_bak = DUP(fd);
@@ -75,24 +76,28 @@ silence_stream(FILE *file, int fd) {
     return fd_bak;
 }
 
-static void silence_layers(void) {
+static void silence_layers(void)
+{
     stdout_bak = silence_stream(stdout, 1);
     stderr_bak = silence_stream(stderr, 2);
 }
 
 static inline void
-restore_stream(FILE *file, int fd, int fd_bak) {
+restore_stream(FILE *file, int fd, int fd_bak)
+{
     fflush(file);
     DUP2(fd_bak, fd);
     CLOSE(fd_bak);
 }
 
-static void restore_outputs(void) {
+static void restore_outputs(void)
+{
     restore_stream(stdout, 1, stdout_bak);
     restore_stream(stderr, 2, stderr_bak);
 }
 
-void printLayerInfo(const struct KHRLayer *layer) {
+void printLayerInfo(const struct KHRLayer *layer)
+{
     cl_layer_api_version api_version = 0;
     pfn_clGetLayerInfo p_clGetLayerInfo = (pfn_clGetLayerInfo)(size_t)layer->p_clGetLayerInfo;
     cl_int result = CL_SUCCESS;
@@ -143,18 +148,16 @@ int main (int argc, char *argv[])
 {
     (void)argc;
     (void)argv;
-    atexit(restore_outputs);
     silence_layers();
+    atexit(restore_outputs);
     khrIcdInitialize();
     restore_outputs();
-    if (!khrFirstLayer)
-        goto end;
+    atexit(silence_layers);
     const struct KHRLayer *layer = khrFirstLayer;
-    while (layer) {
+    while (layer)
+    {
         printLayerInfo(layer);
         layer = layer->next;
     }
-end:
-    silence_layers();
     return 0;
 }
