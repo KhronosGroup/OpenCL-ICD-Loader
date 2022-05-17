@@ -113,18 +113,20 @@ jobs:
       working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
       shell: cmd
       run: |
-        reg ADD HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Release/OpenCLDriverStub.dll /t REG_DWORD /d 0
+        if /I "${{matrix.BIN}}"=="x64" set REG=reg
+        if /I "${{matrix.BIN}}"=="x86" set REG=%systemroot%\Syswow64\reg.exe
+        %REG% ADD HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Release/OpenCLDriverStub.dll /t REG_DWORD /d 0
         %CTEST_EXE% -C Release --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
         if errorlevel 1 (
           exit /b %errorlevel%
         )
-        reg DELETE HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Release/OpenCLDriverStub.dll /f
-        reg ADD HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Debug/OpenCLDriverStub.dll /t REG_DWORD /d 0
+        %REG% DELETE HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Release/OpenCLDriverStub.dll /f
+        %REG% ADD HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Debug/OpenCLDriverStub.dll /t REG_DWORD /d 0
         %CTEST_EXE% -C Debug --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
         if errorlevel 1 (
           exit /b %errorlevel%
         )
-        reg DELETE HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Debug/OpenCLDriverStub.dll /f
+        %REG% DELETE HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Debug/OpenCLDriverStub.dll /f
 
     - name: Install
       shell: cmd
