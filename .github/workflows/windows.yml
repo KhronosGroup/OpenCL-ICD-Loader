@@ -115,9 +115,15 @@ jobs:
       run: |
         reg ADD HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Release/OpenCLDriverStub.dll /t REG_DWORD /d 0
         %CTEST_EXE% -C Release --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
+        if errorlevel 1 (
+          exit /b %errorlevel%
+        )
         reg DELETE HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Release/OpenCLDriverStub.dll /f
         reg ADD HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Debug/OpenCLDriverStub.dll /t REG_DWORD /d 0
         %CTEST_EXE% -C Debug --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
+        if errorlevel 1 (
+          exit /b %errorlevel%
+        )
         reg DELETE HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Debug/OpenCLDriverStub.dll /f
 
     - name: Install
