@@ -166,6 +166,13 @@ install(
   LIBRARY
     DESTINATION ${CMAKE_INSTALL_LIBDIR} # obtained from GNUInstallDirs
 )
+install(
+# FILES $<TARGET_PDB_FILE:OpenCL> is cleanest, but is MSVC link.exe specific. LLVM's lld.exe and lld-link.exe don't support it (configure-time error)
+# FILES $<TARGET_PROPERTY:OpenCL,COMPILE_PDB_OUTPUT_DIRECTORY>/OpenCL.pdb looks OK, but even though there's a PDB, this prop is empty on non-MSVC toolchains
+  FILES $<TARGET_FILE_DIR:OpenCL>/OpenCL.pdb # is the most implicit (expect PDB be next to the library), yet the only one that universally works
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
+  OPTIONAL
+)
 
 export(
   EXPORT OpenCLICDLoaderTargets
