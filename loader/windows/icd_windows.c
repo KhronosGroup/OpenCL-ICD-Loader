@@ -107,6 +107,9 @@ void adapterFree(WinAdapter *pWinAdapter)
 // for each vendor encountered
 BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVOID *lpContext)
 {
+    (void)InitOnce;
+    (void)Parameter;
+    (void)lpContext;
     LONG result;
     BOOL status = FALSE;
     const char* platformsName = "SOFTWARE\\Khronos\\OpenCL\\Vendors";
@@ -279,7 +282,19 @@ void *khrIcdOsLibraryGetFunctionAddress(void *library, const char *functionName)
     {
         return NULL;
     }
+#if defined(_MSC_VER) && !defined(__clang__)
+#pragma warning( push )
+#pragma warning( disable : 4152 )
+#elif defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpedantic"
+#endif
     return GetProcAddress( (HMODULE)library, functionName);
+#if defined(_MSC_VER) && !defined(__clang__)
+#pragma warning( pop )
+#elif defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 }
 
 // unload a library.
