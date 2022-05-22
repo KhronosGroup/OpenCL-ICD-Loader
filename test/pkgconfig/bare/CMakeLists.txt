@@ -35,7 +35,9 @@ add_test(
   COMMAND ${PROJECT_NAME}
 )
 
-set_tests_properties(${PROJECT_NAME}
-  PROPERTIES
-    ENVIRONMENT "OCL_ICD_FILENAMES=${DRIVER_STUB_PATH}"
-)
+if(DRIVER_STUB_PATH)
+  set_tests_properties(${PROJECT_NAME}
+    PROPERTIES
+      ENVIRONMENT "OCL_ICD_FILENAMES=${DRIVER_STUB_PATH}"
+  )
+endif()
