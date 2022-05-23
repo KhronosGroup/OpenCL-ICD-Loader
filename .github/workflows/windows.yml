@@ -7,7 +7,7 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
-        VER: [v142, v143]
+        VER: [v142, v143, clangcl]
         EXT: [ON, OFF]
         GEN: [Visual Studio 17 2022]
         BIN: [x64, x86]
