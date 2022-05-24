@@ -219,7 +219,7 @@ void khrIcdOsVendorsEnumerate(void)
 
 #if defined(CL_ENABLE_LAYERS)
     // system layers should be closer to the driver
-    khrIcdOsDirEnumerate(LAYER_PATH, "OCL_LAYERS", ".lay", khrIcdLayerAdd, 1);
+    khrIcdOsDirEnumerate(LAYER_PATH, "OPENCL_LAYER_PATH", ".lay", khrIcdLayerAdd, 1);
 
     khrIcdLayersEnumerateEnv();
 #endif // defined(CL_ENABLE_LAYERS)
