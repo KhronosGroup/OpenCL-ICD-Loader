@@ -12,4 +12,9 @@ add_executable (icd_loader_test
     test_clgl.c
     test_image_objects.c )
 
-target_link_libraries (icd_loader_test OpenCL IcdLog)
+target_compile_definitions(icd_loader_test
+    PRIVATE
+        CL_TARGET_OPENCL_VERSION=300
+)
+
+target_link_libraries (icd_loader_test OpenCL IcdLog OpenCL::Headers)

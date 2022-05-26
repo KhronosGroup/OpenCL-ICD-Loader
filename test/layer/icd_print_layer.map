@@ -1,0 +1,8 @@
+{
+    global:
+clGetLayerInfo;
+clInitLayer;
+
+    local:
+        *;
+};

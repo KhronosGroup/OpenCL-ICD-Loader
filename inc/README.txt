@@ -6,7 +6,6 @@ inc/CL/cl_d3d11.h
 inc/CL/cl_dx9_media_sharing.h
 inc/CL/cl_egl.h
 inc/CL/cl_ext.h
-inc/CL/cl_gl_ext.h
 inc/CL/cl_gl.h
 inc/CL/cl.h
 inc/CL/cl.hpp

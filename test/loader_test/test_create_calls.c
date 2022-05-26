@@ -60,12 +60,10 @@ const struct clCreateBuffer_st clCreateBufferData[NUM_ITEMS_clCreateBuffer] =
     {NULL, 0, 0, NULL, NULL}
 };
 
-#ifdef CL_VERSION_3_0
 const struct clCreateBufferWithProperties_st clCreateBufferWithPropertiesData[NUM_ITEMS_clCreateBufferWithProperties] =
 {
     {NULL, NULL, 0, 0, NULL, NULL}
 };
-#endif  // CL_VERSION_3_0
 
 const struct clCreateSubBuffer_st clCreateSubBufferData[NUM_ITEMS_clCreateSubBuffer] =
 {
@@ -77,12 +75,10 @@ const struct clCreateImage_st clCreateImageData[NUM_ITEMS_clCreateImage] =
     { NULL, 0x0, NULL, NULL, NULL, NULL}
 };
 
-#ifdef CL_VERSION_3_0
 const struct clCreateImageWithProperties_st clCreateImageWithPropertiesData[NUM_ITEMS_clCreateImageWithProperties] =
 {
     { NULL, NULL, 0x0, NULL, NULL, NULL, NULL}
 };
-#endif  // CL_VERSION_3_0
 
 const struct clCreateImage2D_st clCreateImage2DData[NUM_ITEMS_clCreateImage2D] =
 {
@@ -152,7 +148,7 @@ int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
 {
     cl_int ret_val;
     size_t param_val_ret_size;
-    #define PLATFORM_NAME_SIZE 40
+    #define PLATFORM_NAME_SIZE 80
     char platform_name[PLATFORM_NAME_SIZE];
     cl_uint i;    
 
@@ -161,6 +157,8 @@ int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
                      data->num_entries,
                      &platforms, 
                      &num_platforms);
+#else
+    (void)data;
 #endif
 
     ret_val = clGetPlatformIDs(0,
@@ -313,7 +311,6 @@ int test_clCreateBuffer(const struct clCreateBuffer_st *data)
 
 }
 
-#ifdef CL_VERSION_3_0
 int test_clCreateBufferWithProperties(const struct clCreateBufferWithProperties_st *data)
 {
     test_icd_app_log("clCreateBufferWithProperties(%p, %p, %x, %u, %p, %p)\n",
@@ -338,7 +335,6 @@ int test_clCreateBufferWithProperties(const struct clCreateBufferWithProperties_
     return 0;
 
 }
-#endif  // CL_VERSION_3_0
 
 int test_clCreateSubBuffer(const struct clCreateSubBuffer_st *data)
 {
@@ -387,7 +383,6 @@ int test_clCreateImage(const struct clCreateImage_st *data)
 
 }
 
-#ifdef CL_VERSION_3_0
 int test_clCreateImageWithProperties(const struct clCreateImageWithProperties_st *data)
 {
     test_icd_app_log("clCreateImageWithProperties(%p, %p, %x, %p, %p, %p, %p)\n",
@@ -413,7 +408,6 @@ int test_clCreateImageWithProperties(const struct clCreateImageWithProperties_st
     return 0;
 
 }
-#endif  // CL_VERSION_3_0
 
 int test_clCreateImage2D(const struct clCreateImage2D_st *data)
 {
@@ -622,6 +616,7 @@ const struct clReleaseSampler_st clReleaseSamplerData[NUM_ITEMS_clReleaseSampler
 
 int test_clReleaseSampler(const struct clReleaseSampler_st *data)
 {
+    (void)data;
     int ret_val = CL_OUT_OF_RESOURCES;
 
     test_icd_app_log("clReleaseSampler(%p)\n", sampler);
@@ -654,6 +649,7 @@ const struct clReleaseEvent_st clReleaseEventData[NUM_ITEMS_clReleaseEvent] =
 
 int test_clReleaseEvent(const struct clReleaseEvent_st* data)
 {
+    (void)data;
     int ret_val = CL_OUT_OF_RESOURCES;
 
     test_icd_app_log("clReleaseEvent(%p)\n", event);
@@ -673,6 +669,7 @@ const struct clReleaseKernel_st clReleaseKernelData[NUM_ITEMS_clReleaseKernel] =
 
 int test_clReleaseKernel(const struct clReleaseKernel_st* data)
 {
+    (void)data;
     int ret_val = CL_OUT_OF_RESOURCES;   
 
     test_icd_app_log("clReleaseKernel(%p)\n", kernel);
@@ -692,6 +689,7 @@ const struct clReleaseProgram_st clReleaseProgramData[NUM_ITEMS_clReleaseProgram
 
 int test_clReleaseProgram(const struct clReleaseProgram_st *data)
 {
+    (void)data;
     int ret_val = CL_OUT_OF_RESOURCES;
 
     test_icd_app_log("clReleaseProgram(%p)\n", program);
@@ -711,6 +709,7 @@ const struct clReleaseCommandQueue_st clReleaseCommandQueueData[NUM_ITEMS_clRele
 
 int test_clReleaseCommandQueue(const struct clReleaseCommandQueue_st *data)
 {
+    (void)data;
     int ret_val = CL_OUT_OF_RESOURCES;
 
     test_icd_app_log("clReleaseCommandQueue(%p)\n", command_queue);
@@ -730,6 +729,7 @@ const struct clReleaseContext_st clReleaseContextData[NUM_ITEMS_clReleaseContext
 
 int test_clReleaseContext(const struct clReleaseContext_st* data)
 {
+    (void)data;
     int ret_val = CL_OUT_OF_RESOURCES; 
 
     test_icd_app_log("clReleaseContext(%p)\n", context);
@@ -749,6 +749,7 @@ const struct clReleaseDevice_st clReleaseDeviceData[NUM_ITEMS_clReleaseDevice] =
 
 int test_clReleaseDevice(const struct clReleaseDevice_st* data)
 {
+    (void)data;
     int ret_val = CL_OUT_OF_RESOURCES;
 
     test_icd_app_log("clReleaseDevice(%p)\n", devices); 
@@ -779,17 +780,13 @@ int test_create_calls()
 
     test_clCreateBuffer(clCreateBufferData);
 
-#ifdef CL_VERSION_3_0
     test_clCreateBufferWithProperties(clCreateBufferWithPropertiesData);
-#endif
 
     test_clCreateSubBuffer(clCreateSubBufferData);
 
     test_clCreateImage(clCreateImageData);
 
-#ifdef CL_VERSION_3_0
     test_clCreateImageWithProperties(clCreateImageWithPropertiesData);
-#endif
 
     test_clReleaseMemObject(clReleaseMemObjectDataImage);
 

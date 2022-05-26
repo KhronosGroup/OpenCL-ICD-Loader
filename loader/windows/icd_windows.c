@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 The Khronos Group Inc.
+ * Copyright (c) 2016-2020 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,17 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
+#include <initguid.h>
+
 #include "icd.h"
 #include "icd_windows.h"
 #include "icd_windows_hkr.h"
 #include "icd_windows_dxgk.h"
 #include "icd_windows_apppackage.h"
 #include <stdio.h>
+#include <windows.h>
 #include <winreg.h>
 
-#include <initguid.h>
 #include <dxgi.h>
 typedef HRESULT (WINAPI *PFN_CREATE_DXGI_FACTORY)(REFIID, void **);
 
@@ -44,7 +46,7 @@ static WinAdapter* pWinAdapterCapacity = NULL;
 
 BOOL adapterAdd(const char* szName, LUID luid)
 {
-    BOOL result = TRUE; 
+    BOOL result = TRUE;
     if (pWinAdapterEnd == pWinAdapterCapacity)
     {
         size_t oldCapacity = pWinAdapterCapacity - pWinAdapterBegin;
@@ -54,15 +56,20 @@ BOOL adapterAdd(const char* szName, LUID luid)
             newCapacity = 1;
         }
         else if(newCapacity < UINT_MAX/2)
-	    {
+        {
             newCapacity *= 2;
         }
 
-        WinAdapter* pNewBegin = realloc(pWinAdapterBegin, newCapacity * sizeof(*pWinAdapterBegin));
+        WinAdapter* pNewBegin = malloc(newCapacity * sizeof(*pWinAdapterBegin));
         if (!pNewBegin)
             result = FALSE;
         else
         {
+            if (pWinAdapterBegin)
+            {
+                memcpy(pNewBegin, pWinAdapterBegin, oldCapacity * sizeof(*pWinAdapterBegin));
+                free(pWinAdapterBegin);
+            }
             pWinAdapterCapacity = pNewBegin + newCapacity;
             pWinAdapterEnd = pNewBegin + oldCapacity;
             pWinAdapterBegin = pNewBegin;
@@ -74,8 +81,8 @@ BOOL adapterAdd(const char* szName, LUID luid)
         pWinAdapterEnd->szName = malloc(nameLen);
         if (!pWinAdapterEnd->szName)
             result = FALSE;
-        else 
-	    {
+        else
+        {
             memcpy(pWinAdapterEnd->szName, szName, nameLen);
             pWinAdapterEnd->luid = luid;
             ++pWinAdapterEnd;
@@ -88,16 +95,15 @@ void adapterFree(WinAdapter *pWinAdapter)
 {
     free(pWinAdapter->szName);
     pWinAdapter->szName = NULL;
-    pWinAdapter->luid = ZeroLuid;
 }
 
 /*
- * 
+ *
  * Vendor enumeration functions
  *
  */
 
-// go through the list of vendors in the registry and call khrIcdVendorAdd 
+// go through the list of vendors in the registry and call khrIcdVendorAdd
 // for each vendor encountered
 BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVOID *lpContext)
 {
@@ -145,7 +151,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
             DWORD dwValueSize = sizeof(dwValue);
 
             // read the value name
-            KHR_ICD_TRACE("Reading value %d...\n", dwIndex);
+            KHR_ICD_TRACE("Reading value %"PRIuDW"...\n", dwIndex);
             result = RegEnumValueA(
                   platformsKey,
                   dwIndex,
@@ -158,11 +164,11 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
             // if RegEnumKeyEx fails, we are done with the enumeration
             if (ERROR_SUCCESS != result)
             {
-                KHR_ICD_TRACE("Failed to read value %d, done reading key.\n", dwIndex);
+                KHR_ICD_TRACE("Failed to read value %"PRIuDW", done reading key.\n", dwIndex);
                 break;
             }
             KHR_ICD_TRACE("Value %s found...\n", cszLibraryName);
-        
+
             // Require that the value be a DWORD and equal zero
             if (REG_DWORD != dwLibraryNameType)
             {
@@ -185,9 +191,9 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     {
         IDXGIFactory* pFactory = NULL;
         PFN_CREATE_DXGI_FACTORY pCreateDXGIFactory = (PFN_CREATE_DXGI_FACTORY)GetProcAddress(hDXGI, "CreateDXGIFactory");
-	    if (pCreateDXGIFactory)
-	    {
-            HRESULT hr = pCreateDXGIFactory(&IID_IDXGIFactory, &pFactory);
+        if (pCreateDXGIFactory)
+        {
+            HRESULT hr = pCreateDXGIFactory(&IID_IDXGIFactory, (void **)&pFactory);
             if (SUCCEEDED(hr))
             {
                 UINT i = 0;
@@ -205,10 +211,9 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
                                 khrIcdVendorAdd(iterAdapter->szName);
                                 break;
                             }
-			            } 
+                        }
                     }
 
-                    pAdapter->lpVtbl->Release(pAdapter);
                     pAdapter->lpVtbl->Release(pAdapter);
                 }
                 pFactory->lpVtbl->Release(pFactory);
@@ -234,6 +239,9 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     {
         KHR_ICD_TRACE("Failed to close platforms key %s, ignoring\n", platformsName);
     }
+#if defined(CL_ENABLE_LAYERS)
+    khrIcdLayersEnumerateEnv();
+#endif // defined(CL_ENABLE_LAYERS)
     return status;
 }
 
@@ -242,9 +250,9 @@ void khrIcdOsVendorsEnumerateOnce()
 {
     InitOnceExecuteOnce(&initialized, khrIcdOsVendorsEnumerate, NULL, NULL);
 }
- 
+
 /*
- * 
+ *
  * Dynamic library loading functions
  *
  */
@@ -256,6 +264,10 @@ void *khrIcdOsLibraryLoad(const char *libraryName)
     if (!hTemp && GetLastError() == ERROR_INVALID_PARAMETER)
     {
         hTemp = LoadLibraryExA(libraryName, NULL, 0);
+    }
+    if (!hTemp)
+    {
+        KHR_ICD_TRACE("Failed to load driver. Windows error code is %d.\n", GetLastError());
     }
     return (void*)hTemp;
 }
