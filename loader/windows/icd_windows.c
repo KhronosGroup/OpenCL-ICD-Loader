@@ -113,15 +113,15 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     if (!status)
     {
         KHR_ICD_TRACE("Failed to load via DXGK interface on RS4, continuing\n");
-        status |= khrIcdOsVendorsEnumerateHKR();
-	    if (!status)
-        {
-            KHR_ICD_TRACE("Failed to enumerate HKR entries, continuing\n");
-        }
     }
-    
-    status |= khrIcdOsVendorsEnumerateAppPackage();
 
+    status |= khrIcdOsVendorsEnumerateHKR();
+    if (!status)
+    {
+        KHR_ICD_TRACE("Failed to enumerate HKR entries, continuing\n");
+    }
+
+    status |= khrIcdOsVendorsEnumerateAppPackage();
     KHR_ICD_TRACE("Opening key HKLM\\%s...\n", platformsName);
     result = RegOpenKeyExA(
         HKEY_LOCAL_MACHINE,
@@ -213,8 +213,8 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
                 }
                 pFactory->lpVtbl->Release(pFactory);
             }
-            FreeLibrary(hDXGI);
         }
+        FreeLibrary(hDXGI);
     }
 
     // Go through the list again, putting any remaining adapters at the end of the list in an undefined order
