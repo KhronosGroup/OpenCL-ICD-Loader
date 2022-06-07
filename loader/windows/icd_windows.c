@@ -115,19 +115,24 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
 
     khrIcdVendorsEnumerateEnv();
 
-    status |= khrIcdOsVendorsEnumerateDXGK();
+    status = khrIcdOsVendorsEnumerateDXGK();
     if (!status)
     {
         KHR_ICD_TRACE("Failed to load via DXGK interface on RS4, continuing\n");
     }
 
-    status |= khrIcdOsVendorsEnumerateHKR();
+    status = khrIcdOsVendorsEnumerateHKR();
     if (!status)
     {
         KHR_ICD_TRACE("Failed to enumerate HKR entries, continuing\n");
     }
 
-    status |= khrIcdOsVendorsEnumerateAppPackage();
+    status = khrIcdOsVendorsEnumerateAppPackage();
+    if (!status)
+    {
+        KHR_ICD_TRACE("Failed to enumerate App package entry, continuing\n");
+    }
+
     KHR_ICD_TRACE("Opening key HKLM\\%s...\n", platformsName);
     result = RegOpenKeyExA(
         HKEY_LOCAL_MACHINE,
