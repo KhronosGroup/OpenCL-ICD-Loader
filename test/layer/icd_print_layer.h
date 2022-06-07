@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 The Khronos Group Inc.
+ * Copyright (c) 2020 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
-#ifndef _ICD_DISPATCH_H_
-#define _ICD_DISPATCH_H_
+#ifndef __ICD_PRINT_LAYER_H
+#define __ICD_PRINT_LAYER_H
 
 #ifndef CL_USE_DEPRECATED_OPENCL_1_0_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_0_APIS
@@ -43,73 +43,21 @@
 #define CL_USE_DEPRECATED_OPENCL_2_2_APIS
 #endif
 
-// cl.h
-#include <CL/cl.h>
+#include <stdio.h>
+#include <CL/cl_layer.h>
 
-// cl_gl.h and required files
-#ifdef _WIN32
-#include <windows.h>
-#include <d3d9.h>
-#include <d3d10_1.h>
-#include <CL/cl_d3d10.h>
-#include <CL/cl_d3d11.h>
-#include <CL/cl_dx9_media_sharing.h>
+#ifdef __cplusplus
+extern "C" {
 #endif
-#include <CL/cl_gl.h>
-#include <CL/cl_ext.h>
-#include <CL/cl_egl.h>
-#include <CL/cl_icd.h>
 
-/*
- *
- * vendor dispatch table structure
- *
- */
+extern struct _cl_icd_dispatch dispatch;
 
-struct _cl_platform_id
-{
-    cl_icd_dispatch *dispatch;
-};
+extern const struct _cl_icd_dispatch *tdispatch;
 
-struct _cl_device_id
-{
-    cl_icd_dispatch *dispatch;
-};
+extern void _init_dispatch(void);
 
-struct _cl_context
-{
-    cl_icd_dispatch *dispatch;
-};
+#ifdef __cplusplus
+}
+#endif
 
-struct _cl_command_queue
-{
-    cl_icd_dispatch *dispatch;
-};
-
-struct _cl_mem
-{
-    cl_icd_dispatch *dispatch;
-};
-
-struct _cl_program
-{
-    cl_icd_dispatch *dispatch;
-};
-
-struct _cl_kernel
-{
-    cl_icd_dispatch *dispatch;
-};
-
-struct _cl_event
-{
-    cl_icd_dispatch *dispatch;
-};
-
-struct _cl_sampler
-{
-    cl_icd_dispatch *dispatch;
-};
-
-#endif // _ICD_DISPATCH_H_
-
+#endif /* __ICD_PRINT_LAYER_H */

@@ -3,7 +3,6 @@
 
 #include<CL/cl.h>
 #include<CL/cl_gl.h>
-#include<CL/cl_gl_ext.h>
 
 struct clCreateCommandQueue_st
 {
@@ -68,14 +67,12 @@ struct clGetContextInfo_st
     size_t *param_value_size_ret;
 };
 
-#ifdef CL_VERSION_3_0
 struct clSetContextDestructorCallback_st
 {
     cl_context context;
     void (CL_CALLBACK *pfn_notify)(cl_context context, void *user_data);
     void *user_data;
 };
-#endif  // CL_VERSION_3_0
 
 struct clGetPlatformIDs_st 
 {
@@ -185,7 +182,7 @@ struct clCreateBuffer_st
     void *host_ptr;
     cl_int *errcode_ret;
 };
-#ifdef CL_VERSION_3_0
+
 struct clCreateBufferWithProperties_st
 {
     cl_context context;
@@ -195,7 +192,7 @@ struct clCreateBufferWithProperties_st
     void *host_ptr;
     cl_int *errcode_ret;
 };
-#endif  // CL_VERSION_3_0
+
 struct clCreateSubBuffer_st 
 {
     cl_mem buffer;
@@ -517,7 +514,6 @@ struct clCreateImage_st
     cl_int *errcode_ret;
 };
 
-#ifdef CL_VERSION_3_0
 struct clCreateImageWithProperties_st
 {
     cl_context context;
@@ -528,7 +524,6 @@ struct clCreateImageWithProperties_st
     void *host_ptr;
     cl_int *errcode_ret;
 };
-#endif  // CL_VERSION_3_0
 
 struct clCreateImage2D_st 
 {
@@ -807,7 +802,8 @@ struct clEnqueueMigrateMemObjects_st
 struct clEnqueueNDRangeKernel_st 
 {
     cl_command_queue command_queue;
-    cl_kernel kernel; cl_uint work_dim;
+    cl_kernel kernel;
+    cl_uint work_dim;
     const size_t *global_work_offset;
     const size_t *global_work_size;
     const size_t *local_work_size;  

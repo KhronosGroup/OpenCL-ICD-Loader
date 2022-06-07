@@ -24,6 +24,7 @@
 #include "icd_cmake_config.h"
 
 #include <stdlib.h>
+#include <unistd.h>
 
 char *khrIcd_getenv(const char *name) {
     // No allocation of memory necessary for Linux.

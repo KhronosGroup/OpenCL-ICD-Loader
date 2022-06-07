@@ -19,9 +19,28 @@
 #include <stdbool.h>
 #include <windows.h>
 
+#ifdef _LP64
+#define PRIDW_PREFIX
+#define PRIUL_PREFIX
+#else
+#define PRIDW_PREFIX "l"
+#define PRIUL_PREFIX "l"
+#endif
+#define PRIuDW PRIDW_PREFIX "u"
+#define PRIxDW PRIDW_PREFIX "x"
+#define PRIuUL PRIUL_PREFIX "u"
+#define PRIxUL PRIUL_PREFIX "x"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 extern const LUID ZeroLuid;
 
 BOOL adapterAdd(const char* szName, LUID luid);
 
 // Do not free the memory returned by this function.
 const char* getOpenCLRegKeyName(void);
+
+#ifdef __cplusplus
+}
+#endif

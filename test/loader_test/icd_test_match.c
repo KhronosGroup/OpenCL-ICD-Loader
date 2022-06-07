@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #ifndef __APPLE__
 #include <malloc.h>
@@ -25,7 +26,9 @@ int test_icd_match()
     }
 
     if (strcmp(app_log, stub_log)) {
-        printf("ERROR: App log and stub log differ.\n");
+        printf("ERROR: App log and stub log differ.\n\n");
+        printf("APPLOG:\n%s\n\n", app_log);
+        printf("STUBLOG:\n%s\n\n", stub_log);
         error = 1;
         goto End;
     }
@@ -35,4 +38,3 @@ End:
     free(stub_log);
     return error;
 }
-

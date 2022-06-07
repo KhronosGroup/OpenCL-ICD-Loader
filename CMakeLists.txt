@@ -1,9 +1,18 @@
 cmake_minimum_required (VERSION 3.1)
 
-project (OpenCL-ICD-Loader VERSION 1.2)
-include (GNUInstallDirs)
+# Include guard for including this project multiple times
+if(TARGET OpenCL)
+  return()
+endif()
+
+project (OpenCL-ICD-Loader
+    VERSION 1.2
+    LANGUAGES C)
+
 find_package (Threads REQUIRED)
 
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 # The option below allows building the ICD Loader library as a shared library
 # (ON, default) or a static library (OFF).
 #
@@ -32,12 +41,17 @@ find_package (Threads REQUIRED)
 # may be useful to simplify the build and distribution of the application. E.g.
 # in test farms, or in cases where the end-user system configs are known in
 # advance. Use it with discretion.
-option (BUILD_SHARED_LIBS "Build shared libs" ON)
+if(DEFINED BUILD_SHARED_LIBS)
+  set(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT ${BUILD_SHARED_LIBS})
+else()
+  set(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT ON)
+endif()
+  option(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS "Build OpenCL ICD Loader as shared library" ${OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT})
 
-# This option enables support for OpenCL 3.0 Provisional in the ICD loader.  It
-# is currently off by default while the specification is provisional, as it may
-# change.
-option (ENABLE_OPENCL30_PROVISIONAL "Enable 3.0 provisional entry points" OFF)
+# This option enables/disables support for OpenCL layers in the ICD loader.
+# It is currently needed default while the specification is being formalized,
+# and to study the performance impact.
+option (ENABLE_OPENCL_LAYERS "Enable OpenCL Layers" ON)
 
 include(CheckFunctionExists)
 check_function_exists(secure_getenv HAVE_SECURE_GETENV)
@@ -55,18 +69,8 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd_platform.h)
 
 if (WIN32)
-    # By default don't include OpenCL 3.0 symbol definitions (i.e. comment them
-    # out), but include them for OpenCL 3.0 builds.  Once the symbols are no
-    # longer provisional then they may be included unconditionally.
-    set(ENABLE_OPENCL30_SYMBOLS ";")
-    if (ENABLE_OPENCL30_PROVISIONAL)
-      set(ENABLE_OPENCL30_SYMBOLS "")
-    endif ()
-    configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/loader/windows/OpenCL.def.in
-        ${CMAKE_CURRENT_BINARY_DIR}/loader/windows/OpenCL.def)
-
-    list (APPEND OPENCL_ICD_LOADER_SOURCES 
+    enable_language (CXX)
+    list (APPEND OPENCL_ICD_LOADER_SOURCES
         loader/windows/adapter.h
         loader/windows/icd_windows.c
         loader/windows/icd_windows.h
@@ -77,78 +81,73 @@ if (WIN32)
         loader/windows/icd_windows_hkr.h
         loader/windows/icd_windows_apppackage.cpp
         loader/windows/icd_windows_apppackage.h
-        ${CMAKE_CURRENT_BINARY_DIR}/loader/windows/OpenCL.def
+        loader/windows/OpenCL.def
         loader/windows/OpenCL.rc)
     # Only add the DXSDK include directory if the environment variable is
     # defined.  Since the DXSDK has merged into the Windows SDK, this is
     # only required in rare cases.
     if (DEFINED ENV{DXSDK_DIR} AND NOT (MINGW OR MSYS OR CYGWIN))
         include_directories ($ENV{DXSDK_DIR}/Include)
-        include_directories ($ENV{WDK}/km)
     endif ()
 else ()
-    # By default don't include OpenCL 3.0 symbol definitions (i.e. comment them
-    # out), but include them for OpenCL 3.0 builds.  Once the symbols are no
-    # longer provisional then they may be included unconditionally.
-    set(ENABLE_OPENCL30_SYMBOLS_START "/*")
-    set(ENABLE_OPENCL30_SYMBOLS_END "*/")
-    if (ENABLE_OPENCL30_PROVISIONAL)
-      set(ENABLE_OPENCL30_SYMBOLS_START "")
-      set(ENABLE_OPENCL30_SYMBOLS_END "")
-    endif ()
-    configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/loader/linux/icd_exports.map.in
-        ${CMAKE_CURRENT_BINARY_DIR}/loader/linux/icd_exports.map)
-
     list (APPEND OPENCL_ICD_LOADER_SOURCES
         loader/linux/icd_linux.c
         loader/linux/icd_linux_envvars.c
-        ${CMAKE_CURRENT_BINARY_DIR}/loader/linux/icd_exports.map)
+        loader/linux/icd_exports.map)
 endif ()
 
-set (OPENCL_ICD_LOADER_HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/inc CACHE PATH "Path to OpenCL Headers")
+set (OPENCL_ICD_LOADER_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/inc" CACHE PATH "Path to OpenCL Headers")
 
-add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
+if (${OPENCL_ICD_LOADER_BUILD_SHARED_LIBS})
+  add_library (OpenCL SHARED ${OPENCL_ICD_LOADER_SOURCES})
+else()
+  add_library (OpenCL STATIC ${OPENCL_ICD_LOADER_SOURCES})
+endif()
+
+add_library (OpenCL::OpenCL ALIAS OpenCL)
+
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
-target_include_directories(OpenCL SYSTEM PUBLIC ${OPENCL_ICD_LOADER_HEADERS_DIR})
 
 if (WIN32)
-
-    target_link_libraries (OpenCL cfgmgr32.lib runtimeobject.lib)
+    target_link_libraries (OpenCL PRIVATE cfgmgr32.lib runtimeobject.lib)
 
     option (OPENCL_ICD_LOADER_DISABLE_OPENCLON12 "Disable support for OpenCLOn12. Support for OpenCLOn12 should only be disabled when building an import lib to link with, and must be enabled when building an ICD loader for distribution!" OFF)
-    if (OPENCL_ICD_LOADER_DISABLE_OPENCLON12)
-        target_compile_definitions(OpenCL PRIVATE OPENCL_ICD_LOADER_DISABLE_OPENCLON12)
-    endif()
-
-    if(NOT USE_DYNAMIC_VCXX_RUNTIME)
-        string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
-        string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
-        string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL}")
-        string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL}")
-        string(REPLACE "/MD" "/MT" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
-        string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
-        string(REPLACE "/MDd" "/MTd" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
-        string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-    endif()
 else()
-    if (APPLE)
-        target_link_libraries (OpenCL ${CMAKE_THREAD_LIBS_INIT})
-    else ()
-        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-Wl,--version-script -Wl,${CMAKE_CURRENT_BINARY_DIR}/loader/linux/icd_exports.map")
-        target_link_libraries (OpenCL ${CMAKE_THREAD_LIBS_INIT})
+    target_link_libraries (OpenCL PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+    if (NOT APPLE)
+        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/loader/linux/icd_exports.map")
+        if (OPENCL_ICD_LOADER_PIC)
+            set_target_properties(OpenCL PROPERTIES POSITION_INDEPENDENT_CODE ON)
+        endif ()
     endif ()
 endif ()
 
-include_directories (${OPENCL_ICD_LOADER_HEADERS_DIR})
-if (ENABLE_OPENCL30_PROVISIONAL)
-  add_definitions (-DCL_TARGET_OPENCL_VERSION=300)
-else()
-  add_definitions (-DCL_TARGET_OPENCL_VERSION=220)
-endif()
+if (EXISTS ${OPENCL_ICD_LOADER_HEADERS_DIR}/CL/cl.h)
+    message (STATUS "Defining OpenCL::Headers through OPENCL_ICD_LOADER_HEADERS_DIR")
+    add_library (OpenCLHeaders INTERFACE)
+    add_library (OpenCL::Headers ALIAS OpenCLHeaders)
+    target_include_directories (OpenCLHeaders INTERFACE ${OPENCL_ICD_LOADER_HEADERS_DIR})
+    target_include_directories (OpenCL PUBLIC $<BUILD_INTERFACE:${OPENCL_ICD_LOADER_HEADERS_DIR}>)
+else ()
+    if (NOT TARGET OpenCL::Headers)
+        find_package (OpenCLHeaders REQUIRED)
+    endif ()
+    target_link_libraries (OpenCL PUBLIC OpenCL::Headers)
+endif ()
 
-target_include_directories (OpenCL PRIVATE ${CMAKE_CURRENT_BINARY_DIR} loader)
-target_link_libraries (OpenCL ${CMAKE_DL_LIBS})
+target_compile_definitions (OpenCL
+  PRIVATE
+    CL_TARGET_OPENCL_VERSION=300
+    $<$<BOOL:${ENABLE_OPENCL_LAYERS}>:CL_ENABLE_LAYERS>
+    $<$<BOOL:${OPENCL_ICD_LOADER_DISABLE_OPENCLON12}>:OPENCL_ICD_LOADER_DISABLE_OPENCLON12>
+)
+
+target_include_directories (OpenCL
+  PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}
+    loader
+)
+target_link_libraries (OpenCL PUBLIC ${CMAKE_DL_LIBS})
 
 option (OPENCL_ICD_LOADER_BUILD_TESTING "Enable support for OpenCL ICD Loader testing." OFF)
 
@@ -158,6 +157,56 @@ endif()
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR OPENCL_ICD_LOADER_BUILD_TESTING) AND BUILD_TESTING)
     add_subdirectory (test)
 endif()
+
+include (GNUInstallDirs)
+
+install(
+  TARGETS OpenCL
+  EXPORT OpenCLICDLoaderTargets
+  LIBRARY
+    DESTINATION ${CMAKE_INSTALL_LIBDIR} # obtained from GNUInstallDirs
+)
+install(
+# FILES $<TARGET_PDB_FILE:OpenCL> is cleanest, but is MSVC link.exe specific. LLVM's lld.exe and lld-link.exe don't support it (configure-time error)
+# FILES $<TARGET_PROPERTY:OpenCL,COMPILE_PDB_OUTPUT_DIRECTORY>/OpenCL.pdb looks OK, but even though there's a PDB, this prop is empty on non-MSVC toolchains
+  FILES $<TARGET_FILE_DIR:OpenCL>/OpenCL.pdb # is the most implicit (expect PDB be next to the library), yet the only one that universally works
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
+  OPTIONAL
+)
+
+export(
+  EXPORT OpenCLICDLoaderTargets
+  FILE ${PROJECT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderTargets.cmake
+  NAMESPACE OpenCL::
+)
+file(
+  WRITE ${PROJECT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderConfig.cmake
+  "include(\"\${CMAKE_CURRENT_LIST_DIR}/OpenCLICDLoaderTargets.cmake\")"
+)
+
+set(config_package_location ${CMAKE_INSTALL_DATADIR}/cmake/OpenCLICDLoader)
+install(
+  EXPORT OpenCLICDLoaderTargets
+  FILE OpenCLICDLoaderTargets.cmake
+  NAMESPACE OpenCL::
+  DESTINATION ${config_package_location}
+)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderConfig.cmake
+  DESTINATION ${config_package_location}
+)
+
+unset(CMAKE_SIZEOF_VOID_P)
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  ${CMAKE_CURRENT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderConfigVersion.cmake
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderConfigVersion.cmake
+  DESTINATION ${config_package_location}
+)
 
 install (TARGETS OpenCL
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

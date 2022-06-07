@@ -1,4 +1,5 @@
 #include <stdlib.h>
+
 #include <CL/cl.h>
 #include "param_struct.h"
 #include <platform/icd_test_log.h>
@@ -335,6 +336,7 @@ int test_clEnqueueMapBuffer(const struct clEnqueueMapBuffer_st *data)
 
 int test_clRetainMemObject(const struct clRetainMemObject_st *data)
 {
+    (void)data;
     test_icd_app_log("clRetainMemObject(%p)\n", buffer);
 
     ret_val=clRetainMemObject(buffer);
@@ -459,4 +461,3 @@ int test_buffer_object()
 
     return 0;
 }
-

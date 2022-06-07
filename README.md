@@ -1,10 +1,12 @@
-# OpenCL ICD Loader
+# OpenCL<sup>TM</sup> ICD Loader
 
 This repo contains the source code and tests for the Khronos official OpenCL ICD Loader.
 
 ## CI Build Status
 
-[![Windows Build Status](https://ci.appveyor.com/api/projects/status/47uhjgp5h4de2f63/branch/master?svg=true)](https://ci.appveyor.com/project/Khronoswebmaster/opencl-icd-loader/branch/master) [![Linux OSX Build Status](https://travis-ci.com/KhronosGroup/opencl-icd-loader.svg?branch=master)](https://travis-ci.com/KhronosGroup/opencl-icd-loader)
+[![Windows Build Status](https://github.com/KhronosGroup/OpenCL-ICD-Loader/workflows/Windows/badge.svg)](https://github.com/KhronosGroup/OpenCL-ICD-Loader/actions?query=workflow%3AWindows)
+[![Linux Build Status](https://github.com/KhronosGroup/OpenCL-ICD-Loader/workflows/Linux/badge.svg)](https://github.com/KhronosGroup/OpenCL-ICD-Loader/actions?query=workflow%3ALinux)
+[![MacOS Build Status](https://github.com/KhronosGroup/OpenCL-ICD-Loader/workflows/MacOS/badge.svg)](https://github.com/KhronosGroup/OpenCL-ICD-Loader/actions?query=workflow%3AMacOS)
 
 ## Introduction
 
@@ -24,71 +26,83 @@ The OpenCL *Installable Client Driver* extension (`cl_khr_icd`) is described in 
 
 ## Build Instructions
 
+> While the ICD Loader can be built and installed in isolation, it is part of the [OpenCL SDK](https://github.com/KhronosGroup/OpenCL-SDK). If looking for streamlined build experience and a complete development package, refer to the SDK build instructions instead of the following guide.
+
 ### Dependencies
 
-The OpenCL ICD Loader requires OpenCL Headers.
-To use system OpenCL Headers, please specify the OpenCL Header location using the CMake variable `OPENCL_ICD_LOADER_HEADERS_DIR`.
-By default, the OpenCL ICD Loader will look for OpenCL Headers in the `inc` directory.
-
-The OpenCL ICD Loader uses CMake for its build system.
+The OpenCL ICD Loader requires:
+- the [OpenCL Headers](https://github.com/KhronosGroup/OpenCL-Headers/).
+  - It is recommended to install the headers via CMake, however a convenience shorthand is provided. Providing `OPENCL_ICD_LOADER_HEADERS_DIR` to CMake, one may specify the location of OpenCL Headers. By default, the OpenCL ICD Loader will look for OpenCL Headers in the inc directory.
+- The OpenCL ICD Loader uses CMake for its build system.
 If CMake is not provided by your build system or OS package manager, please consult the [CMake website](https://cmake.org).
-
-The Windows OpenCL ICD Loader requires the Windows SDK to check for and enumerate the OpenCLOn12 ICD.
+- The Windows OpenCL ICD Loader requires the Windows SDK to check for and enumerate the OpenCLOn12 ICD.
 An OpenCL ICD Loader can be built without a dependency on the Windows SDK using the CMake variable `OPENCL_ICD_LOADER_DISABLE_OPENCLON12`.
 This variable should only be used when building an import lib to link with, and must be enabled when building an OpenCL ICD Loader for distribution!
 
-### Build and Install Directories
-
-A common convention is to place the `build` directory in the top directory of the repository and to place the `install` directory as a child of the `build` directory.
-The remainder of these instructions follow this convention, although you may place these directories in any location.
-
-### Example Usage
+### Example Build
 
 For most Windows and Linux usages, the following steps are sufficient to build the OpenCL ICD Loader:
 
-1. Clone this repo:
+1. Clone this repo and the OpenCL Headers:
 
         git clone https://github.com/KhronosGroup/OpenCL-ICD-Loader
+        git clone https://github.com/KhronosGroup/OpenCL-Headers
 
-1. Obtain the OpenCL Headers, if you are not planning to use system OpenCL headers.
-Headers may be obtained from the [Khronos OpenCL Headers](https://github.com/KhronosGroup/OpenCL-Headers) repository.
+1. Install OpenCL Headers CMake package
 
-1. Create a `build` directory:
+        cmake -D CMAKE_INSTALL_PREFIX=./OpenCL-Headers/install -S ./OpenCL-Headers -B ./OpenCL-Headers/build 
+        cmake --build ./OpenCL-Headers/build --target install
 
-        cd OpenCL-ICD-Loader
-        mkdir build
-        cd build
+1. Build and install OpenCL ICD Loader CMake package. _(Note that `CMAKE_PREFIX_PATH` need to be an absolute path. Update as needed.)_
 
-1. Invoke `cmake` to generate solution files, Makefiles, or files for other build systems.
-
-        cmake ..
-
-1. Build using the CMake-generated files.
+        cmake -D CMAKE_PREFIX_PATH=/absolute/path/to/OpenCL-Headers/install -D CMAKE_INSTALL_PREFIX=./OpenCL-ICD-Loader/install -S ./OpenCL-ICD-Loader -B ./OpenCL-ICD-Loader/build 
+        cmake --build ./OpenCL-ICD-Loader/build --target install
 
 Notes:
 
-* For 64-bit Windows builds, you may need to specify a 64-bit generator manually, for example:
-
-        cmake.exe -G "Visual Studio 14 2015 Win64" ..
+* For x64 Windows builds, you need to instruct the default Visual Studio generator by adding `-A x64` to all your command-lines.
 
 * Some users may prefer to use a CMake GUI frontend, such as `cmake-gui` or `ccmake`, vs. the command-line CMake.
 
+### Example Use
+
+Example CMake invocation
+
+```bash
+cmake -D CMAKE_PREFIX_PATH="/chosen/install/prefix/of/headers;/chosen/install/prefix/of/loader" /path/to/opencl/app
+```
+
+and sample `CMakeLists.txt`
+
+```cmake
+cmake_minimum_required(VERSION 3.0)
+cmake_policy(VERSION 3.0...3.18.4)
+project(proj)
+add_executable(app main.cpp)
+find_package(OpenCLHeaders REQUIRED)
+find_package(OpenCLICDLoader REQUIRED)
+target_link_libraries(app PRIVATE OpenCL::Headers OpenCL::OpenCL)
+```
+
 ## OpenCL ICD Loader Tests
 
-OpenCL ICD Loader Tests can be run using `ctest`, which is a companion to CMake.
-The OpenCL ICD Loader Tests can also be run directly by executing icd_loader_test(.exe) executable from the bin folder.
+OpenCL ICD Loader Tests can be run using `ctest` from the `build` directory. CTest which is a companion to CMake. The OpenCL ICD Loader Tests can also be run directly by executing `icd_loader_test[.exe]` executable from the bin folder.
 
-### Test Setup
+_(Note that running the tests manually requires setting up it's env manually, by setting `OCL_ICD_FILENAMES` to the full path of `libOpenCLDriverStub.so`/`OpenCLDriverStub.dll`, something otherwise done by CTest.)_
 
-The OpenCL ICD Loader Tests use a "stub" ICD, which must be set up manually.
-The OpenCL ICD Loader Tests will "fail" if the "stub" ICD is not set up correctly.
-The method to install the "stub" ICD is operating system dependent.
+## Registering ICDs
 
-On Linux, install the "stub" ICD by creating a file with the full path to the "stub" ICD in `/etc/OpenCL/vendors`:
+The method to installing an ICD is operating system dependent.
+
+### Registering an ICD on Linux
+
+Install your ICD by creating a file with the full path to the library of your implementation in `/etc/OpenCL/vendors` for eg.:
 
     echo full/path/to/libOpenCLDriverStub.so > /etc/OpenCL/vendors/test.icd
 
-On Windows, add the "stub" ICD by adding a `REG_DWORD` value to the registry keys:
+### Registering an ICD on Windows
+
+Install your ICD by adding a `REG_DWORD` value to the registry keys:
 
     // For 32-bit operating systems, or 64-bit tests on a 64-bit operating system:
     HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors
@@ -96,17 +110,25 @@ On Windows, add the "stub" ICD by adding a `REG_DWORD` value to the registry key
     // For 32-bit tests on a 64-bit operating system:
     HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Khronos\OpenCL\Vendors
 
-    // The name of the REG_DWORD value should be the full path to the "stub" ICD
+    // The name of the REG_DWORD value should be the full path to the library of your implementation, for eg.
     // OpenCLDriverStub.dll, and the data for this value should be 0.
 
-### Running Tests
+## About Layers
 
-To run the tests, invoke `ctest` from the `build` directory.
-The CMake-generated build files may be able to invoke the OpenCL ICD Loader tests as well.
+Layers have been added as an experimental feature in the OpenCL ICD Loader. We do not
+expect the API or ABI to change significantly, but the OpenCL Working Group reserves
+the right to do so. The layer support can also be completely deactivated during
+configuration by using the `ENABLE_OPENCL_LAYERS` (`ON` by default) cmake variable:
 
-### Test Cleanup
+```bash
+cmake -DENABLE_OPENCL_LAYERS=OFF
+```
 
-Manually remove the file or registry keys added during Test Setup.
+For now, runtime configuration of layers is done using the `OPENCL_LAYERS` environment
+variable. A colon (Linux) or semicolon (Windows) list of layers to use can be provided
+through this environment variable.
+
+We are looking for feedback.
 
 ## Support
 
@@ -125,3 +147,5 @@ The following debug environment variables are available for use with the OpenCL 
 |:---------------------------------:|---------------------|----------------------|
 | OCL_ICD_FILENAMES                 | Specifies a list of additional ICDs to load.  The ICDs will be enumerated first, before any ICDs discovered via default mechanisms. | `export OCL_ICD_FILENAMES=libVendorA.so:libVendorB.so`<br/><br/>`set OCL_ICD_FILENAMES=vendor_a.dll;vendor_b.dll` |
 | OCL_ICD_VENDORS                   | On Linux and Android, specifies a directory to scan for ICDs to enumerate in place of the default `/etc/OpenCL/vendors'. |  `export OCL_ICD_VENDORS=/my/local/icd/search/path` |
+| OPENCL_LAYERS                    | Specifies a list of layers to load. |  `export OPENCL_LAYERS=libLayerA.so:libLayerB.so`<br/><br/>`set OPENCL_LAYERS=libLayerA.dll;libLayerB.dll` |
+| OCL_ICD_ENABLE_TRACE             | Enable the trace mechanism          |  `export OCL_ICD_ENABLE_TRACE=True`<br/><br/>`set OCL_ICD_ENABLE_TRACE=True`<br/>`true, T, 1 can also be used here.`  |

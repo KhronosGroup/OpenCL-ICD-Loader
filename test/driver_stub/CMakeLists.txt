@@ -5,6 +5,8 @@ if (NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
     list (APPEND OPENCL_DRIVER_STUB_SOURCES driver_stub.def)
 endif ()
 
-add_library (OpenCLDriverStub ${OPENCL_DRIVER_STUB_SOURCES})
+add_library (OpenCLDriverStub SHARED ${OPENCL_DRIVER_STUB_SOURCES})
 
-target_link_libraries (OpenCLDriverStub IcdLog)
+target_link_libraries (OpenCLDriverStub IcdLog OpenCL::Headers)
+
+target_compile_definitions (OpenCLDriverStub PRIVATE CL_TARGET_OPENCL_VERSION=300)

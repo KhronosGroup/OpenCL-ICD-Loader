@@ -3,7 +3,6 @@
 
 #include <CL/cl.h>
 #include <CL/cl_gl.h>
-#include <CL/cl_gl_ext.h>
 #include "param_struct.h"
 #include <platform/icd_test_log.h>
 
@@ -269,7 +268,8 @@ int test_clCreateEventFromGLsyncKHR(const struct clCreateEventFromGLsyncKHR_st* 
                      data->sync,
                      data->errcode_ret);
 
-    pfn_clCreateEventFromGLsyncKHR = clGetExtensionFunctionAddress("clCreateEventFromGLsyncKHR");
+    pfn_clCreateEventFromGLsyncKHR = (PFN_clCreateEventFromGLsyncKHR)
+      (intptr_t)clGetExtensionFunctionAddress("clCreateEventFromGLsyncKHR");
     if (!pfn_clCreateEventFromGLsyncKHR) {
         test_icd_app_log("clGetExtensionFunctionAddress failed!\n");
         return 1;
@@ -306,7 +306,8 @@ int test_clGetGLContextInfoKHR(const struct clGetGLContextInfoKHR_st* data)
                      data->param_value,
                      data->param_value_size_ret);
 
-    pfn_clGetGLContextInfoKHR = clGetExtensionFunctionAddress("clGetGLContextInfoKHR");
+    pfn_clGetGLContextInfoKHR = (PFN_clGetGLContextInfoKHR)
+      (intptr_t)clGetExtensionFunctionAddress("clGetGLContextInfoKHR");
     if (!pfn_clGetGLContextInfoKHR) {
         test_icd_app_log("clGetExtensionFunctionAddress failed!\n");
         return 1;

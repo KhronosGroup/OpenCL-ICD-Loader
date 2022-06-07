@@ -51,6 +51,7 @@ const struct clGetProgramBuildInfo_st clGetProgramBuildInfoData[NUM_ITEMS_clGetP
 
 int test_clRetainProgram(const struct clRetainProgram_st *data)
 {
+    (void)data;
     cl_int ret_val;
 
     test_icd_app_log("clRetainProgram(%p)\n",
@@ -152,6 +153,7 @@ int test_clLinkProgram(const struct clLinkProgram_st *data)
 
 int test_clUnloadPlatformCompiler(const struct clUnloadPlatformCompiler_st *data)
 {
+    (void)data;
     cl_int ret_val;
 
     test_icd_app_log("clUnloadPlatformCompiler(%p)\n", platform);

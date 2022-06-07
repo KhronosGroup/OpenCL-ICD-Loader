@@ -17,7 +17,6 @@
 
 #include "CL/cl.h"
 #include "CL/cl_gl.h"
-#include "CL/cl_gl_ext.h"
 
 /*
  * Prototypes for deprecated functions no longer present in cl.h
@@ -30,7 +29,7 @@ clSetCommandQueueProperty(cl_command_queue              /* command_queue */,
 
 #define ICD_DISPATCH_TABLE_ENTRY(fn) \
     assert(dispatchTable->entryCount < 256); \
-    dispatchTable->entries[dispatchTable->entryCount++] = (void*)(fn)
+    dispatchTable->entries[dispatchTable->entryCount++] = (void*)(intptr_t)(fn)
 
 cl_int cliIcdDispatchTableCreate(CLIicdDispatchTable **outDispatchTable)
 {
@@ -230,16 +229,10 @@ cl_int cliIcdDispatchTableCreate(CLIicdDispatchTable **outDispatchTable)
     ICD_DISPATCH_TABLE_ENTRY( NULL );
     ICD_DISPATCH_TABLE_ENTRY( NULL );
 
-#ifdef CL_VERSION_3_0
     /* OpenCL 3.0 */
     ICD_DISPATCH_TABLE_ENTRY ( clCreateBufferWithProperties );
     ICD_DISPATCH_TABLE_ENTRY ( clCreateImageWithProperties );
     ICD_DISPATCH_TABLE_ENTRY ( clSetContextDestructorCallback );
-#else
-    ICD_DISPATCH_TABLE_ENTRY( NULL );
-    ICD_DISPATCH_TABLE_ENTRY( NULL );
-    ICD_DISPATCH_TABLE_ENTRY( NULL );
-#endif  // CL_VERSION_3_0
 
     // return success
     *outDispatchTable = dispatchTable;

@@ -101,16 +101,13 @@ static void* khrIcdGetExtensionFunctionAddress(const char* function_name)
 extern "C" {
 #endif
 
-CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs(
+static inline cl_int clGetPlatformIDs_body(
     cl_uint num_entries,
     cl_platform_id* platforms,
-    cl_uint* num_platforms) CL_API_SUFFIX__VERSION_1_0
+    cl_uint* num_platforms)
 {
     KHRicdVendor* vendor = NULL;
     cl_uint i;
-
-    // initialize the platforms (in case they have not been already)
-    khrIcdInitialize();
 
     if (!num_entries && platforms)
     {
@@ -150,17 +147,46 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs(
     return CL_SUCCESS;
 }
 
-CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress(
-    const char* function_name) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs_disp(
+    cl_uint num_entries,
+    cl_platform_id* platforms,
+    cl_uint* num_platforms)
+{
+    return clGetPlatformIDs_body(
+        num_entries,
+        platforms,
+        num_platforms);
+}
+
+CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs(
+    cl_uint num_entries,
+    cl_platform_id* platforms,
+    cl_uint* num_platforms)
+{
+    // initialize the platforms (in case they have not been already)
+    khrIcdInitialize();
+
+#if defined(CL_ENABLE_LAYERS)
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetPlatformIDs(
+            num_entries,
+            platforms,
+            num_platforms);
+#endif // defined(CL_ENABLE_LAYERS)
+    return clGetPlatformIDs_body(
+        num_entries,
+        platforms,
+        num_platforms);
+}
+
+static inline void* clGetExtensionFunctionAddress_body(
+    const char* function_name)
 {
     void* function_address = NULL;
     size_t function_name_length = 0;
     KHRicdVendor* vendor = NULL;
 
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(function_name, NULL);
-
-    // make sure the ICD is initialized
-    khrIcdInitialize();
 
     // check if this is an ICD-aware extension
     function_address = khrIcdGetExtensionFunctionAddress(function_name);
@@ -189,16 +215,35 @@ CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress(
     return NULL;
 }
 
-CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform(
+CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress_disp(
+    const char* function_name)
+{
+    return clGetExtensionFunctionAddress_body(
+        function_name);
+}
+
+CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress(
+    const char* function_name)
+{
+    // make sure the ICD is initialized
+    khrIcdInitialize();
+
+#if defined(CL_ENABLE_LAYERS)
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetExtensionFunctionAddress(
+            function_name);
+#endif // defined(CL_ENABLE_LAYERS)
+    return clGetExtensionFunctionAddress_body(
+        function_name);
+}
+
+static inline void* clGetExtensionFunctionAddressForPlatform_body(
     cl_platform_id platform,
-    const char* function_name) CL_API_SUFFIX__VERSION_1_2
+    const char* function_name)
 {
     void* function_address = NULL;
 
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(function_name, NULL);
-
-    // make sure the ICD is initialized
-    khrIcdInitialize();
 
     // check if this is an ICD-aware extension
     function_address = khrIcdGetExtensionFunctionAddress(function_name);
@@ -216,62 +261,31 @@ CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform(
         function_name);
 }
 
-#ifdef CL_VERSION_3_0
-/* ICD loader entry points should not normally be ifdef'ed, but prevent
- * OpenCL 3.0 provisional entry points from being in general builds before the
- * specification is finalized. */
-
-CL_API_ENTRY cl_mem CL_API_CALL clCreateBufferWithProperties(
-    cl_context context,
-    const cl_mem_properties* properties,
-    cl_mem_flags flags,
-    size_t size,
-    void* host_ptr,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_3_0
+CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_disp(
+    cl_platform_id platform,
+    const char* function_name)
 {
-    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
-    return context->dispatch->clCreateBufferWithProperties(
-        context,
-        properties,
-        flags,
-        size,
-        host_ptr,
-        errcode_ret);
+    return clGetExtensionFunctionAddressForPlatform_body(
+        platform,
+        function_name);
 }
 
-CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties(
-    cl_context context,
-    const cl_mem_properties* properties,
-    cl_mem_flags flags,
-    const cl_image_format* image_format,
-    const cl_image_desc* image_desc,
-    void* host_ptr,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_3_0
+CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform(
+    cl_platform_id platform,
+    const char* function_name)
 {
-    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
-    return context->dispatch->clCreateImageWithProperties(
-        context,
-        properties,
-        flags,
-        image_format,
-        image_desc,
-        host_ptr,
-        errcode_ret);
+    // make sure the ICD is initialized
+    khrIcdInitialize();
+#if defined(CL_ENABLE_LAYERS)
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetExtensionFunctionAddressForPlatform(
+            platform,
+            function_name);
+#endif // defined(CL_ENABLE_LAYERS)
+    return clGetExtensionFunctionAddressForPlatform_body(
+        platform,
+        function_name);
 }
-
-CL_API_ENTRY cl_int CL_API_CALL clSetContextDestructorCallback(
-    cl_context context,
-    void (CL_CALLBACK* pfn_notify)(cl_context context, void* user_data),
-    void* user_data) CL_API_SUFFIX__VERSION_3_0
-{
-    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
-    return context->dispatch->clSetContextDestructorCallback(
-        context,
-        pfn_notify,
-        user_data);
-}
-
-#endif // CL_VERSION_3_0
 
 #ifdef __cplusplus
 }

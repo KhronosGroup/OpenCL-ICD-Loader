@@ -27,7 +27,7 @@ const struct clEnqueueCopyBufferToImage_st clEnqueueCopyBufferToImageData[NUM_IT
 
 const struct clEnqueueMapImage_st clEnqueueMapImageData[NUM_ITEMS_clEnqueueMapImage] =
 {
-    { NULL, NULL, 0, 0x0, NULL, NULL, NULL, NULL,0, NULL, NULL}
+    { NULL, NULL, 0, 0x0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL}
 };
 
 const struct clEnqueueReadImage_st clEnqueueReadImageData[NUM_ITEMS_clEnqueueReadImage] =
