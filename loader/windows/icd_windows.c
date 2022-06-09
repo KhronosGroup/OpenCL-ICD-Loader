@@ -108,27 +108,30 @@ void adapterFree(WinAdapter *pWinAdapter)
 BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVOID *lpContext)
 {
     LONG result;
-    BOOL status = FALSE;
+    BOOL status = FALSE, currentStatus = FALSE;
     const char* platformsName = "SOFTWARE\\Khronos\\OpenCL\\Vendors";
     HKEY platformsKey = NULL;
     DWORD dwIndex;
 
     khrIcdVendorsEnumerateEnv();
 
-    status = khrIcdOsVendorsEnumerateDXGK();
-    if (!status)
+    currentStatus = khrIcdOsVendorsEnumerateDXGK();
+    status |= currentStatus;
+    if (!currentStatus)
     {
         KHR_ICD_TRACE("Failed to load via DXGK interface on RS4, continuing\n");
     }
 
-    status = khrIcdOsVendorsEnumerateHKR();
-    if (!status)
+    currentStatus = khrIcdOsVendorsEnumerateHKR();
+    status |= currentStatus;
+    if (!currentStatus)
     {
         KHR_ICD_TRACE("Failed to enumerate HKR entries, continuing\n");
     }
 
-    status = khrIcdOsVendorsEnumerateAppPackage();
-    if (!status)
+    currentStatus = khrIcdOsVendorsEnumerateAppPackage();
+    status |= currentStatus;
+    if (!currentStatus)
     {
         KHR_ICD_TRACE("Failed to enumerate App package entry, continuing\n");
     }
