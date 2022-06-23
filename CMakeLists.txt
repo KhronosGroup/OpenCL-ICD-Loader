@@ -69,7 +69,6 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd_platform.h)
 
 if (WIN32)
-    enable_language (CXX)
     list (APPEND OPENCL_ICD_LOADER_SOURCES
         loader/windows/adapter.h
         loader/windows/icd_windows.c
@@ -79,7 +78,7 @@ if (WIN32)
         loader/windows/icd_windows_envvars.c
         loader/windows/icd_windows_hkr.c
         loader/windows/icd_windows_hkr.h
-        loader/windows/icd_windows_apppackage.cpp
+        loader/windows/icd_windows_apppackage.c
         loader/windows/icd_windows_apppackage.h
         loader/windows/OpenCL.def
         loader/windows/OpenCL.rc)

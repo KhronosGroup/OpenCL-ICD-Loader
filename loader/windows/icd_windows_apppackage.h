@@ -19,7 +19,4 @@
 #include <stdbool.h>
 #include "icd_windows.h"
 
-#ifdef __cplusplus
-extern "C"
-#endif
 bool khrIcdOsVendorsEnumerateAppPackage(void);
