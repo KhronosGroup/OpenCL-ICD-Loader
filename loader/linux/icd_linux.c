@@ -44,6 +44,7 @@ void khrIcdOsVendorsEnumerate(void)
     const char* vendorPath = ICD_VENDOR_PATH;
     char* envPath = NULL;
 
+    khrIcdInitializeTrace();
     khrIcdVendorsEnumerateEnv();
 
     envPath = khrIcd_secure_getenv("OCL_ICD_VENDORS");

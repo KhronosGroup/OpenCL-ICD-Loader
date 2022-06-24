@@ -113,6 +113,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     HKEY platformsKey = NULL;
     DWORD dwIndex;
 
+    khrIcdInitializeTrace();
     khrIcdVendorsEnumerateEnv();
 
     currentStatus = khrIcdOsVendorsEnumerateDXGK();
