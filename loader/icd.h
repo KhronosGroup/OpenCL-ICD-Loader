@@ -126,6 +126,9 @@ extern struct _cl_icd_dispatch khrMasterDispatch;
 // API (e.g, getPlatformIDs, etc).
 void khrIcdInitialize(void);
 
+// entrypoint to check and initialize trace.
+void khrIcdInitializeTrace(void);
+
 // go through the list of vendors (in /etc/OpenCL.conf or through 
 // the registry) and call khrIcdVendorAdd for each vendor encountered
 // n.b, this call is OS-specific
