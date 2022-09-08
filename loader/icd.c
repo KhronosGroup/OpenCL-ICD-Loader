@@ -78,12 +78,28 @@ void khrIcdVendorAdd(const char *libraryName)
         goto Done;
     }
 
+    // get the library's file name
+    const char *libName = libraryName;
+    const char *c;
+    for (c = libraryName; *c; ++c)
+    {
+        if (*c == DIRECTORY_SYMBOL)
+        {
+            libName = c + 1;
+        }
+    }
+
     // ensure that we haven't already loaded this vendor
     for (vendorIterator = khrIcdVendors; vendorIterator; vendorIterator = vendorIterator->next)
     {
         if (vendorIterator->library == library)
         {
             KHR_ICD_TRACE("already loaded vendor %s, nothing to do here\n", libraryName);
+            goto Done;
+        }
+        if (!strcmp(vendorIterator->libName, libName))
+        {
+            KHR_ICD_TRACE("already loaded library %s, nothing to do here\n", libName);
             goto Done;
         }
     }
@@ -183,6 +199,8 @@ void khrIcdVendorAdd(const char *libraryName)
             KHR_ICD_TRACE("failed get platform handle to library\n");
             continue;
         }
+        vendor->libName = (char *)malloc(strlen(libName) + 1);
+        strcpy(vendor->libName, libName);
         vendor->clGetExtensionFunctionAddress = p_clGetExtensionFunctionAddress;
         vendor->platform = platforms[i];
         vendor->suffix = suffix;
@@ -416,3 +434,15 @@ void khrIcdContextPropertiesGetPlatform(const cl_context_properties *properties,
     }
 }
 
+void khrIcdFreeLibName()
+{
+    KHRicdVendor *vendorIterator;
+    for (vendorIterator = khrIcdVendors; vendorIterator; vendorIterator = vendorIterator->next)
+    {
+        if (vendorIterator->libName != NULL)
+        {
+            free(vendorIterator->libName);
+            vendorIterator->libName = NULL;
+        }
+    }
+}

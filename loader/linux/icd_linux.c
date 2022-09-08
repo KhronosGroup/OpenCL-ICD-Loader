@@ -146,6 +146,8 @@ void khrIcdOsVendorsEnumerate(void)
         closedir(dir);
     }
 
+    khrIcdFreeLibName();
+
     if (NULL != envPath)
     {
         khrIcd_free_getenv(envPath);

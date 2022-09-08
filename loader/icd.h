@@ -69,6 +69,9 @@ struct KHRicdVendorRec
     // the loaded library object (true type varies on Linux versus Windows)
     void *library;
 
+    // the file name of the library
+    char *libName;
+
     // the extension suffix for this platform
     char *suffix;
 
@@ -162,6 +165,9 @@ void khrIcdOsLibraryUnload(void *library);
 void khrIcdContextPropertiesGetPlatform(
     const cl_context_properties *properties, 
     cl_platform_id *outPlatform);
+
+// free libName in KHRicdVendorRec struct
+void khrIcdFreeLibName();
 
 // internal tracing macros
 #define KHR_ICD_TRACE(...) \
