@@ -57,7 +57,7 @@ bool khrIcdOsVendorsEnumerateAppPackage(void)
                                                     &numPackages, packages,
                                                     &bufferLength, buffer))
     {
-        KHR_ICD_TRACE("Failed to mapping layers package full names\n");
+        KHR_ICD_TRACE("Failed to get mapping layers package full names\n");
         goto cleanup;
     }
 
