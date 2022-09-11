@@ -43,6 +43,7 @@ void khrIcdInitializeTrace(void)
     {
         khrEnableTrace = 1;
     }
+    KHR_ICD_TRACE("OpenCL ICD Loader Revision %u\n", OPENCL_ICD_LOADER_VERSION_REV);
 }
 
 // entrypoint to initialize the ICD and add all vendors
