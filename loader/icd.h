@@ -116,7 +116,7 @@ struct KHRLayer
     struct KHRLayer *next;
 #ifdef CL_LAYER_INFO
     // The layer library name
-    const char *libraryName;
+    char *libraryName;
     // the pointer to the clGetLayerInfo funciton
     void *p_clGetLayerInfo;
 #endif
