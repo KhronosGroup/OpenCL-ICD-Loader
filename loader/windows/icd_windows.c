@@ -24,6 +24,7 @@
 #include "icd_windows_dxgk.h"
 #include "icd_windows_apppackage.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <windows.h>
 #include <winreg.h>
 
@@ -96,6 +97,83 @@ void adapterFree(WinAdapter *pWinAdapter)
     free(pWinAdapter->szName);
     pWinAdapter->szName = NULL;
 }
+
+#if defined(CL_ENABLE_LAYERS)
+typedef struct WinLayer
+{
+    char * szName;
+    DWORD priority;
+} WinLayer;
+
+static WinLayer* pWinLayerBegin;
+static WinLayer* pWinLayerEnd;
+static WinLayer* pWinLayerCapacity;
+
+static int compareLayer(const void *a, const void *b)
+{
+    return ((WinLayer *)a)->priority < ((WinLayer *)b)->priority ? -1 :
+           ((WinLayer *)a)->priority > ((WinLayer *)b)->priority ? 1 : 0;
+}
+
+static BOOL layerAdd(const char* szName, DWORD priority)
+{
+    BOOL result = TRUE;
+    if (pWinLayerEnd == pWinLayerCapacity)
+    {
+        size_t oldCapacity = pWinLayerCapacity - pWinLayerBegin;
+        size_t newCapacity = oldCapacity;
+        if (0 == newCapacity)
+        {
+            newCapacity = 1;
+        }
+        else if(newCapacity < UINT_MAX/2)
+        {
+            newCapacity *= 2;
+        }
+
+        WinLayer* pNewBegin = malloc(newCapacity * sizeof(*pWinLayerBegin));
+        if (!pNewBegin)
+        {
+            KHR_ICD_TRACE("Failed allocate space for Layers array\n");
+            result = FALSE;
+        }
+        else
+        {
+            if (pWinLayerBegin)
+            {
+                memcpy(pNewBegin, pWinLayerBegin, oldCapacity * sizeof(*pWinLayerBegin));
+                free(pWinLayerBegin);
+            }
+            pWinLayerCapacity = pNewBegin + newCapacity;
+            pWinLayerEnd = pNewBegin + oldCapacity;
+            pWinLayerBegin = pNewBegin;
+        }
+    }
+    if (pWinLayerEnd != pWinLayerCapacity)
+    {
+        size_t nameLen = (strlen(szName) + 1)*sizeof(szName[0]);
+        pWinLayerEnd->szName = malloc(nameLen);
+        if (!pWinLayerEnd->szName)
+        {
+            KHR_ICD_TRACE("Failed allocate space for Layer file path\n");
+            result = FALSE;
+        }
+        else
+        {
+            memcpy(pWinLayerEnd->szName, szName, nameLen);
+            pWinLayerEnd->priority = priority;
+            ++pWinLayerEnd;
+        }
+    }
+    return result;
+}
+
+void layerFree(WinLayer *pWinLayer)
+{
+    free(pWinLayer->szName);
+    pWinLayer->szName = NULL;
+}
+#endif // defined(CL_ENABLE_LAYERS)
 
 /*
  *
@@ -248,7 +326,76 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     {
         KHR_ICD_TRACE("Failed to close platforms key %s, ignoring\n", platformsName);
     }
+
 #if defined(CL_ENABLE_LAYERS)
+    const char* layersName = "SOFTWARE\\Khronos\\OpenCL\\Layers";
+    HKEY layersKey = NULL;
+
+    KHR_ICD_TRACE("Opening key HKLM\\%s...\n", layersName);
+    result = RegOpenKeyExA(
+        HKEY_LOCAL_MACHINE,
+        layersName,
+        0,
+        KEY_READ,
+        &layersKey);
+    if (ERROR_SUCCESS != result)
+    {
+        KHR_ICD_TRACE("Failed to open layers key %s, continuing\n", layersName);
+    }
+    else
+    {
+        // for each value
+        for (dwIndex = 0;; ++dwIndex)
+        {
+            char cszLibraryName[1024] = {0};
+            DWORD dwLibraryNameSize = sizeof(cszLibraryName);
+            DWORD dwLibraryNameType = 0;
+            DWORD dwValue = 0;
+            DWORD dwValueSize = sizeof(dwValue);
+
+            // read the value name
+            KHR_ICD_TRACE("Reading value %"PRIuDW"...\n", dwIndex);
+            result = RegEnumValueA(
+                  layersKey,
+                  dwIndex,
+                  cszLibraryName,
+                  &dwLibraryNameSize,
+                  NULL,
+                  &dwLibraryNameType,
+                  (LPBYTE)&dwValue,
+                  &dwValueSize);
+            // if RegEnumKeyEx fails, we are done with the enumeration
+            if (ERROR_SUCCESS != result)
+            {
+                KHR_ICD_TRACE("Failed to read value %"PRIuDW", done reading key.\n", dwIndex);
+                break;
+            }
+            KHR_ICD_TRACE("Value %s found...\n", cszLibraryName);
+
+            // Require that the value be a DWORD
+            if (REG_DWORD != dwLibraryNameType)
+            {
+                KHR_ICD_TRACE("Value not a DWORD, skipping\n");
+                continue;
+            }
+            // add the library
+            status |= layerAdd(cszLibraryName, dwValue);
+        }
+        qsort(pWinLayerBegin, pWinLayerEnd - pWinLayerBegin, sizeof(WinLayer), compareLayer);
+        for (WinLayer* iterLayer = pWinLayerBegin; iterLayer != pWinLayerEnd; ++iterLayer)
+        {
+            khrIcdLayerAdd(iterLayer->szName);
+            layerFree(iterLayer);
+        }
+    }
+
+    free(pWinLayerBegin);
+    pWinLayerBegin = NULL;
+    pWinLayerEnd = NULL;
+    pWinLayerCapacity = NULL;
+
+    result = RegCloseKey(layersKey);
+
     khrIcdLayersEnumerateEnv();
 #endif // defined(CL_ENABLE_LAYERS)
     return status;
