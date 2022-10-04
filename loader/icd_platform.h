@@ -19,7 +19,7 @@
 #ifndef _ICD_PLATFORM_H_
 #define _ICD_PLATFORM_H_
 
-#if defined(__linux__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__)
 
 #define PATH_SEPARATOR  ':'
 #define DIRECTORY_SYMBOL '/'
@@ -36,6 +36,8 @@
 #define PATH_SEPARATOR ';'
 #define DIRECTORY_SYMBOL '\\'
 
+#else
+#error Unknown OS!
 #endif
 
 #endif
