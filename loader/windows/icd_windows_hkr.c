@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2019 The Khronos Group Inc.
+ * Copyright (c) 2017-2022 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -214,8 +214,12 @@ bool khrIcdOsVendorsEnumerateHKR(void)
     ULONG szBuffer = 0;
 
     OLECHAR display_adapter_guid_str[MAX_GUID_STRING_LEN];
+#if defined(CM_GETIDLIST_FILTER_CLASS) && defined(CM_GETIDLIST_FILTER_PRESENT)
     ULONG ulFlags = CM_GETIDLIST_FILTER_CLASS |
                     CM_GETIDLIST_FILTER_PRESENT;
+#else
+    ULONG ulFlags = 0x300;
+#endif
 
     iret = StringFromGUID2(
         &GUID_DEVCLASS_DISPLAY,
@@ -275,8 +279,6 @@ bool khrIcdOsVendorsEnumerateHKR(void)
 
     for (PWSTR deviceId = deviceIdList; *deviceId; deviceId += wcslen(deviceId) + 1)
     {
-        DEVPROPTYPE devpropType;
-
         KHR_ICD_WIDE_TRACE(L"Device ID: %ls\n", deviceId);
 
         ret = CM_Locate_DevNodeW(&devinst, deviceId, 0);
@@ -338,17 +340,22 @@ bool khrIcdOsVendorsEnumerateHKR(void)
                     KHR_ICD_WIDE_TRACE(L"    deviceInstanceID: %ls\n", deviceInstanceID);
                 }
 
-                ret = CM_Get_DevNode_PropertyW(
+                ret = CM_Get_DevNode_Registry_PropertyW(
                     devchild,
-                    &DEVPKEY_Device_ClassGuid,
-                    &devpropType,
+                    CM_DRP_CLASSGUID,
+                    NULL,
                     (PBYTE)&guid,
                     &szGuid,
                     0);
 
-                if (CR_SUCCESS != ret ||
-                    !IsEqualGUID(&OCL_GUID_DEVCLASS_SOFTWARECOMPONENT, &guid))
+                if (CR_SUCCESS != ret)
                 {
+                    KHR_ICD_TRACE("    CM_Get_DevNode_Registry_PropertyW returned 0x%"PRIxDW", skipping device...\n", ret);
+                    continue;
+                }
+                else if (!IsEqualGUID(&OCL_GUID_DEVCLASS_SOFTWARECOMPONENT, &guid))
+                {
+                    KHR_ICD_TRACE("    GUID does not match, skipping device...\n");
                     continue;
                 }
 
