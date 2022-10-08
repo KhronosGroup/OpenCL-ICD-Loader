@@ -148,7 +148,7 @@ static inline cl_int clGetPlatformIDs_body(
     return CL_SUCCESS;
 }
 
-CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs_disp(
+cl_int CL_API_CALL clGetPlatformIDs_disp(
     cl_uint num_entries,
     cl_platform_id* platforms,
     cl_uint* num_platforms)
@@ -216,7 +216,7 @@ static inline void* clGetExtensionFunctionAddress_body(
     return NULL;
 }
 
-CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress_disp(
+void* CL_API_CALL clGetExtensionFunctionAddress_disp(
     const char* function_name)
 {
     return clGetExtensionFunctionAddress_body(
@@ -262,7 +262,7 @@ static inline void* clGetExtensionFunctionAddressForPlatform_body(
         function_name);
 }
 
-CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_disp(
+void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_disp(
     cl_platform_id platform,
     const char* function_name)
 {
