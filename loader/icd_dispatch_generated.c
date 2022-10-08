@@ -32,7 +32,6 @@ extern cl_int CL_API_CALL clGetPlatformIDs_disp(
     cl_uint* num_platforms) CL_API_SUFFIX__VERSION_1_0;
 #endif // defined(CL_ENABLE_LAYERS)
 
-
 CL_API_ENTRY cl_int CL_API_CALL clGetPlatformInfo(
     cl_platform_id platform,
     cl_platform_info param_name,
@@ -2799,7 +2798,6 @@ extern void* CL_API_CALL clGetExtensionFunctionAddress_disp(
     const char* func_name) CL_API_SUFFIX__VERSION_1_1_DEPRECATED;
 #endif // defined(CL_ENABLE_LAYERS)
 
-
 CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueue(
     cl_context context,
     cl_device_id device,
@@ -4059,7 +4057,6 @@ extern void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_disp(
     cl_platform_id platform,
     const char* func_name) CL_API_SUFFIX__VERSION_1_2;
 #endif // defined(CL_ENABLE_LAYERS)
-
 
 CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties(
     cl_context context,

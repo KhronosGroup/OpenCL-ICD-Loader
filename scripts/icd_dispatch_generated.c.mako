@@ -171,7 +171,6 @@ extern ${api.RetType} CL_API_CALL ${api.Name + "_disp"}(
 %  endif
 %endfor
 #endif // defined(CL_ENABLE_LAYERS)
-
 %endif
 %endfor
 %endfor
