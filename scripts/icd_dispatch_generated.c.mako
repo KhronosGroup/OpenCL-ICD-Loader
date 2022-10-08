@@ -40,8 +40,8 @@ apihandles = {
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
-#include "icd_dispatch.h"
 #include "icd.h"
+#include "icd_dispatch.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,7 +63,7 @@ extern "C" {
 %  if disp == 1:
 #if defined(CL_ENABLE_LAYERS)
 %  endif
-${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + ("", "_disp")[disp]}(
+${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("", "_disp")[disp]}(
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
     ${param.Type} ${param.Name}${param.TypeEnd},
@@ -162,7 +162,7 @@ ${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + (""
 %endfor
 %else:
 #if defined(CL_ENABLE_LAYERS)
-extern CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + "_disp"}(
+extern ${api.RetType} CL_API_CALL ${api.Name + "_disp"}(
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
     ${param.Type} ${param.Name}${param.TypeEnd},
@@ -213,7 +213,7 @@ win32extensions = {
 %  if disp == 1:
 #if defined(CL_ENABLE_LAYERS)
 %  endif
-${("", "static ")[disp]}CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + ("", "_disp")[disp]}(
+${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("", "_disp")[disp]}(
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
     ${param.Type} ${param.Name}${param.TypeEnd},
