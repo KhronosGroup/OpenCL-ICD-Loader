@@ -48,9 +48,17 @@
 
 // cl_gl.h and required files
 #ifdef _WIN32
+// System headers aren't ISO compliant
+#if defined(_MSC_VER) && !defined(__clang__)
+#pragma warning( push )
+#pragma warning( disable : 4201 )
+#endif
 #include <windows.h>
 #include <d3d9.h>
 #include <d3d10_1.h>
+#if defined(_MSC_VER) && !defined(__clang__)
+#pragma warning( pop )
+#endif
 #include <CL/cl_d3d10.h>
 #include <CL/cl_d3d11.h>
 #include <CL/cl_dx9_media_sharing.h>

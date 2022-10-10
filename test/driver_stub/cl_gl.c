@@ -5,7 +5,7 @@
 // themselves via the dispatch table. Include this before cl headers.
 #include "rename_api.h"
 
-#define SIZE_T_MAX (size_t) 0xFFFFFFFFFFFFFFFFULL
+#include <limits.h> // SIZE_MAX
 
 CL_API_ENTRY cl_mem CL_API_CALL
 clCreateFromGLBuffer(cl_context      context ,
@@ -13,7 +13,7 @@ clCreateFromGLBuffer(cl_context      context ,
                      cl_GLuint       bufret_mem ,
                      int *           errcode_ret ) CL_API_SUFFIX__VERSION_1_0
 {    
-     cl_mem ret_mem = (cl_mem)(SIZE_T_MAX);  
+     cl_mem ret_mem = (cl_mem)(SIZE_MAX);  
      test_icd_stub_log("clCreateFromGLBuffer(%p, %x, %u, %p)\n",
                        context,
                        flags,
@@ -32,7 +32,7 @@ clCreateFromGLTexture(cl_context       context ,
                       cl_GLuint        texture ,
                       cl_int *         errcode_ret ) CL_API_SUFFIX__VERSION_1_2
 {
-     cl_mem ret_mem = (cl_mem)(SIZE_T_MAX);  
+     cl_mem ret_mem = (cl_mem)(SIZE_MAX);  
      test_icd_stub_log("clCreateFromGLTexture(%p, %x, %d, %d, %u, %p)\n",
                        context ,
                        flags ,
@@ -53,7 +53,7 @@ clCreateFromGLTexture2D(cl_context       context,
                         cl_GLuint        texture,
                         cl_int *         errcode_ret ) CL_API_SUFFIX__VERSION_1_0
 {
-     cl_mem ret_mem = (cl_mem)(SIZE_T_MAX);  
+     cl_mem ret_mem = (cl_mem)(SIZE_MAX);  
      test_icd_stub_log("clCreateFromGLTexture2D(%p, %x, %d, %d, %u, %p)\n",
                         context,
                         flags,
@@ -75,7 +75,7 @@ clCreateFromGLTexture3D(cl_context       context,
                         cl_int *         errcode_ret ) CL_API_SUFFIX__VERSION_1_0
 
 {
-     cl_mem ret_mem = (cl_mem)(SIZE_T_MAX);  
+     cl_mem ret_mem = (cl_mem)(SIZE_MAX);  
      test_icd_stub_log("clCreateFromGLTexture3D(%p, %x, %d, %d, %u, %p)\n",
                         context,
                         flags,
@@ -94,7 +94,7 @@ clCreateFromGLRenderbuffer(cl_context    context,
                            cl_GLuint     renderbuffer,
                            cl_int *      errcode_ret ) CL_API_SUFFIX__VERSION_1_0
 {
-     cl_mem ret_mem = (cl_mem)(SIZE_T_MAX);  
+     cl_mem ret_mem = (cl_mem)(SIZE_MAX);  
      test_icd_stub_log("clCreateFromGLRenderbuffer(%p, %x, %d, %p)\n",
                        context,
                        flags,
@@ -209,7 +209,7 @@ clCreateEventFromGLsyncKHR(cl_context            context ,
                            cl_int *              errcode_ret ) CL_API_SUFFIX__VERSION_1_1
 
 {
-     cl_event ret_event = (cl_event)(SIZE_T_MAX);
+     cl_event ret_event = (cl_event)(SIZE_MAX);
      test_icd_stub_log("clCreateEventFromGLsyncKHR(%p, %p, %p)\n",
                         context,
                         cl_GLsync,

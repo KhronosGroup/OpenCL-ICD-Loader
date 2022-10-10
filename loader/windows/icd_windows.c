@@ -185,6 +185,9 @@ void layerFree(WinLayer *pWinLayer)
 // for each vendor encountered
 BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVOID *lpContext)
 {
+    (void)InitOnce;
+    (void)Parameter;
+    (void)lpContext;
     LONG result;
     BOOL status = FALSE, currentStatus = FALSE;
     const char* platformsName = "SOFTWARE\\Khronos\\OpenCL\\Vendors";
@@ -423,7 +426,7 @@ void *khrIcdOsLibraryLoad(const char *libraryName)
     }
     if (!hTemp)
     {
-        KHR_ICD_TRACE("Failed to load driver. Windows error code is %d.\n", GetLastError());
+        KHR_ICD_TRACE("Failed to load driver. Windows error code is %lu.\n", GetLastError());
     }
     return (void*)hTemp;
 }
@@ -435,7 +438,19 @@ void *khrIcdOsLibraryGetFunctionAddress(void *library, const char *functionName)
     {
         return NULL;
     }
+#if defined(_MSC_VER) && !defined(__clang__)
+#pragma warning( push )
+#pragma warning( disable : 4152 )
+#elif defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpedantic"
+#endif
     return GetProcAddress( (HMODULE)library, functionName);
+#if defined(_MSC_VER) && !defined(__clang__)
+#pragma warning( pop )
+#elif defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 }
 
 // unload a library.

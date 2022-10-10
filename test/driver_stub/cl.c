@@ -93,7 +93,7 @@ clGetPlatformIDs(cl_uint           num_entries ,
 }
 
 CL_API_ENTRY cl_int CL_API_CALL
-clGetPlatformInfo(cl_platform_id    platform,
+clGetPlatformInfo(cl_platform_id    _platform,
                   cl_platform_info  param_name,
                   size_t            param_value_size,
                   void *            param_value,
@@ -117,22 +117,22 @@ clGetPlatformInfo(cl_platform_id    platform,
     // select the string to return
     switch(param_name) {
         case CL_PLATFORM_PROFILE:
-            returnString = platform->profile;
+            returnString = _platform->profile;
             break;
         case CL_PLATFORM_VERSION:
-            returnString = platform->version;
+            returnString = _platform->version;
             break;
         case CL_PLATFORM_NAME:
-            returnString = platform->name;
+            returnString = _platform->name;
             break;
         case CL_PLATFORM_VENDOR:
-            returnString = platform->vendor;
+            returnString = _platform->vendor;
             break;
         case CL_PLATFORM_EXTENSIONS:
-            returnString = platform->extensions;
+            returnString = _platform->extensions;
             break;
         case CL_PLATFORM_ICD_SUFFIX_KHR:
-            returnString = platform->suffix;
+            returnString = _platform->suffix;
             break;
         default:
             ret = CL_INVALID_VALUE;
@@ -163,7 +163,7 @@ done:
 
 /* Device APIs */
 CL_API_ENTRY cl_int CL_API_CALL
-clGetDeviceIDs(cl_platform_id   platform,
+clGetDeviceIDs(cl_platform_id   _platform,
                cl_device_type   device_type,
                cl_uint          num_entries,
                cl_device_id *   devices,
@@ -187,7 +187,7 @@ clGetDeviceIDs(cl_platform_id   platform,
 
 done:
     test_icd_stub_log("clGetDeviceIDs(%p, %x, %u, %p, %p)\n",
-                      platform,
+                      _platform,
                       device_type,
                       num_entries,
                       devices,
@@ -950,10 +950,10 @@ clLinkProgram(cl_context            context ,
 
 
 CL_API_ENTRY cl_int CL_API_CALL
-clUnloadPlatformCompiler(cl_platform_id  platform) CL_API_SUFFIX__VERSION_1_2
+clUnloadPlatformCompiler(cl_platform_id  _platform) CL_API_SUFFIX__VERSION_1_2
 {
     cl_int return_value = CL_OUT_OF_RESOURCES;
-    test_icd_stub_log("clUnloadPlatformCompiler(%p)\n", platform);
+    test_icd_stub_log("clUnloadPlatformCompiler(%p)\n", _platform);
     test_icd_stub_log("Value returned: %d\n", return_value);
     return return_value;
 }
@@ -1836,12 +1836,12 @@ clEnqueueNativeKernel(cl_command_queue   command_queue ,
 }
 
 CL_API_ENTRY void * CL_API_CALL
-clGetExtensionFunctionAddressForPlatform(cl_platform_id  platform ,
+clGetExtensionFunctionAddressForPlatform(cl_platform_id  _platform ,
                                          const char *    func_name) CL_API_SUFFIX__VERSION_1_2
 {
     void *return_value = (void *) malloc(sizeof(void *));
     test_icd_stub_log("clGetExtensionFunctionAddressForPlatform(%p, %p)\n",
-                      platform,
+                      _platform,
                       func_name);
 
     test_icd_stub_log("Value returned: %p\n", return_value);
