@@ -111,6 +111,12 @@ if (WIN32)
     target_link_libraries (OpenCL PRIVATE cfgmgr32.lib runtimeobject.lib)
 
     option (OPENCL_ICD_LOADER_DISABLE_OPENCLON12 "Disable support for OpenCLOn12. Support for OpenCLOn12 should only be disabled when building an import lib to link with, and must be enabled when building an ICD loader for distribution!" OFF)
+
+    # Generate a DLL without a "lib" prefix for mingw.
+    if (MINGW OR MSYS OR CYGWIN)
+        set_target_properties(OpenCL PROPERTIES PREFIX "")
+        set_target_properties(OpenCL PROPERTIES LINK_FLAGS "-Wl,-enable-stdcall-fixup")
+    endif()
 else()
     target_link_libraries (OpenCL PRIVATE ${CMAKE_THREAD_LIBS_INIT})
     if (NOT APPLE)
