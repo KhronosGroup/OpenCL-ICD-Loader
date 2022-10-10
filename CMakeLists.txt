@@ -62,6 +62,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/loader/icd_cmake_config.h.in
 set (OPENCL_ICD_LOADER_SOURCES
     loader/icd.c
     loader/icd.h
+    loader/icd_version.h
+    loader/cl_icdl.h
     loader/icd_dispatch.c
     loader/icd_dispatch.h
     loader/icd_dispatch_generated.c
@@ -148,6 +150,12 @@ endif ()
 target_compile_definitions (OpenCL
   PRIVATE
     CL_TARGET_OPENCL_VERSION=300
+    CL_ICDL_OCL_VERSION_STRING="OpenCL 3.0"
+    OPENCL_ICD_LOADER_VERSION_MAJOR=3
+    OPENCL_ICD_LOADER_VERSION_MINOR=0
+    OPENCL_ICD_LOADER_VERSION_REV=4
+    CL_ICDL_NAME_STRING="OpenCL ICD Loader"
+    CL_ICDL_VENDOR_STRING="Khronos Group"
     $<$<BOOL:${ENABLE_OPENCL_LAYERS}>:CL_ENABLE_LAYERS>
 )
 
