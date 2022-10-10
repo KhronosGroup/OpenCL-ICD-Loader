@@ -211,3 +211,11 @@ install (TARGETS OpenCL
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+if (UNIX)
+  configure_file(OpenCL.pc.in OpenCL.pc @ONLY)
+  set(pkg_config_location ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCL.pc
+    DESTINATION ${pkg_config_location})
+endif()
