@@ -212,7 +212,7 @@ install (TARGETS OpenCL
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-if (UNIX)
+if (NOT MSVC)
   configure_file(OpenCL.pc.in OpenCL.pc @ONLY)
   set(pkg_config_location ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
   install(
