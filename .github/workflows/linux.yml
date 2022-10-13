@@ -132,7 +132,7 @@ jobs:
         cd $GITHUB_WORKSPACE/build/downstream/sdk ;
         $CTEST_EXE --output-on-failure
 
-    - name: Test pkg-config --clfags
+    - name: Test pkg-config --cflags
       shell: bash
       run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig" pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/install/include"
 
@@ -275,7 +275,7 @@ jobs:
         $CTEST_EXE --output-on-failure -C Release;
         $CTEST_EXE --output-on-failure -C Debug;
 
-    - name: Test pkg-config --clfags
+    - name: Test pkg-config --cflags
       shell: bash
       run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig" pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/install/include"
 

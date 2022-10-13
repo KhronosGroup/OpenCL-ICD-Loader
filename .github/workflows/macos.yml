@@ -95,7 +95,7 @@ jobs:
       run: |
         cmake --build $GITHUB_WORKSPACE/build --config Release --target install
 
-    - name: Test pkg-config --clfags
+    - name: Test pkg-config --cflags
       shell: bash
       run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig" pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/install/include"
 
