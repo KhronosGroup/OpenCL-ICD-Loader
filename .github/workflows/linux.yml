@@ -132,6 +132,14 @@ jobs:
         cd $GITHUB_WORKSPACE/build/downstream/sdk ;
         $CTEST_EXE --output-on-failure
 
+    - name: Test pkg-config --clfags
+      shell: bash
+      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig" pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/install/include"
+
+    - name: Test pkg-config --libs
+      shell: bash
+      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig" pkg-config OpenCL --libs | grep -q "\-L$GITHUB_WORKSPACE/install/lib -lOpenCL"
+
 
 
 
@@ -266,3 +274,11 @@ jobs:
         cd $GITHUB_WORKSPACE/build/downstream/sdk;
         $CTEST_EXE --output-on-failure -C Release;
         $CTEST_EXE --output-on-failure -C Debug;
+
+    - name: Test pkg-config --clfags
+      shell: bash
+      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig" pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/install/include"
+
+    - name: Test pkg-config --libs
+      shell: bash
+      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig" pkg-config OpenCL --libs | grep -q "\-L$GITHUB_WORKSPACE/install/lib -lOpenCL"
