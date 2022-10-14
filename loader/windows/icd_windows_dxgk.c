@@ -44,7 +44,6 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
         LoaderEnumAdapters2 EnumAdapters;
         NTSTATUS status = STATUS_SUCCESS;
 
-        char cszLibraryName[MAX_PATH] = { 0 };
         EnumAdapters.adapter_count = 0;
         EnumAdapters.adapters = NULL;
         PFN_LoaderEnumAdapters2 pEnumAdapters2 = (PFN_LoaderEnumAdapters2)GetProcAddress(h, "D3DKMTEnumAdapters2");
@@ -146,12 +145,22 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             }
             if (NT_SUCCESS(status) && pQueryArgs->status == LOADER_QUERY_REGISTRY_STATUS_SUCCESS)
             {
-                wchar_t* pWchar = pQueryArgs->output_string;
-                memset(cszLibraryName, 0, sizeof(cszLibraryName));
+                char cszLibraryName[MAX_PATH];
+                result = WideCharToMultiByte(
+                    CP_ACP,
+                    0,
+                    pQueryArgs->output_string,
+                    -1,
+                    cszLibraryName,
+                    MAX_PATH,
+                    NULL,
+                    NULL);
+                if (!result)
                 {
-                    size_t len;
-                    wcstombs_s(&len, cszLibraryName, sizeof(cszLibraryName), pWchar, sizeof(cszLibraryName) - 1);
-                    KHR_ICD_ASSERT(len == wcslen(pWchar) + 1);
+                    KHR_ICD_TRACE("WideCharToMultiByte status != SUCCESS\n");
+                }
+                else
+                {
                     ret |= adapterAdd(cszLibraryName, EnumAdapters.adapters[AdapterIndex].luid);
                 }
             }
