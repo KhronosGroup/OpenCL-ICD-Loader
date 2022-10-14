@@ -150,8 +150,8 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
                 memset(cszLibraryName, 0, sizeof(cszLibraryName));
                 {
                     size_t len;
-                    wcstombs_s(&len, cszLibraryName, sizeof(cszLibraryName), pWchar, sizeof(cszLibraryName));
-                    KHR_ICD_ASSERT(len == (sizeof(cszLibraryName) - 1));
+                    wcstombs_s(&len, cszLibraryName, sizeof(cszLibraryName), pWchar, sizeof(cszLibraryName) - 1);
+                    KHR_ICD_ASSERT(len == wcslen(pWchar) + 1);
                     ret |= adapterAdd(cszLibraryName, EnumAdapters.adapters[AdapterIndex].luid);
                 }
             }

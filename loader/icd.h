@@ -190,7 +190,7 @@ do \
     { \
         if (!(x)) \
         { \
-            fprintf(stderr, "KHR ICD assert at %s:%d: %s failed", __FILE__, __LINE__, #x); \
+            fprintf(stderr, "KHR ICD assert at %s:%d: %s failed\n", __FILE__, __LINE__, #x); \
         } \
     } \
 } while (0)
