@@ -90,7 +90,7 @@ if (WIN32)
 
     # For mingw-i686 builds only we need a special .def file with stdcall
     # exports.  In all other cases we can use a standard .def file.
-    if (("${CMAKE_SIZEOF_VOID_P}" EQUAL "4") AND (MINGW OR MSYS OR CYGWIN))
+    if ((CMAKE_SIZEOF_VOID_P EQUAL 4) AND (MINGW OR MSYS OR CYGWIN))
         list (APPEND OPENCL_ICD_LOADER_SOURCES loader/windows/OpenCL-mingw-i686.def)
     else ()
         list (APPEND OPENCL_ICD_LOADER_SOURCES loader/windows/OpenCL.def)
