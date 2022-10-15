@@ -86,7 +86,7 @@ bool khrIcdOsVendorsEnumerateAppPackage(void)
     wcscat_s(dllPath, MAX_PATH, L"\\" PLATFORM_PATH L"\\OpenCLOn12.dll");
 
     char narrowDllPath[MAX_PATH];
-    WideCharToMultiByte(CP_ACP, 0, dllPath, -1, narrowDllPath, MAX_PATH, NULL, NULL);
+    WideCharToMultiByte(CP_UTF8, 0, dllPath, -1, narrowDllPath, MAX_PATH, NULL, NULL);
 
     ret = adapterAdd(narrowDllPath, ZeroLuid);
 

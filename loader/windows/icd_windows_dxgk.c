@@ -98,7 +98,7 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             queryArgs.query_flags.translate_path = TRUE;
             queryArgs.value_type = REG_SZ;
             result = MultiByteToWideChar(
-                CP_ACP,
+                CP_UTF8,
                 0,
                 cszOpenCLRegKeyName,
                 szOpenCLRegKeyName,
@@ -147,7 +147,7 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
             {
                 char cszLibraryName[MAX_PATH];
                 result = WideCharToMultiByte(
-                    CP_ACP,
+                    CP_UTF8,
                     0,
                     pQueryArgs->output_string,
                     -1,
