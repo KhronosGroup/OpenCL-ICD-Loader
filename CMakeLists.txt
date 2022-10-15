@@ -80,13 +80,20 @@ if (WIN32)
         loader/windows/icd_windows_hkr.h
         loader/windows/icd_windows_apppackage.c
         loader/windows/icd_windows_apppackage.h
-        loader/windows/OpenCL.def
         loader/windows/OpenCL.rc)
     # Only add the DXSDK include directory if the environment variable is
     # defined.  Since the DXSDK has merged into the Windows SDK, this is
     # only required in rare cases.
     if (DEFINED ENV{DXSDK_DIR} AND NOT (MINGW OR MSYS OR CYGWIN))
         include_directories ($ENV{DXSDK_DIR}/Include)
+    endif ()
+
+    # For mingw-i686 builds only we need a special .def file with stdcall
+    # exports.  In all other cases we can use a standard .def file.
+    if (("${CMAKE_SIZEOF_VOID_P}" EQUAL "4") AND (MINGW OR MSYS OR CYGWIN))
+        list (APPEND OPENCL_ICD_LOADER_SOURCES loader/windows/OpenCL-mingw-i686.def)
+    else ()
+        list (APPEND OPENCL_ICD_LOADER_SOURCES loader/windows/OpenCL.def)
     endif ()
 else ()
     list (APPEND OPENCL_ICD_LOADER_SOURCES
@@ -115,7 +122,7 @@ if (WIN32)
     # Generate a DLL without a "lib" prefix for mingw.
     if (MINGW OR MSYS OR CYGWIN)
         set_target_properties(OpenCL PROPERTIES PREFIX "")
-        set_target_properties(OpenCL PROPERTIES LINK_FLAGS "-Wl,-enable-stdcall-fixup")
+        set_target_properties(OpenCL PROPERTIES LINK_FLAGS "-Wl,-disable-stdcall-fixup")
     endif()
 else()
     target_link_libraries (OpenCL PRIVATE ${CMAKE_THREAD_LIBS_INIT})
