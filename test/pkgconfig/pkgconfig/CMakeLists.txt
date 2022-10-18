@@ -7,6 +7,10 @@ project(PkgConfigTest
 
 pkg_check_modules(OPENCL REQUIRED OpenCL)
 
+if(CMAKE_VERSION VERSION_LESS 3.12)
+  link_directories("${OPENCL_LIBRARY_DIRS}")
+endif()
+
 add_executable(${PROJECT_NAME}
   ../pkgconfig.c
 )
@@ -16,10 +20,17 @@ target_include_directories(${PROJECT_NAME}
     ${OPENCL_INCLUDE_DIRS}
 )
 
+if(CMAKE_VERSION VERSION_LESS 3.12)
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+    ${OPENCL_LIBRARIES}
+)
+else()
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
     ${OPENCL_LINK_LIBRARIES}
 )
+endif()
 
 target_compile_options(${PROJECT_NAME}
   PRIVATE
