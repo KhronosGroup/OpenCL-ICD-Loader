@@ -3,7 +3,71 @@ name: Linux
 on: [push, pull_request]
 
 jobs:
+  headers:
+    name: Build and cache Headers
+    runs-on: ${{ matrix.OS }}
+    strategy:
+      matrix:
+        OS: [ubuntu-18.04, ubuntu-20.04]
+        COMPILER: [gcc]
+        EXT: [ON]
+        GEN: [Unix Makefiles]
+        CONFIG: [Release]
+        STD: [99]
+        BIN: [64]
+        CMAKE: [3.21.2]
+    env:
+      CMAKE_URL: https://github.com/Kitware/CMake/releases/download/v${{ matrix.CMAKE }}/cmake-${{ matrix.CMAKE }}-Linux-x86_64.tar.gz
+      CMAKE_EXE: /opt/Kitware/CMake/${{ matrix.CMAKE }}/bin/cmake
+      CTEST_EXE: /opt/Kitware/CMake/${{ matrix.CMAKE }}/bin/ctest
+
+    steps:
+    - uses: actions/cache@v2
+      name: Restore Headers
+      id: headers
+      env:
+        cache-name: cache-headers
+      with:
+        path: external/OpenCL-Headers/install
+        key: ${{ runner.os }}-build-${{ env.cache-name }}
+
+    - name: Checkout OpenCL-Headers
+      if: steps.headers.outputs.cache-hit != 'true'
+      uses: actions/checkout@v2
+      with:
+        repository: KhronosGroup/OpenCL-Headers
+        path: external/OpenCL-Headers
+
+    - name: Create Build Environment
+      run: sudo apt-get update -q;
+        if [[ "${{matrix.GEN}}" =~ "Ninja" && ! `which ninja` ]]; then sudo apt install -y ninja-build; fi;
+        sudo apt install -y ${{matrix.COMPILER}};
+        if [[ "${{matrix.BIN}}" == "32" && "${{matrix.COMPILER}}" =~ "gcc" ]]; then sudo apt install -y ${{matrix.COMPILER}}-multilib; fi;
+        if [[ "${{matrix.BIN}}" == "32" && "${{matrix.COMPILER}}" =~ "clang" ]]; then sudo apt install -y gcc-multilib ; fi;
+        mkdir -p /opt/Kitware/CMake;
+        wget -c $CMAKE_URL -O - | tar -xz --directory /opt/Kitware/CMake;
+        mv /opt/Kitware/CMake/cmake-${{ matrix.CMAKE }}-* /opt/Kitware/CMake/${{ matrix.CMAKE }}
+ 
+    - name: Build & install OpenCL-Headers
+      run: $CMAKE_EXE
+        -G "${{matrix.GEN}}"
+        -D CMAKE_BUILD_TYPE=${{matrix.CONFIG}}
+        -D CMAKE_C_FLAGS="-w -m${{matrix.BIN}}"
+        -D CMAKE_C_COMPILER=${{matrix.COMPILER}}
+        -D CMAKE_C_STANDARD=${{matrix.STD}}
+        -D CMAKE_C_EXTENSIONS=${{matrix.EXT}}
+        -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
+        -B$GITHUB_WORKSPACE/external/OpenCL-Headers/build
+        -H$GITHUB_WORKSPACE/external/OpenCL-Headers &&
+        $CMAKE_EXE
+        --build $GITHUB_WORKSPACE/external/OpenCL-Headers/build
+        --target install
+        --
+        -j`nproc`
+
+
   cmake-minimum:
+    needs: [headers]
     runs-on: ${{ matrix.OS }}
     strategy:
       matrix:
@@ -25,11 +89,14 @@ jobs:
     - name: Checkout OpenCL-ICD-Loader
       uses: actions/checkout@v2
 
-    - name: Checkout OpenCL-Headers
-      uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      name: Restore Headers
+      id: headers
+      env:
+        cache-name: cache-headers
       with:
-        repository: KhronosGroup/OpenCL-Headers
-        path: external/OpenCL-Headers
+        path: external/OpenCL-Headers/install
+        key: ${{ runner.os }}-build-${{ env.cache-name }}
 
     - name: Create Build Environment
       run: sudo apt-get update -q;
@@ -41,23 +108,6 @@ jobs:
         wget -c $CMAKE_URL -O - | tar -xz --directory /opt/Kitware/CMake;
         mv /opt/Kitware/CMake/cmake-${{ matrix.CMAKE }}-* /opt/Kitware/CMake/${{ matrix.CMAKE }}
       # Install Ninja only if it's the selected generator and it's not available.
-
-    - name: Build & install OpenCL-Headers
-      run: $CMAKE_EXE
-        -G "${{matrix.GEN}}"
-        -D CMAKE_BUILD_TYPE=${{matrix.CONFIG}}
-        -D CMAKE_C_FLAGS="-w -m${{matrix.BIN}}"
-        -D CMAKE_C_COMPILER=${{matrix.COMPILER}}
-        -D CMAKE_C_STANDARD=${{matrix.STD}}
-        -D CMAKE_C_EXTENSIONS=${{matrix.EXT}}
-        -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
-        -B$GITHUB_WORKSPACE/external/OpenCL-Headers/build
-        -H$GITHUB_WORKSPACE/external/OpenCL-Headers &&
-        $CMAKE_EXE
-        --build $GITHUB_WORKSPACE/external/OpenCL-Headers/build
-        --target install
-        --
-        -j`nproc`
 
     - name: Configure
       shell: bash
@@ -137,6 +187,7 @@ jobs:
 
 
   cmake-latest:
+    needs: [headers]
     runs-on: ${{ matrix.OS }}
     strategy:
       matrix:
@@ -157,11 +208,14 @@ jobs:
     - name: Checkout OpenCL-ICD-Loader
       uses: actions/checkout@v2
 
-    - name: Checkout OpenCL-Headers
-      uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      name: Restore Headers
+      id: headers
+      env:
+        cache-name: cache-headers
       with:
-        repository: KhronosGroup/OpenCL-Headers
-        path: external/OpenCL-Headers
+        path: external/OpenCL-Headers/install
+        key: ${{ runner.os }}-build-${{ env.cache-name }}
 
     - name: Create Build Environment
       run: sudo apt-get update -q;
@@ -175,23 +229,6 @@ jobs:
         wget -c $CMAKE_URL -O - | tar -xz --directory /opt/Kitware/CMake;
         mv /opt/Kitware/CMake/cmake-${{ matrix.CMAKE }}-* /opt/Kitware/CMake/${{ matrix.CMAKE }}
       # Install Ninja only if it's the selected generator and it's not available.
-
-    - name: Build & install OpenCL-Headers
-      run: $CMAKE_EXE
-        -G "${{matrix.GEN}}"
-        -D CMAKE_C_FLAGS="-w -m${{matrix.BIN}}"
-        -D CMAKE_C_COMPILER=${{matrix.COMPILER}}
-        -D CMAKE_C_STANDARD=${{matrix.STD}}
-        -D CMAKE_C_EXTENSIONS=${{matrix.EXT}}
-        -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
-        -B $GITHUB_WORKSPACE/external/OpenCL-Headers/build
-        -S $GITHUB_WORKSPACE/external/OpenCL-Headers;
-        $CMAKE_EXE
-        --build $GITHUB_WORKSPACE/external/OpenCL-Headers/build
-        --target install
-        --config Release
-        --
-        -j`nproc`
 
     - name: Configure
       shell: bash
