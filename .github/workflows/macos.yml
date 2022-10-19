@@ -3,33 +3,43 @@ name: MacOS
 on: [push, pull_request]
 
 jobs:
-  macos-gcc:
+
+  headers:
+    name: Build and cache Headers
     runs-on: macos-latest
     strategy:
       matrix:
-        VER: [9, 10, 11]
-        EXT: [ON, OFF]
-        GEN: [Xcode, Ninja Multi-Config]
-        STD: [99, 11] # 90 results in errors
+        VER: [11]
+        EXT: [ON]
+        GEN: [Xcode]
+        STD: [11] # 90 results in errors
 
     steps:
-    - name: Checkout OpenCL-ICD-Loader
-      uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      name: Restore Headers
+      id: headers
+      env:
+        cache-name: cache-headers
+      with:
+        path: external/OpenCL-Headers/install
+        key: ${{ runner.os }}-build-${{ env.cache-name }}
 
     - name: Checkout OpenCL-Headers
+      if: steps.headers.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
         repository: KhronosGroup/OpenCL-Headers
         path: external/OpenCL-Headers
 
     - name: Create Build Environment
+      if: steps.headers.outputs.cache-hit != 'true'
       run: |
         cmake -E make_directory $GITHUB_WORKSPACE/build;
         cmake -E make_directory $GITHUB_WORKSPACE/install;
         if [[ "${{matrix.GEN}}" == "Ninja Multi-Config" && ! `which ninja` ]]; then brew install ninja; fi;
-        # Install Ninja only if it's the selected generator and it's not available.
 
     - name: Build & install OpenCL-Headers
+      if: steps.headers.outputs.cache-hit != 'true'
       run: cmake
         -G "${{matrix.GEN}}"
         -D CMAKE_C_FLAGS="-w"
@@ -44,6 +54,36 @@ jobs:
         --target install
         --config Release
         --parallel `sysctl -n hw.logicalcpu`
+
+  macos-gcc:
+    needs: [headers]
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        VER: [9, 10, 11]
+        EXT: [ON, OFF]
+        GEN: [Xcode, Ninja Multi-Config]
+        STD: [99, 11] # 90 results in errors
+
+    steps:
+    - name: Checkout OpenCL-ICD-Loader
+      uses: actions/checkout@v2
+
+    - uses: actions/cache@v2
+      name: Restore Headers
+      id: headers
+      env:
+        cache-name: cache-headers
+      with:
+        path: external/OpenCL-Headers/install
+        key: ${{ runner.os }}-build-${{ env.cache-name }}
+
+    - name: Create Build Environment
+      run: |
+        cmake -E make_directory $GITHUB_WORKSPACE/build;
+        cmake -E make_directory $GITHUB_WORKSPACE/install;
+        if [[ "${{matrix.GEN}}" == "Ninja Multi-Config" && ! `which ninja` ]]; then brew install ninja; fi;
+        # Install Ninja only if it's the selected generator and it's not available.
 
     - name: Configure CMake
       # no -Werror during configuration because:
