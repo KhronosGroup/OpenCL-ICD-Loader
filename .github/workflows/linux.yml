@@ -22,14 +22,19 @@ jobs:
       CTEST_EXE: /opt/Kitware/CMake/${{ matrix.CMAKE }}/bin/ctest
 
     steps:
+    - name: Get sha of Headers
+      id: get-sha
+      run: |
+        echo ::set-output name=sha::$( curl -u "u:${{github.token}}" https://api.github.com/repos/KhronosGroup/OpenCL-Headers/git/ref/heads/main | jq .object.sha | tr -d '"' )
+
     - uses: actions/cache@v2
-      name: Restore Headers
+      name: Cache Headers
       id: headers
       env:
         cache-name: cache-headers
       with:
         path: external/OpenCL-Headers/install
-        key: ${{ runner.os }}-build-${{ env.cache-name }}
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.get-sha.outputs.sha }}
 
     - name: Checkout OpenCL-Headers
       if: steps.headers.outputs.cache-hit != 'true'
@@ -39,6 +44,7 @@ jobs:
         path: external/OpenCL-Headers
 
     - name: Create Build Environment
+      if: steps.headers.outputs.cache-hit != 'true'
       run: sudo apt-get update -q;
         if [[ "${{matrix.GEN}}" =~ "Ninja" && ! `which ninja` ]]; then sudo apt install -y ninja-build; fi;
         sudo apt install -y ${{matrix.COMPILER}};
@@ -49,6 +55,7 @@ jobs:
         mv /opt/Kitware/CMake/cmake-${{ matrix.CMAKE }}-* /opt/Kitware/CMake/${{ matrix.CMAKE }}
  
     - name: Build & install OpenCL-Headers
+      if: steps.headers.outputs.cache-hit != 'true'
       run: $CMAKE_EXE
         -G "${{matrix.GEN}}"
         -D CMAKE_BUILD_TYPE=${{matrix.CONFIG}}
@@ -89,6 +96,11 @@ jobs:
     - name: Checkout OpenCL-ICD-Loader
       uses: actions/checkout@v2
 
+    - name: Get sha of Headers
+      id: get-sha
+      run: |
+        echo ::set-output name=sha::$( curl -u "u:${{github.token}}" https://api.github.com/repos/KhronosGroup/OpenCL-Headers/git/ref/heads/main | jq .object.sha | tr -d '"' )
+
     - uses: actions/cache@v2
       name: Restore Headers
       id: headers
@@ -96,7 +108,7 @@ jobs:
         cache-name: cache-headers
       with:
         path: external/OpenCL-Headers/install
-        key: ${{ runner.os }}-build-${{ env.cache-name }}
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.get-sha.outputs.sha }}
 
     - name: Create Build Environment
       run: sudo apt-get update -q;
@@ -208,6 +220,11 @@ jobs:
     - name: Checkout OpenCL-ICD-Loader
       uses: actions/checkout@v2
 
+    - name: Get sha of Headers
+      id: get-sha
+      run: |
+        echo ::set-output name=sha::$( curl -u "u:${{github.token}}" https://api.github.com/repos/KhronosGroup/OpenCL-Headers/git/ref/heads/main | jq .object.sha | tr -d '"' )
+
     - uses: actions/cache@v2
       name: Restore Headers
       id: headers
@@ -215,7 +232,7 @@ jobs:
         cache-name: cache-headers
       with:
         path: external/OpenCL-Headers/install
-        key: ${{ runner.os }}-build-${{ env.cache-name }}
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.get-sha.outputs.sha }}
 
     - name: Create Build Environment
       run: sudo apt-get update -q;

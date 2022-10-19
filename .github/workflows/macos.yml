@@ -15,14 +15,19 @@ jobs:
         STD: [11] # 90 results in errors
 
     steps:
+    - name: Get sha of Headers
+      id: get-sha
+      run: |
+        echo ::set-output name=sha::$( curl -u "u:${{github.token}}" https://api.github.com/repos/KhronosGroup/OpenCL-Headers/git/ref/heads/main | jq .object.sha | tr -d '"' )
+
     - uses: actions/cache@v2
-      name: Restore Headers
+      name: Cache Headers
       id: headers
       env:
         cache-name: cache-headers
       with:
         path: external/OpenCL-Headers/install
-        key: ${{ runner.os }}-build-${{ env.cache-name }}
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.get-sha.outputs.sha }}
 
     - name: Checkout OpenCL-Headers
       if: steps.headers.outputs.cache-hit != 'true'
@@ -69,6 +74,11 @@ jobs:
     - name: Checkout OpenCL-ICD-Loader
       uses: actions/checkout@v2
 
+    - name: Get sha of Headers
+      id: get-sha
+      run: |
+        echo ::set-output name=sha::$( curl -u "u:${{github.token}}" https://api.github.com/repos/KhronosGroup/OpenCL-Headers/git/ref/heads/main | jq .object.sha | tr -d '"' )
+
     - uses: actions/cache@v2
       name: Restore Headers
       id: headers
@@ -76,7 +86,7 @@ jobs:
         cache-name: cache-headers
       with:
         path: external/OpenCL-Headers/install
-        key: ${{ runner.os }}-build-${{ env.cache-name }}
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.get-sha.outputs.sha }}
 
     - name: Create Build Environment
       run: |
