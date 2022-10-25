@@ -239,14 +239,17 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
     // api.Name == "clXXX":  # There are currently no API special cases here.
 %  else:
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(${handle.Name}, ${invalid});
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(${handle.Name}->dispatch->${api.Name});
 % endif
 %else:
 %  if api.Name == "clGetGLContextInfoKHR":
     cl_platform_id platform = NULL;
     khrIcdContextPropertiesGetPlatform(properties, &platform);
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(platform->dispatch->${api.Name});
 %  else:
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(${handle.Name}, ${invalid});
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(${handle.Name}->dispatch->${api.Name});
 %  endif
 %endif
 %if api.Name == "clGetGLContextInfoKHR":
