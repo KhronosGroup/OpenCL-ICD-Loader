@@ -19,17 +19,33 @@
 #include <icd.h>
 #include "icd_windows_apppackage.h"
 
-#ifdef OPENCL_ICD_LOADER_DISABLE_OPENCLON12
+// Declare functions directly to avoid dependency on AppModel.h:
 
-bool khrIcdOsVendorsEnumerateAppPackage(void)
-{
-    KHR_ICD_TRACE("OpenCLOn12 is disabled\n");
-    return false;
-}
+WINBASEAPI
+_Check_return_
+_Success_(return == ERROR_SUCCESS)
+_On_failure_(_Unchanged_(*count))
+_On_failure_(_Unchanged_(*bufferLength))
+LONG
+WINAPI
+GetPackagesByPackageFamily(
+    _In_ PCWSTR packageFamilyName,
+    _Inout_ UINT32* count,
+    _Out_writes_opt_(*count) PWSTR* packageFullNames,
+    _Inout_ UINT32* bufferLength,
+    _Out_writes_opt_(*bufferLength) WCHAR* buffer
+    );
 
-#else
+WINBASEAPI
+_Success_(return == ERROR_SUCCESS)
+LONG
+WINAPI
+GetPackagePathByFullName(
+    _In_ PCWSTR packageFullName,
+    _Inout_ UINT32* pathLength,
+    _Out_writes_opt_(*pathLength) PWSTR path
+    );
 
-#include <AppModel.h>
 
 bool khrIcdOsVendorsEnumerateAppPackage(void)
 {
@@ -95,5 +111,3 @@ cleanup:
     free(packages);
     return ret;
 }
-
-#endif
