@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2019 The Khronos Group Inc.
+ * Copyright (c) 2017-2022 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,7 @@
 #include <icd.h>
 #include "icd_windows_apppackage.h"
 
-// Declare functions directly to avoid dependency on AppModel.h:
-
-WINBASEAPI
-_Check_return_
-_Success_(return == ERROR_SUCCESS)
-_On_failure_(_Unchanged_(*count))
-_On_failure_(_Unchanged_(*bufferLength))
-LONG
-WINAPI
-GetPackagesByPackageFamily(
+typedef _Check_return_ LONG(WINAPI *PFN_GetPackagesByPackageFamily)(
     _In_ PCWSTR packageFamilyName,
     _Inout_ UINT32* count,
     _Out_writes_opt_(*count) PWSTR* packageFullNames,
@@ -36,42 +27,60 @@ GetPackagesByPackageFamily(
     _Out_writes_opt_(*bufferLength) WCHAR* buffer
     );
 
-WINBASEAPI
-_Success_(return == ERROR_SUCCESS)
-LONG
-WINAPI
-GetPackagePathByFullName(
+typedef LONG (WINAPI *PFN_GetPackagePathByFullName)(
     _In_ PCWSTR packageFullName,
     _Inout_ UINT32* pathLength,
     _Out_writes_opt_(*pathLength) PWSTR path
     );
 
-
 bool khrIcdOsVendorsEnumerateAppPackage(void)
 {
+    bool ret = false;
+    WCHAR *buffer = NULL;
+    PWSTR *packages = NULL;
+
+    HMODULE h = LoadLibrary("kernel32.dll");
+    if (h == NULL)
+        return ret;
+
+    PFN_GetPackagesByPackageFamily pGetPackagesByPackageFamily =
+        (PFN_GetPackagesByPackageFamily)GetProcAddress(h, "GetPackagesByPackageFamily");
+    if (!pGetPackagesByPackageFamily)
+    {
+        KHR_ICD_TRACE("GetProcAddress failed for GetPackagesByPackageFamily\n");
+        goto cleanup;
+    }
+
+    PFN_GetPackagePathByFullName pGetPackagePathByFullName =
+        (PFN_GetPackagePathByFullName)GetProcAddress(h, "GetPackagePathByFullName");
+    if (!pGetPackagePathByFullName)
+    {
+        KHR_ICD_TRACE("GetProcAddress failed for GetPackagePathByFullName\n");
+        goto cleanup;
+    }
+
     UINT32 numPackages = 0, bufferLength = 0;
     PCWSTR familyName = L"Microsoft.D3DMappingLayers_8wekyb3d8bbwe";
-    if (ERROR_INSUFFICIENT_BUFFER != GetPackagesByPackageFamily(familyName,
-                                                                &numPackages, NULL,
-                                                                &bufferLength, NULL) ||
+    if (ERROR_INSUFFICIENT_BUFFER != pGetPackagesByPackageFamily(familyName,
+                                                                 &numPackages, NULL,
+                                                                 &bufferLength, NULL) ||
         numPackages == 0 || bufferLength == 0)
     {
         KHR_ICD_TRACE("Failed to find mapping layers packages by family name\n");
-        return false;
+        goto cleanup;
     }
 
-    bool ret = false;
-    WCHAR *buffer = malloc(sizeof(WCHAR) * bufferLength);
-    PWSTR *packages = malloc(sizeof(PWSTR) * numPackages);
+    buffer = malloc(sizeof(WCHAR) * bufferLength);
+    packages = malloc(sizeof(PWSTR) * numPackages);
     if (!buffer || !packages)
     {
         KHR_ICD_TRACE("Failed to allocate memory for package names\n");
         goto cleanup;
     }
 
-    if (ERROR_SUCCESS != GetPackagesByPackageFamily(familyName,
-                                                    &numPackages, packages,
-                                                    &bufferLength, buffer))
+    if (ERROR_SUCCESS != pGetPackagesByPackageFamily(familyName,
+                                                     &numPackages, packages,
+                                                     &bufferLength, buffer))
     {
         KHR_ICD_TRACE("Failed to get mapping layers package full names\n");
         goto cleanup;
@@ -79,9 +88,9 @@ bool khrIcdOsVendorsEnumerateAppPackage(void)
 
     UINT32 pathLength = 0;
     WCHAR path[MAX_PATH];
-    if (ERROR_INSUFFICIENT_BUFFER != GetPackagePathByFullName(packages[0], &pathLength, NULL) ||
+    if (ERROR_INSUFFICIENT_BUFFER != pGetPackagePathByFullName(packages[0], &pathLength, NULL) ||
         pathLength > MAX_PATH ||
-        ERROR_SUCCESS != GetPackagePathByFullName(packages[0], &pathLength, path))
+        ERROR_SUCCESS != pGetPackagePathByFullName(packages[0], &pathLength, path))
     {
         KHR_ICD_TRACE("Failed to get mapping layers package path length\n");
         goto cleanup;
@@ -107,6 +116,7 @@ bool khrIcdOsVendorsEnumerateAppPackage(void)
     ret = adapterAdd(narrowDllPath, ZeroLuid);
 
 cleanup:
+    FreeLibrary(h);
     free(buffer);
     free(packages);
     return ret;

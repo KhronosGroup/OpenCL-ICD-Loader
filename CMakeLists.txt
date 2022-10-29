@@ -117,8 +117,6 @@ set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 if (WIN32)
     target_link_libraries (OpenCL PRIVATE cfgmgr32.lib runtimeobject.lib)
 
-    option (OPENCL_ICD_LOADER_DISABLE_OPENCLON12 "Disable support for OpenCLOn12. Support for OpenCLOn12 should only be disabled when building an import lib to link with, and must be enabled when building an ICD loader for distribution!" OFF)
-
     # Generate a DLL without a "lib" prefix for mingw.
     if (MINGW OR MSYS OR CYGWIN)
         set_target_properties(OpenCL PROPERTIES PREFIX "")
@@ -151,7 +149,6 @@ target_compile_definitions (OpenCL
   PRIVATE
     CL_TARGET_OPENCL_VERSION=300
     $<$<BOOL:${ENABLE_OPENCL_LAYERS}>:CL_ENABLE_LAYERS>
-    $<$<BOOL:${OPENCL_ICD_LOADER_DISABLE_OPENCLON12}>:OPENCL_ICD_LOADER_DISABLE_OPENCLON12>
 )
 
 target_include_directories (OpenCL
