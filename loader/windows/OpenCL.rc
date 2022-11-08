@@ -32,10 +32,10 @@ BEGIN
         BLOCK "040904E4"
         BEGIN
             VALUE "FileDescription" ,"OpenCL Client DLL"
-            VALUE "ProductName"     ,CL_ICDL_NAME_STRING
+            VALUE "ProductName"     ,OPENCL_ICD_LOADER_NAME_STRING
             VALUE "LegalCopyright"  ,"Copyright \251 The Khronos Group Inc 2016-2020"
             VALUE "FileVersion"     ,OPENCL_ICD_LOADER_VERSION_STRING ".0"
-            VALUE "CompanyName"     ,CL_ICDL_VENDOR_STRING
+            VALUE "CompanyName"     ,OPENCL_ICD_LOADER_VENDOR_STRING
             VALUE "InternalName"    ,"OpenCL"
             VALUE "OriginalFilename","OpenCL.dll"
         END

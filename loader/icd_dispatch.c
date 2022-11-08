@@ -30,12 +30,12 @@ clGetICDLoaderInfoOCLICD(
     void *       param_value,
     size_t *     param_value_size_ret)
 {
-    static const char  cl_icdl_OCL_VERSION[] = CL_ICDL_OCL_VERSION_STRING;
-    static const char  cl_icdl_VERSION[] = OPENCL_ICD_LOADER_VERSION_STRING;
-    static const char  cl_icdl_NAME[] = CL_ICDL_NAME_STRING;
-    static const char  cl_icdl_VENDOR[] = CL_ICDL_VENDOR_STRING;
-    size_t             pvs;
-    void *             pv;
+    static const char cl_icdl_OCL_VERSION[] = OPENCL_ICD_LOADER_OCL_VERSION_STRING;
+    static const char cl_icdl_VERSION[]     = OPENCL_ICD_LOADER_VERSION_STRING;
+    static const char cl_icdl_NAME[]        = OPENCL_ICD_LOADER_NAME_STRING;
+    static const char cl_icdl_VENDOR[]      = OPENCL_ICD_LOADER_VENDOR_STRING;
+    size_t            pvs;
+    void *            pv;
 
 #define KHR_ICD_CASE_PARAM_NAME(name)                                          \
     case CL_ICDL_ ## name:                                                     \
