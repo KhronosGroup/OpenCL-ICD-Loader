@@ -63,7 +63,7 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd.c
     loader/icd.h
     loader/icd_version.h
-    loader/cl_icdl.h
+    loader/cl_icdl_private.h
     loader/icd_dispatch.c
     loader/icd_dispatch.h
     loader/icd_dispatch_generated.c
