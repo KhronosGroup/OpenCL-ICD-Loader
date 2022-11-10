@@ -37,17 +37,17 @@ clGetICDLoaderInfoOCLICD(
     size_t            pvs;
     void *            pv;
 
-#define KHR_ICD_CASE_PARAM_NAME(name)                                          \
+#define KHR_ICD_CASE_STRING_PARAM_NAME(name)                                   \
     case CL_ICDL_ ## name:                                                     \
-        pvs = sizeof(cl_icdl_ ## name);                                        \
+        pvs = strlen(cl_icdl_ ## name) + 1;                                    \
         pv = (void *)cl_icdl_ ## name;                                         \
         break
 
     switch (param_name) {
-    KHR_ICD_CASE_PARAM_NAME(OCL_VERSION);
-    KHR_ICD_CASE_PARAM_NAME(VERSION);
-    KHR_ICD_CASE_PARAM_NAME(NAME);
-    KHR_ICD_CASE_PARAM_NAME(VENDOR);
+    KHR_ICD_CASE_STRING_PARAM_NAME(OCL_VERSION);
+    KHR_ICD_CASE_STRING_PARAM_NAME(VERSION);
+    KHR_ICD_CASE_STRING_PARAM_NAME(NAME);
+    KHR_ICD_CASE_STRING_PARAM_NAME(VENDOR);
     default:
         return CL_INVALID_VALUE;
     }
