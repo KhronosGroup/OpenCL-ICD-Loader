@@ -4,7 +4,8 @@ on: [push, pull_request]
 
 jobs:
   macos-gcc:
-    runs-on: macos-latest
+    #runs-on: macos-latest
+    runs-on: macos-11 # temporary, macos-latest only supports gcc-12
     strategy:
       matrix:
         VER: [9, 10, 11]
