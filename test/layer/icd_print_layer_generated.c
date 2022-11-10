@@ -20,7 +20,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Core APIs:
-static CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs_wrap(
+static cl_int CL_API_CALL clGetPlatformIDs_wrap(
     cl_uint num_entries,
     cl_platform_id* platforms,
     cl_uint* num_platforms) CL_API_SUFFIX__VERSION_1_0
@@ -33,7 +33,7 @@ return tdispatch->clGetPlatformIDs(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetPlatformInfo_wrap(
+static cl_int CL_API_CALL clGetPlatformInfo_wrap(
     cl_platform_id platform,
     cl_platform_info param_name,
     size_t param_value_size,
@@ -50,7 +50,7 @@ return tdispatch->clGetPlatformInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs_wrap(
+static cl_int CL_API_CALL clGetDeviceIDs_wrap(
     cl_platform_id platform,
     cl_device_type device_type,
     cl_uint num_entries,
@@ -67,7 +67,7 @@ return tdispatch->clGetDeviceIDs(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceInfo_wrap(
+static cl_int CL_API_CALL clGetDeviceInfo_wrap(
     cl_device_id device,
     cl_device_info param_name,
     size_t param_value_size,
@@ -84,7 +84,7 @@ return tdispatch->clGetDeviceInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_context CL_API_CALL clCreateContext_wrap(
+static cl_context CL_API_CALL clCreateContext_wrap(
     const cl_context_properties* properties,
     cl_uint num_devices,
     const cl_device_id* devices,
@@ -103,7 +103,7 @@ return tdispatch->clCreateContext(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType_wrap(
+static cl_context CL_API_CALL clCreateContextFromType_wrap(
     const cl_context_properties* properties,
     cl_device_type device_type,
     void (CL_CALLBACK* pfn_notify)(const char* errinfo, const void* private_info, size_t cb, void* user_data),
@@ -120,7 +120,7 @@ return tdispatch->clCreateContextFromType(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clRetainContext_wrap(
+static cl_int CL_API_CALL clRetainContext_wrap(
     cl_context context) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clRetainContext\n");
@@ -129,7 +129,7 @@ return tdispatch->clRetainContext(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clReleaseContext_wrap(
+static cl_int CL_API_CALL clReleaseContext_wrap(
     cl_context context) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clReleaseContext\n");
@@ -138,7 +138,7 @@ return tdispatch->clReleaseContext(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetContextInfo_wrap(
+static cl_int CL_API_CALL clGetContextInfo_wrap(
     cl_context context,
     cl_context_info param_name,
     size_t param_value_size,
@@ -155,7 +155,7 @@ return tdispatch->clGetContextInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clRetainCommandQueue_wrap(
+static cl_int CL_API_CALL clRetainCommandQueue_wrap(
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clRetainCommandQueue\n");
@@ -164,7 +164,7 @@ return tdispatch->clRetainCommandQueue(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clReleaseCommandQueue_wrap(
+static cl_int CL_API_CALL clReleaseCommandQueue_wrap(
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clReleaseCommandQueue\n");
@@ -173,7 +173,7 @@ return tdispatch->clReleaseCommandQueue(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetCommandQueueInfo_wrap(
+static cl_int CL_API_CALL clGetCommandQueueInfo_wrap(
     cl_command_queue command_queue,
     cl_command_queue_info param_name,
     size_t param_value_size,
@@ -190,7 +190,7 @@ return tdispatch->clGetCommandQueueInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateBuffer_wrap(
+static cl_mem CL_API_CALL clCreateBuffer_wrap(
     cl_context context,
     cl_mem_flags flags,
     size_t size,
@@ -207,7 +207,7 @@ return tdispatch->clCreateBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clRetainMemObject_wrap(
+static cl_int CL_API_CALL clRetainMemObject_wrap(
     cl_mem memobj) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clRetainMemObject\n");
@@ -216,7 +216,7 @@ return tdispatch->clRetainMemObject(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clReleaseMemObject_wrap(
+static cl_int CL_API_CALL clReleaseMemObject_wrap(
     cl_mem memobj) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clReleaseMemObject\n");
@@ -225,7 +225,7 @@ return tdispatch->clReleaseMemObject(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetSupportedImageFormats_wrap(
+static cl_int CL_API_CALL clGetSupportedImageFormats_wrap(
     cl_context context,
     cl_mem_flags flags,
     cl_mem_object_type image_type,
@@ -244,7 +244,7 @@ return tdispatch->clGetSupportedImageFormats(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetMemObjectInfo_wrap(
+static cl_int CL_API_CALL clGetMemObjectInfo_wrap(
     cl_mem memobj,
     cl_mem_info param_name,
     size_t param_value_size,
@@ -261,7 +261,7 @@ return tdispatch->clGetMemObjectInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetImageInfo_wrap(
+static cl_int CL_API_CALL clGetImageInfo_wrap(
     cl_mem image,
     cl_image_info param_name,
     size_t param_value_size,
@@ -278,7 +278,7 @@ return tdispatch->clGetImageInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clRetainSampler_wrap(
+static cl_int CL_API_CALL clRetainSampler_wrap(
     cl_sampler sampler) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clRetainSampler\n");
@@ -287,7 +287,7 @@ return tdispatch->clRetainSampler(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clReleaseSampler_wrap(
+static cl_int CL_API_CALL clReleaseSampler_wrap(
     cl_sampler sampler) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clReleaseSampler\n");
@@ -296,7 +296,7 @@ return tdispatch->clReleaseSampler(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetSamplerInfo_wrap(
+static cl_int CL_API_CALL clGetSamplerInfo_wrap(
     cl_sampler sampler,
     cl_sampler_info param_name,
     size_t param_value_size,
@@ -313,7 +313,7 @@ return tdispatch->clGetSamplerInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithSource_wrap(
+static cl_program CL_API_CALL clCreateProgramWithSource_wrap(
     cl_context context,
     cl_uint count,
     const char** strings,
@@ -330,7 +330,7 @@ return tdispatch->clCreateProgramWithSource(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBinary_wrap(
+static cl_program CL_API_CALL clCreateProgramWithBinary_wrap(
     cl_context context,
     cl_uint num_devices,
     const cl_device_id* device_list,
@@ -351,7 +351,7 @@ return tdispatch->clCreateProgramWithBinary(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clRetainProgram_wrap(
+static cl_int CL_API_CALL clRetainProgram_wrap(
     cl_program program) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clRetainProgram\n");
@@ -360,7 +360,7 @@ return tdispatch->clRetainProgram(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clReleaseProgram_wrap(
+static cl_int CL_API_CALL clReleaseProgram_wrap(
     cl_program program) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clReleaseProgram\n");
@@ -369,7 +369,7 @@ return tdispatch->clReleaseProgram(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clBuildProgram_wrap(
+static cl_int CL_API_CALL clBuildProgram_wrap(
     cl_program program,
     cl_uint num_devices,
     const cl_device_id* device_list,
@@ -388,7 +388,7 @@ return tdispatch->clBuildProgram(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetProgramInfo_wrap(
+static cl_int CL_API_CALL clGetProgramInfo_wrap(
     cl_program program,
     cl_program_info param_name,
     size_t param_value_size,
@@ -405,7 +405,7 @@ return tdispatch->clGetProgramInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetProgramBuildInfo_wrap(
+static cl_int CL_API_CALL clGetProgramBuildInfo_wrap(
     cl_program program,
     cl_device_id device,
     cl_program_build_info param_name,
@@ -424,7 +424,7 @@ return tdispatch->clGetProgramBuildInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_kernel CL_API_CALL clCreateKernel_wrap(
+static cl_kernel CL_API_CALL clCreateKernel_wrap(
     cl_program program,
     const char* kernel_name,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
@@ -437,7 +437,7 @@ return tdispatch->clCreateKernel(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clCreateKernelsInProgram_wrap(
+static cl_int CL_API_CALL clCreateKernelsInProgram_wrap(
     cl_program program,
     cl_uint num_kernels,
     cl_kernel* kernels,
@@ -452,7 +452,7 @@ return tdispatch->clCreateKernelsInProgram(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clRetainKernel_wrap(
+static cl_int CL_API_CALL clRetainKernel_wrap(
     cl_kernel kernel) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clRetainKernel\n");
@@ -461,7 +461,7 @@ return tdispatch->clRetainKernel(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clReleaseKernel_wrap(
+static cl_int CL_API_CALL clReleaseKernel_wrap(
     cl_kernel kernel) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clReleaseKernel\n");
@@ -470,7 +470,7 @@ return tdispatch->clReleaseKernel(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clSetKernelArg_wrap(
+static cl_int CL_API_CALL clSetKernelArg_wrap(
     cl_kernel kernel,
     cl_uint arg_index,
     size_t arg_size,
@@ -485,7 +485,7 @@ return tdispatch->clSetKernelArg(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetKernelInfo_wrap(
+static cl_int CL_API_CALL clGetKernelInfo_wrap(
     cl_kernel kernel,
     cl_kernel_info param_name,
     size_t param_value_size,
@@ -502,7 +502,7 @@ return tdispatch->clGetKernelInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetKernelWorkGroupInfo_wrap(
+static cl_int CL_API_CALL clGetKernelWorkGroupInfo_wrap(
     cl_kernel kernel,
     cl_device_id device,
     cl_kernel_work_group_info param_name,
@@ -521,7 +521,7 @@ return tdispatch->clGetKernelWorkGroupInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clWaitForEvents_wrap(
+static cl_int CL_API_CALL clWaitForEvents_wrap(
     cl_uint num_events,
     const cl_event* event_list) CL_API_SUFFIX__VERSION_1_0
 {
@@ -532,7 +532,7 @@ return tdispatch->clWaitForEvents(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetEventInfo_wrap(
+static cl_int CL_API_CALL clGetEventInfo_wrap(
     cl_event event,
     cl_event_info param_name,
     size_t param_value_size,
@@ -549,7 +549,7 @@ return tdispatch->clGetEventInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clRetainEvent_wrap(
+static cl_int CL_API_CALL clRetainEvent_wrap(
     cl_event event) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clRetainEvent\n");
@@ -558,7 +558,7 @@ return tdispatch->clRetainEvent(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clReleaseEvent_wrap(
+static cl_int CL_API_CALL clReleaseEvent_wrap(
     cl_event event) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clReleaseEvent\n");
@@ -567,7 +567,7 @@ return tdispatch->clReleaseEvent(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetEventProfilingInfo_wrap(
+static cl_int CL_API_CALL clGetEventProfilingInfo_wrap(
     cl_event event,
     cl_profiling_info param_name,
     size_t param_value_size,
@@ -584,7 +584,7 @@ return tdispatch->clGetEventProfilingInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clFlush_wrap(
+static cl_int CL_API_CALL clFlush_wrap(
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clFlush\n");
@@ -593,7 +593,7 @@ return tdispatch->clFlush(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clFinish_wrap(
+static cl_int CL_API_CALL clFinish_wrap(
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clFinish\n");
@@ -602,7 +602,7 @@ return tdispatch->clFinish(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBuffer_wrap(
+static cl_int CL_API_CALL clEnqueueReadBuffer_wrap(
     cl_command_queue command_queue,
     cl_mem buffer,
     cl_bool blocking_read,
@@ -627,7 +627,7 @@ return tdispatch->clEnqueueReadBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBuffer_wrap(
+static cl_int CL_API_CALL clEnqueueWriteBuffer_wrap(
     cl_command_queue command_queue,
     cl_mem buffer,
     cl_bool blocking_write,
@@ -652,7 +652,7 @@ return tdispatch->clEnqueueWriteBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBuffer_wrap(
+static cl_int CL_API_CALL clEnqueueCopyBuffer_wrap(
     cl_command_queue command_queue,
     cl_mem src_buffer,
     cl_mem dst_buffer,
@@ -677,7 +677,7 @@ return tdispatch->clEnqueueCopyBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadImage_wrap(
+static cl_int CL_API_CALL clEnqueueReadImage_wrap(
     cl_command_queue command_queue,
     cl_mem image,
     cl_bool blocking_read,
@@ -706,7 +706,7 @@ return tdispatch->clEnqueueReadImage(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteImage_wrap(
+static cl_int CL_API_CALL clEnqueueWriteImage_wrap(
     cl_command_queue command_queue,
     cl_mem image,
     cl_bool blocking_write,
@@ -735,7 +735,7 @@ return tdispatch->clEnqueueWriteImage(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImage_wrap(
+static cl_int CL_API_CALL clEnqueueCopyImage_wrap(
     cl_command_queue command_queue,
     cl_mem src_image,
     cl_mem dst_image,
@@ -760,7 +760,7 @@ return tdispatch->clEnqueueCopyImage(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImageToBuffer_wrap(
+static cl_int CL_API_CALL clEnqueueCopyImageToBuffer_wrap(
     cl_command_queue command_queue,
     cl_mem src_image,
     cl_mem dst_buffer,
@@ -785,7 +785,7 @@ return tdispatch->clEnqueueCopyImageToBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferToImage_wrap(
+static cl_int CL_API_CALL clEnqueueCopyBufferToImage_wrap(
     cl_command_queue command_queue,
     cl_mem src_buffer,
     cl_mem dst_image,
@@ -810,7 +810,7 @@ return tdispatch->clEnqueueCopyBufferToImage(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY void* CL_API_CALL clEnqueueMapBuffer_wrap(
+static void* CL_API_CALL clEnqueueMapBuffer_wrap(
     cl_command_queue command_queue,
     cl_mem buffer,
     cl_bool blocking_map,
@@ -837,7 +837,7 @@ return tdispatch->clEnqueueMapBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY void* CL_API_CALL clEnqueueMapImage_wrap(
+static void* CL_API_CALL clEnqueueMapImage_wrap(
     cl_command_queue command_queue,
     cl_mem image,
     cl_bool blocking_map,
@@ -868,7 +868,7 @@ return tdispatch->clEnqueueMapImage(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueUnmapMemObject_wrap(
+static cl_int CL_API_CALL clEnqueueUnmapMemObject_wrap(
     cl_command_queue command_queue,
     cl_mem memobj,
     void* mapped_ptr,
@@ -887,7 +887,7 @@ return tdispatch->clEnqueueUnmapMemObject(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueNDRangeKernel_wrap(
+static cl_int CL_API_CALL clEnqueueNDRangeKernel_wrap(
     cl_command_queue command_queue,
     cl_kernel kernel,
     cl_uint work_dim,
@@ -912,7 +912,7 @@ return tdispatch->clEnqueueNDRangeKernel(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueNativeKernel_wrap(
+static cl_int CL_API_CALL clEnqueueNativeKernel_wrap(
     cl_command_queue command_queue,
     void (CL_CALLBACK* user_func)(void*),
     void* args,
@@ -939,7 +939,7 @@ return tdispatch->clEnqueueNativeKernel(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clSetCommandQueueProperty_wrap(
+static cl_int CL_API_CALL clSetCommandQueueProperty_wrap(
     cl_command_queue command_queue,
     cl_command_queue_properties properties,
     cl_bool enable,
@@ -954,7 +954,7 @@ return tdispatch->clSetCommandQueueProperty(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateImage2D_wrap(
+static cl_mem CL_API_CALL clCreateImage2D_wrap(
     cl_context context,
     cl_mem_flags flags,
     const cl_image_format* image_format,
@@ -977,7 +977,7 @@ return tdispatch->clCreateImage2D(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D_wrap(
+static cl_mem CL_API_CALL clCreateImage3D_wrap(
     cl_context context,
     cl_mem_flags flags,
     const cl_image_format* image_format,
@@ -1004,7 +1004,7 @@ return tdispatch->clCreateImage3D(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker_wrap(
+static cl_int CL_API_CALL clEnqueueMarker_wrap(
     cl_command_queue command_queue,
     cl_event* event) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
@@ -1015,7 +1015,7 @@ return tdispatch->clEnqueueMarker(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents_wrap(
+static cl_int CL_API_CALL clEnqueueWaitForEvents_wrap(
     cl_command_queue command_queue,
     cl_uint num_events,
     const cl_event* event_list) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
@@ -1028,7 +1028,7 @@ return tdispatch->clEnqueueWaitForEvents(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrier_wrap(
+static cl_int CL_API_CALL clEnqueueBarrier_wrap(
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 printf("clEnqueueBarrier\n");
@@ -1037,7 +1037,7 @@ return tdispatch->clEnqueueBarrier(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clUnloadCompiler_wrap(
+static cl_int CL_API_CALL clUnloadCompiler_wrap(
     void ) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 printf("clUnloadCompiler\n");
@@ -1046,7 +1046,7 @@ return tdispatch->clUnloadCompiler(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress_wrap(
+static void* CL_API_CALL clGetExtensionFunctionAddress_wrap(
     const char* func_name) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
 {
 printf("clGetExtensionFunctionAddress\n");
@@ -1055,7 +1055,7 @@ return tdispatch->clGetExtensionFunctionAddress(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueue_wrap(
+static cl_command_queue CL_API_CALL clCreateCommandQueue_wrap(
     cl_context context,
     cl_device_id device,
     cl_command_queue_properties properties,
@@ -1070,7 +1070,7 @@ return tdispatch->clCreateCommandQueue(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_sampler CL_API_CALL clCreateSampler_wrap(
+static cl_sampler CL_API_CALL clCreateSampler_wrap(
     cl_context context,
     cl_bool normalized_coords,
     cl_addressing_mode addressing_mode,
@@ -1087,7 +1087,7 @@ return tdispatch->clCreateSampler(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueTask_wrap(
+static cl_int CL_API_CALL clEnqueueTask_wrap(
     cl_command_queue command_queue,
     cl_kernel kernel,
     cl_uint num_events_in_wait_list,
@@ -1104,7 +1104,7 @@ return tdispatch->clEnqueueTask(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateSubBuffer_wrap(
+static cl_mem CL_API_CALL clCreateSubBuffer_wrap(
     cl_mem buffer,
     cl_mem_flags flags,
     cl_buffer_create_type buffer_create_type,
@@ -1121,7 +1121,7 @@ return tdispatch->clCreateSubBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clSetMemObjectDestructorCallback_wrap(
+static cl_int CL_API_CALL clSetMemObjectDestructorCallback_wrap(
     cl_mem memobj,
     void (CL_CALLBACK* pfn_notify)(cl_mem memobj, void* user_data),
     void* user_data) CL_API_SUFFIX__VERSION_1_1
@@ -1134,7 +1134,7 @@ return tdispatch->clSetMemObjectDestructorCallback(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_event CL_API_CALL clCreateUserEvent_wrap(
+static cl_event CL_API_CALL clCreateUserEvent_wrap(
     cl_context context,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1
 {
@@ -1145,7 +1145,7 @@ return tdispatch->clCreateUserEvent(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clSetUserEventStatus_wrap(
+static cl_int CL_API_CALL clSetUserEventStatus_wrap(
     cl_event event,
     cl_int execution_status) CL_API_SUFFIX__VERSION_1_1
 {
@@ -1156,7 +1156,7 @@ return tdispatch->clSetUserEventStatus(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clSetEventCallback_wrap(
+static cl_int CL_API_CALL clSetEventCallback_wrap(
     cl_event event,
     cl_int command_exec_callback_type,
     void (CL_CALLBACK* pfn_notify)(cl_event event, cl_int event_command_status, void *user_data),
@@ -1171,7 +1171,7 @@ return tdispatch->clSetEventCallback(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect_wrap(
+static cl_int CL_API_CALL clEnqueueReadBufferRect_wrap(
     cl_command_queue command_queue,
     cl_mem buffer,
     cl_bool blocking_read,
@@ -1206,7 +1206,7 @@ return tdispatch->clEnqueueReadBufferRect(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect_wrap(
+static cl_int CL_API_CALL clEnqueueWriteBufferRect_wrap(
     cl_command_queue command_queue,
     cl_mem buffer,
     cl_bool blocking_write,
@@ -1241,7 +1241,7 @@ return tdispatch->clEnqueueWriteBufferRect(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferRect_wrap(
+static cl_int CL_API_CALL clEnqueueCopyBufferRect_wrap(
     cl_command_queue command_queue,
     cl_mem src_buffer,
     cl_mem dst_buffer,
@@ -1274,7 +1274,7 @@ return tdispatch->clEnqueueCopyBufferRect(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevices_wrap(
+static cl_int CL_API_CALL clCreateSubDevices_wrap(
     cl_device_id in_device,
     const cl_device_partition_property* properties,
     cl_uint num_devices,
@@ -1291,7 +1291,7 @@ return tdispatch->clCreateSubDevices(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clRetainDevice_wrap(
+static cl_int CL_API_CALL clRetainDevice_wrap(
     cl_device_id device) CL_API_SUFFIX__VERSION_1_2
 {
 printf("clRetainDevice\n");
@@ -1300,7 +1300,7 @@ return tdispatch->clRetainDevice(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clReleaseDevice_wrap(
+static cl_int CL_API_CALL clReleaseDevice_wrap(
     cl_device_id device) CL_API_SUFFIX__VERSION_1_2
 {
 printf("clReleaseDevice\n");
@@ -1309,7 +1309,7 @@ return tdispatch->clReleaseDevice(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateImage_wrap(
+static cl_mem CL_API_CALL clCreateImage_wrap(
     cl_context context,
     cl_mem_flags flags,
     const cl_image_format* image_format,
@@ -1328,7 +1328,7 @@ return tdispatch->clCreateImage(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBuiltInKernels_wrap(
+static cl_program CL_API_CALL clCreateProgramWithBuiltInKernels_wrap(
     cl_context context,
     cl_uint num_devices,
     const cl_device_id* device_list,
@@ -1345,7 +1345,7 @@ return tdispatch->clCreateProgramWithBuiltInKernels(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clCompileProgram_wrap(
+static cl_int CL_API_CALL clCompileProgram_wrap(
     cl_program program,
     cl_uint num_devices,
     const cl_device_id* device_list,
@@ -1370,7 +1370,7 @@ return tdispatch->clCompileProgram(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_program CL_API_CALL clLinkProgram_wrap(
+static cl_program CL_API_CALL clLinkProgram_wrap(
     cl_context context,
     cl_uint num_devices,
     const cl_device_id* device_list,
@@ -1395,7 +1395,7 @@ return tdispatch->clLinkProgram(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clUnloadPlatformCompiler_wrap(
+static cl_int CL_API_CALL clUnloadPlatformCompiler_wrap(
     cl_platform_id platform) CL_API_SUFFIX__VERSION_1_2
 {
 printf("clUnloadPlatformCompiler\n");
@@ -1404,7 +1404,7 @@ return tdispatch->clUnloadPlatformCompiler(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetKernelArgInfo_wrap(
+static cl_int CL_API_CALL clGetKernelArgInfo_wrap(
     cl_kernel kernel,
     cl_uint arg_index,
     cl_kernel_arg_info param_name,
@@ -1423,7 +1423,7 @@ return tdispatch->clGetKernelArgInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillBuffer_wrap(
+static cl_int CL_API_CALL clEnqueueFillBuffer_wrap(
     cl_command_queue command_queue,
     cl_mem buffer,
     const void* pattern,
@@ -1448,7 +1448,7 @@ return tdispatch->clEnqueueFillBuffer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillImage_wrap(
+static cl_int CL_API_CALL clEnqueueFillImage_wrap(
     cl_command_queue command_queue,
     cl_mem image,
     const void* fill_color,
@@ -1471,7 +1471,7 @@ return tdispatch->clEnqueueFillImage(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueMigrateMemObjects_wrap(
+static cl_int CL_API_CALL clEnqueueMigrateMemObjects_wrap(
     cl_command_queue command_queue,
     cl_uint num_mem_objects,
     const cl_mem* mem_objects,
@@ -1492,7 +1492,7 @@ return tdispatch->clEnqueueMigrateMemObjects(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarkerWithWaitList_wrap(
+static cl_int CL_API_CALL clEnqueueMarkerWithWaitList_wrap(
     cl_command_queue command_queue,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
@@ -1507,7 +1507,7 @@ return tdispatch->clEnqueueMarkerWithWaitList(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrierWithWaitList_wrap(
+static cl_int CL_API_CALL clEnqueueBarrierWithWaitList_wrap(
     cl_command_queue command_queue,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
@@ -1522,7 +1522,7 @@ return tdispatch->clEnqueueBarrierWithWaitList(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_wrap(
+static void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_wrap(
     cl_platform_id platform,
     const char* func_name) CL_API_SUFFIX__VERSION_1_2
 {
@@ -1533,7 +1533,7 @@ return tdispatch->clGetExtensionFunctionAddressForPlatform(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties_wrap(
+static cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties_wrap(
     cl_context context,
     cl_device_id device,
     const cl_queue_properties* properties,
@@ -1548,7 +1548,7 @@ return tdispatch->clCreateCommandQueueWithProperties(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_mem CL_API_CALL clCreatePipe_wrap(
+static cl_mem CL_API_CALL clCreatePipe_wrap(
     cl_context context,
     cl_mem_flags flags,
     cl_uint pipe_packet_size,
@@ -1567,7 +1567,7 @@ return tdispatch->clCreatePipe(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetPipeInfo_wrap(
+static cl_int CL_API_CALL clGetPipeInfo_wrap(
     cl_mem pipe,
     cl_pipe_info param_name,
     size_t param_value_size,
@@ -1584,7 +1584,7 @@ return tdispatch->clGetPipeInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY void* CL_API_CALL clSVMAlloc_wrap(
+static void* CL_API_CALL clSVMAlloc_wrap(
     cl_context context,
     cl_svm_mem_flags flags,
     size_t size,
@@ -1599,7 +1599,7 @@ return tdispatch->clSVMAlloc(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY void CL_API_CALL clSVMFree_wrap(
+static void CL_API_CALL clSVMFree_wrap(
     cl_context context,
     void* svm_pointer) CL_API_SUFFIX__VERSION_2_0
 {
@@ -1610,7 +1610,7 @@ tdispatch->clSVMFree(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_sampler CL_API_CALL clCreateSamplerWithProperties_wrap(
+static cl_sampler CL_API_CALL clCreateSamplerWithProperties_wrap(
     cl_context context,
     const cl_sampler_properties* sampler_properties,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_2_0
@@ -1623,7 +1623,7 @@ return tdispatch->clCreateSamplerWithProperties(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clSetKernelArgSVMPointer_wrap(
+static cl_int CL_API_CALL clSetKernelArgSVMPointer_wrap(
     cl_kernel kernel,
     cl_uint arg_index,
     const void* arg_value) CL_API_SUFFIX__VERSION_2_0
@@ -1636,7 +1636,7 @@ return tdispatch->clSetKernelArgSVMPointer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clSetKernelExecInfo_wrap(
+static cl_int CL_API_CALL clSetKernelExecInfo_wrap(
     cl_kernel kernel,
     cl_kernel_exec_info param_name,
     size_t param_value_size,
@@ -1651,7 +1651,7 @@ return tdispatch->clSetKernelExecInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMFree_wrap(
+static cl_int CL_API_CALL clEnqueueSVMFree_wrap(
     cl_command_queue command_queue,
     cl_uint num_svm_pointers,
     void* svm_pointers[],
@@ -1674,7 +1674,7 @@ return tdispatch->clEnqueueSVMFree(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemcpy_wrap(
+static cl_int CL_API_CALL clEnqueueSVMMemcpy_wrap(
     cl_command_queue command_queue,
     cl_bool blocking_copy,
     void* dst_ptr,
@@ -1697,7 +1697,7 @@ return tdispatch->clEnqueueSVMMemcpy(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemFill_wrap(
+static cl_int CL_API_CALL clEnqueueSVMMemFill_wrap(
     cl_command_queue command_queue,
     void* svm_ptr,
     const void* pattern,
@@ -1720,7 +1720,7 @@ return tdispatch->clEnqueueSVMMemFill(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMap_wrap(
+static cl_int CL_API_CALL clEnqueueSVMMap_wrap(
     cl_command_queue command_queue,
     cl_bool blocking_map,
     cl_map_flags flags,
@@ -1743,7 +1743,7 @@ return tdispatch->clEnqueueSVMMap(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMUnmap_wrap(
+static cl_int CL_API_CALL clEnqueueSVMUnmap_wrap(
     cl_command_queue command_queue,
     void* svm_ptr,
     cl_uint num_events_in_wait_list,
@@ -1760,7 +1760,7 @@ return tdispatch->clEnqueueSVMUnmap(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clSetDefaultDeviceCommandQueue_wrap(
+static cl_int CL_API_CALL clSetDefaultDeviceCommandQueue_wrap(
     cl_context context,
     cl_device_id device,
     cl_command_queue command_queue) CL_API_SUFFIX__VERSION_2_1
@@ -1773,7 +1773,7 @@ return tdispatch->clSetDefaultDeviceCommandQueue(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceAndHostTimer_wrap(
+static cl_int CL_API_CALL clGetDeviceAndHostTimer_wrap(
     cl_device_id device,
     cl_ulong* device_timestamp,
     cl_ulong* host_timestamp) CL_API_SUFFIX__VERSION_2_1
@@ -1786,7 +1786,7 @@ return tdispatch->clGetDeviceAndHostTimer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetHostTimer_wrap(
+static cl_int CL_API_CALL clGetHostTimer_wrap(
     cl_device_id device,
     cl_ulong* host_timestamp) CL_API_SUFFIX__VERSION_2_1
 {
@@ -1797,7 +1797,7 @@ return tdispatch->clGetHostTimer(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithIL_wrap(
+static cl_program CL_API_CALL clCreateProgramWithIL_wrap(
     cl_context context,
     const void* il,
     size_t length,
@@ -1812,7 +1812,7 @@ return tdispatch->clCreateProgramWithIL(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_kernel CL_API_CALL clCloneKernel_wrap(
+static cl_kernel CL_API_CALL clCloneKernel_wrap(
     cl_kernel source_kernel,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_2_1
 {
@@ -1823,7 +1823,7 @@ return tdispatch->clCloneKernel(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfo_wrap(
+static cl_int CL_API_CALL clGetKernelSubGroupInfo_wrap(
     cl_kernel kernel,
     cl_device_id device,
     cl_kernel_sub_group_info param_name,
@@ -1846,7 +1846,7 @@ return tdispatch->clGetKernelSubGroupInfo(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMigrateMem_wrap(
+static cl_int CL_API_CALL clEnqueueSVMMigrateMem_wrap(
     cl_command_queue command_queue,
     cl_uint num_svm_pointers,
     const void** svm_pointers,
@@ -1869,7 +1869,7 @@ return tdispatch->clEnqueueSVMMigrateMem(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clSetProgramSpecializationConstant_wrap(
+static cl_int CL_API_CALL clSetProgramSpecializationConstant_wrap(
     cl_program program,
     cl_uint spec_id,
     size_t spec_size,
@@ -1884,7 +1884,7 @@ return tdispatch->clSetProgramSpecializationConstant(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback_wrap(
+static cl_int CL_API_CALL clSetProgramReleaseCallback_wrap(
     cl_program program,
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
     void* user_data) CL_API_SUFFIX__VERSION_2_2_DEPRECATED
@@ -1897,7 +1897,7 @@ return tdispatch->clSetProgramReleaseCallback(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_int CL_API_CALL clSetContextDestructorCallback_wrap(
+static cl_int CL_API_CALL clSetContextDestructorCallback_wrap(
     cl_context context,
     void (CL_CALLBACK* pfn_notify)(cl_context context, void* user_data),
     void* user_data) CL_API_SUFFIX__VERSION_3_0
@@ -1910,7 +1910,7 @@ return tdispatch->clSetContextDestructorCallback(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateBufferWithProperties_wrap(
+static cl_mem CL_API_CALL clCreateBufferWithProperties_wrap(
     cl_context context,
     const cl_mem_properties* properties,
     cl_mem_flags flags,
@@ -1929,7 +1929,7 @@ return tdispatch->clCreateBufferWithProperties(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties_wrap(
+static cl_mem CL_API_CALL clCreateImageWithProperties_wrap(
     cl_context context,
     const cl_mem_properties* properties,
     cl_mem_flags flags,
@@ -1952,21 +1952,21 @@ return tdispatch->clCreateImageWithProperties(
 ///////////////////////////////////////////////////////////////////////////////
 
 // cl_ext_device_fission
-static CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT_wrap(
+static cl_int CL_API_CALL clReleaseDeviceEXT_wrap(
     cl_device_id device) CL_API_SUFFIX__VERSION_1_1
 {
 printf("clReleaseDeviceEXT\n");
 return tdispatch->clReleaseDeviceEXT(
             device);
 }
-static CL_API_ENTRY cl_int CL_API_CALL clRetainDeviceEXT_wrap(
+static cl_int CL_API_CALL clRetainDeviceEXT_wrap(
     cl_device_id device) CL_API_SUFFIX__VERSION_1_1
 {
 printf("clRetainDeviceEXT\n");
 return tdispatch->clRetainDeviceEXT(
             device);
 }
-static CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT_wrap(
+static cl_int CL_API_CALL clCreateSubDevicesEXT_wrap(
     cl_device_id in_device,
     const cl_device_partition_property_ext* properties,
     cl_uint num_entries,
@@ -1987,7 +1987,7 @@ return tdispatch->clCreateSubDevicesEXT(
 // cl_khr_d3d10_sharing
 
 #if defined(_WIN32)
-static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR_wrap(
+static cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR_wrap(
     cl_platform_id platform,
     cl_d3d10_device_source_khr d3d_device_source,
     void* d3d_object,
@@ -2006,7 +2006,7 @@ return tdispatch->clGetDeviceIDsFromD3D10KHR(
             devices,
             num_devices);
 }
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10BufferKHR_wrap(
+static cl_mem CL_API_CALL clCreateFromD3D10BufferKHR_wrap(
     cl_context context,
     cl_mem_flags flags,
     ID3D10Buffer* resource,
@@ -2019,7 +2019,7 @@ return tdispatch->clCreateFromD3D10BufferKHR(
             resource,
             errcode_ret);
 }
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR_wrap(
+static cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR_wrap(
     cl_context context,
     cl_mem_flags flags,
     ID3D10Texture2D* resource,
@@ -2034,7 +2034,7 @@ return tdispatch->clCreateFromD3D10Texture2DKHR(
             subresource,
             errcode_ret);
 }
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR_wrap(
+static cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR_wrap(
     cl_context context,
     cl_mem_flags flags,
     ID3D10Texture3D* resource,
@@ -2049,7 +2049,7 @@ return tdispatch->clCreateFromD3D10Texture3DKHR(
             subresource,
             errcode_ret);
 }
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR_wrap(
+static cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR_wrap(
     cl_command_queue command_queue,
     cl_uint num_objects,
     const cl_mem* mem_objects,
@@ -2066,7 +2066,7 @@ return tdispatch->clEnqueueAcquireD3D10ObjectsKHR(
             event_wait_list,
             event);
 }
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR_wrap(
+static cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR_wrap(
     cl_command_queue command_queue,
     cl_uint num_objects,
     const cl_mem* mem_objects,
@@ -2091,7 +2091,7 @@ return tdispatch->clEnqueueReleaseD3D10ObjectsKHR(
 // cl_khr_d3d11_sharing
 
 #if defined(_WIN32)
-static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR_wrap(
+static cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR_wrap(
     cl_platform_id platform,
     cl_d3d11_device_source_khr d3d_device_source,
     void* d3d_object,
@@ -2110,7 +2110,7 @@ return tdispatch->clGetDeviceIDsFromD3D11KHR(
             devices,
             num_devices);
 }
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11BufferKHR_wrap(
+static cl_mem CL_API_CALL clCreateFromD3D11BufferKHR_wrap(
     cl_context context,
     cl_mem_flags flags,
     ID3D11Buffer* resource,
@@ -2123,7 +2123,7 @@ return tdispatch->clCreateFromD3D11BufferKHR(
             resource,
             errcode_ret);
 }
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR_wrap(
+static cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR_wrap(
     cl_context context,
     cl_mem_flags flags,
     ID3D11Texture2D* resource,
@@ -2138,7 +2138,7 @@ return tdispatch->clCreateFromD3D11Texture2DKHR(
             subresource,
             errcode_ret);
 }
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR_wrap(
+static cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR_wrap(
     cl_context context,
     cl_mem_flags flags,
     ID3D11Texture3D* resource,
@@ -2153,7 +2153,7 @@ return tdispatch->clCreateFromD3D11Texture3DKHR(
             subresource,
             errcode_ret);
 }
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR_wrap(
+static cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR_wrap(
     cl_command_queue command_queue,
     cl_uint num_objects,
     const cl_mem* mem_objects,
@@ -2170,7 +2170,7 @@ return tdispatch->clEnqueueAcquireD3D11ObjectsKHR(
             event_wait_list,
             event);
 }
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR_wrap(
+static cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR_wrap(
     cl_command_queue command_queue,
     cl_uint num_objects,
     const cl_mem* mem_objects,
@@ -2195,7 +2195,7 @@ return tdispatch->clEnqueueReleaseD3D11ObjectsKHR(
 // cl_khr_dx9_media_sharing
 
 #if defined(_WIN32)
-static CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR_wrap(
+static cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR_wrap(
     cl_platform_id platform,
     cl_uint num_media_adapters,
     cl_dx9_media_adapter_type_khr* media_adapter_type,
@@ -2216,7 +2216,7 @@ return tdispatch->clGetDeviceIDsFromDX9MediaAdapterKHR(
             devices,
             num_devices);
 }
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR_wrap(
+static cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR_wrap(
     cl_context context,
     cl_mem_flags flags,
     cl_dx9_media_adapter_type_khr adapter_type,
@@ -2233,7 +2233,7 @@ return tdispatch->clCreateFromDX9MediaSurfaceKHR(
             plane,
             errcode_ret);
 }
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR_wrap(
+static cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR_wrap(
     cl_command_queue command_queue,
     cl_uint num_objects,
     const cl_mem* mem_objects,
@@ -2250,7 +2250,7 @@ return tdispatch->clEnqueueAcquireDX9MediaSurfacesKHR(
             event_wait_list,
             event);
 }
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR_wrap(
+static cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR_wrap(
     cl_command_queue command_queue,
     cl_uint num_objects,
     const cl_mem* mem_objects,
@@ -2273,7 +2273,7 @@ return tdispatch->clEnqueueReleaseDX9MediaSurfacesKHR(
 ///////////////////////////////////////////////////////////////////////////////
 
 // cl_khr_egl_event
-static CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromEGLSyncKHR_wrap(
+static cl_event CL_API_CALL clCreateEventFromEGLSyncKHR_wrap(
     cl_context context,
     CLeglSyncKHR sync,
     CLeglDisplayKHR display,
@@ -2290,7 +2290,7 @@ return tdispatch->clCreateEventFromEGLSyncKHR(
 ///////////////////////////////////////////////////////////////////////////////
 
 // cl_khr_egl_image
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromEGLImageKHR_wrap(
+static cl_mem CL_API_CALL clCreateFromEGLImageKHR_wrap(
     cl_context context,
     CLeglDisplayKHR egldisplay,
     CLeglImageKHR eglimage,
@@ -2307,7 +2307,7 @@ return tdispatch->clCreateFromEGLImageKHR(
             properties,
             errcode_ret);
 }
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR_wrap(
+static cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR_wrap(
     cl_command_queue command_queue,
     cl_uint num_objects,
     const cl_mem* mem_objects,
@@ -2324,7 +2324,7 @@ return tdispatch->clEnqueueAcquireEGLObjectsKHR(
             event_wait_list,
             event);
 }
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR_wrap(
+static cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR_wrap(
     cl_command_queue command_queue,
     cl_uint num_objects,
     const cl_mem* mem_objects,
@@ -2345,7 +2345,7 @@ return tdispatch->clEnqueueReleaseEGLObjectsKHR(
 ///////////////////////////////////////////////////////////////////////////////
 
 // cl_khr_gl_event
-static CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromGLsyncKHR_wrap(
+static cl_event CL_API_CALL clCreateEventFromGLsyncKHR_wrap(
     cl_context context,
     cl_GLsync sync,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1
@@ -2360,7 +2360,7 @@ return tdispatch->clCreateEventFromGLsyncKHR(
 ///////////////////////////////////////////////////////////////////////////////
 
 // cl_khr_gl_sharing
-static CL_API_ENTRY cl_int CL_API_CALL clGetGLContextInfoKHR_wrap(
+static cl_int CL_API_CALL clGetGLContextInfoKHR_wrap(
     const cl_context_properties* properties,
     cl_gl_context_info param_name,
     size_t param_value_size,
@@ -2375,7 +2375,7 @@ return tdispatch->clGetGLContextInfoKHR(
             param_value,
             param_value_size_ret);
 }
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLBuffer_wrap(
+static cl_mem CL_API_CALL clCreateFromGLBuffer_wrap(
     cl_context context,
     cl_mem_flags flags,
     cl_GLuint bufobj,
@@ -2388,7 +2388,7 @@ return tdispatch->clCreateFromGLBuffer(
             bufobj,
             errcode_ret);
 }
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture_wrap(
+static cl_mem CL_API_CALL clCreateFromGLTexture_wrap(
     cl_context context,
     cl_mem_flags flags,
     cl_GLenum target,
@@ -2405,41 +2405,7 @@ return tdispatch->clCreateFromGLTexture(
             texture,
             errcode_ret);
 }
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D_wrap(
-    cl_context context,
-    cl_mem_flags flags,
-    cl_GLenum target,
-    cl_GLint miplevel,
-    cl_GLuint texture,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
-{
-printf("clCreateFromGLTexture2D\n");
-return tdispatch->clCreateFromGLTexture2D(
-            context,
-            flags,
-            target,
-            miplevel,
-            texture,
-            errcode_ret);
-}
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D_wrap(
-    cl_context context,
-    cl_mem_flags flags,
-    cl_GLenum target,
-    cl_GLint miplevel,
-    cl_GLuint texture,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
-{
-printf("clCreateFromGLTexture3D\n");
-return tdispatch->clCreateFromGLTexture3D(
-            context,
-            flags,
-            target,
-            miplevel,
-            texture,
-            errcode_ret);
-}
-static CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer_wrap(
+static cl_mem CL_API_CALL clCreateFromGLRenderbuffer_wrap(
     cl_context context,
     cl_mem_flags flags,
     cl_GLuint renderbuffer,
@@ -2452,7 +2418,7 @@ return tdispatch->clCreateFromGLRenderbuffer(
             renderbuffer,
             errcode_ret);
 }
-static CL_API_ENTRY cl_int CL_API_CALL clGetGLObjectInfo_wrap(
+static cl_int CL_API_CALL clGetGLObjectInfo_wrap(
     cl_mem memobj,
     cl_gl_object_type* gl_object_type,
     cl_GLuint* gl_object_name) CL_API_SUFFIX__VERSION_1_0
@@ -2463,7 +2429,7 @@ return tdispatch->clGetGLObjectInfo(
             gl_object_type,
             gl_object_name);
 }
-static CL_API_ENTRY cl_int CL_API_CALL clGetGLTextureInfo_wrap(
+static cl_int CL_API_CALL clGetGLTextureInfo_wrap(
     cl_mem memobj,
     cl_gl_texture_info param_name,
     size_t param_value_size,
@@ -2478,7 +2444,7 @@ return tdispatch->clGetGLTextureInfo(
             param_value,
             param_value_size_ret);
 }
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireGLObjects_wrap(
+static cl_int CL_API_CALL clEnqueueAcquireGLObjects_wrap(
     cl_command_queue command_queue,
     cl_uint num_objects,
     const cl_mem* mem_objects,
@@ -2495,7 +2461,7 @@ return tdispatch->clEnqueueAcquireGLObjects(
             event_wait_list,
             event);
 }
-static CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseGLObjects_wrap(
+static cl_int CL_API_CALL clEnqueueReleaseGLObjects_wrap(
     cl_command_queue command_queue,
     cl_uint num_objects,
     const cl_mem* mem_objects,
@@ -2512,11 +2478,45 @@ return tdispatch->clEnqueueReleaseGLObjects(
             event_wait_list,
             event);
 }
+static cl_mem CL_API_CALL clCreateFromGLTexture2D_wrap(
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLenum target,
+    cl_GLint miplevel,
+    cl_GLuint texture,
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
+{
+printf("clCreateFromGLTexture2D\n");
+return tdispatch->clCreateFromGLTexture2D(
+            context,
+            flags,
+            target,
+            miplevel,
+            texture,
+            errcode_ret);
+}
+static cl_mem CL_API_CALL clCreateFromGLTexture3D_wrap(
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLenum target,
+    cl_GLint miplevel,
+    cl_GLuint texture,
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1_DEPRECATED
+{
+printf("clCreateFromGLTexture3D\n");
+return tdispatch->clCreateFromGLTexture3D(
+            context,
+            flags,
+            target,
+            miplevel,
+            texture,
+            errcode_ret);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
 // cl_khr_subgroups
-static CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_wrap(
+static cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_wrap(
     cl_kernel in_kernel,
     cl_device_id in_device,
     cl_kernel_sub_group_info param_name,
