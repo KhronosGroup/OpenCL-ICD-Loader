@@ -195,18 +195,6 @@ do \
 #define KHR_ICD_WIDE_TRACE(...)
 #endif
 
-#define KHR_ICD_ASSERT(x) \
-do \
-{ \
-    if (khrEnableTrace) \
-    { \
-        if (!(x)) \
-        { \
-            fprintf(stderr, "KHR ICD assert at %s:%d: %s failed", __FILE__, __LINE__, #x); \
-        } \
-    } \
-} while (0)
-
 // if handle is NULL then return invalid_handle_error_code
 #define KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(handle,invalid_handle_error_code) \
 do \

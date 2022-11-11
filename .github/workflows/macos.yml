@@ -4,7 +4,8 @@ on: [push, pull_request]
 
 jobs:
   macos-gcc:
-    runs-on: macos-latest
+    #runs-on: macos-latest
+    runs-on: macos-11 # temporary, macos-latest only supports gcc-12
     strategy:
       matrix:
         VER: [9, 10, 11]
@@ -14,10 +15,10 @@ jobs:
 
     steps:
     - name: Checkout OpenCL-ICD-Loader
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Checkout OpenCL-Headers
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: KhronosGroup/OpenCL-Headers
         path: external/OpenCL-Headers

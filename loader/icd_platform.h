@@ -40,4 +40,11 @@
 #error Unknown OS!
 #endif
 
+#ifdef __MINGW32__
+#if !defined(_WIN32_WINNT) || (_WIN32_WINNT < 0x0600)
+#undef _WIN32_WINNT
+#define _WIN32_WINNT 0x0600
+#endif
+#endif // __MINGW32__
+
 #endif
