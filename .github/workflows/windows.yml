@@ -3,7 +3,73 @@ name: Windows
 on: [push, pull_request]
 
 jobs:
+
+  headers:
+    name: Build and cache Headers
+    runs-on: windows-2022
+    strategy:
+      matrix:
+        VER: [v143]
+        EXT: [ON]
+        GEN: [Visual Studio 17 2022]
+        BIN: [x64]
+        STD: [17]
+        CMAKE: [3.22.0]
+    env:
+      CMAKE_URL: https://github.com/Kitware/CMake/releases/download/v${{matrix.CMAKE}}/cmake-${{matrix.CMAKE}}-windows-x86_64.zip
+      CMAKE_EXE: C:\Tools\Kitware\CMake\${{matrix.CMAKE}}\bin\cmake.exe
+      CTEST_EXE: C:\Tools\Kitware\CMake\${{matrix.CMAKE}}\bin\ctest.exe
+      NINJA_URL: https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-win.zip
+      NINJA_EXE: C:\Tools\Ninja\ninja.exe
+
+    steps:
+    - name: Get sha of Headers
+      id: get-sha
+      run: |
+        echo ::set-output name=sha::$( curl -u "u:${{github.token}}" https://api.github.com/repos/KhronosGroup/OpenCL-Headers/git/ref/heads/main | jq .object.sha | tr -d '"' )
+
+    - uses: actions/cache@v2
+      name: Cache Headers
+      id: headers
+      env:
+        cache-name: cache-headers
+      with:
+        path: external/OpenCL-Headers/install
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.get-sha.outputs.sha }}
+
+    - name: Checkout OpenCL-Headers
+      if: steps.headers.outputs.cache-hit != 'true'
+      uses: actions/checkout@v2
+      with:
+        repository: KhronosGroup/OpenCL-Headers
+        path: external/OpenCL-Headers
+
+    - name: Create Build Environment
+      if: steps.headers.outputs.cache-hit != 'true'
+      shell: pwsh
+      run: |
+        Invoke-WebRequest ${env:CMAKE_URL} -OutFile ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip
+        Expand-Archive ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip -DestinationPath C:\Tools\Kitware\CMake\
+        Rename-Item C:\Tools\Kitware\CMake\* ${{matrix.CMAKE}}
+        Invoke-WebRequest ${env:NINJA_URL} -OutFile ~\Downloads\ninja-win.zip
+        Expand-Archive ~\Downloads\ninja-win.zip -DestinationPath C:\Tools\Ninja\
+        Remove-Item ~\Downloads\*
+        & ${env:CMAKE_EXE} --version
+        & ${env:NINJA_EXE} --version
+
+
+    - name: Build & install OpenCL-Headers (MSBuild)
+      if: steps.headers.outputs.cache-hit != 'true'
+      shell: cmd
+      run: |
+        set C_FLAGS="/W4 /WX"
+        if /I "${{matrix.BIN}}"=="x86" (set BIN=Win32) else (set BIN=x64)
+        %CMAKE_EXE% -G "${{matrix.GEN}}" -A %BIN% -T ${{matrix.VER}} -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_STANDARD=${{matrix.STD}} -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE%\external\OpenCL-Headers -B %GITHUB_WORKSPACE%\external\OpenCL-Headers\build
+        %CMAKE_EXE% --build %GITHUB_WORKSPACE%/external/OpenCL-Headers/build --target install --config Release -- /verbosity:minimal /maxCpuCount /noLogo
+
+
   msvc:
+    needs: [headers]
     runs-on: windows-2022
     strategy:
       matrix:
@@ -24,11 +90,19 @@ jobs:
     - name: Checkout OpenCL-ICD-Loader
       uses: actions/checkout@v2
 
-    - name: Checkout OpenCL-Headers
-      uses: actions/checkout@v2
+    - name: Get sha of Headers
+      id: get-sha
+      run: |
+        echo ::set-output name=sha::$( curl -u "u:${{github.token}}" https://api.github.com/repos/KhronosGroup/OpenCL-Headers/git/ref/heads/main | jq .object.sha | tr -d '"' )
+
+    - uses: actions/cache@v2
+      name: Restore Headers
+      id: headers
+      env:
+        cache-name: cache-headers
       with:
-        repository: KhronosGroup/OpenCL-Headers
-        path: external/OpenCL-Headers
+        path: external/OpenCL-Headers/install
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.get-sha.outputs.sha }}
 
     - name: Create Build Environment
       shell: pwsh
@@ -41,28 +115,6 @@ jobs:
         Remove-Item ~\Downloads\*
         & ${env:CMAKE_EXE} --version
         & ${env:NINJA_EXE} --version
-
-    - name: Build & install OpenCL-Headers (MSBuild)
-      if: matrix.GEN == 'Visual Studio 17 2022'
-      shell: cmd
-      run: |
-        set C_FLAGS="/W4 /WX"
-        if /I "${{matrix.BIN}}"=="x86" (set BIN=Win32) else (set BIN=x64)
-        %CMAKE_EXE% -G "${{matrix.GEN}}" -A %BIN% -T ${{matrix.VER}} -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_STANDARD=${{matrix.STD}} -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE%\external\OpenCL-Headers -B %GITHUB_WORKSPACE%\external\OpenCL-Headers\build
-        %CMAKE_EXE% --build %GITHUB_WORKSPACE%/external/OpenCL-Headers/build --target install --config Release -- /verbosity:minimal /maxCpuCount /noLogo
-
-    - name: Build & install OpenCL-Headers (Ninja Multi-Config)
-      if: matrix.GEN == 'Ninja Multi-Config'
-      shell: cmd
-      run: |
-        set C_FLAGS="/W4 /WX"
-        if /I "${{matrix.VER}}"=="v140" (set VER=14.0)
-        if /I "${{matrix.VER}}"=="v141" (set VER=14.1)
-        if /I "${{matrix.VER}}"=="v142" (set VER=14.2)
-        if /I "${{matrix.VER}}"=="v143" (set VER=14.3)
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.BIN}} /vcvars_ver=%VER%
-        %CMAKE_EXE% -G "${{matrix.GEN}}" -D CMAKE_MAKE_PROGRAM=%NINJA_EXE% -D CMAKE_C_FLAGS=%C_FLAGS% -D CMAKE_C_STANDARD=${{matrix.STD}} -D CMAKE_C_EXTENSIONS=${{matrix.EXT}} -D CMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\external\OpenCL-Headers\install -S %GITHUB_WORKSPACE%\external\OpenCL-Headers -B %GITHUB_WORKSPACE%\external\OpenCL-Headers\build
-        %CMAKE_EXE% --build %GITHUB_WORKSPACE%/external/OpenCL-Headers/build --target install -- -j%NUMBER_OF_PROCESSORS%
 
     - name: Configure (MSBuild)
       if: matrix.GEN == 'Visual Studio 17 2022'
