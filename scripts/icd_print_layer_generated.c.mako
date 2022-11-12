@@ -22,7 +22,7 @@
 // Core APIs:
 %for apis in coreapis.values():
 %for api in apis:
-static CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + "_wrap"}(
+static ${api.RetType} CL_API_CALL ${api.Name + "_wrap"}(
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
     ${param.Type} ${param.Name}${param.TypeEnd},
@@ -76,7 +76,7 @@ win32extensions = {
 #if defined(_WIN32)
 %endif
 %for api in apis:
-static CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name + "_wrap"}(
+static ${api.RetType} CL_API_CALL ${api.Name + "_wrap"}(
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
     ${param.Type} ${param.Name}${param.TypeEnd},

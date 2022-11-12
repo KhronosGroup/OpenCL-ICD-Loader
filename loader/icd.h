@@ -33,6 +33,18 @@
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 #endif
 
+#ifndef CL_USE_DEPRECATED_OPENCL_2_0_APIS
+#define CL_USE_DEPRECATED_OPENCL_2_0_APIS
+#endif
+
+#ifndef CL_USE_DEPRECATED_OPENCL_2_1_APIS
+#define CL_USE_DEPRECATED_OPENCL_2_1_APIS
+#endif
+
+#ifndef CL_USE_DEPRECATED_OPENCL_2_2_APIS
+#define CL_USE_DEPRECATED_OPENCL_2_2_APIS
+#endif
+
 #include <CL/cl.h>
 #include <CL/cl_ext.h>
 #include <CL/cl_icd.h>
@@ -42,19 +54,19 @@
  * type definitions
  */
 
-typedef CL_API_ENTRY cl_int (CL_API_CALL *pfn_clIcdGetPlatformIDs)(
+typedef cl_int (CL_API_CALL *pfn_clIcdGetPlatformIDs)(
     cl_uint num_entries, 
     cl_platform_id *platforms, 
     cl_uint *num_platforms) CL_API_SUFFIX__VERSION_1_0;
 
-typedef CL_API_ENTRY cl_int (CL_API_CALL *pfn_clGetPlatformInfo)(
+typedef cl_int (CL_API_CALL *pfn_clGetPlatformInfo)(
     cl_platform_id   platform, 
     cl_platform_info param_name,
     size_t           param_value_size, 
     void *           param_value,
     size_t *         param_value_size_ret) CL_API_SUFFIX__VERSION_1_0;
 
-typedef CL_API_ENTRY void *(CL_API_CALL *pfn_clGetExtensionFunctionAddress)(
+typedef void *(CL_API_CALL *pfn_clGetExtensionFunctionAddress)(
     const char *function_name)  CL_API_SUFFIX__VERSION_1_0;
 
 typedef struct KHRicdVendorRec KHRicdVendor;
