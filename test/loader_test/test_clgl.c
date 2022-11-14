@@ -254,7 +254,7 @@ struct clCreateEventFromGLsyncKHR_st clCreateEventFromGLsyncKHRData[NUM_ITEMS_cl
     {NULL, NULL, NULL}
 };
 
-typedef CL_API_ENTRY cl_event
+typedef cl_event
 (CL_API_CALL *PFN_clCreateEventFromGLsyncKHR)(cl_context           /* context */,
                                               cl_GLsync            /* cl_GLsync */,
                                               cl_int *             /* errcode_ret */);
@@ -287,7 +287,7 @@ struct clGetGLContextInfoKHR_st clGetGLContextInfoKHRData[NUM_ITEMS_clGetGLConte
     {NULL, 0, 0, NULL, NULL}
 };
 
-typedef CL_API_ENTRY cl_int
+typedef cl_int
 (CL_API_CALL *PFN_clGetGLContextInfoKHR)(const cl_context_properties * /* properties */,
                                          cl_gl_context_info            /* param_name */,
                                          size_t                        /* param_value_size */,
