@@ -18,7 +18,7 @@ from collections import namedtuple
 import argparse
 import sys
 import urllib
-import xml.etree.ElementTree as etree
+import defusedxml.ElementTree as etree
 import urllib.request
 
 # parse_xml - Helper function to parse the XML file from a URL or local file.
