@@ -17,19 +17,9 @@
  */
 
 #include <windows.h>
-
-#define OPENCL_ICD_LOADER_VERSION_MAJOR 3
-#define OPENCL_ICD_LOADER_VERSION_MINOR 0
-#define OPENCL_ICD_LOADER_VERSION_REV   4
+#include <icd_version.h>
 
 #ifdef RC_INVOKED
-
-#define OPENCL_ICD_LOADER_VAL(_v) #_v
-#define OPENCL_ICD_LOADER_TOSTRING(_d) OPENCL_ICD_LOADER_VAL(_d)
-#define OPENCL_ICD_LOADER_VERSION_STRING \
-    OPENCL_ICD_LOADER_TOSTRING(OPENCL_ICD_LOADER_VERSION_MAJOR) "." \
-    OPENCL_ICD_LOADER_TOSTRING(OPENCL_ICD_LOADER_VERSION_MINOR) "." \
-    OPENCL_ICD_LOADER_TOSTRING(OPENCL_ICD_LOADER_VERSION_REV)
 
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION    OPENCL_ICD_LOADER_VERSION_MAJOR,OPENCL_ICD_LOADER_VERSION_MINOR,OPENCL_ICD_LOADER_VERSION_REV,0
@@ -42,10 +32,10 @@ BEGIN
         BLOCK "040904E4"
         BEGIN
             VALUE "FileDescription" ,"OpenCL Client DLL"
-            VALUE "ProductName"     ,"Khronos OpenCL ICD Loader"
+            VALUE "ProductName"     ,OPENCL_ICD_LOADER_NAME_STRING
             VALUE "LegalCopyright"  ,"Copyright \251 The Khronos Group Inc 2016-2020"
             VALUE "FileVersion"     ,OPENCL_ICD_LOADER_VERSION_STRING ".0"
-            VALUE "CompanyName"     ,"Khronos Group"
+            VALUE "CompanyName"     ,OPENCL_ICD_LOADER_VENDOR_STRING
             VALUE "InternalName"    ,"OpenCL"
             VALUE "OriginalFilename","OpenCL.dll"
         END

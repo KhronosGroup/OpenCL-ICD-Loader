@@ -18,9 +18,52 @@
 
 #include "icd.h"
 #include "icd_dispatch.h"
+#include "cl_icdl_private.h"
+#include "icd_version.h"
 
 #include <stdlib.h>
 #include <string.h>
+
+static cl_int
+clGetICDLoaderInfoOCLICD(
+    cl_icdl_info param_name,
+    size_t       param_value_size,
+    void *       param_value,
+    size_t *     param_value_size_ret)
+{
+    static const char cl_icdl_OCL_VERSION[] = OPENCL_ICD_LOADER_OCL_VERSION_STRING;
+    static const char cl_icdl_VERSION[]     = OPENCL_ICD_LOADER_VERSION_STRING;
+    static const char cl_icdl_NAME[]        = OPENCL_ICD_LOADER_NAME_STRING;
+    static const char cl_icdl_VENDOR[]      = OPENCL_ICD_LOADER_VENDOR_STRING;
+    size_t            pvs;
+    void *            pv;
+
+#define KHR_ICD_CASE_STRING_PARAM_NAME(name)                                   \
+    case CL_ICDL_ ## name:                                                     \
+        pvs = strlen(cl_icdl_ ## name) + 1;                                    \
+        pv = (void *)cl_icdl_ ## name;                                         \
+        break
+
+    switch (param_name) {
+    KHR_ICD_CASE_STRING_PARAM_NAME(OCL_VERSION);
+    KHR_ICD_CASE_STRING_PARAM_NAME(VERSION);
+    KHR_ICD_CASE_STRING_PARAM_NAME(NAME);
+    KHR_ICD_CASE_STRING_PARAM_NAME(VENDOR);
+    default:
+        return CL_INVALID_VALUE;
+    }
+
+#undef KHR_ICD_CASE_PARAM_NAME
+
+    if (param_value) {
+        if (param_value_size < pvs)
+            return CL_INVALID_VALUE;
+        memcpy(param_value, pv, pvs);
+    }
+    if (param_value_size_ret != NULL)
+        *param_value_size_ret = pvs;
+    return CL_SUCCESS;
+}
 
 static void* khrIcdGetExtensionFunctionAddress(const char* function_name)
 {
@@ -92,6 +135,9 @@ static void* khrIcdGetExtensionFunctionAddress(const char* function_name)
 
     // cl_khr_sub_groups
     KHR_ICD_CHECK_EXTENSION_FUNCTION(clGetKernelSubGroupInfoKHR);
+
+    // cl_icdl
+    KHR_ICD_CHECK_EXTENSION_FUNCTION(clGetICDLoaderInfoOCLICD);
 
 #undef KHR_ICD_CHECK_EXTENSION_FUNCTION
 
