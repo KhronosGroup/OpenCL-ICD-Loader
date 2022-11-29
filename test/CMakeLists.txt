@@ -19,7 +19,7 @@ add_test (
     COMMAND icd_loader_test
 )
 
-if (ENABLE_OPENCL_LAYERS)
+if (ENABLE_OPENCL_LAYERINFO)
     add_test (
         NAME cllayerinfo_test
         COMMAND cllayerinfo
@@ -33,7 +33,7 @@ if(GENERATOR_IS_MULTI_CONFIG)
             ENVIRONMENT OCL_ICD_FILENAMES=$<TARGET_FILE:OpenCLDriverStub>
             WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>"
     )
-    if (ENABLE_OPENCL_LAYERS)
+    if (ENABLE_OPENCL_LAYERINFO)
         set_tests_properties(cllayerinfo_test
             PROPERTIES
                 ENVIRONMENT OPENCL_LAYERS=$<TARGET_FILE:PrintLayer>
@@ -46,7 +46,7 @@ else()
             ENVIRONMENT OCL_ICD_FILENAMES=$<TARGET_FILE:OpenCLDriverStub>
             WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     )
-    if (ENABLE_OPENCL_LAYERS)
+    if (ENABLE_OPENCL_LAYERINFO)
         set_tests_properties(cllayerinfo_test
             PROPERTIES
                 ENVIRONMENT OPENCL_LAYERS=$<TARGET_FILE:PrintLayer>
