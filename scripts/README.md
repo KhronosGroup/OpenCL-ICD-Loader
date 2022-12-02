@@ -6,12 +6,13 @@ In order to ease maintenance and enable faster development of related OpenCL ICD
 
 ## Dependencies
 
-The API dispatch functions are generated using Python [Mako Templates](https://www.makotemplates.org/).
+The API dispatch functions are generated using Python [Mako Templates](https://www.makotemplates.org/) and [defusedxml](https://pypi.org/project/defusedxml/).
 
-In most cases, after installing Python for your platform, Mako may be installed using:
+In most cases, after installing Python for your platform, Mako and defusedxml may be installed using:
 
 ```sh
 $ pip install Mako
+$ pip install defusedxml
 ```
 
 ## Making Changes
