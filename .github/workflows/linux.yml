@@ -132,6 +132,29 @@ jobs:
         cd $GITHUB_WORKSPACE/build/downstream/sdk ;
         $CTEST_EXE --output-on-failure
 
+    - name: Test pkg-config --cflags
+      shell: bash
+      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/lib/pkgconfig" pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/external/OpenCL-Headers/install/include"
+
+    - name: Test pkg-config --libs
+      shell: bash
+      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/lib/pkgconfig" pkg-config OpenCL --libs | grep -q "\-L$GITHUB_WORKSPACE/install/lib -lOpenCL"
+
+    - name: Consume pkg-config
+      shell: bash
+      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/lib/pkgconfig" $CMAKE_EXE
+        -G "${{matrix.GEN}}"
+        -D CMAKE_C_COMPILER=${{matrix.COMPILER}}
+        -D CMAKE_C_FLAGS="-Wall -Wextra -pedantic -m${{matrix.BIN}}"
+        -D CMAKE_C_STANDARD=${{matrix.STD}}
+        -D CMAKE_C_EXTENSIONS=${{matrix.EXT}}
+        -D DRIVER_STUB_PATH=$GITHUB_WORKSPACE/build/libOpenCLDriverStub.so
+        -B$GITHUB_WORKSPACE/build/downstream/pkgconfig
+        -H$GITHUB_WORKSPACE/test/pkgconfig/pkgconfig ;
+        $CMAKE_EXE --build $GITHUB_WORKSPACE/build/downstream/pkgconfig ;
+        cd $GITHUB_WORKSPACE/build/downstream/pkgconfig ;
+        $CTEST_EXE --output-on-failure
+
 
 
 
@@ -264,5 +287,30 @@ jobs:
         $CMAKE_EXE --build $GITHUB_WORKSPACE/build/downstream/sdk --config Release;
         $CMAKE_EXE --build $GITHUB_WORKSPACE/build/downstream/sdk --config Debug;
         cd $GITHUB_WORKSPACE/build/downstream/sdk;
+        $CTEST_EXE --output-on-failure -C Release;
+        $CTEST_EXE --output-on-failure -C Debug;
+
+    - name: Test pkg-config --cflags
+      shell: bash
+      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/lib/pkgconfig" pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/external/OpenCL-Headers/install/include"
+
+    - name: Test pkg-config --libs
+      shell: bash
+      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/lib/pkgconfig" pkg-config OpenCL --libs | grep -q "\-L$GITHUB_WORKSPACE/install/lib -lOpenCL"
+
+    - name: Consume pkg-config
+      shell: bash
+      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/lib/pkgconfig" $CMAKE_EXE
+        -G "${{matrix.GEN}}"
+        -D CMAKE_C_COMPILER=${{matrix.COMPILER}}
+        -D CMAKE_C_FLAGS="-Wall -Wextra -pedantic -m${{matrix.BIN}}"
+        -D CMAKE_C_STANDARD=${{matrix.STD}}
+        -D CMAKE_C_EXTENSIONS=${{matrix.EXT}}
+        -D DRIVER_STUB_PATH=$GITHUB_WORKSPACE/build/Release/libOpenCLDriverStub.so
+        -B $GITHUB_WORKSPACE/build/downstream/pkgconfig
+        -S $GITHUB_WORKSPACE/test/pkgconfig/pkgconfig;
+        $CMAKE_EXE --build $GITHUB_WORKSPACE/build/downstream/pkgconfig --config Release;
+        $CMAKE_EXE --build $GITHUB_WORKSPACE/build/downstream/pkgconfig --config Debug;
+        cd $GITHUB_WORKSPACE/build/downstream/pkgconfig;
         $CTEST_EXE --output-on-failure -C Release;
         $CTEST_EXE --output-on-failure -C Debug;
