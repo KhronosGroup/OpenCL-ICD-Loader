@@ -1,10 +1,18 @@
 #ifndef _ICD_TEST_LOG_H_
 #define _ICD_TEST_LOG_H_
 
-#if defined (_WIN32)
-#define DllExport   __declspec( dllexport ) 
+#if defined(_WIN32) || defined(__CYGWIN__)
+    #define DllExport __declspec(dllexport)
 #else
-#define DllExport
+    #ifndef __has_attribute
+        #define __has_attribute(x) 0  // Compatibility with non-clang compilers.
+    #endif
+    #if (defined(__GNUC__) && (__GNUC__ >= 4)) ||\
+        (defined(__clang__) && __has_attribute(visibility))
+        #define DllExport __attribute__((visibility("default")))
+    #else
+        #define DllExport
+    #endif
 #endif
 
 DllExport int test_icd_initialize_app_log(void);
