@@ -22,14 +22,6 @@
 #include <string.h>
 
 #define CL_LAYER_NAME               0x4241
-#define CL_LAYER_OPTIONS            0x4242
-
-typedef struct {
-    const char *name;
-    const char *value;
-    const char *default_value;
-    const char *description;
-} cl_layer_option;
 
 struct _cl_icd_dispatch dispatch;
 
@@ -37,37 +29,6 @@ const struct _cl_icd_dispatch *tdispatch;
 
 static cl_layer_api_version api_version = CL_LAYER_API_VERSION_100;
 static const char name[] = "print_layer";
-
-static bool option_a = false;
-static float option_b = 0.0;
-
-static cl_layer_option options_strings[] = {
-  { "option_a", NULL, NULL, "Test option a" },
-  { "option_b", NULL, NULL, "Test option b" },
-  { NULL, NULL, NULL, NULL}
-};
-
-static void fill_default_options() {
-  size_t sz = 0;
-  options_strings[0].default_value = option_a ? "true" : "false";
-  sz = snprintf(NULL, 0, "%f", option_b);
-  char *str = (char *)malloc(sz);
-  if (str) {
-    snprintf(str, sz, "%f", option_b);
-    options_strings[1].default_value = str;
-  }
-}
-
-static void fill_options() {
-  size_t sz = 0;
-  options_strings[0].value = option_a ? "true" : "false";
-  sz = snprintf(NULL, 0, "%f", option_b);
-  char *str = (char *)malloc(sz);
-  if (str) {
-    snprintf(str, sz, "%f", option_b);
-    options_strings[1].value = str;
-  }
-}
 
 static inline cl_int
 set_param_value(
@@ -106,10 +67,6 @@ clGetLayerInfo(
     sz = sizeof(name);
     src = name;
     break;
-  case CL_LAYER_OPTIONS:
-    sz = sizeof(options_strings);
-    src = options_strings;
-    break;
   default:
     return CL_INVALID_VALUE;
   }
@@ -122,7 +79,7 @@ clInitLayer(
     const struct _cl_icd_dispatch  *target_dispatch,
     cl_uint                        *num_entries_out,
     const struct _cl_icd_dispatch **layer_dispatch_ret) {
-  if (!target_dispatch || !layer_dispatch_ret ||!num_entries_out || num_entries < sizeof(dispatch)/sizeof(dispatch.clGetPlatformIDs))
+  if (!target_dispatch || !layer_dispatch_ret || !num_entries_out || num_entries < sizeof(dispatch)/sizeof(dispatch.clGetPlatformIDs))
     return CL_INVALID_VALUE;
 
   _init_dispatch();
@@ -131,11 +88,6 @@ clInitLayer(
   *layer_dispatch_ret = &dispatch;
   *num_entries_out = sizeof(dispatch)/sizeof(dispatch.clGetPlatformIDs);
 
-  fill_default_options();
-  // Parse option there
-  option_a = true;
-  option_b = 1.0;
-  fill_options();
   return CL_SUCCESS;
 }
 

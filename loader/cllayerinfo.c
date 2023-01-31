@@ -29,14 +29,6 @@
 #include <fcntl.h>
 
 #define CL_LAYER_NAME               0x4241
-#define CL_LAYER_OPTIONS            0x4242
-
-typedef struct {
-    const char *name;
-    const char *value;
-    const char *default_value;
-    const char *description;
-} cl_layer_option;
 
 int stdout_bak, stderr_bak;
 
@@ -118,28 +110,6 @@ void printLayerInfo(const struct KHRLayer *layer)
             if (CL_SUCCESS == result)
                  printf("\tCL_LAYER_NAME: %s\n", name);
             free(name);
-        }
-    }
-    result = p_clGetLayerInfo(CL_LAYER_OPTIONS, 0, NULL, &sz);
-    if (CL_SUCCESS == result)
-    {
-        cl_layer_option *options = (cl_layer_option *)malloc(sz);
-        if (options)
-        {
-            result = p_clGetLayerInfo(CL_LAYER_OPTIONS, sz, options, NULL);
-            if (CL_SUCCESS == result)
-            {
-                size_t i = 0;
-                printf("\tCL_LAYER_OPTIONS:\n");
-                while (options[i].name)
-                {
-                    if (options[i].description)
-                        printf("\t\t# %s\n", options[i].description);
-                    printf("\t\t%s = %s # (default: %s)\n", options[i].name, options[i].value, options[i].default_value);
-                    i++;
-                }
-            }
-            free(options);
         }
     }
 }
