@@ -22,7 +22,8 @@
 #include <CL/cl_layer.h>
 #if defined(_WIN32)
 #include <io.h>
-#include <sys\stat.h>
+#include <share.h>
+#include <sys/stat.h>
 #else
 #include <unistd.h>
 #endif
