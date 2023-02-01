@@ -237,6 +237,15 @@ install(
   OPTIONAL
 )
 
+if (ENABLE_OPENCL_LAYERINFO)
+  install(
+    TARGETS cllayerinfo
+    EXPORT OpenCLICDLoaderTargets
+    RUNTIME
+      DESTINATION ${CMAKE_INSTALL_BINDIR}
+  )
+endif()
+
 export(
   EXPORT OpenCLICDLoaderTargets
   FILE ${PROJECT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderTargets.cmake
