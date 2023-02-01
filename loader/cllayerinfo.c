@@ -28,8 +28,6 @@
 #endif
 #include <fcntl.h>
 
-#define CL_LAYER_NAME               0x4241
-
 int stdout_bak, stderr_bak;
 
 // Temporarily deactivate stdout:

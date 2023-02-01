@@ -21,8 +21,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define CL_LAYER_NAME               0x4241
-
 struct _cl_icd_dispatch dispatch;
 
 const struct _cl_icd_dispatch *tdispatch;
