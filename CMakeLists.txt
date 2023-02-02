@@ -52,6 +52,8 @@ endif()
 # It is currently needed default while the specification is being formalized,
 # and to study the performance impact.
 option (ENABLE_OPENCL_LAYERS "Enable OpenCL Layers" ON)
+include(CMakeDependentOption)
+cmake_dependent_option(ENABLE_OPENCL_LAYERINFO "Enable building cllayerinfo tool" ON ENABLE_OPENCL_LAYERS OFF)
 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(JoinPaths)
@@ -150,13 +152,17 @@ else ()
     target_link_libraries (OpenCL PUBLIC OpenCL::Headers)
 endif ()
 
-target_compile_definitions (OpenCL
-  PRIVATE
+set (OPENCL_COMPILE_DEFINITIONS
     CL_TARGET_OPENCL_VERSION=300
     OPENCL_ICD_LOADER_VERSION_MAJOR=3
     OPENCL_ICD_LOADER_VERSION_MINOR=0
     OPENCL_ICD_LOADER_VERSION_REV=5
     $<$<BOOL:${ENABLE_OPENCL_LAYERS}>:CL_ENABLE_LAYERS>
+)
+
+target_compile_definitions (OpenCL
+  PRIVATE
+    ${OPENCL_COMPILE_DEFINITIONS}
 )
 
 target_include_directories (OpenCL
@@ -165,6 +171,44 @@ target_include_directories (OpenCL
     loader
 )
 target_link_libraries (OpenCL PUBLIC ${CMAKE_DL_LIBS})
+
+if (ENABLE_OPENCL_LAYERINFO)
+
+  set (OPENCL_LAYER_INFO_SOURCES
+      loader/cllayerinfo.c
+      ${OPENCL_ICD_LOADER_SOURCES}
+  )
+
+  add_executable(cllayerinfo ${OPENCL_LAYER_INFO_SOURCES})
+
+  add_executable(OpenCL::cllayerinfo ALIAS cllayerinfo)
+
+  target_compile_definitions (cllayerinfo
+    PRIVATE
+      CL_LAYER_INFO
+      ${OPENCL_COMPILE_DEFINITIONS}
+  )
+
+  if (EXISTS ${OPENCL_ICD_LOADER_HEADERS_DIR}/CL/cl.h)
+      target_include_directories (cllayerinfo PUBLIC $<BUILD_INTERFACE:${OPENCL_ICD_LOADER_HEADERS_DIR}>)
+  else ()
+      target_link_libraries (cllayerinfo PUBLIC OpenCL::Headers)
+  endif ()
+
+  if (WIN32)
+    target_link_libraries (cllayerinfo PRIVATE cfgmgr32.lib runtimeobject.lib)
+  else ()
+    target_link_libraries (cllayerinfo PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+  endif ()
+
+  target_link_libraries (cllayerinfo PUBLIC ${CMAKE_DL_LIBS})
+
+  target_include_directories (cllayerinfo
+    PRIVATE
+      ${CMAKE_CURRENT_BINARY_DIR}
+      loader
+  )
+endif ()
 
 option (OPENCL_ICD_LOADER_BUILD_TESTING "Enable support for OpenCL ICD Loader testing." OFF)
 
@@ -190,6 +234,15 @@ install(
   DESTINATION ${CMAKE_INSTALL_BINDIR}
   OPTIONAL
 )
+
+if (ENABLE_OPENCL_LAYERINFO)
+  install(
+    TARGETS cllayerinfo
+    EXPORT OpenCLICDLoaderTargets
+    RUNTIME
+      DESTINATION ${CMAKE_INSTALL_BINDIR}
+  )
+endif()
 
 export(
   EXPORT OpenCLICDLoaderTargets

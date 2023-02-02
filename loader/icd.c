@@ -285,6 +285,20 @@ void khrIcdLayerAdd(const char *libraryName)
         KHR_ICD_TRACE("failed to allocate memory\n");
         goto Done;
     }
+#ifdef CL_LAYER_INFO
+    {
+        // Not using strdup as it is not standard c
+        size_t sz_name = strlen(libraryName) + 1;
+        layer->libraryName = malloc(sz_name);
+        if (!layer->libraryName)
+        {
+            KHR_ICD_TRACE("failed to allocate memory\n");
+            goto Done;
+        }
+        memcpy(layer->libraryName, libraryName, sz_name);
+        layer->p_clGetLayerInfo = (void *)(size_t)p_clGetLayerInfo;
+    }
+#endif
 
     if (khrFirstLayer) {
         targetDispatch = &(khrFirstLayer->dispatch);

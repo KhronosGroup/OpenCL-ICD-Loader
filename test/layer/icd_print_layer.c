@@ -17,10 +17,32 @@
  */
 
 #include "icd_print_layer.h"
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
 
 struct _cl_icd_dispatch dispatch;
 
 const struct _cl_icd_dispatch *tdispatch;
+
+static cl_layer_api_version api_version = CL_LAYER_API_VERSION_100;
+static const char name[] = "print_layer";
+
+static inline cl_int
+set_param_value(
+    size_t      param_value_size,
+    void       *param_value,
+    size_t     *param_value_size_ret,
+    size_t      src_size,
+    const void *src) {
+  if (param_value && param_value_size < src_size)
+    return CL_INVALID_VALUE;
+  if (param_value)
+    memcpy(param_value, src, src_size);
+  if (param_value_size_ret)
+    *param_value_size_ret = src_size;
+  return CL_SUCCESS;
+}
 
 CL_API_ENTRY cl_int CL_API_CALL
 clGetLayerInfo(
@@ -28,23 +50,25 @@ clGetLayerInfo(
     size_t         param_value_size,
     void          *param_value,
     size_t        *param_value_size_ret) {
+  size_t sz = 0;
+  const void *src = NULL;
   if (param_value_size && !param_value)
     return CL_INVALID_VALUE;
   if (!param_value && !param_value_size_ret)
     return CL_INVALID_VALUE;
   switch (param_name) {
   case CL_LAYER_API_VERSION:
-    if (param_value_size < sizeof(cl_layer_api_version))
-      return CL_INVALID_VALUE;
-    if (param_value)
-      *((cl_layer_api_version *)param_value) = CL_LAYER_API_VERSION_100;
-    if (param_value_size_ret)
-      *param_value_size_ret = sizeof(cl_layer_api_version);
+    sz = sizeof(api_version);
+    src = &api_version;
+    break;
+  case CL_LAYER_NAME:
+    sz = sizeof(name);
+    src = name;
     break;
   default:
     return CL_INVALID_VALUE;
   }
-  return CL_SUCCESS;
+  return set_param_value(param_value_size, param_value, param_value_size_ret, sz, src);
 }
 
 CL_API_ENTRY cl_int CL_API_CALL
@@ -53,7 +77,7 @@ clInitLayer(
     const struct _cl_icd_dispatch  *target_dispatch,
     cl_uint                        *num_entries_out,
     const struct _cl_icd_dispatch **layer_dispatch_ret) {
-  if (!target_dispatch || !layer_dispatch_ret ||!num_entries_out || num_entries < sizeof(dispatch)/sizeof(dispatch.clGetPlatformIDs))
+  if (!target_dispatch || !layer_dispatch_ret || !num_entries_out || num_entries < sizeof(dispatch)/sizeof(dispatch.clGetPlatformIDs))
     return CL_INVALID_VALUE;
 
   _init_dispatch();
@@ -61,6 +85,7 @@ clInitLayer(
   tdispatch = target_dispatch;
   *layer_dispatch_ret = &dispatch;
   *num_entries_out = sizeof(dispatch)/sizeof(dispatch.clGetPlatformIDs);
+
   return CL_SUCCESS;
 }
 

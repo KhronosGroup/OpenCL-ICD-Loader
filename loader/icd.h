@@ -114,6 +114,12 @@ struct KHRLayer
     struct _cl_icd_dispatch dispatch;
     // The next layer in the chain
     struct KHRLayer *next;
+#ifdef CL_LAYER_INFO
+    // The layer library name
+    char *libraryName;
+    // the pointer to the clGetLayerInfo funciton
+    void *p_clGetLayerInfo;
+#endif
 };
 
 // the global layer state
