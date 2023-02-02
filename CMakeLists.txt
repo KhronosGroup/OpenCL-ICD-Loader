@@ -52,13 +52,8 @@ endif()
 # It is currently needed default while the specification is being formalized,
 # and to study the performance impact.
 option (ENABLE_OPENCL_LAYERS "Enable OpenCL Layers" ON)
-option (ENABLE_OPENCL_LAYERINFO "Enable building cllayerinfo tool" ON)
-
-if (ENABLE_OPENCL_LAYERS AND ENABLE_OPENCL_LAYERINFO)
-  set (ENABLE_OPENCL_LAYERINFO ON)
-else()
-  set (ENABLE_OPENCL_LAYERINFO OFF)
-endif()
+include(CMakeDependentOption)
+cmake_dependent_option(ENABLE_OPENCL_LAYERINFO "Enable building cllayerinfo tool" ON ENABLE_OPENCL_LAYERS OFF)
 
 include(CheckFunctionExists)
 check_function_exists(secure_getenv HAVE_SECURE_GETENV)
