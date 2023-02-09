@@ -423,7 +423,7 @@ void *khrIcdOsLibraryLoad(const char *libraryName)
     }
     if (!hTemp)
     {
-        KHR_ICD_TRACE("Failed to load driver. Windows error code is %lu.\n", GetLastError());
+        KHR_ICD_TRACE("Failed to load driver. Windows error code is %"PRIuDW".\n", GetLastError());
     }
     return (void*)hTemp;
 }
