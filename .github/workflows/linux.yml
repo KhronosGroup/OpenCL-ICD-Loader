@@ -3,7 +3,7 @@ name: Linux
 on: [push, pull_request]
 
 env:
-  OPENCL_PKGCONFIG_PATHS: ${{ github.workspace }}/install/lib/pkgconfig:${{ github.workspace }}/external/OpenCL-Headers/install/lib/pkgconfig
+  OPENCL_PKGCONFIG_PATHS: ${{ github.workspace }}/install/lib/pkgconfig:${{ github.workspace }}/external/OpenCL-Headers/install/share/pkgconfig
 
 jobs:
   cmake-minimum:
