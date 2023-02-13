@@ -2,6 +2,9 @@ name: Linux
 
 on: [push, pull_request]
 
+env:
+  OPENCL_PKGCONFIG_PATHS: ${{ github.workspace }}/install/lib/pkgconfig:${{ github.workspace }}/external/OpenCL-Headers/install/lib/pkgconfig
+
 jobs:
   cmake-minimum:
     runs-on: ${{ matrix.OS }}
@@ -134,15 +137,15 @@ jobs:
 
     - name: Test pkg-config --cflags
       shell: bash
-      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/lib/pkgconfig" pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/external/OpenCL-Headers/install/include"
+      run: PKG_CONFIG_PATH="$OPENCL_PKGCONFIG_PATHS" pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/external/OpenCL-Headers/install/include"
 
     - name: Test pkg-config --libs
       shell: bash
-      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/lib/pkgconfig" pkg-config OpenCL --libs | grep -q "\-L$GITHUB_WORKSPACE/install/lib -lOpenCL"
+      run: PKG_CONFIG_PATH="$OPENCL_PKGCONFIG_PATHS" pkg-config OpenCL --libs | grep -q "\-L$GITHUB_WORKSPACE/install/lib -lOpenCL"
 
     - name: Consume pkg-config
       shell: bash
-      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/lib/pkgconfig" $CMAKE_EXE
+      run: PKG_CONFIG_PATH="$OPENCL_PKGCONFIG_PATHS" $CMAKE_EXE
         -G "${{matrix.GEN}}"
         -D CMAKE_C_COMPILER=${{matrix.COMPILER}}
         -D CMAKE_C_FLAGS="-Wall -Wextra -pedantic -m${{matrix.BIN}}"
@@ -292,15 +295,15 @@ jobs:
 
     - name: Test pkg-config --cflags
       shell: bash
-      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/lib/pkgconfig" pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/external/OpenCL-Headers/install/include"
+      run: PKG_CONFIG_PATH="$OPENCL_PKGCONFIG_PATHS" pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/external/OpenCL-Headers/install/include"
 
     - name: Test pkg-config --libs
       shell: bash
-      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/lib/pkgconfig" pkg-config OpenCL --libs | grep -q "\-L$GITHUB_WORKSPACE/install/lib -lOpenCL"
+      run: PKG_CONFIG_PATH="$OPENCL_PKGCONFIG_PATHS" pkg-config OpenCL --libs | grep -q "\-L$GITHUB_WORKSPACE/install/lib -lOpenCL"
 
     - name: Consume pkg-config
       shell: bash
-      run: PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/lib/pkgconfig" $CMAKE_EXE
+      run: PKG_CONFIG_PATH="$OPENCL_PKGCONFIG_PATHS" $CMAKE_EXE
         -G "${{matrix.GEN}}"
         -D CMAKE_C_COMPILER=${{matrix.COMPILER}}
         -D CMAKE_C_FLAGS="-Wall -Wextra -pedantic -m${{matrix.BIN}}"
