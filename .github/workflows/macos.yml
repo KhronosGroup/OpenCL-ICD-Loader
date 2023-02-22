@@ -101,7 +101,9 @@ jobs:
 
     - name: Test pkg-config --cflags
       shell: bash
-      run: PKG_CONFIG_PATH="$OPENCL_PKGCONFIG_PATHS" pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/external/OpenCL-Headers/install/include"
+      run: |
+        if [[ ! `which pkg-config` ]]; then brew install pkg-config; fi;
+        PKG_CONFIG_PATH="$OPENCL_PKGCONFIG_PATHS" pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/external/OpenCL-Headers/install/include"
 
     - name: Test pkg-config --libs
       shell: bash
