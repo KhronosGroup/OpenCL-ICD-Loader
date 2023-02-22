@@ -33,7 +33,7 @@ BEGIN
         BEGIN
             VALUE "FileDescription" ,"OpenCL Client DLL"
             VALUE "ProductName"     ,OPENCL_ICD_LOADER_NAME_STRING
-            VALUE "LegalCopyright"  ,"Copyright \251 The Khronos Group Inc 2016-2020"
+            VALUE "LegalCopyright"  ,L"Copyright \251 The Khronos Group Inc 2016-2020"
             VALUE "FileVersion"     ,OPENCL_ICD_LOADER_VERSION_STRING ".0"
             VALUE "CompanyName"     ,OPENCL_ICD_LOADER_VENDOR_STRING
             VALUE "InternalName"    ,"OpenCL"
