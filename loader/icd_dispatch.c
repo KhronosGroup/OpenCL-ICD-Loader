@@ -18,7 +18,6 @@
 
 #include "icd.h"
 #include "icd_dispatch.h"
-#include "cl_icdl_private.h"
 #include "icd_version.h"
 
 #include <stdlib.h>
