@@ -6,7 +6,7 @@ if(TARGET OpenCL)
 endif()
 
 project (OpenCL-ICD-Loader
-    VERSION 1.2
+    VERSION 1.2.5
     LANGUAGES C)
 
 find_package (Threads REQUIRED)
@@ -119,6 +119,7 @@ endif()
 
 add_library (OpenCL::OpenCL ALIAS OpenCL)
 
+# We could eventually use OpenCL-ICD-Loader_VERSION or PROJECT_VERSION here instead of a hardcoded 1.2.
 set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
 
 if (WIN32)
@@ -156,7 +157,7 @@ set (OPENCL_COMPILE_DEFINITIONS
     CL_TARGET_OPENCL_VERSION=300
     OPENCL_ICD_LOADER_VERSION_MAJOR=3
     OPENCL_ICD_LOADER_VERSION_MINOR=0
-    OPENCL_ICD_LOADER_VERSION_REV=5
+    OPENCL_ICD_LOADER_VERSION_REV=${PROJECT_VERSION_PATCH}
     $<$<BOOL:${ENABLE_OPENCL_LAYERS}>:CL_ENABLE_LAYERS>
 )
 
