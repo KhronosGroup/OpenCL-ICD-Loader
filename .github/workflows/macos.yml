@@ -7,8 +7,7 @@ env:
 
 jobs:
   macos-gcc:
-    #runs-on: macos-latest
-    runs-on: macos-11 # temporary, macos-latest only supports gcc-12
+    runs-on: macos-latest
     strategy:
       matrix:
         VER: [9, 10, 11]
