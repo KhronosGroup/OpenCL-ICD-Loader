@@ -48,6 +48,7 @@ jobs:
     - name: Build & install OpenCL-Headers
       run: $CMAKE_EXE
         -G "${{matrix.GEN}}"
+        -D BUILD_TESTING=OFF
         -D CMAKE_BUILD_TYPE=${{matrix.CONFIG}}
         -D CMAKE_C_FLAGS="-w -m${{matrix.BIN}}"
         -D CMAKE_C_COMPILER=${{matrix.COMPILER}}
@@ -205,6 +206,7 @@ jobs:
     - name: Build & install OpenCL-Headers
       run: $CMAKE_EXE
         -G "${{matrix.GEN}}"
+        -D BUILD_TESTING=OFF
         -D CMAKE_C_FLAGS="-w -m${{matrix.BIN}}"
         -D CMAKE_C_COMPILER=${{matrix.COMPILER}}
         -D CMAKE_C_STANDARD=${{matrix.STD}}
