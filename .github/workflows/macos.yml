@@ -7,7 +7,8 @@ env:
 
 jobs:
   macos-gcc:
-    runs-on: macos-latest
+    #runs-on: macos-latest
+    runs-on: macos-11 # temporary, macos-latest only supports gcc-12
     strategy:
       matrix:
         VER: [9, 10, 11]
@@ -31,11 +32,6 @@ jobs:
         cmake -E make_directory $GITHUB_WORKSPACE/install;
         if [[ "${{matrix.GEN}}" == "Ninja Multi-Config" && ! `which ninja` ]]; then brew install ninja; fi;
         if [[ ! `which /usr/local/bin/gcc-${{matrix.VER}}` ]]; then brew install gcc@${{matrix.VER}}; fi;
-
-    - name: Set gcc9 Compatibility Environment
-      if: matrix.VER == 9
-      env:
-          SYSTEM_VERSION_COMPAT: 0
 
     - name: Build & install OpenCL-Headers
       run: cmake
