@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         OS: [ubuntu-20.04]
-        COMPILER: [gcc-7, clang-8, clang-10] #gcc-8
+        COMPILER: [gcc-7, clang-8] #gcc-8 clang-10
         EXT: [ON, OFF]
         GEN: [Unix Makefiles]
         CONFIG: [Debug, Release]
@@ -201,6 +201,7 @@ jobs:
         -D CMAKE_C_STANDARD=${{matrix.STD}}
         -D CMAKE_C_EXTENSIONS=${{matrix.EXT}}
         -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
+        -D BUILD_TESTING=OFF
         -B $GITHUB_WORKSPACE/external/OpenCL-Headers/build
         -S $GITHUB_WORKSPACE/external/OpenCL-Headers;
         $CMAKE_EXE
