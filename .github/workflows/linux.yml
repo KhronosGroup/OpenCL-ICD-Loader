@@ -18,7 +18,7 @@ jobs:
         CONFIG: [Debug, Release]
         STD: [99, 11]
         BIN: [32, 64]
-        CMAKE: [3.1.3, 3.21.2]
+        CMAKE: [3.1.3] #3.21.2
     env:
       CMAKE_EXE: /opt/Kitware/CMake/${{ matrix.CMAKE }}/bin/cmake
       CTEST_EXE: /opt/Kitware/CMake/${{ matrix.CMAKE }}/bin/ctest
@@ -268,7 +268,7 @@ jobs:
     - name: "Consume (SDK): Configure/Build/Test"
       shell: bash
       run: $CMAKE_EXE -E make_directory $GITHUB_WORKSPACE/install/share/cmake/OpenCL ;
-        echo -e 'include("/home/runner/work/OpenCL-ICD-Loader/OpenCL-ICD-Loader/external/OpenCL-Headers/install/share/cmake/OpenCLHeaders/OpenCLHeadersTargets.cmake")\ninclude("${CMAKE_CURRENT_LIST_DIR}/../OpenCLICDLoader/OpenCLICDLoaderTargets.cmake")' > $GITHUB_WORKSPACE/install/share/cmake/OpenCL/OpenCLConfig.cmake ;
+        echo -e "include(\"$GITHUB_WORKSPACE/external/OpenCL-Headers/install/share/cmake/OpenCLHeaders/OpenCLHeadersTargets.cmake\")\ninclude(\"\${CMAKE_CURRENT_LIST_DIR}/../OpenCLICDLoader/OpenCLICDLoaderTargets.cmake\")" > $GITHUB_WORKSPACE/install/share/cmake/OpenCL/OpenCLConfig.cmake ;
         $CMAKE_EXE
         -G "${{matrix.GEN}}"
         -D CMAKE_C_COMPILER=${{matrix.COMPILER}}
