@@ -26,6 +26,10 @@ jobs:
         repository: KhronosGroup/OpenCL-Headers
         path: external/OpenCL-Headers
 
+    - name: Install gcc if required
+      run: |
+        if [[ ! `which /usr/local/bin/gcc-${{matrix.VER}}` ]]; then brew install gcc@${{matrix.VER}}; fi;
+
     - name: Create Build Environment
       run: |
         cmake -E make_directory $GITHUB_WORKSPACE/build;
@@ -41,6 +45,7 @@ jobs:
         -D CMAKE_C_STANDARD=${{matrix.STD}}
         -D CMAKE_C_EXTENSIONS=${{matrix.EXT}}
         -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
+        -D BUILD_TESTING=OFF
         -S $GITHUB_WORKSPACE/external/OpenCL-Headers
         -B $GITHUB_WORKSPACE/external/OpenCL-Headers/build &&
         cmake
