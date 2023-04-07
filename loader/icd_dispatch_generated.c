@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2020 The Khronos Group Inc.
+ * Copyright (c) 2012-2023 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -5202,6 +5202,7 @@ CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT(
             device);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(device->dispatch->clReleaseDeviceEXT);
     return device->dispatch->clReleaseDeviceEXT(
         device);
 }
@@ -5210,6 +5211,7 @@ static cl_int CL_API_CALL clReleaseDeviceEXT_disp(
     cl_device_id device)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(device->dispatch->clReleaseDeviceEXT);
     return device->dispatch->clReleaseDeviceEXT(
         device);
 }
@@ -5224,6 +5226,7 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainDeviceEXT(
             device);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(device->dispatch->clRetainDeviceEXT);
     return device->dispatch->clRetainDeviceEXT(
         device);
 }
@@ -5232,6 +5235,7 @@ static cl_int CL_API_CALL clRetainDeviceEXT_disp(
     cl_device_id device)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(device->dispatch->clRetainDeviceEXT);
     return device->dispatch->clRetainDeviceEXT(
         device);
 }
@@ -5254,6 +5258,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT(
             num_devices);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_device, CL_INVALID_DEVICE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(in_device->dispatch->clCreateSubDevicesEXT);
     return in_device->dispatch->clCreateSubDevicesEXT(
         in_device,
         properties,
@@ -5270,6 +5275,7 @@ static cl_int CL_API_CALL clCreateSubDevicesEXT_disp(
     cl_uint* num_devices)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_device, CL_INVALID_DEVICE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(in_device->dispatch->clCreateSubDevicesEXT);
     return in_device->dispatch->clCreateSubDevicesEXT(
         in_device,
         properties,
@@ -5306,6 +5312,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR(
             num_devices);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(platform->dispatch->clGetDeviceIDsFromD3D10KHR);
     return platform->dispatch->clGetDeviceIDsFromD3D10KHR(
         platform,
         d3d_device_source,
@@ -5326,6 +5333,7 @@ static cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR_disp(
     cl_uint* num_devices)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(platform->dispatch->clGetDeviceIDsFromD3D10KHR);
     return platform->dispatch->clGetDeviceIDsFromD3D10KHR(
         platform,
         d3d_device_source,
@@ -5352,6 +5360,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10BufferKHR(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromD3D10BufferKHR);
     return context->dispatch->clCreateFromD3D10BufferKHR(
         context,
         flags,
@@ -5366,6 +5375,7 @@ static cl_mem CL_API_CALL clCreateFromD3D10BufferKHR_disp(
     cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromD3D10BufferKHR);
     return context->dispatch->clCreateFromD3D10BufferKHR(
         context,
         flags,
@@ -5391,6 +5401,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromD3D10Texture2DKHR);
     return context->dispatch->clCreateFromD3D10Texture2DKHR(
         context,
         flags,
@@ -5407,6 +5418,7 @@ static cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR_disp(
     cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromD3D10Texture2DKHR);
     return context->dispatch->clCreateFromD3D10Texture2DKHR(
         context,
         flags,
@@ -5433,6 +5445,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromD3D10Texture3DKHR);
     return context->dispatch->clCreateFromD3D10Texture3DKHR(
         context,
         flags,
@@ -5449,6 +5462,7 @@ static cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR_disp(
     cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromD3D10Texture3DKHR);
     return context->dispatch->clCreateFromD3D10Texture3DKHR(
         context,
         flags,
@@ -5477,6 +5491,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR(
             event);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueAcquireD3D10ObjectsKHR);
     return command_queue->dispatch->clEnqueueAcquireD3D10ObjectsKHR(
         command_queue,
         num_objects,
@@ -5495,6 +5510,7 @@ static cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR_disp(
     cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueAcquireD3D10ObjectsKHR);
     return command_queue->dispatch->clEnqueueAcquireD3D10ObjectsKHR(
         command_queue,
         num_objects,
@@ -5524,6 +5540,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR(
             event);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueReleaseD3D10ObjectsKHR);
     return command_queue->dispatch->clEnqueueReleaseD3D10ObjectsKHR(
         command_queue,
         num_objects,
@@ -5542,6 +5559,7 @@ static cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR_disp(
     cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueReleaseD3D10ObjectsKHR);
     return command_queue->dispatch->clEnqueueReleaseD3D10ObjectsKHR(
         command_queue,
         num_objects,
@@ -5581,6 +5599,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR(
             num_devices);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(platform->dispatch->clGetDeviceIDsFromD3D11KHR);
     return platform->dispatch->clGetDeviceIDsFromD3D11KHR(
         platform,
         d3d_device_source,
@@ -5601,6 +5620,7 @@ static cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR_disp(
     cl_uint* num_devices)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(platform->dispatch->clGetDeviceIDsFromD3D11KHR);
     return platform->dispatch->clGetDeviceIDsFromD3D11KHR(
         platform,
         d3d_device_source,
@@ -5627,6 +5647,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11BufferKHR(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromD3D11BufferKHR);
     return context->dispatch->clCreateFromD3D11BufferKHR(
         context,
         flags,
@@ -5641,6 +5662,7 @@ static cl_mem CL_API_CALL clCreateFromD3D11BufferKHR_disp(
     cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromD3D11BufferKHR);
     return context->dispatch->clCreateFromD3D11BufferKHR(
         context,
         flags,
@@ -5666,6 +5688,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromD3D11Texture2DKHR);
     return context->dispatch->clCreateFromD3D11Texture2DKHR(
         context,
         flags,
@@ -5682,6 +5705,7 @@ static cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR_disp(
     cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromD3D11Texture2DKHR);
     return context->dispatch->clCreateFromD3D11Texture2DKHR(
         context,
         flags,
@@ -5708,6 +5732,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromD3D11Texture3DKHR);
     return context->dispatch->clCreateFromD3D11Texture3DKHR(
         context,
         flags,
@@ -5724,6 +5749,7 @@ static cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR_disp(
     cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromD3D11Texture3DKHR);
     return context->dispatch->clCreateFromD3D11Texture3DKHR(
         context,
         flags,
@@ -5752,6 +5778,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR(
             event);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueAcquireD3D11ObjectsKHR);
     return command_queue->dispatch->clEnqueueAcquireD3D11ObjectsKHR(
         command_queue,
         num_objects,
@@ -5770,6 +5797,7 @@ static cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR_disp(
     cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueAcquireD3D11ObjectsKHR);
     return command_queue->dispatch->clEnqueueAcquireD3D11ObjectsKHR(
         command_queue,
         num_objects,
@@ -5799,6 +5827,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR(
             event);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueReleaseD3D11ObjectsKHR);
     return command_queue->dispatch->clEnqueueReleaseD3D11ObjectsKHR(
         command_queue,
         num_objects,
@@ -5817,6 +5846,7 @@ static cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR_disp(
     cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueReleaseD3D11ObjectsKHR);
     return command_queue->dispatch->clEnqueueReleaseD3D11ObjectsKHR(
         command_queue,
         num_objects,
@@ -5858,6 +5888,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR(
             num_devices);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(platform->dispatch->clGetDeviceIDsFromDX9MediaAdapterKHR);
     return platform->dispatch->clGetDeviceIDsFromDX9MediaAdapterKHR(
         platform,
         num_media_adapters,
@@ -5880,6 +5911,7 @@ static cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR_disp(
     cl_uint* num_devices)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(platform->dispatch->clGetDeviceIDsFromDX9MediaAdapterKHR);
     return platform->dispatch->clGetDeviceIDsFromDX9MediaAdapterKHR(
         platform,
         num_media_adapters,
@@ -5911,6 +5943,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromDX9MediaSurfaceKHR);
     return context->dispatch->clCreateFromDX9MediaSurfaceKHR(
         context,
         flags,
@@ -5929,6 +5962,7 @@ static cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR_disp(
     cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromDX9MediaSurfaceKHR);
     return context->dispatch->clCreateFromDX9MediaSurfaceKHR(
         context,
         flags,
@@ -5958,6 +5992,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR(
             event);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueAcquireDX9MediaSurfacesKHR);
     return command_queue->dispatch->clEnqueueAcquireDX9MediaSurfacesKHR(
         command_queue,
         num_objects,
@@ -5976,6 +6011,7 @@ static cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR_disp(
     cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueAcquireDX9MediaSurfacesKHR);
     return command_queue->dispatch->clEnqueueAcquireDX9MediaSurfacesKHR(
         command_queue,
         num_objects,
@@ -6005,6 +6041,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR(
             event);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueReleaseDX9MediaSurfacesKHR);
     return command_queue->dispatch->clEnqueueReleaseDX9MediaSurfacesKHR(
         command_queue,
         num_objects,
@@ -6023,6 +6060,7 @@ static cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR_disp(
     cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueReleaseDX9MediaSurfacesKHR);
     return command_queue->dispatch->clEnqueueReleaseDX9MediaSurfacesKHR(
         command_queue,
         num_objects,
@@ -6054,6 +6092,7 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromEGLSyncKHR(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateEventFromEGLSyncKHR);
     return context->dispatch->clCreateEventFromEGLSyncKHR(
         context,
         sync,
@@ -6068,6 +6107,7 @@ static cl_event CL_API_CALL clCreateEventFromEGLSyncKHR_disp(
     cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateEventFromEGLSyncKHR);
     return context->dispatch->clCreateEventFromEGLSyncKHR(
         context,
         sync,
@@ -6099,6 +6139,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromEGLImageKHR(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromEGLImageKHR);
     return context->dispatch->clCreateFromEGLImageKHR(
         context,
         egldisplay,
@@ -6117,6 +6158,7 @@ static cl_mem CL_API_CALL clCreateFromEGLImageKHR_disp(
     cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromEGLImageKHR);
     return context->dispatch->clCreateFromEGLImageKHR(
         context,
         egldisplay,
@@ -6146,6 +6188,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR(
             event);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueAcquireEGLObjectsKHR);
     return command_queue->dispatch->clEnqueueAcquireEGLObjectsKHR(
         command_queue,
         num_objects,
@@ -6164,6 +6207,7 @@ static cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR_disp(
     cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueAcquireEGLObjectsKHR);
     return command_queue->dispatch->clEnqueueAcquireEGLObjectsKHR(
         command_queue,
         num_objects,
@@ -6193,6 +6237,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR(
             event);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueReleaseEGLObjectsKHR);
     return command_queue->dispatch->clEnqueueReleaseEGLObjectsKHR(
         command_queue,
         num_objects,
@@ -6211,6 +6256,7 @@ static cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR_disp(
     cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueReleaseEGLObjectsKHR);
     return command_queue->dispatch->clEnqueueReleaseEGLObjectsKHR(
         command_queue,
         num_objects,
@@ -6238,6 +6284,7 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromGLsyncKHR(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateEventFromGLsyncKHR);
     return context->dispatch->clCreateEventFromGLsyncKHR(
         context,
         sync,
@@ -6250,6 +6297,7 @@ static cl_event CL_API_CALL clCreateEventFromGLsyncKHR_disp(
     cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateEventFromGLsyncKHR);
     return context->dispatch->clCreateEventFromGLsyncKHR(
         context,
         sync,
@@ -6280,6 +6328,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLContextInfoKHR(
     cl_platform_id platform = NULL;
     khrIcdContextPropertiesGetPlatform(properties, &platform);
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(platform->dispatch->clGetGLContextInfoKHR);
     return platform->dispatch->clGetGLContextInfoKHR(
         properties,
         param_name,
@@ -6298,6 +6347,7 @@ static cl_int CL_API_CALL clGetGLContextInfoKHR_disp(
     cl_platform_id platform = NULL;
     khrIcdContextPropertiesGetPlatform(properties, &platform);
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(platform->dispatch->clGetGLContextInfoKHR);
     return platform->dispatch->clGetGLContextInfoKHR(
         properties,
         param_name,
@@ -6322,6 +6372,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLBuffer(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromGLBuffer);
     return context->dispatch->clCreateFromGLBuffer(
         context,
         flags,
@@ -6336,6 +6387,7 @@ static cl_mem CL_API_CALL clCreateFromGLBuffer_disp(
     int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromGLBuffer);
     return context->dispatch->clCreateFromGLBuffer(
         context,
         flags,
@@ -6363,6 +6415,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromGLTexture);
     return context->dispatch->clCreateFromGLTexture(
         context,
         flags,
@@ -6381,6 +6434,7 @@ static cl_mem CL_API_CALL clCreateFromGLTexture_disp(
     cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromGLTexture);
     return context->dispatch->clCreateFromGLTexture(
         context,
         flags,
@@ -6406,6 +6460,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromGLRenderbuffer);
     return context->dispatch->clCreateFromGLRenderbuffer(
         context,
         flags,
@@ -6420,6 +6475,7 @@ static cl_mem CL_API_CALL clCreateFromGLRenderbuffer_disp(
     cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromGLRenderbuffer);
     return context->dispatch->clCreateFromGLRenderbuffer(
         context,
         flags,
@@ -6441,6 +6497,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLObjectInfo(
             gl_object_name);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(memobj->dispatch->clGetGLObjectInfo);
     return memobj->dispatch->clGetGLObjectInfo(
         memobj,
         gl_object_type,
@@ -6453,6 +6510,7 @@ static cl_int CL_API_CALL clGetGLObjectInfo_disp(
     cl_GLuint* gl_object_name)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(memobj->dispatch->clGetGLObjectInfo);
     return memobj->dispatch->clGetGLObjectInfo(
         memobj,
         gl_object_type,
@@ -6477,6 +6535,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLTextureInfo(
             param_value_size_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(memobj->dispatch->clGetGLTextureInfo);
     return memobj->dispatch->clGetGLTextureInfo(
         memobj,
         param_name,
@@ -6493,6 +6552,7 @@ static cl_int CL_API_CALL clGetGLTextureInfo_disp(
     size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(memobj->dispatch->clGetGLTextureInfo);
     return memobj->dispatch->clGetGLTextureInfo(
         memobj,
         param_name,
@@ -6521,6 +6581,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireGLObjects(
             event);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueAcquireGLObjects);
     return command_queue->dispatch->clEnqueueAcquireGLObjects(
         command_queue,
         num_objects,
@@ -6539,6 +6600,7 @@ static cl_int CL_API_CALL clEnqueueAcquireGLObjects_disp(
     cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueAcquireGLObjects);
     return command_queue->dispatch->clEnqueueAcquireGLObjects(
         command_queue,
         num_objects,
@@ -6568,6 +6630,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseGLObjects(
             event);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueReleaseGLObjects);
     return command_queue->dispatch->clEnqueueReleaseGLObjects(
         command_queue,
         num_objects,
@@ -6586,6 +6649,7 @@ static cl_int CL_API_CALL clEnqueueReleaseGLObjects_disp(
     cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clEnqueueReleaseGLObjects);
     return command_queue->dispatch->clEnqueueReleaseGLObjects(
         command_queue,
         num_objects,
@@ -6615,6 +6679,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromGLTexture2D);
     return context->dispatch->clCreateFromGLTexture2D(
         context,
         flags,
@@ -6633,6 +6698,7 @@ static cl_mem CL_API_CALL clCreateFromGLTexture2D_disp(
     cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromGLTexture2D);
     return context->dispatch->clCreateFromGLTexture2D(
         context,
         flags,
@@ -6662,6 +6728,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromGLTexture3D);
     return context->dispatch->clCreateFromGLTexture3D(
         context,
         flags,
@@ -6680,6 +6747,7 @@ static cl_mem CL_API_CALL clCreateFromGLTexture3D_disp(
     cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromGLTexture3D);
     return context->dispatch->clCreateFromGLTexture3D(
         context,
         flags,
@@ -6717,6 +6785,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfoKHR(
             param_value_size_ret);
 #endif // defined(CL_ENABLE_LAYERS)
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_kernel, CL_INVALID_KERNEL);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(in_kernel->dispatch->clGetKernelSubGroupInfoKHR);
     return in_kernel->dispatch->clGetKernelSubGroupInfoKHR(
         in_kernel,
         in_device,
@@ -6739,6 +6808,7 @@ static cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_disp(
     size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_kernel, CL_INVALID_KERNEL);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(in_kernel->dispatch->clGetKernelSubGroupInfoKHR);
     return in_kernel->dispatch->clGetKernelSubGroupInfoKHR(
         in_kernel,
         in_device,
