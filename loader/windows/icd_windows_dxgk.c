@@ -35,7 +35,7 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
     int result = 0;
 
     // Get handle to GDI Runtime
-    HMODULE h = LoadLibrary("gdi32.dll");
+    HMODULE h = LoadLibraryA("gdi32.dll");
     if (h == NULL)
         return ret;
 
