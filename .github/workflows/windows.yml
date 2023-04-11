@@ -27,9 +27,8 @@ jobs:
     - name: Checkout OpenCL-Headers
       uses: actions/checkout@v3
       with:
-        repository: Kerilk/OpenCL-Headers
+        repository: KhronosGroup/OpenCL-Headers
         path: external/OpenCL-Headers
-        ref: cl_icdl
 
     - name: Create Build Environment
       shell: pwsh
