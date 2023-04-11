@@ -260,3 +260,8 @@ void khrIcdOsLibraryUnload(void *library)
 {
     dlclose(library);
 }
+
+void __attribute__((destructor)) khrIcdGlobalDestructor() {
+    khrIcdVendorCleanup();
+    khrIcdLayerCleanup();
+}

@@ -210,6 +210,15 @@ Done:
     }
 }
 
+void khrIcdVendorCleanup() {
+    KHRicdVendor* nextVendor = NULL;
+    while (khrIcdVendors) {
+        nextVendor = khrIcdVendors->next;
+        free(khrIcdVendors);
+        khrIcdVendors = nextVendor;
+    }
+}
+
 #if defined(CL_ENABLE_LAYERS)
 void khrIcdLayerAdd(const char *libraryName)
 {
@@ -343,6 +352,15 @@ Done:
     if (layer)
     {
         free(layer);
+    }
+}
+
+void khrIcdLayerCleanup() {
+    struct KHRLayer* nextLayer = NULL;
+    while (khrFirstLayer) {
+        nextLayer = khrFirstLayer->next;
+        free(khrFirstLayer);
+        khrFirstLayer = nextLayer;
     }
 }
 #endif // defined(CL_ENABLE_LAYERS)
