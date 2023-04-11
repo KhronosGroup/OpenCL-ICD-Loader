@@ -39,7 +39,7 @@ bool khrIcdOsVendorsEnumerateAppPackage(void)
     WCHAR *buffer = NULL;
     PWSTR *packages = NULL;
 
-    HMODULE h = LoadLibrary("kernel32.dll");
+    HMODULE h = LoadLibraryA("kernel32.dll");
     if (h == NULL)
         return ret;
 

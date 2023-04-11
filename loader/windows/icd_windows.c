@@ -273,7 +273,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     }
 
     // Add adapters according to DXGI's preference order
-    HMODULE hDXGI = LoadLibrary("dxgi.dll");
+    HMODULE hDXGI = LoadLibraryA("dxgi.dll");
     if (hDXGI)
     {
         IDXGIFactory* pFactory = NULL;
