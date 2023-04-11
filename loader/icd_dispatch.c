@@ -16,7 +16,6 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
-#define CL_NO_PROTOTYPES
 #include "icd.h"
 #include "icd_dispatch.h"
 #include "icd_version.h"
