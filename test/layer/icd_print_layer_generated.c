@@ -2379,7 +2379,7 @@ static cl_mem CL_API_CALL clCreateFromGLBuffer_wrap(
     cl_context context,
     cl_mem_flags flags,
     cl_GLuint bufobj,
-    int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
 printf("clCreateFromGLBuffer\n");
 return tdispatch->clCreateFromGLBuffer(

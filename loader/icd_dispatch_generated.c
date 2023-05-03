@@ -6361,7 +6361,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLBuffer(
     cl_context context,
     cl_mem_flags flags,
     cl_GLuint bufobj,
-    int* errcode_ret)
+    cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
     if (khrFirstLayer)
@@ -6384,7 +6384,7 @@ static cl_mem CL_API_CALL clCreateFromGLBuffer_disp(
     cl_context context,
     cl_mem_flags flags,
     cl_GLuint bufobj,
-    int* errcode_ret)
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(context->dispatch->clCreateFromGLBuffer);
