@@ -23,7 +23,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-static cl_int
+static clGetICDLoaderInfoOCLICD_t clGetICDLoaderInfoOCLICD;
+cl_int CL_API_CALL
 clGetICDLoaderInfoOCLICD(
     cl_icdl_info param_name,
     size_t       param_value_size,
