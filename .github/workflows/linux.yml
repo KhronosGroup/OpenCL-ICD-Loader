@@ -6,6 +6,28 @@ env:
   OPENCL_PKGCONFIG_PATHS: ${{ github.workspace }}/install/lib/pkgconfig:${{ github.workspace }}/external/OpenCL-Headers/install/share/pkgconfig
 
 jobs:
+
+  tools:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        CMAKE: [3.21.2]
+    env:
+      CMAKE_URL: https://github.com/Kitware/CMake/releases/download/v${{ matrix.CMAKE }}/cmake-${{ matrix.CMAKE }}-Linux-x86_64.tar.gz
+
+    steps:
+    - name: Cache CMake
+      uses: actions/cache@v3
+      id: cmake
+      env:
+        cache-name: cache-cmake
+      with:
+        path: ~/cmake-${{matrix.CMAKE}}-Linux-x86_64.tar.gz
+        key: ${{ runner.os }}-${{ env.cache-name }}-${{matrix.CMAKE}}
+    - name: Checkout CMake
+      if: steps.cmake.outputs.cache-hit != 'true'
+      run: wget -c -O ~/cmake-${{matrix.CMAKE}}-Linux-x86_64.tar.gz $CMAKE_URL
+
   cmake-minimum:
     runs-on: ${{ matrix.OS }}
     container: streamhpc/opencl-sdk-base:ubuntu-18.04-20220127
@@ -154,6 +176,7 @@ jobs:
 
 
   cmake-latest:
+    needs: [tools]
     runs-on: ${{ matrix.OS }}
     strategy:
       matrix:
@@ -165,7 +188,6 @@ jobs:
         BIN: [32, 64]
         CMAKE: [3.21.2]
     env:
-      CMAKE_URL: https://github.com/Kitware/CMake/releases/download/v${{ matrix.CMAKE }}/cmake-${{ matrix.CMAKE }}-Linux-x86_64.tar.gz
       CMAKE_EXE: /opt/Kitware/CMake/${{ matrix.CMAKE }}/bin/cmake
       CTEST_EXE: /opt/Kitware/CMake/${{ matrix.CMAKE }}/bin/ctest
 
@@ -180,6 +202,15 @@ jobs:
         repository: KhronosGroup/OpenCL-Headers
         path: external/OpenCL-Headers
 
+    - name: Restore CMake
+      uses: actions/cache@v3
+      id: cmake
+      env:
+        cache-name: cache-cmake
+      with:
+        path: ~/cmake-${{matrix.CMAKE}}-Linux-x86_64.tar.gz
+        key: ${{ runner.os }}-${{ env.cache-name }}-${{matrix.CMAKE}}
+
     - name: Create Build Environment
       run: sudo apt-get update -q;
         if [[ "${{matrix.GEN}}" =~ "Ninja" && ! `which ninja` ]]; then sudo apt install -y ninja-build; fi;
@@ -189,7 +220,7 @@ jobs:
         if [[ "${{matrix.BIN}}" == "32" && "${{matrix.COMPILER}}" =~ "gcc" ]]; then sudo apt install -y ${{matrix.COMPILER}}-multilib; fi;
         if [[ "${{matrix.BIN}}" == "32" && "${{matrix.COMPILER}}" =~ "clang" ]]; then sudo apt install -y gcc-multilib ; fi;
         mkdir -p /opt/Kitware/CMake;
-        wget -c $CMAKE_URL -O - | tar -xz --directory /opt/Kitware/CMake;
+        tar -xzf ~/cmake-${{matrix.CMAKE}}-Linux-x86_64.tar.gz --directory /opt/Kitware/CMake;
         mv /opt/Kitware/CMake/cmake-${{ matrix.CMAKE }}-* /opt/Kitware/CMake/${{ matrix.CMAKE }}
       # Install Ninja only if it's the selected generator and it's not available.
 

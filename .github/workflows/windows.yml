@@ -3,7 +3,45 @@ name: Windows
 on: [push, pull_request]
 
 jobs:
+
+  tools:
+    runs-on: windows-2022
+    strategy:
+      matrix:
+        CMAKE: [3.22.0]
+        NINJA: [1.10.2]
+    env:
+      CMAKE_URL: https://github.com/Kitware/CMake/releases/download/v${{matrix.CMAKE}}/cmake-${{matrix.CMAKE}}-windows-x86_64.zip
+      NINJA_URL: https://github.com/ninja-build/ninja/releases/download/v${{matrix.NINJA}}/ninja-win.zip
+
+    steps:
+    - name: Cache CMake
+      uses: actions/cache@v3
+      id: cmake
+      env:
+        cache-name: cache-cmake
+      with:
+        path: ~/Downloads/cmake-${{matrix.CMAKE}}-windows-x86_64.zip
+        key: ${{ runner.os }}-${{ env.cache-name }}-${{matrix.CMAKE}}
+    - name: Cache Ninja
+      uses: actions/cache@v3
+      id: ninja
+      env:
+        cache-name: cache-ninja
+      with:
+        path: ~/Downloads/ninja-win.zip
+        key: ${{ runner.os }}-${{ env.cache-name }}-${{matrix.NINJA}}
+    - name: Checkout CMake
+      if: steps.cmake.outputs.cache-hit != 'true'
+      shell: pwsh
+      run: Invoke-WebRequest ${env:CMAKE_URL} -OutFile ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip
+    - name: Checkout Ninja
+      if: steps.ninja.outputs.cache-hit != 'true'
+      shell: pwsh
+      run: Invoke-WebRequest ${env:NINJA_URL} -OutFile ~\Downloads\ninja-win.zip
+
   msvc:
+    needs: [tools]
     runs-on: windows-2022
     strategy:
       matrix:
@@ -13,11 +51,10 @@ jobs:
         BIN: [x64, x86]
         STD: [90, 11, 17]
         CMAKE: [3.22.0]
+        NINJA: [1.10.2]
     env:
-      CMAKE_URL: https://github.com/Kitware/CMake/releases/download/v${{matrix.CMAKE}}/cmake-${{matrix.CMAKE}}-windows-x86_64.zip
       CMAKE_EXE: C:\Tools\Kitware\CMake\${{matrix.CMAKE}}\bin\cmake.exe
       CTEST_EXE: C:\Tools\Kitware\CMake\${{matrix.CMAKE}}\bin\ctest.exe
-      NINJA_URL: https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-win.zip
       NINJA_EXE: C:\Tools\Ninja\ninja.exe
 
     steps:
@@ -30,15 +67,30 @@ jobs:
         repository: KhronosGroup/OpenCL-Headers
         path: external/OpenCL-Headers
 
+    - name: Restore CMake
+      uses: actions/cache@v3
+      id: cmake
+      env:
+        cache-name: cache-cmake
+      with:
+        path: ~/Downloads/cmake-${{matrix.CMAKE}}-windows-x86_64.zip
+        key: ${{ runner.os }}-${{ env.cache-name }}-${{matrix.CMAKE}}
+
+    - name: Restore Ninja
+      uses: actions/cache@v3
+      id: ninja
+      env:
+        cache-name: cache-ninja
+      with:
+        path: ~/Downloads/ninja-win.zip
+        key: ${{ runner.os }}-${{ env.cache-name }}-${{matrix.NINJA}}
+
     - name: Create Build Environment
       shell: pwsh
       run: |
-        Invoke-WebRequest ${env:CMAKE_URL} -OutFile ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip
         Expand-Archive ~\Downloads\cmake-${{matrix.CMAKE}}-windows-x86_64.zip -DestinationPath C:\Tools\Kitware\CMake\
         Rename-Item C:\Tools\Kitware\CMake\* ${{matrix.CMAKE}}
-        Invoke-WebRequest ${env:NINJA_URL} -OutFile ~\Downloads\ninja-win.zip
         Expand-Archive ~\Downloads\ninja-win.zip -DestinationPath C:\Tools\Ninja\
-        Remove-Item ~\Downloads\*
         & ${env:CMAKE_EXE} --version
         & ${env:NINJA_EXE} --version
 
