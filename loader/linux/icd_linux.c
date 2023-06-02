@@ -132,7 +132,8 @@ static int compareDirElem(const void *a, const void *b)
     return strcoll(((struct dirElem *)a)->d_name, ((struct dirElem *)b)->d_name);
 }
 
-static inline void khrIcdOsDirEnumerate(char *path, char *env, const char *extension,
+static inline void khrIcdOsDirEnumerate(const char *path, const char *env,
+                                        const char *extension,
                                         khrIcdFileAdd addFunc, int bSort)
 {
     DIR *dir = NULL;
