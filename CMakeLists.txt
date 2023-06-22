@@ -6,7 +6,7 @@ if(TARGET OpenCL)
 endif()
 
 project (OpenCL-ICD-Loader
-    VERSION 1.2
+    VERSION 3.0
     LANGUAGES C)
 
 find_package (Threads REQUIRED)
@@ -57,6 +57,7 @@ cmake_dependent_option(ENABLE_OPENCL_LAYERINFO "Enable building cllayerinfo tool
 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(JoinPaths)
+include(Package)
 
 include(CheckFunctionExists)
 check_function_exists(secure_getenv HAVE_SECURE_GETENV)
@@ -118,7 +119,7 @@ endif()
 
 add_library (OpenCL::OpenCL ALIAS OpenCL)
 
-set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
+set_target_properties (OpenCL PROPERTIES VERSION 1\.0\.0 SOVERSION "1")
 
 if (WIN32)
     target_link_libraries (OpenCL PRIVATE cfgmgr32.lib runtimeobject.lib)
@@ -221,11 +222,13 @@ endif()
 
 include (GNUInstallDirs)
 
+set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR}/x86_64-linux-gnu)
+
 install(
   TARGETS OpenCL
   EXPORT OpenCLICDLoaderTargets
   LIBRARY
-    DESTINATION ${CMAKE_INSTALL_LIBDIR} # obtained from GNUInstallDirs
+  DESTINATION ${INSTALL_LIBDIR} # obtained from GNUInstallDirs
 )
 install(
 # FILES $<TARGET_PDB_FILE:OpenCL> is cleanest, but is MSVC link.exe specific. LLVM's lld.exe and lld-link.exe don't support it (configure-time error)
@@ -241,6 +244,7 @@ if (ENABLE_OPENCL_LAYERINFO)
     EXPORT OpenCLICDLoaderTargets
     RUNTIME
       DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT runtime
   )
 endif()
 
@@ -260,10 +264,12 @@ install(
   FILE OpenCLICDLoaderTargets.cmake
   NAMESPACE OpenCL::
   DESTINATION ${config_package_location}
+  COMPONENT runtime
 )
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderConfig.cmake
   DESTINATION ${config_package_location}
+  COMPONENT runtime
 )
 
 unset(CMAKE_SIZEOF_VOID_P)
@@ -276,20 +282,31 @@ write_basic_package_version_file(
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderConfigVersion.cmake
   DESTINATION ${config_package_location}
+  COMPONENT runtime
 )
+
+# Separate namelink from shared library and symlink for DEB packaging
+install (TARGETS OpenCL
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    ARCHIVE DESTINATION ${INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${INSTALL_LIBDIR}
+    COMPONENT runtime
+    NAMELINK_SKIP)
 
 install (TARGETS OpenCL
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    ARCHIVE DESTINATION ${INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${INSTALL_LIBDIR}
+    COMPONENT dev
+    NAMELINK_ONLY)
 
-join_paths(OPENCL_LIBDIR_PC "\${exec_prefix}" "${CMAKE_INSTALL_LIBDIR}")
-join_paths(OPENCL_INCLUDEDIR_PC "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
+join_paths(OPENCL_LIBDIR_PC "\${exec_prefix}" "${INSTALL_LIBDIR}")
 
 if (NOT MSVC)
   configure_file(OpenCL.pc.in OpenCL.pc @ONLY)
-  set(pkg_config_location ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+  set(pkg_config_location ${INSTALL_LIBDIR}/pkgconfig)
   install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCL.pc
-    DESTINATION ${pkg_config_location})
+    DESTINATION ${pkg_config_location}
+    COMPONENT dev)
 endif()
