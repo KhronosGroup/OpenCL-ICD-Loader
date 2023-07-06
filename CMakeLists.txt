@@ -222,7 +222,11 @@ endif()
 
 include (GNUInstallDirs)
 
-set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR}/x86_64-linux-gnu)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR})
+else()
+  set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR}/x86_64-linux-gnu)
+endif()
 
 install(
   TARGETS OpenCL
