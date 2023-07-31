@@ -235,7 +235,7 @@ int test_clGetProgramBuildInfo(const struct clGetProgramBuildInfo_st *data)
 
 }
 
-int test_program_objects()
+int test_program_objects(void)
 {
     int i;
 

@@ -17,7 +17,7 @@ void checkErr(cl_int err, const char * name)
     }
 }
 
-int main()
+int main(void)
 {
     cl_int CL_err = CL_SUCCESS;
     cl_uint numPlatforms = 0;

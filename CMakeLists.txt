@@ -55,11 +55,19 @@ option (ENABLE_OPENCL_LAYERS "Enable OpenCL Layers" ON)
 include(CMakeDependentOption)
 cmake_dependent_option(ENABLE_OPENCL_LAYERINFO "Enable building cllayerinfo tool" ON ENABLE_OPENCL_LAYERS OFF)
 
+include(GNUInstallDirs)
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR})
+else()
+  set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR}/x86_64-linux-gnu)
+endif()
+
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(CheckFunctionExists)
 include(JoinPaths)
 include(Package)
 
-include(CheckFunctionExists)
 check_function_exists(secure_getenv HAVE_SECURE_GETENV)
 check_function_exists(__secure_getenv HAVE___SECURE_GETENV)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/loader/icd_cmake_config.h.in
@@ -220,14 +228,6 @@ if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR OPENCL_ICD_LOADER_BUILD_TESTING)
     add_subdirectory (test)
 endif()
 
-include (GNUInstallDirs)
-
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR})
-else()
-  set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR}/x86_64-linux-gnu)
-endif()
-
 install(
   TARGETS OpenCL
   EXPORT OpenCLICDLoaderTargets
@@ -268,12 +268,12 @@ install(
   FILE OpenCLICDLoaderTargets.cmake
   NAMESPACE OpenCL::
   DESTINATION ${config_package_location}
-  COMPONENT runtime
+  COMPONENT dev
 )
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderConfig.cmake
   DESTINATION ${config_package_location}
-  COMPONENT runtime
+  COMPONENT dev
 )
 
 unset(CMAKE_SIZEOF_VOID_P)
@@ -286,7 +286,7 @@ write_basic_package_version_file(
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderConfigVersion.cmake
   DESTINATION ${config_package_location}
-  COMPONENT runtime
+  COMPONENT dev
 )
 
 # Separate namelink from shared library and symlink for DEB packaging
@@ -303,14 +303,3 @@ install (TARGETS OpenCL
     LIBRARY DESTINATION ${INSTALL_LIBDIR}
     COMPONENT dev
     NAMELINK_ONLY)
-
-join_paths(OPENCL_LIBDIR_PC "\${exec_prefix}" "${INSTALL_LIBDIR}")
-
-if (NOT MSVC)
-  configure_file(OpenCL.pc.in OpenCL.pc @ONLY)
-  set(pkg_config_location ${INSTALL_LIBDIR}/pkgconfig)
-  install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCL.pc
-    DESTINATION ${pkg_config_location}
-    COMPONENT dev)
-endif()

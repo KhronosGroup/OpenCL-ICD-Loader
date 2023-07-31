@@ -51,7 +51,7 @@ int test_clGetSamplerInfo(const struct clGetSamplerInfo_st *data)
     return 0;
 }
 
-int test_sampler_objects()
+int test_sampler_objects(void)
 {
     int i;
 

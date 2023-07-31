@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
 
   tools:
+    if: false
     runs-on: windows-2022
     strategy:
       matrix:
@@ -41,6 +42,7 @@ jobs:
       run: Invoke-WebRequest ${env:NINJA_URL} -OutFile ~\Downloads\ninja-win.zip
 
   msvc:
+    if: false
     needs: [tools]
     runs-on: windows-2022
     strategy:

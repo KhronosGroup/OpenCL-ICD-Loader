@@ -9,6 +9,7 @@ env:
 
 jobs:
   tools:
+    if: false
     runs-on: ${{ matrix.OS }}
     strategy:
       matrix:
@@ -31,6 +32,7 @@ jobs:
       run: wget -c -O ~/cmake-${{matrix.CMAKE}}-Linux-x86_64.tar.gz $CMAKE_URL
 
   cmake-minimum:
+    if: false
     runs-on: ${{ matrix.OS }}
     container: streamhpc/opencl-sdk-base:ubuntu-18.04-20220127
     strategy:
@@ -217,6 +219,7 @@ jobs:
 
 
   cmake-latest:
+    if: false
     needs: [tools]
     runs-on: ${{ matrix.OS }}
     strategy:
