@@ -21,28 +21,40 @@ join_paths(OPENCL_LIBDIR_PC "\${exec_prefix}" "${INSTALL_LIBDIR}")
 
 set(pkg_config_location ${INSTALL_LIBDIR}/pkgconfig)
 set(PKGCONFIG_PREFIX "${CMAKE_INSTALL_PREFIX}")
-configure_file(
-  OpenCL.pc.in
-  ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_install/OpenCL.pc
-  @ONLY)
-install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_install/OpenCL.pc
-  DESTINATION ${pkg_config_location}
-  COMPONENT pkgconfig_install)
 
+# Configure and install OpenCL.pc for installing the project
 if(NOT (CMAKE_VERSION VERSION_LESS "3.5"))
-  set(PKGCONFIG_PREFIX "${CPACK_PACKAGING_INSTALL_PREFIX}")
   configure_file(
     OpenCL.pc.in
-    ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_package/OpenCL.pc
+    ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_install/OpenCL.pc
     @ONLY)
-  # This install component is only needed in the Debian package
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_install/OpenCL.pc
+    DESTINATION ${pkg_config_location}
+    COMPONENT pkgconfig_install)
+endif()
+
+# Configure and install OpenCL.pc for the Debian package
+if(NOT (CMAKE_VERSION VERSION_LESS "3.5") OR (CMAKE_INSTALL_PREFIX STREQUAL CPACK_PACKAGING_INSTALL_PREFIX))
+set(PKGCONFIG_PREFIX "${CPACK_PACKAGING_INSTALL_PREFIX}")
+configure_file(
+  OpenCL.pc.in
+  ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_package/OpenCL.pc
+  @ONLY)
+
+  # We exclude the file from the normal installation when using CMake >= 3.5, because in that
+  # case we already set a separate file for it
+  set(EXTRA_ARGS)
+  if(NOT (CMAKE_VERSION VERSION_LESS "3.5"))
+      list(APPEND EXTRA_ARGS EXCLUDE_FROM_ALL)
+  endif()
+
   install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_package/OpenCL.pc
     DESTINATION ${pkg_config_location}
     COMPONENT dev
-    EXCLUDE_FROM_ALL)
-elseif(NOT (CMAKE_INSTALL_PREFIX STREQUAL CPACK_PACKAGING_INSTALL_PREFIX))
+    ${EXTRA_ARGS})
+else()
   message(FATAL_ERROR "When using CMake version < 3.5, CPACK_PACKAGING_INSTALL_PREFIX should not be set,"
     " or should be the same as CMAKE_INSTALL_PREFIX")
 endif()
