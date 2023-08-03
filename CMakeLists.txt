@@ -57,7 +57,7 @@ cmake_dependent_option(ENABLE_OPENCL_LAYERINFO "Enable building cllayerinfo tool
 
 include(GNUInstallDirs)
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR (CMAKE_VERSION VERSION_LESS "3.15"))
   set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR})
 else()
   set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR}/x86_64-linux-gnu)
