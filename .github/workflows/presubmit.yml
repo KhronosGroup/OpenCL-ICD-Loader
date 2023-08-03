@@ -4,7 +4,6 @@ on: [push, pull_request]
 
 jobs:
   linux:
-    if: false
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -233,3 +232,312 @@ jobs:
           exit 1;
         fi &&
         pkg-config OpenCL --libs | `if [[ "${{matrix.CMAKE}}" != "3.1.3" ]]; then grep -q "\-L$GITHUB_WORKSPACE/install/$INSTALL_LIBDIR \-lOpenCL"; else grep -q "\-lOpenCL"; fi`
+
+  windows:
+    runs-on: windows-latest
+    needs: format
+    strategy:
+      matrix:
+        VER: [v141, v142, v143, clangcl]
+        GEN: [Visual Studio 17 2022, Ninja Multi-Config]
+        BIN: [x64]
+        exclude:
+        - VER: clangcl
+          GEN: Ninja Multi-Config
+        include:
+          - VER: v142
+            GEN: Visual Studio 17 2022
+            BIN: x86
+    env:
+      NINJA_URL: https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-win.zip
+      NINJA_ROOT: C:\Tools\Ninja
+      VS_ROOT: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise'
+      UseMultiToolTask: true # Better parallel MSBuild execution
+      EnforceProcessCountAcrossBuilds: 'true'
+      MultiProcMaxCount: '3'
+
+    steps:
+    - name: Cache Ninja install
+      if: matrix.GEN == 'Ninja Multi-Config'
+      id: ninja-install
+      uses: actions/cache@v3
+      with:
+        path: |
+          C:\Tools\Ninja
+        key: ${{runner.os}}-ninja-${{env.NINJA_URL}}
+
+    - name: Install Ninja
+      if: matrix.GEN == 'Ninja Multi-Config' && steps.ninja-install.outputs.cache-hit != 'true'
+      shell: pwsh
+      run: |
+        Invoke-WebRequest ${env:NINJA_URL} -OutFile ~\Downloads\ninja-win.zip
+        Expand-Archive ~\Downloads\ninja-win.zip -DestinationPath ${env:NINJA_ROOT}\
+        Remove-Item ~\Downloads\*
+
+    - name: Checkout OpenCL-ICD-Loader
+      uses: actions/checkout@v3
+
+    - name: Checkout OpenCL-Headers
+      uses: actions/checkout@v3
+      with:
+        repository: KhronosGroup/OpenCL-Headers
+        path: external/OpenCL-Headers
+
+    - name: Build & install OpenCL-Headers (MSBuild)
+      if: matrix.GEN == 'Visual Studio 17 2022'
+      shell: pwsh
+      run: |
+        $BIN = if('${{matrix.BIN}}' -eq 'x86') {'Win32'} else {'x64'}
+        $C_FLAGS='/W4 /WX'
+        & cmake `
+          -G "${{matrix.GEN}}" `
+          -A $BIN `
+          -T ${{matrix.VER}} `
+          -D BUILD_TESTING=OFF `
+          -D CMAKE_C_FLAGS=$C_FLAGS `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_INSTALL_PREFIX=${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install `
+          -S ${env:GITHUB_WORKSPACE}\external\OpenCL-Headers `
+          -B ${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\build
+        & cmake `
+          --build "${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\build" `
+          --target install `
+          -- `
+          /verbosity:minimal `
+          /maxCpuCount `
+          /noLogo `
+
+    - name: Build & install OpenCL-Headers (Ninja Multi-Config)
+      if: matrix.GEN == 'Ninja Multi-Config'
+      shell: pwsh
+      run: |
+        $VER = switch ('${{matrix.VER}}') { `
+          'v141' {'14.1'} `
+          'v142' {'14.2'} `
+          'v143' {'14.3'} }
+        Import-Module "${env:VS_ROOT}\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+        Enter-VsDevShell -VsInstallPath ${env:VS_ROOT} -SkipAutomaticLocation -DevCmdArguments "-host_arch=x64 -arch=${{matrix.BIN}} -vcvars_ver=$VER"
+        $C_FLAGS='/W4 /WX'
+        & cmake `
+          -G "${{matrix.GEN}}" `
+          -D CMAKE_MAKE_PROGRAM="${env:NINJA_ROOT}\ninja.exe"  `
+          -D BUILD_TESTING=OFF `
+          -D CMAKE_C_FLAGS=$C_FLAGS `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_INSTALL_PREFIX=${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install `
+          -S ${env:GITHUB_WORKSPACE}\external\OpenCL-Headers `
+          -B ${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\build
+        & cmake `
+          --build "${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\build" `
+          --target install `
+          -- `
+          -j ${env:NUMBER_OF_PROCESSORS}
+
+    - name: Configure (MSBuild)
+      if: matrix.GEN == 'Visual Studio 17 2022'
+      shell: pwsh
+      # no /WX during configuration because:
+      # error C2220: warning treated as error - no 'object' file generated
+      run: |
+        $BIN = if('${{matrix.BIN}}' -eq 'x86') {'Win32'} else {'x64'}
+        $C_FLAGS='/W4'
+        & cmake `
+          -G "${{matrix.GEN}}" `
+          -A $BIN `
+          -T ${{matrix.VER}} `
+          -D BUILD_TESTING=ON `
+          -D CMAKE_C_FLAGS=$C_FLAGS `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_INSTALL_PREFIX=${env:GITHUB_WORKSPACE}\install `
+          -D CMAKE_PREFIX_PATH=${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install `
+          -S ${env:GITHUB_WORKSPACE} `
+          -B ${env:GITHUB_WORKSPACE}\build
+
+    - name: Configure (Ninja Multi-Config)
+      if: matrix.GEN == 'Ninja Multi-Config'
+      shell: pwsh
+      # no /WX during configuration because:
+      # error C2220: warning treated as error - no 'object' file generated
+      run: |
+        $VER = switch ('${{matrix.VER}}') { `
+          'v141' {'14.1'} `
+          'v142' {'14.2'} `
+          'v143' {'14.3'} }
+        Import-Module "${env:VS_ROOT}\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+        Enter-VsDevShell -VsInstallPath ${env:VS_ROOT} -SkipAutomaticLocation -DevCmdArguments "-host_arch=x64 -arch=${{matrix.BIN}} -vcvars_ver=$VER"
+        $C_FLAGS='/W4'
+        & cmake `
+          -G "${{matrix.GEN}}" `
+          -D CMAKE_MAKE_PROGRAM="${env:NINJA_ROOT}\ninja.exe" `
+          -D BUILD_TESTING=ON `
+          -D CMAKE_C_FLAGS=$C_FLAGS `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
+          -D CMAKE_INSTALL_PREFIX=${env:GITHUB_WORKSPACE}\install `
+          -D CMAKE_PREFIX_PATH=${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install `
+          -S ${env:GITHUB_WORKSPACE} `
+          -B ${env:GITHUB_WORKSPACE}\build
+
+    - name: Build (MSBuild)
+      if: matrix.GEN == 'Visual Studio 17 2022'
+      shell: pwsh
+      run: |
+        foreach ($Config in 'Release','Debug') { `
+          & cmake `
+            --build "${env:GITHUB_WORKSPACE}\build" `
+            --config $Config `
+            -- `
+            /verbosity:minimal `
+            /maxCpuCount `
+            /noLogo
+        }
+
+    - name: Build (Ninja Multi-Config)
+      if: matrix.GEN == 'Ninja Multi-Config'
+      shell: pwsh
+      run: |
+        $VER = switch ('${{matrix.VER}}') { `
+          'v141' {'14.1'} `
+          'v142' {'14.2'} `
+          'v143' {'14.3'} }
+        Import-Module "${env:VS_ROOT}\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+        Enter-VsDevShell -VsInstallPath ${env:VS_ROOT} -SkipAutomaticLocation -DevCmdArguments "-host_arch=x64 -arch=${{matrix.BIN}} -vcvars_ver=$VER"
+        foreach ($Config in 'Release','Debug') { `
+          & cmake `
+            --build "${env:GITHUB_WORKSPACE}\build" `
+            --config $Config `
+            -- `
+            -j ${env:NUMBER_OF_PROCESSORS}
+        }
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
+      shell: pwsh
+      run: |
+        $REG = if('${{matrix.BIN}}' -eq 'x64') {"reg"} else {"${env:SystemRoot}\Syswow64\reg.exe"}
+        $KEY_NAME = "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors"
+        foreach ($Config in 'Release','Debug') {
+          $VALUE_NAME = "${env:GITHUB_WORKSPACE}/build/$Config/OpenCLDriverStub.dll"
+          & $REG ADD $KEY_NAME /v $VALUE_NAME /t REG_DWORD /d 0
+          ctest -C $Config --output-on-failure --parallel ${env:NUMBER_OF_PROCESSORS}
+          & $REG DELETE $KEY_NAME /v $VALUE_NAME /f
+        }
+
+    - name: Install
+      shell: pwsh
+      run: |
+        & cmake `
+          --build "${env:GITHUB_WORKSPACE}\build" `
+          --config Release `
+          --target install
+
+    - name: "Consume (MSBuild standalone): Configure/Build/Test"
+      if: matrix.GEN == 'Visual Studio 17 2022'
+      shell: pwsh
+      run: |
+        $C_FLAGS = '/W4'
+        & cmake `
+          -G '${{matrix.GEN}}' `
+          -T ${{matrix.VER}} `
+          -D CMAKE_C_FLAGS="$C_FLAGS" `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
+          -D CMAKE_PREFIX_PATH="${env:GITHUB_WORKSPACE}\install" `
+          -D DRIVER_STUB_PATH="${env:GITHUB_WORKSPACE}\build\Release\OpenCLDriverStub.dll" `
+          -S "${env:GITHUB_WORKSPACE}\tests\pkgconfig\bare" `
+          -B "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\bare"
+        foreach ($Config in 'Release','Debug') { `
+          & cmake `
+            --build "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\bare" `
+            --config $Config `
+          & cd ${env:GITHUB_WORKSPACE}\downstream\pkgconfig\bare `
+          & ctest `
+            --output-on-failure -C $Config
+        }
+
+    - name: "Consume (Ninja-Multi-Config standalone): Configure/Build/Test"
+      if: matrix.GEN == 'Ninja Multi-Config'
+      shell: pwsh
+      run: |
+        $VER = switch ('${{matrix.VER}}') { `
+          'v141' {'14.1'} `
+          'v142' {'14.2'} `
+          'v143' {'14.3'} }
+        Import-Module "${env:VS_ROOT}\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+        Enter-VsDevShell -VsInstallPath ${env:VS_ROOT} -SkipAutomaticLocation -DevCmdArguments "-host_arch=x64 -arch=${{matrix.BIN}} -vcvars_ver=$VER"
+        $C_FLAGS = '/W4'
+        & cmake `
+          -G '${{matrix.GEN}}' `
+          -D CMAKE_MAKE_PROGRAM="${env:NINJA_ROOT}\ninja.exe" `
+          -D CMAKE_C_FLAGS="$C_FLAGS" `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
+          -D CMAKE_PREFIX_PATH="${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install;${env:GITHUB_WORKSPACE}\install" `
+          -D DRIVER_STUB_PATH="${env:GITHUB_WORKSPACE}\build\Release\OpenCLDriverStub.dll" `
+          -S "${env:GITHUB_WORKSPACE}\tests\pkgconfig\bare" `
+          -B "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\bare"
+        foreach ($Config in 'Release','Debug') { `
+          & cmake `
+            --build "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\bare" `
+            --config $Config `
+          & cd ${env:GITHUB_WORKSPACE}\downstream\pkgconfig\bare `
+          & ctest `
+            --output-on-failure -C $Config
+        }
+
+    - name: Consume (Emulate SDK presence)
+      shell: pwsh
+      run: |
+        New-Item -Type Directory -Path ${env:GITHUB_WORKSPACE}\install\share\cmake\OpenCL
+        New-Item -Type File -Path ${env:GITHUB_WORKSPACE}\install\share\cmake\OpenCL\OpenCLConfig.cmake -Value 'include("${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install\share\cmake\OpenCLHeaders\OpenCLHeadersTargets.cmake")\ninclude("${CMAKE_CURRENT_LIST_DIR}\..\OpenCLICDLoader\OpenCLICDLoaderTargets.cmake")'
+
+    - name: "Consume (MSBuild SDK): Configure/Build/Test"
+      if: matrix.GEN == 'Visual Studio 17 2022'
+      shell: pwsh
+      run: |
+        $C_FLAGS = '/W4'
+        & cmake `
+          -G '${{matrix.GEN}}' `
+          -D CMAKE_C_FLAGS="$C_FLAGS" `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
+          -D CMAKE_PREFIX_PATH="${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install;${env:GITHUB_WORKSPACE}\install" `
+          -D DRIVER_STUB_PATH="${env:GITHUB_WORKSPACE}\build\Release\OpenCLDriverStub.dll" `
+          -S "${env:GITHUB_WORKSPACE}\tests\pkgconfig\sdk" `
+          -B "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\sdk"
+        foreach ($Config in 'Release','Debug') { `
+          & cmake `
+            --build "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\sdk" `
+            --config $Config `
+          & cd ${env:GITHUB_WORKSPACE}\downstream\pkgconfig\sdk `
+          & ctest `
+            --output-on-failure -C $Config
+        }
+
+    - name: "Consume (Ninja-Multi-Config SDK): Configure/Build/Test"
+      if: matrix.GEN == 'Ninja Multi-Config'
+      shell: pwsh
+      run: |
+        $VER = switch ('${{matrix.VER}}') { `
+          'v141' {'14.1'} `
+          'v142' {'14.2'} `
+          'v143' {'14.3'} }
+        $C_FLAGS = '/W4'
+        & cmake `
+          -G '${{matrix.GEN}}' `
+          -D CMAKE_MAKE_PROGRAM="${env:NINJA_ROOT}\ninja.exe" `
+          -D CMAKE_C_FLAGS="$C_FLAGS" `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
+          -D CMAKE_PREFIX_PATH="${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install;${env:GITHUB_WORKSPACE}\install" `
+          -D DRIVER_STUB_PATH="${env:GITHUB_WORKSPACE}\build\Release\OpenCLDriverStub.dll" `
+          -S "${env:GITHUB_WORKSPACE}\tests\pkgconfig\sdk" `
+          -B "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\sdk"
+        foreach ($Config in 'Release','Debug') { `
+          & cmake `
+            --build "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\sdk" `
+            --config $Config `
+          & cd ${env:GITHUB_WORKSPACE}\downstream\pkgconfig\sdk `
+          & ctest `
+            --output-on-failure -C $Config
+        }
