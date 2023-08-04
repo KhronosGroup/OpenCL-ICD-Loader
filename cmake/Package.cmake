@@ -36,11 +36,11 @@ endif()
 
 # Configure and install OpenCL.pc for the Debian package
 if(NOT (CMAKE_VERSION VERSION_LESS "3.5") OR (CMAKE_INSTALL_PREFIX STREQUAL CPACK_PACKAGING_INSTALL_PREFIX))
-set(PKGCONFIG_PREFIX "${CPACK_PACKAGING_INSTALL_PREFIX}")
-configure_file(
-  OpenCL.pc.in
-  ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_package/OpenCL.pc
-  @ONLY)
+  set(PKGCONFIG_PREFIX "${CPACK_PACKAGING_INSTALL_PREFIX}")
+  configure_file(
+    OpenCL.pc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_package/OpenCL.pc
+    @ONLY)
 
   # We exclude the file from the normal installation when using CMake >= 3.5, because in that
   # case we already set a separate file for it
