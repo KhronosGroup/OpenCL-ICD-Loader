@@ -20,3 +20,6 @@ inc/KHR/
 
 # CMake
 CMakeFiles/
+
+# Visual Studio Code
+.vscode

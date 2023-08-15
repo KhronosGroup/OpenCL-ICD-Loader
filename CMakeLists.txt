@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 3.16)
 
 # Include guard for including this project multiple times
 if(TARGET OpenCL)
@@ -57,7 +57,7 @@ cmake_dependent_option(ENABLE_OPENCL_LAYERINFO "Enable building cllayerinfo tool
 
 include(GNUInstallDirs)
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR (CMAKE_VERSION VERSION_LESS "3.15"))
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR})
 else()
   set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR}/x86_64-linux-gnu)
