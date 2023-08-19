@@ -32,6 +32,16 @@ extern cl_int CL_API_CALL clGetPlatformIDs_disp(
     cl_uint* num_platforms) CL_API_SUFFIX__VERSION_1_0;
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetPlatformIDs_shutdown(
+    cl_uint num_entries,
+    cl_platform_id* platforms,
+    cl_uint* num_platforms)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetPlatformInfo(
@@ -3449,7 +3459,7 @@ static cl_int CL_API_CALL clUnloadCompiler_disp(
 static cl_int CL_API_CALL clUnloadCompiler_shutdown(
     void )
 {
-    // Nothing!
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -3458,6 +3468,14 @@ static cl_int CL_API_CALL clUnloadCompiler_shutdown(
 #if defined(CL_ENABLE_LAYERS)
 extern void* CL_API_CALL clGetExtensionFunctionAddress_disp(
     const char* func_name) CL_API_SUFFIX__VERSION_1_1_DEPRECATED;
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static void* CL_API_CALL clGetExtensionFunctionAddress_shutdown(
+    const char* func_name)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, NULL);
+}
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -5019,6 +5037,15 @@ extern void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_disp(
     const char* func_name) CL_API_SUFFIX__VERSION_1_2;
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_shutdown(
+    cl_platform_id platform,
+    const char* func_name)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, NULL);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties(
@@ -6453,6 +6480,14 @@ static cl_int CL_API_CALL clReleaseDeviceEXT_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseDeviceEXT_shutdown(
+    cl_device_id device)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_ext_device_fission
 
@@ -6478,6 +6513,14 @@ static cl_int CL_API_CALL clRetainDeviceEXT_disp(
     KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(device->dispatch->clRetainDeviceEXT);
     return device->dispatch->clRetainDeviceEXT(
         device);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainDeviceEXT_shutdown(
+    cl_device_id device)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -6526,6 +6569,18 @@ static cl_int CL_API_CALL clCreateSubDevicesEXT_disp(
         num_entries,
         out_devices,
         num_devices);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clCreateSubDevicesEXT_shutdown(
+    cl_device_id in_device,
+    const cl_device_partition_property_ext* properties,
+    cl_uint num_entries,
+    cl_device_id* out_devices,
+    cl_uint* num_devices)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -6590,6 +6645,20 @@ static cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR_shutdown(
+    cl_platform_id platform,
+    cl_d3d10_device_source_khr d3d_device_source,
+    void* d3d_object,
+    cl_d3d10_device_set_khr d3d_device_set,
+    cl_uint num_entries,
+    cl_device_id* devices,
+    cl_uint* num_devices)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_d3d10_sharing
 
@@ -6630,6 +6699,17 @@ static cl_mem CL_API_CALL clCreateFromD3D10BufferKHR_disp(
         flags,
         resource,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromD3D10BufferKHR_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    ID3D10Buffer* resource,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -6681,6 +6761,18 @@ static cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    ID3D10Texture2D* resource,
+    UINT subresource,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_d3d10_sharing
 
@@ -6726,6 +6818,18 @@ static cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR_disp(
         resource,
         subresource,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    ID3D10Texture3D* resource,
+    UINT subresource,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -6782,6 +6886,19 @@ static cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_d3d10_sharing
 
@@ -6832,6 +6949,19 @@ static cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR_disp(
         num_events_in_wait_list,
         event_wait_list,
         event);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -6897,6 +7027,20 @@ static cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR_shutdown(
+    cl_platform_id platform,
+    cl_d3d11_device_source_khr d3d_device_source,
+    void* d3d_object,
+    cl_d3d11_device_set_khr d3d_device_set,
+    cl_uint num_entries,
+    cl_device_id* devices,
+    cl_uint* num_devices)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_d3d11_sharing
 
@@ -6937,6 +7081,17 @@ static cl_mem CL_API_CALL clCreateFromD3D11BufferKHR_disp(
         flags,
         resource,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromD3D11BufferKHR_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    ID3D11Buffer* resource,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -6988,6 +7143,18 @@ static cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    ID3D11Texture2D* resource,
+    UINT subresource,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_d3d11_sharing
 
@@ -7033,6 +7200,18 @@ static cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR_disp(
         resource,
         subresource,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    ID3D11Texture3D* resource,
+    UINT subresource,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -7089,6 +7268,19 @@ static cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_d3d11_sharing
 
@@ -7139,6 +7331,19 @@ static cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR_disp(
         num_events_in_wait_list,
         event_wait_list,
         event);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -7209,6 +7414,21 @@ static cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR_shutdown(
+    cl_platform_id platform,
+    cl_uint num_media_adapters,
+    cl_dx9_media_adapter_type_khr* media_adapter_type,
+    void* media_adapters,
+    cl_dx9_media_adapter_set_khr media_adapter_set,
+    cl_uint num_entries,
+    cl_device_id* devices,
+    cl_uint* num_devices)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_dx9_media_sharing
 
@@ -7259,6 +7479,19 @@ static cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR_disp(
         surface_info,
         plane,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    cl_dx9_media_adapter_type_khr adapter_type,
+    void* surface_info,
+    cl_uint plane,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -7315,6 +7548,19 @@ static cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_dx9_media_sharing
 
@@ -7368,6 +7614,19 @@ static cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 #endif // defined(_WIN32)
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -7410,6 +7669,17 @@ static cl_event CL_API_CALL clCreateEventFromEGLSyncKHR_disp(
         sync,
         display,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_event CL_API_CALL clCreateEventFromEGLSyncKHR_shutdown(
+    cl_context context,
+    CLeglSyncKHR sync,
+    CLeglDisplayKHR display,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -7467,6 +7737,19 @@ static cl_mem CL_API_CALL clCreateFromEGLImageKHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromEGLImageKHR_shutdown(
+    cl_context context,
+    CLeglDisplayKHR egldisplay,
+    CLeglImageKHR eglimage,
+    cl_mem_flags flags,
+    const cl_egl_image_properties_khr* properties,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_egl_image
 
@@ -7517,6 +7800,19 @@ static cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR_disp(
         num_events_in_wait_list,
         event_wait_list,
         event);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -7573,6 +7869,19 @@ static cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_gl_event
@@ -7609,6 +7918,16 @@ static cl_event CL_API_CALL clCreateEventFromGLsyncKHR_disp(
         context,
         sync,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_event CL_API_CALL clCreateEventFromGLsyncKHR_shutdown(
+    cl_context context,
+    cl_GLsync sync,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -7665,6 +7984,18 @@ static cl_int CL_API_CALL clGetGLContextInfoKHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetGLContextInfoKHR_shutdown(
+    const cl_context_properties* properties,
+    cl_gl_context_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_gl_sharing
 
@@ -7705,6 +8036,17 @@ static cl_mem CL_API_CALL clCreateFromGLBuffer_disp(
         flags,
         bufobj,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromGLBuffer_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLuint bufobj,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -7761,6 +8103,19 @@ static cl_mem CL_API_CALL clCreateFromGLTexture_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromGLTexture_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLenum target,
+    cl_GLint miplevel,
+    cl_GLuint texture,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_gl_sharing
 
@@ -7804,6 +8159,17 @@ static cl_mem CL_API_CALL clCreateFromGLRenderbuffer_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromGLRenderbuffer_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLuint renderbuffer,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_gl_sharing
 
@@ -7839,6 +8205,16 @@ static cl_int CL_API_CALL clGetGLObjectInfo_disp(
         memobj,
         gl_object_type,
         gl_object_name);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetGLObjectInfo_shutdown(
+    cl_mem memobj,
+    cl_gl_object_type* gl_object_type,
+    cl_GLuint* gl_object_name)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -7887,6 +8263,18 @@ static cl_int CL_API_CALL clGetGLTextureInfo_disp(
         param_value_size,
         param_value,
         param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetGLTextureInfo_shutdown(
+    cl_mem memobj,
+    cl_gl_texture_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -7943,6 +8331,19 @@ static cl_int CL_API_CALL clEnqueueAcquireGLObjects_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueAcquireGLObjects_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_gl_sharing
 
@@ -7993,6 +8394,19 @@ static cl_int CL_API_CALL clEnqueueReleaseGLObjects_disp(
         num_events_in_wait_list,
         event_wait_list,
         event);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReleaseGLObjects_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -8049,6 +8463,19 @@ static cl_mem CL_API_CALL clCreateFromGLTexture2D_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromGLTexture2D_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLenum target,
+    cl_GLint miplevel,
+    cl_GLuint texture,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 // cl_khr_gl_sharing
 
@@ -8099,6 +8526,19 @@ static cl_mem CL_API_CALL clCreateFromGLTexture3D_disp(
         miplevel,
         texture,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromGLTexture3D_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLenum target,
+    cl_GLint miplevel,
+    cl_GLuint texture,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -8166,9 +8606,25 @@ static cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_shutdown(
+    cl_kernel in_kernel,
+    cl_device_id in_device,
+    cl_kernel_sub_group_info param_name,
+    size_t input_value_size,
+    const void* input_value,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 #if defined(CL_ENABLE_LAYERS)
+
 struct _cl_icd_dispatch khrActualDispatch = {
     &clGetPlatformIDs_disp,
     &clGetPlatformInfo_disp,
@@ -8373,6 +8829,212 @@ struct _cl_icd_dispatch khrActualDispatch = {
     &clCreateImageWithProperties_disp,
     &clSetContextDestructorCallback_disp,
 };
+
+struct _cl_icd_dispatch khrShutdownDispatch = {
+    &clGetPlatformIDs_shutdown,
+    &clGetPlatformInfo_shutdown,
+    &clGetDeviceIDs_shutdown,
+    &clGetDeviceInfo_shutdown,
+    &clCreateContext_shutdown,
+    &clCreateContextFromType_shutdown,
+    &clRetainContext_shutdown,
+    &clReleaseContext_shutdown,
+    &clGetContextInfo_shutdown,
+    &clCreateCommandQueue_shutdown,
+    &clRetainCommandQueue_shutdown,
+    &clReleaseCommandQueue_shutdown,
+    &clGetCommandQueueInfo_shutdown,
+    &clSetCommandQueueProperty_shutdown,
+    &clCreateBuffer_shutdown,
+    &clCreateImage2D_shutdown,
+    &clCreateImage3D_shutdown,
+    &clRetainMemObject_shutdown,
+    &clReleaseMemObject_shutdown,
+    &clGetSupportedImageFormats_shutdown,
+    &clGetMemObjectInfo_shutdown,
+    &clGetImageInfo_shutdown,
+    &clCreateSampler_shutdown,
+    &clRetainSampler_shutdown,
+    &clReleaseSampler_shutdown,
+    &clGetSamplerInfo_shutdown,
+    &clCreateProgramWithSource_shutdown,
+    &clCreateProgramWithBinary_shutdown,
+    &clRetainProgram_shutdown,
+    &clReleaseProgram_shutdown,
+    &clBuildProgram_shutdown,
+    &clUnloadCompiler_shutdown,
+    &clGetProgramInfo_shutdown,
+    &clGetProgramBuildInfo_shutdown,
+    &clCreateKernel_shutdown,
+    &clCreateKernelsInProgram_shutdown,
+    &clRetainKernel_shutdown,
+    &clReleaseKernel_shutdown,
+    &clSetKernelArg_shutdown,
+    &clGetKernelInfo_shutdown,
+    &clGetKernelWorkGroupInfo_shutdown,
+    &clWaitForEvents_shutdown,
+    &clGetEventInfo_shutdown,
+    &clRetainEvent_shutdown,
+    &clReleaseEvent_shutdown,
+    &clGetEventProfilingInfo_shutdown,
+    &clFlush_shutdown,
+    &clFinish_shutdown,
+    &clEnqueueReadBuffer_shutdown,
+    &clEnqueueWriteBuffer_shutdown,
+    &clEnqueueCopyBuffer_shutdown,
+    &clEnqueueReadImage_shutdown,
+    &clEnqueueWriteImage_shutdown,
+    &clEnqueueCopyImage_shutdown,
+    &clEnqueueCopyImageToBuffer_shutdown,
+    &clEnqueueCopyBufferToImage_shutdown,
+    &clEnqueueMapBuffer_shutdown,
+    &clEnqueueMapImage_shutdown,
+    &clEnqueueUnmapMemObject_shutdown,
+    &clEnqueueNDRangeKernel_shutdown,
+    &clEnqueueTask_shutdown,
+    &clEnqueueNativeKernel_shutdown,
+    &clEnqueueMarker_shutdown,
+    &clEnqueueWaitForEvents_shutdown,
+    &clEnqueueBarrier_shutdown,
+    &clGetExtensionFunctionAddress_shutdown,
+    &clCreateFromGLBuffer_shutdown,
+    &clCreateFromGLTexture2D_shutdown,
+    &clCreateFromGLTexture3D_shutdown,
+    &clCreateFromGLRenderbuffer_shutdown,
+    &clGetGLObjectInfo_shutdown,
+    &clGetGLTextureInfo_shutdown,
+    &clEnqueueAcquireGLObjects_shutdown,
+    &clEnqueueReleaseGLObjects_shutdown,
+    &clGetGLContextInfoKHR_shutdown,
+
+    /* cl_khr_d3d10_sharing */
+#if defined(_WIN32)
+    &clGetDeviceIDsFromD3D10KHR_shutdown,
+    &clCreateFromD3D10BufferKHR_shutdown,
+    &clCreateFromD3D10Texture2DKHR_shutdown,
+    &clCreateFromD3D10Texture3DKHR_shutdown,
+    &clEnqueueAcquireD3D10ObjectsKHR_shutdown,
+    &clEnqueueReleaseD3D10ObjectsKHR_shutdown,
+#else
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+#endif
+
+    /* OpenCL 1.1 */
+    &clSetEventCallback_shutdown,
+    &clCreateSubBuffer_shutdown,
+    &clSetMemObjectDestructorCallback_shutdown,
+    &clCreateUserEvent_shutdown,
+    &clSetUserEventStatus_shutdown,
+    &clEnqueueReadBufferRect_shutdown,
+    &clEnqueueWriteBufferRect_shutdown,
+    &clEnqueueCopyBufferRect_shutdown,
+
+    /* cl_ext_device_fission */
+    &clCreateSubDevicesEXT_shutdown,
+    &clRetainDeviceEXT_shutdown,
+    &clReleaseDeviceEXT_shutdown,
+
+    /* cl_khr_gl_event */
+    &clCreateEventFromGLsyncKHR_shutdown,
+
+    /* OpenCL 1.2 */
+    &clCreateSubDevices_shutdown,
+    &clRetainDevice_shutdown,
+    &clReleaseDevice_shutdown,
+    &clCreateImage_shutdown,
+    &clCreateProgramWithBuiltInKernels_shutdown,
+    &clCompileProgram_shutdown,
+    &clLinkProgram_shutdown,
+    &clUnloadPlatformCompiler_shutdown,
+    &clGetKernelArgInfo_shutdown,
+    &clEnqueueFillBuffer_shutdown,
+    &clEnqueueFillImage_shutdown,
+    &clEnqueueMigrateMemObjects_shutdown,
+    &clEnqueueMarkerWithWaitList_shutdown,
+    &clEnqueueBarrierWithWaitList_shutdown,
+    &clGetExtensionFunctionAddressForPlatform_shutdown,
+    &clCreateFromGLTexture_shutdown,
+
+    /* cl_khr_d3d11_sharing */
+#if defined(_WIN32)
+    &clGetDeviceIDsFromD3D11KHR_shutdown,
+    &clCreateFromD3D11BufferKHR_shutdown,
+    &clCreateFromD3D11Texture2DKHR_shutdown,
+    &clCreateFromD3D11Texture3DKHR_shutdown,
+    &clCreateFromDX9MediaSurfaceKHR_shutdown,
+    &clEnqueueAcquireD3D11ObjectsKHR_shutdown,
+    &clEnqueueReleaseD3D11ObjectsKHR_shutdown,
+#else
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+#endif
+
+    /* cl_khr_dx9_media_sharing */
+#if defined(_WIN32)
+    &clGetDeviceIDsFromDX9MediaAdapterKHR_shutdown,
+    &clEnqueueAcquireDX9MediaSurfacesKHR_shutdown,
+    &clEnqueueReleaseDX9MediaSurfacesKHR_shutdown,
+#else
+    NULL,
+    NULL,
+    NULL,
+#endif
+
+    /* cl_khr_egl_image */
+    &clCreateFromEGLImageKHR_shutdown,
+    &clEnqueueAcquireEGLObjectsKHR_shutdown,
+    &clEnqueueReleaseEGLObjectsKHR_shutdown,
+
+    /* cl_khr_egl_event */
+    &clCreateEventFromEGLSyncKHR_shutdown,
+
+    /* OpenCL 2.0 */
+    &clCreateCommandQueueWithProperties_shutdown,
+    &clCreatePipe_shutdown,
+    &clGetPipeInfo_shutdown,
+    &clSVMAlloc_shutdown,
+    &clSVMFree_shutdown,
+    &clEnqueueSVMFree_shutdown,
+    &clEnqueueSVMMemcpy_shutdown,
+    &clEnqueueSVMMemFill_shutdown,
+    &clEnqueueSVMMap_shutdown,
+    &clEnqueueSVMUnmap_shutdown,
+    &clCreateSamplerWithProperties_shutdown,
+    &clSetKernelArgSVMPointer_shutdown,
+    &clSetKernelExecInfo_shutdown,
+
+    /* cl_khr_sub_groups */
+    &clGetKernelSubGroupInfoKHR_shutdown,
+
+    /* OpenCL 2.1 */
+    &clCloneKernel_shutdown,
+    &clCreateProgramWithIL_shutdown,
+    &clEnqueueSVMMigrateMem_shutdown,
+    &clGetDeviceAndHostTimer_shutdown,
+    &clGetHostTimer_shutdown,
+    &clGetKernelSubGroupInfo_shutdown,
+    &clSetDefaultDeviceCommandQueue_shutdown,
+
+    /* OpenCL 2.2 */
+    &clSetProgramReleaseCallback_shutdown,
+    &clSetProgramSpecializationConstant_shutdown,
+
+    /* OpenCL 3.0 */
+    &clCreateBufferWithProperties_shutdown,
+    &clCreateImageWithProperties_shutdown,
+    &clSetContextDestructorCallback_shutdown,
+};
+
 #endif // defined(CL_ENABLE_LAYERS)
 
 #ifdef __cplusplus

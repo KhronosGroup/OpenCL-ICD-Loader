@@ -158,28 +158,6 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 %  endif
 
 %endfor
-#if defined(CL_ENABLE_LAYERS)
-static ${api.RetType} CL_API_CALL ${api.Name}_shutdown(
-%for i, param in enumerate(api.Params):
-%  if i < len(api.Params)-1:
-    ${param.Type} ${param.Name}${param.TypeEnd},
-%  else:
-    ${param.Type} ${param.Name}${param.TypeEnd})
-%  endif
-%endfor
-{
-%if api.Name == "clUnloadCompiler" or api.Name == "clSVMFree":
-    // Nothing!
-%elif api.Name == "clSVMAlloc" or api.Name == "clGetExtensionFunctionAddressForPlatform":
-    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, NULL);
-%elif api.RetType in apihandles or api.RetType == "void*":
-    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
-%else:
-    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
-%endif
-}
-#endif // defined(CL_ENABLE_LAYERS)
-
 %else:
 
 #if defined(CL_ENABLE_LAYERS)
@@ -194,6 +172,28 @@ extern ${api.RetType} CL_API_CALL ${api.Name + "_disp"}(
 #endif // defined(CL_ENABLE_LAYERS)
 
 %endif
+#if defined(CL_ENABLE_LAYERS)
+static ${api.RetType} CL_API_CALL ${api.Name}_shutdown(
+%for i, param in enumerate(api.Params):
+%  if i < len(api.Params)-1:
+    ${param.Type} ${param.Name}${param.TypeEnd},
+%  else:
+    ${param.Type} ${param.Name}${param.TypeEnd})
+%  endif
+%endfor
+{
+%if api.Name in ["clSVMFree"]:
+    // Nothing!
+%elif api.Name in ["clSVMAlloc", "clGetExtensionFunctionAddress", "clGetExtensionFunctionAddressForPlatform"]:
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, NULL);
+%elif api.RetType in apihandles or api.RetType == "void*":
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+%else:
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+%endif
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 %endfor
 %endfor
 <%
@@ -295,6 +295,24 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 
 %  endif
 %endfor
+#if defined(CL_ENABLE_LAYERS)
+static ${api.RetType} CL_API_CALL ${api.Name}_shutdown(
+%for i, param in enumerate(api.Params):
+%  if i < len(api.Params)-1:
+    ${param.Type} ${param.Name}${param.TypeEnd},
+%  else:
+    ${param.Type} ${param.Name}${param.TypeEnd})
+%  endif
+%endfor
+{
+%if api.RetType in apihandles:
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+%else:
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+%endif
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 %endfor
 %if extension in win32extensions:
 #endif // defined(_WIN32)
