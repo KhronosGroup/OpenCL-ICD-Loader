@@ -77,6 +77,18 @@ static cl_int CL_API_CALL clGetPlatformInfo_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetPlatformInfo_shutdown(
+    cl_platform_id platform,
+    cl_platform_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
@@ -122,6 +134,18 @@ static cl_int CL_API_CALL clGetDeviceIDs_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetDeviceIDs_shutdown(
+    cl_platform_id platform,
+    cl_device_type device_type,
+    cl_uint num_entries,
+    cl_device_id* devices,
+    cl_uint* num_devices)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetDeviceInfo(
@@ -164,6 +188,18 @@ static cl_int CL_API_CALL clGetDeviceInfo_disp(
         param_value_size,
         param_value,
         param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetDeviceInfo_shutdown(
+    cl_device_id device,
+    cl_device_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -223,6 +259,19 @@ static cl_context CL_API_CALL clCreateContext_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_context CL_API_CALL clCreateContext_shutdown(
+    const cl_context_properties* properties,
+    cl_uint num_devices,
+    const cl_device_id* devices,
+    void (CL_CALLBACK* pfn_notify)(const char* errinfo, const void* private_info, size_t cb, void* user_data),
+    void* user_data,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType(
@@ -274,6 +323,18 @@ static cl_context CL_API_CALL clCreateContextFromType_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_context CL_API_CALL clCreateContextFromType_shutdown(
+    const cl_context_properties* properties,
+    cl_device_type device_type,
+    void (CL_CALLBACK* pfn_notify)(const char* errinfo, const void* private_info, size_t cb, void* user_data),
+    void* user_data,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainContext(
@@ -299,6 +360,14 @@ static cl_int CL_API_CALL clRetainContext_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainContext_shutdown(
+    cl_context context)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseContext(
@@ -321,6 +390,14 @@ static cl_int CL_API_CALL clReleaseContext_disp(
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
     return context->dispatch->clReleaseContext(
         context);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseContext_shutdown(
+    cl_context context)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -369,6 +446,18 @@ static cl_int CL_API_CALL clGetContextInfo_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetContextInfo_shutdown(
+    cl_context context,
+    cl_context_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainCommandQueue(
@@ -394,6 +483,14 @@ static cl_int CL_API_CALL clRetainCommandQueue_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainCommandQueue_shutdown(
+    cl_command_queue command_queue)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseCommandQueue(
@@ -416,6 +513,14 @@ static cl_int CL_API_CALL clReleaseCommandQueue_disp(
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clReleaseCommandQueue(
         command_queue);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseCommandQueue_shutdown(
+    cl_command_queue command_queue)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -464,6 +569,18 @@ static cl_int CL_API_CALL clGetCommandQueueInfo_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetCommandQueueInfo_shutdown(
+    cl_command_queue command_queue,
+    cl_command_queue_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateBuffer(
@@ -509,6 +626,18 @@ static cl_mem CL_API_CALL clCreateBuffer_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateBuffer_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    size_t size,
+    void* host_ptr,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainMemObject(
@@ -534,6 +663,14 @@ static cl_int CL_API_CALL clRetainMemObject_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainMemObject_shutdown(
+    cl_mem memobj)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseMemObject(
@@ -556,6 +693,14 @@ static cl_int CL_API_CALL clReleaseMemObject_disp(
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
     return memobj->dispatch->clReleaseMemObject(
         memobj);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseMemObject_shutdown(
+    cl_mem memobj)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -609,6 +754,19 @@ static cl_int CL_API_CALL clGetSupportedImageFormats_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetSupportedImageFormats_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    cl_mem_object_type image_type,
+    cl_uint num_entries,
+    cl_image_format* image_formats,
+    cl_uint* num_image_formats)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetMemObjectInfo(
@@ -651,6 +809,18 @@ static cl_int CL_API_CALL clGetMemObjectInfo_disp(
         param_value_size,
         param_value,
         param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetMemObjectInfo_shutdown(
+    cl_mem memobj,
+    cl_mem_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -699,6 +869,18 @@ static cl_int CL_API_CALL clGetImageInfo_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetImageInfo_shutdown(
+    cl_mem image,
+    cl_image_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainSampler(
@@ -724,6 +906,14 @@ static cl_int CL_API_CALL clRetainSampler_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainSampler_shutdown(
+    cl_sampler sampler)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseSampler(
@@ -746,6 +936,14 @@ static cl_int CL_API_CALL clReleaseSampler_disp(
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(sampler, CL_INVALID_SAMPLER);
     return sampler->dispatch->clReleaseSampler(
         sampler);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseSampler_shutdown(
+    cl_sampler sampler)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -794,6 +992,18 @@ static cl_int CL_API_CALL clGetSamplerInfo_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetSamplerInfo_shutdown(
+    cl_sampler sampler,
+    cl_sampler_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithSource(
@@ -836,6 +1046,18 @@ static cl_program CL_API_CALL clCreateProgramWithSource_disp(
         strings,
         lengths,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_program CL_API_CALL clCreateProgramWithSource_shutdown(
+    cl_context context,
+    cl_uint count,
+    const char** strings,
+    const size_t* lengths,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -894,6 +1116,20 @@ static cl_program CL_API_CALL clCreateProgramWithBinary_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_program CL_API_CALL clCreateProgramWithBinary_shutdown(
+    cl_context context,
+    cl_uint num_devices,
+    const cl_device_id* device_list,
+    const size_t* lengths,
+    const unsigned char** binaries,
+    cl_int* binary_status,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainProgram(
@@ -919,6 +1155,14 @@ static cl_int CL_API_CALL clRetainProgram_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainProgram_shutdown(
+    cl_program program)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseProgram(
@@ -941,6 +1185,14 @@ static cl_int CL_API_CALL clReleaseProgram_disp(
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clReleaseProgram(
         program);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseProgram_shutdown(
+    cl_program program)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -994,6 +1246,19 @@ static cl_int CL_API_CALL clBuildProgram_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clBuildProgram_shutdown(
+    cl_program program,
+    cl_uint num_devices,
+    const cl_device_id* device_list,
+    const char* options,
+    void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
+    void* user_data)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetProgramInfo(
@@ -1036,6 +1301,18 @@ static cl_int CL_API_CALL clGetProgramInfo_disp(
         param_value_size,
         param_value,
         param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetProgramInfo_shutdown(
+    cl_program program,
+    cl_program_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -1089,6 +1366,19 @@ static cl_int CL_API_CALL clGetProgramBuildInfo_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetProgramBuildInfo_shutdown(
+    cl_program program,
+    cl_device_id device,
+    cl_program_build_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_kernel CL_API_CALL clCreateKernel(
@@ -1121,6 +1411,16 @@ static cl_kernel CL_API_CALL clCreateKernel_disp(
         program,
         kernel_name,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_kernel CL_API_CALL clCreateKernel_shutdown(
+    cl_program program,
+    const char* kernel_name,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -1164,6 +1464,17 @@ static cl_int CL_API_CALL clCreateKernelsInProgram_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clCreateKernelsInProgram_shutdown(
+    cl_program program,
+    cl_uint num_kernels,
+    cl_kernel* kernels,
+    cl_uint* num_kernels_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainKernel(
@@ -1189,6 +1500,14 @@ static cl_int CL_API_CALL clRetainKernel_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainKernel_shutdown(
+    cl_kernel kernel)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseKernel(
@@ -1211,6 +1530,14 @@ static cl_int CL_API_CALL clReleaseKernel_disp(
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clReleaseKernel(
         kernel);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseKernel_shutdown(
+    cl_kernel kernel)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -1251,6 +1578,17 @@ static cl_int CL_API_CALL clSetKernelArg_disp(
         arg_index,
         arg_size,
         arg_value);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetKernelArg_shutdown(
+    cl_kernel kernel,
+    cl_uint arg_index,
+    size_t arg_size,
+    const void* arg_value)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -1296,6 +1634,18 @@ static cl_int CL_API_CALL clGetKernelInfo_disp(
         param_value_size,
         param_value,
         param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetKernelInfo_shutdown(
+    cl_kernel kernel,
+    cl_kernel_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -1349,6 +1699,19 @@ static cl_int CL_API_CALL clGetKernelWorkGroupInfo_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetKernelWorkGroupInfo_shutdown(
+    cl_kernel kernel,
+    cl_device_id device,
+    cl_kernel_work_group_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clWaitForEvents(
@@ -1382,6 +1745,15 @@ static cl_int CL_API_CALL clWaitForEvents_disp(
     return event_list[0]->dispatch->clWaitForEvents(
         num_events,
         event_list);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clWaitForEvents_shutdown(
+    cl_uint num_events,
+    const cl_event* event_list)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -1430,6 +1802,18 @@ static cl_int CL_API_CALL clGetEventInfo_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetEventInfo_shutdown(
+    cl_event event,
+    cl_event_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainEvent(
@@ -1455,6 +1839,14 @@ static cl_int CL_API_CALL clRetainEvent_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainEvent_shutdown(
+    cl_event event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseEvent(
@@ -1477,6 +1869,14 @@ static cl_int CL_API_CALL clReleaseEvent_disp(
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
     return event->dispatch->clReleaseEvent(
         event);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseEvent_shutdown(
+    cl_event event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -1525,6 +1925,18 @@ static cl_int CL_API_CALL clGetEventProfilingInfo_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetEventProfilingInfo_shutdown(
+    cl_event event,
+    cl_profiling_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clFlush(
@@ -1550,6 +1962,14 @@ static cl_int CL_API_CALL clFlush_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clFlush_shutdown(
+    cl_command_queue command_queue)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clFinish(
@@ -1572,6 +1992,14 @@ static cl_int CL_API_CALL clFinish_disp(
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clFinish(
         command_queue);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clFinish_shutdown(
+    cl_command_queue command_queue)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -1640,6 +2068,22 @@ static cl_int CL_API_CALL clEnqueueReadBuffer_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReadBuffer_shutdown(
+    cl_command_queue command_queue,
+    cl_mem buffer,
+    cl_bool blocking_read,
+    size_t offset,
+    size_t size,
+    void* ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBuffer(
@@ -1705,6 +2149,22 @@ static cl_int CL_API_CALL clEnqueueWriteBuffer_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueWriteBuffer_shutdown(
+    cl_command_queue command_queue,
+    cl_mem buffer,
+    cl_bool blocking_write,
+    size_t offset,
+    size_t size,
+    const void* ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBuffer(
@@ -1767,6 +2227,22 @@ static cl_int CL_API_CALL clEnqueueCopyBuffer_disp(
         num_events_in_wait_list,
         event_wait_list,
         event);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueCopyBuffer_shutdown(
+    cl_command_queue command_queue,
+    cl_mem src_buffer,
+    cl_mem dst_buffer,
+    size_t src_offset,
+    size_t dst_offset,
+    size_t size,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -1845,6 +2321,24 @@ static cl_int CL_API_CALL clEnqueueReadImage_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReadImage_shutdown(
+    cl_command_queue command_queue,
+    cl_mem image,
+    cl_bool blocking_read,
+    const size_t* origin,
+    const size_t* region,
+    size_t row_pitch,
+    size_t slice_pitch,
+    void* ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteImage(
@@ -1920,6 +2414,24 @@ static cl_int CL_API_CALL clEnqueueWriteImage_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueWriteImage_shutdown(
+    cl_command_queue command_queue,
+    cl_mem image,
+    cl_bool blocking_write,
+    const size_t* origin,
+    const size_t* region,
+    size_t input_row_pitch,
+    size_t input_slice_pitch,
+    const void* ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImage(
@@ -1982,6 +2494,22 @@ static cl_int CL_API_CALL clEnqueueCopyImage_disp(
         num_events_in_wait_list,
         event_wait_list,
         event);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueCopyImage_shutdown(
+    cl_command_queue command_queue,
+    cl_mem src_image,
+    cl_mem dst_image,
+    const size_t* src_origin,
+    const size_t* dst_origin,
+    const size_t* region,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -2050,6 +2578,22 @@ static cl_int CL_API_CALL clEnqueueCopyImageToBuffer_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueCopyImageToBuffer_shutdown(
+    cl_command_queue command_queue,
+    cl_mem src_image,
+    cl_mem dst_buffer,
+    const size_t* src_origin,
+    const size_t* region,
+    size_t dst_offset,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferToImage(
@@ -2112,6 +2656,22 @@ static cl_int CL_API_CALL clEnqueueCopyBufferToImage_disp(
         num_events_in_wait_list,
         event_wait_list,
         event);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueCopyBufferToImage_shutdown(
+    cl_command_queue command_queue,
+    cl_mem src_buffer,
+    cl_mem dst_image,
+    size_t src_offset,
+    const size_t* dst_origin,
+    const size_t* region,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -2182,6 +2742,23 @@ static void* CL_API_CALL clEnqueueMapBuffer_disp(
         event_wait_list,
         event,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static void* CL_API_CALL clEnqueueMapBuffer_shutdown(
+    cl_command_queue command_queue,
+    cl_mem buffer,
+    cl_bool blocking_map,
+    cl_map_flags map_flags,
+    size_t offset,
+    size_t size,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -2265,6 +2842,25 @@ static void* CL_API_CALL clEnqueueMapImage_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static void* CL_API_CALL clEnqueueMapImage_shutdown(
+    cl_command_queue command_queue,
+    cl_mem image,
+    cl_bool blocking_map,
+    cl_map_flags map_flags,
+    const size_t* origin,
+    const size_t* region,
+    size_t* image_row_pitch,
+    size_t* image_slice_pitch,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueUnmapMemObject(
@@ -2312,6 +2908,19 @@ static cl_int CL_API_CALL clEnqueueUnmapMemObject_disp(
         num_events_in_wait_list,
         event_wait_list,
         event);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueUnmapMemObject_shutdown(
+    cl_command_queue command_queue,
+    cl_mem memobj,
+    void* mapped_ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -2377,6 +2986,22 @@ static cl_int CL_API_CALL clEnqueueNDRangeKernel_disp(
         num_events_in_wait_list,
         event_wait_list,
         event);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueNDRangeKernel_shutdown(
+    cl_command_queue command_queue,
+    cl_kernel kernel,
+    cl_uint work_dim,
+    const size_t* global_work_offset,
+    const size_t* global_work_size,
+    const size_t* local_work_size,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -2450,6 +3075,23 @@ static cl_int CL_API_CALL clEnqueueNativeKernel_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueNativeKernel_shutdown(
+    cl_command_queue command_queue,
+    void (CL_CALLBACK* user_func)(void*),
+    void* args,
+    size_t cb_args,
+    cl_uint num_mem_objects,
+    const cl_mem* mem_list,
+    const void** args_mem_loc,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetCommandQueueProperty(
@@ -2487,6 +3129,17 @@ static cl_int CL_API_CALL clSetCommandQueueProperty_disp(
         properties,
         enable,
         old_properties);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetCommandQueueProperty_shutdown(
+    cl_command_queue command_queue,
+    cl_command_queue_properties properties,
+    cl_bool enable,
+    cl_command_queue_properties* old_properties)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -2547,6 +3200,21 @@ static cl_mem CL_API_CALL clCreateImage2D_disp(
         image_row_pitch,
         host_ptr,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateImage2D_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    const cl_image_format* image_format,
+    size_t image_width,
+    size_t image_height,
+    size_t image_row_pitch,
+    void* host_ptr,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -2620,6 +3288,23 @@ static cl_mem CL_API_CALL clCreateImage3D_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateImage3D_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    const cl_image_format* image_format,
+    size_t image_width,
+    size_t image_height,
+    size_t image_depth,
+    size_t image_row_pitch,
+    size_t image_slice_pitch,
+    void* host_ptr,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker(
@@ -2647,6 +3332,15 @@ static cl_int CL_API_CALL clEnqueueMarker_disp(
     return command_queue->dispatch->clEnqueueMarker(
         command_queue,
         event);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueMarker_shutdown(
+    cl_command_queue command_queue,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -2685,6 +3379,16 @@ static cl_int CL_API_CALL clEnqueueWaitForEvents_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueWaitForEvents_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_events,
+    const cl_event* event_list)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrier(
@@ -2710,6 +3414,14 @@ static cl_int CL_API_CALL clEnqueueBarrier_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueBarrier_shutdown(
+    cl_command_queue command_queue)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clUnloadCompiler(
@@ -2730,6 +3442,14 @@ static cl_int CL_API_CALL clUnloadCompiler_disp(
 {
     // Nothing!
     return CL_SUCCESS;
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clUnloadCompiler_shutdown(
+    void )
+{
+    // Nothing!
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -2780,6 +3500,17 @@ static cl_command_queue CL_API_CALL clCreateCommandQueue_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_command_queue CL_API_CALL clCreateCommandQueue_shutdown(
+    cl_context context,
+    cl_device_id device,
+    cl_command_queue_properties properties,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_sampler CL_API_CALL clCreateSampler(
@@ -2822,6 +3553,18 @@ static cl_sampler CL_API_CALL clCreateSampler_disp(
         addressing_mode,
         filter_mode,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_sampler CL_API_CALL clCreateSampler_shutdown(
+    cl_context context,
+    cl_bool normalized_coords,
+    cl_addressing_mode addressing_mode,
+    cl_filter_mode filter_mode,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -2870,6 +3613,18 @@ static cl_int CL_API_CALL clEnqueueTask_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueTask_shutdown(
+    cl_command_queue command_queue,
+    cl_kernel kernel,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateSubBuffer(
@@ -2915,6 +3670,18 @@ static cl_mem CL_API_CALL clCreateSubBuffer_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateSubBuffer_shutdown(
+    cl_mem buffer,
+    cl_mem_flags flags,
+    cl_buffer_create_type buffer_create_type,
+    const void* buffer_create_info,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetMemObjectDestructorCallback(
@@ -2950,6 +3717,16 @@ static cl_int CL_API_CALL clSetMemObjectDestructorCallback_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetMemObjectDestructorCallback_shutdown(
+    cl_mem memobj,
+    void (CL_CALLBACK* pfn_notify)(cl_mem memobj, void* user_data),
+    void* user_data)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_event CL_API_CALL clCreateUserEvent(
@@ -2980,6 +3757,15 @@ static cl_event CL_API_CALL clCreateUserEvent_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_event CL_API_CALL clCreateUserEvent_shutdown(
+    cl_context context,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetUserEventStatus(
@@ -3007,6 +3793,15 @@ static cl_int CL_API_CALL clSetUserEventStatus_disp(
     return event->dispatch->clSetUserEventStatus(
         event,
         execution_status);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetUserEventStatus_shutdown(
+    cl_event event,
+    cl_int execution_status)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -3047,6 +3842,17 @@ static cl_int CL_API_CALL clSetEventCallback_disp(
         command_exec_callback_type,
         pfn_notify,
         user_data);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetEventCallback_shutdown(
+    cl_event event,
+    cl_int command_exec_callback_type,
+    void (CL_CALLBACK* pfn_notify)(cl_event event, cl_int event_command_status, void *user_data),
+    void* user_data)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -3140,6 +3946,27 @@ static cl_int CL_API_CALL clEnqueueReadBufferRect_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReadBufferRect_shutdown(
+    cl_command_queue command_queue,
+    cl_mem buffer,
+    cl_bool blocking_read,
+    const size_t* buffer_origin,
+    const size_t* host_origin,
+    const size_t* region,
+    size_t buffer_row_pitch,
+    size_t buffer_slice_pitch,
+    size_t host_row_pitch,
+    size_t host_slice_pitch,
+    void* ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect(
@@ -3230,6 +4057,27 @@ static cl_int CL_API_CALL clEnqueueWriteBufferRect_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueWriteBufferRect_shutdown(
+    cl_command_queue command_queue,
+    cl_mem buffer,
+    cl_bool blocking_write,
+    const size_t* buffer_origin,
+    const size_t* host_origin,
+    const size_t* region,
+    size_t buffer_row_pitch,
+    size_t buffer_slice_pitch,
+    size_t host_row_pitch,
+    size_t host_slice_pitch,
+    const void* ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferRect(
@@ -3315,6 +4163,26 @@ static cl_int CL_API_CALL clEnqueueCopyBufferRect_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueCopyBufferRect_shutdown(
+    cl_command_queue command_queue,
+    cl_mem src_buffer,
+    cl_mem dst_buffer,
+    const size_t* src_origin,
+    const size_t* dst_origin,
+    const size_t* region,
+    size_t src_row_pitch,
+    size_t src_slice_pitch,
+    size_t dst_row_pitch,
+    size_t dst_slice_pitch,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevices(
@@ -3360,6 +4228,18 @@ static cl_int CL_API_CALL clCreateSubDevices_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clCreateSubDevices_shutdown(
+    cl_device_id in_device,
+    const cl_device_partition_property* properties,
+    cl_uint num_devices,
+    cl_device_id* out_devices,
+    cl_uint* num_devices_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainDevice(
@@ -3385,6 +4265,14 @@ static cl_int CL_API_CALL clRetainDevice_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainDevice_shutdown(
+    cl_device_id device)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseDevice(
@@ -3407,6 +4295,14 @@ static cl_int CL_API_CALL clReleaseDevice_disp(
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clReleaseDevice(
         device);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseDevice_shutdown(
+    cl_device_id device)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -3460,6 +4356,19 @@ static cl_mem CL_API_CALL clCreateImage_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateImage_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    const cl_image_format* image_format,
+    const cl_image_desc* image_desc,
+    void* host_ptr,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBuiltInKernels(
@@ -3502,6 +4411,18 @@ static cl_program CL_API_CALL clCreateProgramWithBuiltInKernels_disp(
         device_list,
         kernel_names,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_program CL_API_CALL clCreateProgramWithBuiltInKernels_shutdown(
+    cl_context context,
+    cl_uint num_devices,
+    const cl_device_id* device_list,
+    const char* kernel_names,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -3570,6 +4491,22 @@ static cl_int CL_API_CALL clCompileProgram_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clCompileProgram_shutdown(
+    cl_program program,
+    cl_uint num_devices,
+    const cl_device_id* device_list,
+    const char* options,
+    cl_uint num_input_headers,
+    const cl_program* input_headers,
+    const char** header_include_names,
+    void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
+    void* user_data)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_program CL_API_CALL clLinkProgram(
@@ -3635,6 +4572,22 @@ static cl_program CL_API_CALL clLinkProgram_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_program CL_API_CALL clLinkProgram_shutdown(
+    cl_context context,
+    cl_uint num_devices,
+    const cl_device_id* device_list,
+    const char* options,
+    cl_uint num_input_programs,
+    const cl_program* input_programs,
+    void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
+    void* user_data,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clUnloadPlatformCompiler(
@@ -3657,6 +4610,14 @@ static cl_int CL_API_CALL clUnloadPlatformCompiler_disp(
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     return platform->dispatch->clUnloadPlatformCompiler(
         platform);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clUnloadPlatformCompiler_shutdown(
+    cl_platform_id platform)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -3707,6 +4668,19 @@ static cl_int CL_API_CALL clGetKernelArgInfo_disp(
         param_value_size,
         param_value,
         param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetKernelArgInfo_shutdown(
+    cl_kernel kernel,
+    cl_uint arg_index,
+    cl_kernel_arg_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -3775,6 +4749,22 @@ static cl_int CL_API_CALL clEnqueueFillBuffer_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueFillBuffer_shutdown(
+    cl_command_queue command_queue,
+    cl_mem buffer,
+    const void* pattern,
+    size_t pattern_size,
+    size_t offset,
+    size_t size,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillImage(
@@ -3835,6 +4825,21 @@ static cl_int CL_API_CALL clEnqueueFillImage_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueFillImage_shutdown(
+    cl_command_queue command_queue,
+    cl_mem image,
+    const void* fill_color,
+    const size_t* origin,
+    const size_t* region,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueMigrateMemObjects(
@@ -3890,6 +4895,20 @@ static cl_int CL_API_CALL clEnqueueMigrateMemObjects_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueMigrateMemObjects_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_mem_objects,
+    const cl_mem* mem_objects,
+    cl_mem_migration_flags flags,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarkerWithWaitList(
@@ -3930,6 +4949,17 @@ static cl_int CL_API_CALL clEnqueueMarkerWithWaitList_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueMarkerWithWaitList_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrierWithWaitList(
@@ -3967,6 +4997,17 @@ static cl_int CL_API_CALL clEnqueueBarrierWithWaitList_disp(
         num_events_in_wait_list,
         event_wait_list,
         event);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueBarrierWithWaitList_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -4015,6 +5056,17 @@ static cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties_disp(
         device,
         properties,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties_shutdown(
+    cl_context context,
+    cl_device_id device,
+    const cl_queue_properties* properties,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -4068,6 +5120,19 @@ static cl_mem CL_API_CALL clCreatePipe_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreatePipe_shutdown(
+    cl_context context,
+    cl_mem_flags flags,
+    cl_uint pipe_packet_size,
+    cl_uint pipe_max_packets,
+    const cl_pipe_properties* properties,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetPipeInfo(
@@ -4113,6 +5178,18 @@ static cl_int CL_API_CALL clGetPipeInfo_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetPipeInfo_shutdown(
+    cl_mem pipe,
+    cl_pipe_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY void* CL_API_CALL clSVMAlloc(
@@ -4153,6 +5230,17 @@ static void* CL_API_CALL clSVMAlloc_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static void* CL_API_CALL clSVMAlloc_shutdown(
+    cl_context context,
+    cl_svm_mem_flags flags,
+    size_t size,
+    cl_uint alignment)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, NULL);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY void CL_API_CALL clSVMFree(
@@ -4183,6 +5271,15 @@ static void CL_API_CALL clSVMFree_disp(
     context->dispatch->clSVMFree(
         context,
         svm_pointer);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static void CL_API_CALL clSVMFree_shutdown(
+    cl_context context,
+    void* svm_pointer)
+{
+    // Nothing!
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -4221,6 +5318,16 @@ static cl_sampler CL_API_CALL clCreateSamplerWithProperties_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_sampler CL_API_CALL clCreateSamplerWithProperties_shutdown(
+    cl_context context,
+    const cl_sampler_properties* sampler_properties,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetKernelArgSVMPointer(
@@ -4253,6 +5360,16 @@ static cl_int CL_API_CALL clSetKernelArgSVMPointer_disp(
         kernel,
         arg_index,
         arg_value);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetKernelArgSVMPointer_shutdown(
+    cl_kernel kernel,
+    cl_uint arg_index,
+    const void* arg_value)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -4293,6 +5410,17 @@ static cl_int CL_API_CALL clSetKernelExecInfo_disp(
         param_name,
         param_value_size,
         param_value);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetKernelExecInfo_shutdown(
+    cl_kernel kernel,
+    cl_kernel_exec_info param_name,
+    size_t param_value_size,
+    const void* param_value)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -4356,6 +5484,21 @@ static cl_int CL_API_CALL clEnqueueSVMFree_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueSVMFree_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_svm_pointers,
+    void* svm_pointers[],
+    void (CL_CALLBACK* pfn_free_func)(cl_command_queue queue, cl_uint num_svm_pointers, void* svm_pointers[], void* user_data),
+    void* user_data,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemcpy(
@@ -4413,6 +5556,21 @@ static cl_int CL_API_CALL clEnqueueSVMMemcpy_disp(
         num_events_in_wait_list,
         event_wait_list,
         event);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueSVMMemcpy_shutdown(
+    cl_command_queue command_queue,
+    cl_bool blocking_copy,
+    void* dst_ptr,
+    const void* src_ptr,
+    size_t size,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -4476,6 +5634,21 @@ static cl_int CL_API_CALL clEnqueueSVMMemFill_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueSVMMemFill_shutdown(
+    cl_command_queue command_queue,
+    void* svm_ptr,
+    const void* pattern,
+    size_t pattern_size,
+    size_t size,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMap(
@@ -4536,6 +5709,21 @@ static cl_int CL_API_CALL clEnqueueSVMMap_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueSVMMap_shutdown(
+    cl_command_queue command_queue,
+    cl_bool blocking_map,
+    cl_map_flags flags,
+    void* svm_ptr,
+    size_t size,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMUnmap(
@@ -4581,6 +5769,18 @@ static cl_int CL_API_CALL clEnqueueSVMUnmap_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueSVMUnmap_shutdown(
+    cl_command_queue command_queue,
+    void* svm_ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetDefaultDeviceCommandQueue(
@@ -4613,6 +5813,16 @@ static cl_int CL_API_CALL clSetDefaultDeviceCommandQueue_disp(
         context,
         device,
         command_queue);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetDefaultDeviceCommandQueue_shutdown(
+    cl_context context,
+    cl_device_id device,
+    cl_command_queue command_queue)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -4651,6 +5861,16 @@ static cl_int CL_API_CALL clGetDeviceAndHostTimer_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetDeviceAndHostTimer_shutdown(
+    cl_device_id device,
+    cl_ulong* device_timestamp,
+    cl_ulong* host_timestamp)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetHostTimer(
@@ -4678,6 +5898,15 @@ static cl_int CL_API_CALL clGetHostTimer_disp(
     return device->dispatch->clGetHostTimer(
         device,
         host_timestamp);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetHostTimer_shutdown(
+    cl_device_id device,
+    cl_ulong* host_timestamp)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -4721,6 +5950,17 @@ static cl_program CL_API_CALL clCreateProgramWithIL_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_program CL_API_CALL clCreateProgramWithIL_shutdown(
+    cl_context context,
+    const void* il,
+    size_t length,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_kernel CL_API_CALL clCloneKernel(
@@ -4748,6 +5988,15 @@ static cl_kernel CL_API_CALL clCloneKernel_disp(
     return source_kernel->dispatch->clCloneKernel(
         source_kernel,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_kernel CL_API_CALL clCloneKernel_shutdown(
+    cl_kernel source_kernel,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -4811,6 +6060,21 @@ static cl_int CL_API_CALL clGetKernelSubGroupInfo_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetKernelSubGroupInfo_shutdown(
+    cl_kernel kernel,
+    cl_device_id device,
+    cl_kernel_sub_group_info param_name,
+    size_t input_value_size,
+    const void* input_value,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMigrateMem(
@@ -4871,6 +6135,21 @@ static cl_int CL_API_CALL clEnqueueSVMMigrateMem_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueSVMMigrateMem_shutdown(
+    cl_command_queue command_queue,
+    cl_uint num_svm_pointers,
+    const void** svm_pointers,
+    const size_t* sizes,
+    cl_mem_migration_flags flags,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetProgramSpecializationConstant(
@@ -4911,6 +6190,17 @@ static cl_int CL_API_CALL clSetProgramSpecializationConstant_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetProgramSpecializationConstant_shutdown(
+    cl_program program,
+    cl_uint spec_id,
+    size_t spec_size,
+    const void* spec_value)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback(
@@ -4946,6 +6236,16 @@ static cl_int CL_API_CALL clSetProgramReleaseCallback_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetProgramReleaseCallback_shutdown(
+    cl_program program,
+    void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
+    void* user_data)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetContextDestructorCallback(
@@ -4978,6 +6278,16 @@ static cl_int CL_API_CALL clSetContextDestructorCallback_disp(
         context,
         pfn_notify,
         user_data);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetContextDestructorCallback_shutdown(
+    cl_context context,
+    void (CL_CALLBACK* pfn_notify)(cl_context context, void* user_data),
+    void* user_data)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -5028,6 +6338,19 @@ static cl_mem CL_API_CALL clCreateBufferWithProperties_disp(
         size,
         host_ptr,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateBufferWithProperties_shutdown(
+    cl_context context,
+    const cl_mem_properties* properties,
+    cl_mem_flags flags,
+    size_t size,
+    void* host_ptr,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -5083,6 +6406,20 @@ static cl_mem CL_API_CALL clCreateImageWithProperties_disp(
         image_desc,
         host_ptr,
         errcode_ret);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateImageWithProperties_shutdown(
+    cl_context context,
+    const cl_mem_properties* properties,
+    cl_mem_flags flags,
+    const cl_image_format* image_format,
+    const cl_image_desc* image_desc,
+    void* host_ptr,
+    cl_int* errcode_ret)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
@@ -6909,7 +8246,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clEnqueueReleaseGLObjects_disp,
     &clGetGLContextInfoKHR_disp,
 
-  /* cl_khr_d3d10_sharing */
+    /* cl_khr_d3d10_sharing */
 #if defined(_WIN32)
     &clGetDeviceIDsFromD3D10KHR_disp,
     &clCreateFromD3D10BufferKHR_disp,
@@ -6926,7 +8263,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     NULL,
 #endif
 
-  /* OpenCL 1.1 */
+    /* OpenCL 1.1 */
     &clSetEventCallback_disp,
     &clCreateSubBuffer_disp,
     &clSetMemObjectDestructorCallback_disp,
@@ -6936,15 +8273,15 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clEnqueueWriteBufferRect_disp,
     &clEnqueueCopyBufferRect_disp,
 
-  /* cl_ext_device_fission */
+    /* cl_ext_device_fission */
     &clCreateSubDevicesEXT_disp,
     &clRetainDeviceEXT_disp,
     &clReleaseDeviceEXT_disp,
 
-  /* cl_khr_gl_event */
+    /* cl_khr_gl_event */
     &clCreateEventFromGLsyncKHR_disp,
 
-  /* OpenCL 1.2 */
+    /* OpenCL 1.2 */
     &clCreateSubDevices_disp,
     &clRetainDevice_disp,
     &clReleaseDevice_disp,
@@ -6962,7 +8299,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clGetExtensionFunctionAddressForPlatform_disp,
     &clCreateFromGLTexture_disp,
 
-  /* cl_khr_d3d11_sharing */
+    /* cl_khr_d3d11_sharing */
 #if defined(_WIN32)
     &clGetDeviceIDsFromD3D11KHR_disp,
     &clCreateFromD3D11BufferKHR_disp,
@@ -6981,7 +8318,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     NULL,
 #endif
 
-  /* cl_khr_dx9_media_sharing */
+    /* cl_khr_dx9_media_sharing */
 #if defined(_WIN32)
     &clGetDeviceIDsFromDX9MediaAdapterKHR_disp,
     &clEnqueueAcquireDX9MediaSurfacesKHR_disp,
@@ -6992,15 +8329,15 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     NULL,
 #endif
 
-  /* cl_khr_egl_image */
+    /* cl_khr_egl_image */
     &clCreateFromEGLImageKHR_disp,
     &clEnqueueAcquireEGLObjectsKHR_disp,
     &clEnqueueReleaseEGLObjectsKHR_disp,
 
-  /* cl_khr_egl_event */
+    /* cl_khr_egl_event */
     &clCreateEventFromEGLSyncKHR_disp,
 
-  /* OpenCL 2.0 */
+    /* OpenCL 2.0 */
     &clCreateCommandQueueWithProperties_disp,
     &clCreatePipe_disp,
     &clGetPipeInfo_disp,
@@ -7015,10 +8352,10 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clSetKernelArgSVMPointer_disp,
     &clSetKernelExecInfo_disp,
 
-  /* cl_khr_sub_groups */
+    /* cl_khr_sub_groups */
     &clGetKernelSubGroupInfoKHR_disp,
 
-  /* OpenCL 2.1 */
+    /* OpenCL 2.1 */
     &clCloneKernel_disp,
     &clCreateProgramWithIL_disp,
     &clEnqueueSVMMigrateMem_disp,
@@ -7027,14 +8364,14 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clGetKernelSubGroupInfo_disp,
     &clSetDefaultDeviceCommandQueue_disp,
 
-  /* OpenCL 2.2 */
+    /* OpenCL 2.2 */
     &clSetProgramReleaseCallback_disp,
     &clSetProgramSpecializationConstant_disp,
 
-  /* OpenCL 3.0 */
+    /* OpenCL 3.0 */
     &clCreateBufferWithProperties_disp,
     &clCreateImageWithProperties_disp,
-    &clSetContextDestructorCallback_disp
+    &clSetContextDestructorCallback_disp,
 };
 #endif // defined(CL_ENABLE_LAYERS)
 

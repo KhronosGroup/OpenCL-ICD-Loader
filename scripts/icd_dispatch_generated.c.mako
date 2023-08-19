@@ -158,6 +158,28 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 %  endif
 
 %endfor
+#if defined(CL_ENABLE_LAYERS)
+static ${api.RetType} CL_API_CALL ${api.Name}_shutdown(
+%for i, param in enumerate(api.Params):
+%  if i < len(api.Params)-1:
+    ${param.Type} ${param.Name}${param.TypeEnd},
+%  else:
+    ${param.Type} ${param.Name}${param.TypeEnd})
+%  endif
+%endfor
+{
+%if api.Name == "clUnloadCompiler" or api.Name == "clSVMFree":
+    // Nothing!
+%elif api.Name == "clSVMAlloc" or api.Name == "clGetExtensionFunctionAddressForPlatform":
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, NULL);
+%elif api.RetType in apihandles or api.RetType == "void*":
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+%else:
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+%endif
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 %else:
 
 #if defined(CL_ENABLE_LAYERS)
@@ -358,7 +380,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clEnqueueReleaseGLObjects_disp,
     &clGetGLContextInfoKHR_disp,
 
-  /* cl_khr_d3d10_sharing */
+    /* cl_khr_d3d10_sharing */
 #if defined(_WIN32)
     &clGetDeviceIDsFromD3D10KHR_disp,
     &clCreateFromD3D10BufferKHR_disp,
@@ -375,7 +397,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     NULL,
 #endif
 
-  /* OpenCL 1.1 */
+    /* OpenCL 1.1 */
     &clSetEventCallback_disp,
     &clCreateSubBuffer_disp,
     &clSetMemObjectDestructorCallback_disp,
@@ -385,15 +407,15 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clEnqueueWriteBufferRect_disp,
     &clEnqueueCopyBufferRect_disp,
 
-  /* cl_ext_device_fission */
+    /* cl_ext_device_fission */
     &clCreateSubDevicesEXT_disp,
     &clRetainDeviceEXT_disp,
     &clReleaseDeviceEXT_disp,
 
-  /* cl_khr_gl_event */
+    /* cl_khr_gl_event */
     &clCreateEventFromGLsyncKHR_disp,
 
-  /* OpenCL 1.2 */
+    /* OpenCL 1.2 */
     &clCreateSubDevices_disp,
     &clRetainDevice_disp,
     &clReleaseDevice_disp,
@@ -411,7 +433,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clGetExtensionFunctionAddressForPlatform_disp,
     &clCreateFromGLTexture_disp,
 
-  /* cl_khr_d3d11_sharing */
+    /* cl_khr_d3d11_sharing */
 #if defined(_WIN32)
     &clGetDeviceIDsFromD3D11KHR_disp,
     &clCreateFromD3D11BufferKHR_disp,
@@ -430,7 +452,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     NULL,
 #endif
 
-  /* cl_khr_dx9_media_sharing */
+    /* cl_khr_dx9_media_sharing */
 #if defined(_WIN32)
     &clGetDeviceIDsFromDX9MediaAdapterKHR_disp,
     &clEnqueueAcquireDX9MediaSurfacesKHR_disp,
@@ -441,15 +463,15 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     NULL,
 #endif
 
-  /* cl_khr_egl_image */
+    /* cl_khr_egl_image */
     &clCreateFromEGLImageKHR_disp,
     &clEnqueueAcquireEGLObjectsKHR_disp,
     &clEnqueueReleaseEGLObjectsKHR_disp,
 
-  /* cl_khr_egl_event */
+    /* cl_khr_egl_event */
     &clCreateEventFromEGLSyncKHR_disp,
 
-  /* OpenCL 2.0 */
+    /* OpenCL 2.0 */
     &clCreateCommandQueueWithProperties_disp,
     &clCreatePipe_disp,
     &clGetPipeInfo_disp,
@@ -464,10 +486,10 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clSetKernelArgSVMPointer_disp,
     &clSetKernelExecInfo_disp,
 
-  /* cl_khr_sub_groups */
+    /* cl_khr_sub_groups */
     &clGetKernelSubGroupInfoKHR_disp,
 
-  /* OpenCL 2.1 */
+    /* OpenCL 2.1 */
     &clCloneKernel_disp,
     &clCreateProgramWithIL_disp,
     &clEnqueueSVMMigrateMem_disp,
@@ -476,14 +498,14 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clGetKernelSubGroupInfo_disp,
     &clSetDefaultDeviceCommandQueue_disp,
 
-  /* OpenCL 2.2 */
+    /* OpenCL 2.2 */
     &clSetProgramReleaseCallback_disp,
     &clSetProgramSpecializationConstant_disp,
 
-  /* OpenCL 3.0 */
+    /* OpenCL 3.0 */
     &clCreateBufferWithProperties_disp,
     &clCreateImageWithProperties_disp,
-    &clSetContextDestructorCallback_disp
+    &clSetContextDestructorCallback_disp,
 };
 #endif // defined(CL_ENABLE_LAYERS)
 
