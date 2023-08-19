@@ -219,6 +219,31 @@ if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR OPENCL_ICD_LOADER_BUILD_TESTING)
     add_subdirectory (test)
 endif()
 
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    find_package(Python3 COMPONENTS Interpreter)
+    set(OPENCL_ICD_LOADER_XML_PATH CACHE FILEPATH "Path to cl.xml for OpenCL ICD Loader code generation")
+    set(OPENCL_ICD_LOADER_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/generated)
+    add_custom_target(icd_loader_generate
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENCL_ICD_LOADER_OUTPUT_DIRECTORY}
+        COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_CURRENT_SOURCE_DIR}/scripts
+            ${Python3_EXECUTABLE} gen_loader.py
+            -registry ${OPENCL_ICD_LOADER_XML_PATH}
+            -o ${OPENCL_ICD_LOADER_OUTPUT_DIRECTORY}
+        COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_CURRENT_SOURCE_DIR}/scripts
+            ${Python3_EXECUTABLE} gen_print_layer.py
+            -registry ${OPENCL_ICD_LOADER_XML_PATH}
+            -o ${OPENCL_ICD_LOADER_OUTPUT_DIRECTORY}
+    )
+    add_custom_target(icd_loader_loader_copy
+        COMMAND ${CMAKE_COMMAND} -E copy
+            ${OPENCL_ICD_LOADER_OUTPUT_DIRECTORY}/icd_dispatch_generated.c
+            ${CMAKE_CURRENT_SOURCE_DIR}/loader
+        COMMAND ${CMAKE_COMMAND} -E copy
+            ${OPENCL_ICD_LOADER_OUTPUT_DIRECTORY}/icd_print_layer_generated.c
+            ${CMAKE_CURRENT_SOURCE_DIR}/test/layer
+    )
+endif()
+
 include (GNUInstallDirs)
 
 install(
