@@ -8169,7 +8169,7 @@ static cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_disp(
 ///////////////////////////////////////////////////////////////////////////////
 
 #if defined(CL_ENABLE_LAYERS)
-struct _cl_icd_dispatch khrMasterDispatch = {
+struct _cl_icd_dispatch khrActualDispatch = {
     &clGetPlatformIDs_disp,
     &clGetPlatformInfo_disp,
     &clGetDeviceIDs_disp,

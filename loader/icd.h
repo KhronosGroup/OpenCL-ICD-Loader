@@ -124,7 +124,7 @@ struct KHRLayer
 
 // the global layer state
 extern struct KHRLayer * khrFirstLayer;
-extern struct _cl_icd_dispatch khrMasterDispatch;
+extern struct _cl_icd_dispatch khrActualDispatch;
 #endif // defined(CL_ENABLE_LAYERS)
 
 /* 
