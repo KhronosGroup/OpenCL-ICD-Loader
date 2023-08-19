@@ -65,6 +65,13 @@ clGetICDLoaderInfoOCLICD(
     return CL_SUCCESS;
 }
 
+// !!! TODO: Switch this to use the function typedef when it's in the headers!
+static cl_int CL_API_CALL clShutdownOCLICD(void)
+{
+    khrIcdShutdown();
+    return CL_SUCCESS;
+}
+
 static void* khrIcdGetExtensionFunctionAddress(const char* function_name)
 {
 // Most extensions, including multi-vendor KHR and EXT extensions,
@@ -138,6 +145,9 @@ static void* khrIcdGetExtensionFunctionAddress(const char* function_name)
 
     // cl_icdl
     KHR_ICD_CHECK_EXTENSION_FUNCTION(clGetICDLoaderInfoOCLICD);
+
+    // cl_icd_shutdown
+    KHR_ICD_CHECK_EXTENSION_FUNCTION(clShutdownOCLICD);
 
 #undef KHR_ICD_CHECK_EXTENSION_FUNCTION
 

@@ -117,7 +117,7 @@ struct KHRLayer
 #ifdef CL_LAYER_INFO
     // The layer library name
     char *libraryName;
-    // the pointer to the clGetLayerInfo funciton
+    // the pointer to the clGetLayerInfo function
     void *p_clGetLayerInfo;
 #endif
 };
@@ -174,6 +174,8 @@ void khrIcdOsLibraryUnload(void *library);
 void khrIcdContextPropertiesGetPlatform(
     const cl_context_properties *properties, 
     cl_platform_id *outPlatform);
+
+void khrIcdShutdown(void);
 
 // internal tracing macros
 #define KHR_ICD_TRACE(...) \

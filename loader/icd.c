@@ -430,3 +430,51 @@ void khrIcdContextPropertiesGetPlatform(const cl_context_properties *properties,
     }
 }
 
+#if defined(CL_ENABLE_LAYERS)
+extern struct _cl_icd_dispatch khrShutdownDispatch;
+static struct KHRLayer shutdown_layer = {0};
+#endif
+
+void khrIcdShutdown(void)
+{
+    KHRicdVendor* vendor = khrIcdVendors;
+    KHRicdVendor* nextVendor = NULL;
+
+#if defined(CL_ENABLE_LAYERS)
+    struct KHRLayer* layer = khrFirstLayer;
+    struct KHRLayer* nextLayer = NULL;
+#endif
+
+    KHR_ICD_TRACE("Shutdown starting\n");
+
+#if defined(CL_ENABLE_LAYERS)
+    KHR_ICD_TRACE("Installing shutdown layer\n");
+    shutdown_layer.dispatch = khrShutdownDispatch;
+    khrFirstLayer = &shutdown_layer;
+#endif
+
+    KHR_ICD_TRACE("Cleaning up Vendors\n");
+    while (vendor) {
+        nextVendor = vendor->next;
+        free(vendor);
+        vendor = nextVendor;
+    }
+    khrIcdVendors = NULL;
+
+#if defined(CL_ENABLE_LAYERS)
+    KHR_ICD_TRACE("Cleaning up Layers\n");
+    // Handle the case where shutdown is called twice:
+    if (layer != &shutdown_layer) {
+        while (layer) {
+            nextLayer = layer->next;
+#if defined(CL_LAYER_INFO)
+            free(layer->libraryName);
+#endif
+            free(layer);
+            layer = nextLayer;
+        }
+    }
+#endif
+
+    KHR_ICD_TRACE("Shutdown complete\n");
+}
