@@ -24,13 +24,15 @@ extern "C" {
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-// Core APIs:
+
 #if defined(CL_ENABLE_LAYERS)
 extern cl_int CL_API_CALL clGetPlatformIDs_disp(
     cl_uint num_entries,
     cl_platform_id* platforms,
     cl_uint* num_platforms) CL_API_SUFFIX__VERSION_1_0;
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetPlatformInfo(
     cl_platform_id platform,
@@ -57,7 +59,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPlatformInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetPlatformInfo_disp(
     cl_platform_id platform,
@@ -103,7 +104,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
         num_devices);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetDeviceIDs_disp(
     cl_platform_id platform,
@@ -149,7 +149,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetDeviceInfo_disp(
     cl_device_id device,
@@ -201,7 +200,6 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContext(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_context CL_API_CALL clCreateContext_disp(
     const cl_context_properties* properties,
@@ -255,7 +253,6 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_context CL_API_CALL clCreateContextFromType_disp(
     const cl_context_properties* properties,
@@ -292,7 +289,6 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainContext(
         context);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clRetainContext_disp(
     cl_context context)
@@ -318,7 +314,6 @@ CL_API_ENTRY cl_int CL_API_CALL clReleaseContext(
         context);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clReleaseContext_disp(
     cl_context context)
@@ -356,7 +351,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetContextInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetContextInfo_disp(
     cl_context context,
@@ -390,7 +384,6 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainCommandQueue(
         command_queue);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clRetainCommandQueue_disp(
     cl_command_queue command_queue)
@@ -416,7 +409,6 @@ CL_API_ENTRY cl_int CL_API_CALL clReleaseCommandQueue(
         command_queue);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clReleaseCommandQueue_disp(
     cl_command_queue command_queue)
@@ -454,7 +446,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetCommandQueueInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetCommandQueueInfo_disp(
     cl_command_queue command_queue,
@@ -500,7 +491,6 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateBuffer(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateBuffer_disp(
     cl_context context,
@@ -534,7 +524,6 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainMemObject(
         memobj);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clRetainMemObject_disp(
     cl_mem memobj)
@@ -560,7 +549,6 @@ CL_API_ENTRY cl_int CL_API_CALL clReleaseMemObject(
         memobj);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clReleaseMemObject_disp(
     cl_mem memobj)
@@ -601,7 +589,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetSupportedImageFormats(
         num_image_formats);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetSupportedImageFormats_disp(
     cl_context context,
@@ -649,7 +636,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetMemObjectInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetMemObjectInfo_disp(
     cl_mem memobj,
@@ -695,7 +681,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetImageInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetImageInfo_disp(
     cl_mem image,
@@ -729,7 +714,6 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainSampler(
         sampler);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clRetainSampler_disp(
     cl_sampler sampler)
@@ -755,7 +739,6 @@ CL_API_ENTRY cl_int CL_API_CALL clReleaseSampler(
         sampler);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clReleaseSampler_disp(
     cl_sampler sampler)
@@ -793,7 +776,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetSamplerInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetSamplerInfo_disp(
     cl_sampler sampler,
@@ -839,7 +821,6 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithSource(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_program CL_API_CALL clCreateProgramWithSource_disp(
     cl_context context,
@@ -891,7 +872,6 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBinary(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_program CL_API_CALL clCreateProgramWithBinary_disp(
     cl_context context,
@@ -929,7 +909,6 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainProgram(
         program);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clRetainProgram_disp(
     cl_program program)
@@ -955,7 +934,6 @@ CL_API_ENTRY cl_int CL_API_CALL clReleaseProgram(
         program);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clReleaseProgram_disp(
     cl_program program)
@@ -996,7 +974,6 @@ CL_API_ENTRY cl_int CL_API_CALL clBuildProgram(
         user_data);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clBuildProgram_disp(
     cl_program program,
@@ -1044,7 +1021,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetProgramInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetProgramInfo_disp(
     cl_program program,
@@ -1093,7 +1069,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetProgramBuildInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetProgramBuildInfo_disp(
     cl_program program,
@@ -1135,7 +1110,6 @@ CL_API_ENTRY cl_kernel CL_API_CALL clCreateKernel(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_kernel CL_API_CALL clCreateKernel_disp(
     cl_program program,
@@ -1174,7 +1148,6 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateKernelsInProgram(
         num_kernels_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clCreateKernelsInProgram_disp(
     cl_program program,
@@ -1206,7 +1179,6 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainKernel(
         kernel);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clRetainKernel_disp(
     cl_kernel kernel)
@@ -1232,7 +1204,6 @@ CL_API_ENTRY cl_int CL_API_CALL clReleaseKernel(
         kernel);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clReleaseKernel_disp(
     cl_kernel kernel)
@@ -1267,7 +1238,6 @@ CL_API_ENTRY cl_int CL_API_CALL clSetKernelArg(
         arg_value);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clSetKernelArg_disp(
     cl_kernel kernel,
@@ -1311,7 +1281,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetKernelInfo_disp(
     cl_kernel kernel,
@@ -1360,7 +1329,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelWorkGroupInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetKernelWorkGroupInfo_disp(
     cl_kernel kernel,
@@ -1402,7 +1370,6 @@ CL_API_ENTRY cl_int CL_API_CALL clWaitForEvents(
         event_list);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clWaitForEvents_disp(
     cl_uint num_events,
@@ -1445,7 +1412,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetEventInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetEventInfo_disp(
     cl_event event,
@@ -1479,7 +1445,6 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainEvent(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clRetainEvent_disp(
     cl_event event)
@@ -1505,7 +1470,6 @@ CL_API_ENTRY cl_int CL_API_CALL clReleaseEvent(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clReleaseEvent_disp(
     cl_event event)
@@ -1543,7 +1507,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetEventProfilingInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetEventProfilingInfo_disp(
     cl_event event,
@@ -1577,7 +1540,6 @@ CL_API_ENTRY cl_int CL_API_CALL clFlush(
         command_queue);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clFlush_disp(
     cl_command_queue command_queue)
@@ -1603,7 +1565,6 @@ CL_API_ENTRY cl_int CL_API_CALL clFinish(
         command_queue);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clFinish_disp(
     cl_command_queue command_queue)
@@ -1653,7 +1614,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBuffer(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueReadBuffer_disp(
     cl_command_queue command_queue,
@@ -1719,7 +1679,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBuffer(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueWriteBuffer_disp(
     cl_command_queue command_queue,
@@ -1785,7 +1744,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBuffer(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueCopyBuffer_disp(
     cl_command_queue command_queue,
@@ -1857,7 +1815,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadImage(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueReadImage_disp(
     cl_command_queue command_queue,
@@ -1933,7 +1890,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteImage(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueWriteImage_disp(
     cl_command_queue command_queue,
@@ -2003,7 +1959,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImage(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueCopyImage_disp(
     cl_command_queue command_queue,
@@ -2069,7 +2024,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImageToBuffer(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueCopyImageToBuffer_disp(
     cl_command_queue command_queue,
@@ -2135,7 +2089,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferToImage(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueCopyBufferToImage_disp(
     cl_command_queue command_queue,
@@ -2204,7 +2157,6 @@ CL_API_ENTRY void* CL_API_CALL clEnqueueMapBuffer(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static void* CL_API_CALL clEnqueueMapBuffer_disp(
     cl_command_queue command_queue,
@@ -2281,7 +2233,6 @@ CL_API_ENTRY void* CL_API_CALL clEnqueueMapImage(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static void* CL_API_CALL clEnqueueMapImage_disp(
     cl_command_queue command_queue,
@@ -2344,7 +2295,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueUnmapMemObject(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueUnmapMemObject_disp(
     cl_command_queue command_queue,
@@ -2404,7 +2354,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueNDRangeKernel(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueNDRangeKernel_disp(
     cl_command_queue command_queue,
@@ -2473,7 +2422,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueNativeKernel(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueNativeKernel_disp(
     cl_command_queue command_queue,
@@ -2526,7 +2474,6 @@ CL_API_ENTRY cl_int CL_API_CALL clSetCommandQueueProperty(
         old_properties);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clSetCommandQueueProperty_disp(
     cl_command_queue command_queue,
@@ -2579,7 +2526,6 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage2D(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateImage2D_disp(
     cl_context context,
@@ -2646,7 +2592,6 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateImage3D_disp(
     cl_context context,
@@ -2693,7 +2638,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueMarker_disp(
     cl_command_queue command_queue,
@@ -2727,7 +2671,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents(
         event_list);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueWaitForEvents_disp(
     cl_command_queue command_queue,
@@ -2757,7 +2700,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrier(
         command_queue);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueBarrier_disp(
     cl_command_queue command_queue)
@@ -2782,7 +2724,6 @@ CL_API_ENTRY cl_int CL_API_CALL clUnloadCompiler(
     return CL_SUCCESS;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clUnloadCompiler_disp(
     void )
@@ -2793,10 +2734,13 @@ static cl_int CL_API_CALL clUnloadCompiler_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+
 #if defined(CL_ENABLE_LAYERS)
 extern void* CL_API_CALL clGetExtensionFunctionAddress_disp(
     const char* func_name) CL_API_SUFFIX__VERSION_1_1_DEPRECATED;
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueue(
     cl_context context,
@@ -2820,7 +2764,6 @@ CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueue(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_command_queue CL_API_CALL clCreateCommandQueue_disp(
     cl_context context,
@@ -2864,7 +2807,6 @@ CL_API_ENTRY cl_sampler CL_API_CALL clCreateSampler(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_sampler CL_API_CALL clCreateSampler_disp(
     cl_context context,
@@ -2910,7 +2852,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueTask(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueTask_disp(
     cl_command_queue command_queue,
@@ -2956,7 +2897,6 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateSubBuffer(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateSubBuffer_disp(
     cl_mem buffer,
@@ -2996,7 +2936,6 @@ CL_API_ENTRY cl_int CL_API_CALL clSetMemObjectDestructorCallback(
         user_data);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clSetMemObjectDestructorCallback_disp(
     cl_mem memobj,
@@ -3029,7 +2968,6 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateUserEvent(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_event CL_API_CALL clCreateUserEvent_disp(
     cl_context context,
@@ -3060,7 +2998,6 @@ CL_API_ENTRY cl_int CL_API_CALL clSetUserEventStatus(
         execution_status);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clSetUserEventStatus_disp(
     cl_event event,
@@ -3097,7 +3034,6 @@ CL_API_ENTRY cl_int CL_API_CALL clSetEventCallback(
         user_data);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clSetEventCallback_disp(
     cl_event event,
@@ -3168,7 +3104,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueReadBufferRect_disp(
     cl_command_queue command_queue,
@@ -3259,7 +3194,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueWriteBufferRect_disp(
     cl_command_queue command_queue,
@@ -3347,7 +3281,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferRect(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueCopyBufferRect_disp(
     cl_command_queue command_queue,
@@ -3409,7 +3342,6 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevices(
         num_devices_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clCreateSubDevices_disp(
     cl_device_id in_device,
@@ -3443,7 +3375,6 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainDevice(
         device);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clRetainDevice_disp(
     cl_device_id device)
@@ -3469,7 +3400,6 @@ CL_API_ENTRY cl_int CL_API_CALL clReleaseDevice(
         device);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clReleaseDevice_disp(
     cl_device_id device)
@@ -3510,7 +3440,6 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateImage_disp(
     cl_context context,
@@ -3558,7 +3487,6 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBuiltInKernels(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_program CL_API_CALL clCreateProgramWithBuiltInKernels_disp(
     cl_context context,
@@ -3616,7 +3544,6 @@ CL_API_ENTRY cl_int CL_API_CALL clCompileProgram(
         user_data);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clCompileProgram_disp(
     cl_program program,
@@ -3682,7 +3609,6 @@ CL_API_ENTRY cl_program CL_API_CALL clLinkProgram(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_program CL_API_CALL clLinkProgram_disp(
     cl_context context,
@@ -3724,7 +3650,6 @@ CL_API_ENTRY cl_int CL_API_CALL clUnloadPlatformCompiler(
         platform);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clUnloadPlatformCompiler_disp(
     cl_platform_id platform)
@@ -3765,7 +3690,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelArgInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetKernelArgInfo_disp(
     cl_kernel kernel,
@@ -3825,7 +3749,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillBuffer(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueFillBuffer_disp(
     cl_command_queue command_queue,
@@ -3888,7 +3811,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillImage(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueFillImage_disp(
     cl_command_queue command_queue,
@@ -3946,7 +3868,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMigrateMemObjects(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueMigrateMemObjects_disp(
     cl_command_queue command_queue,
@@ -3993,7 +3914,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarkerWithWaitList(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueMarkerWithWaitList_disp(
     cl_command_queue command_queue,
@@ -4034,7 +3954,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrierWithWaitList(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueBarrierWithWaitList_disp(
     cl_command_queue command_queue,
@@ -4052,11 +3971,14 @@ static cl_int CL_API_CALL clEnqueueBarrierWithWaitList_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+
 #if defined(CL_ENABLE_LAYERS)
 extern void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_disp(
     cl_platform_id platform,
     const char* func_name) CL_API_SUFFIX__VERSION_1_2;
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties(
     cl_context context,
@@ -4080,7 +4002,6 @@ CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties_disp(
     cl_context context,
@@ -4127,7 +4048,6 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreatePipe(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreatePipe_disp(
     cl_context context,
@@ -4175,7 +4095,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPipeInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetPipeInfo_disp(
     cl_mem pipe,
@@ -4218,7 +4137,6 @@ CL_API_ENTRY void* CL_API_CALL clSVMAlloc(
         alignment);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static void* CL_API_CALL clSVMAlloc_disp(
     cl_context context,
@@ -4256,7 +4174,6 @@ CL_API_ENTRY void CL_API_CALL clSVMFree(
         svm_pointer);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static void CL_API_CALL clSVMFree_disp(
     cl_context context,
@@ -4290,7 +4207,6 @@ CL_API_ENTRY cl_sampler CL_API_CALL clCreateSamplerWithProperties(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_sampler CL_API_CALL clCreateSamplerWithProperties_disp(
     cl_context context,
@@ -4326,7 +4242,6 @@ CL_API_ENTRY cl_int CL_API_CALL clSetKernelArgSVMPointer(
         arg_value);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clSetKernelArgSVMPointer_disp(
     cl_kernel kernel,
@@ -4365,7 +4280,6 @@ CL_API_ENTRY cl_int CL_API_CALL clSetKernelExecInfo(
         param_value);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clSetKernelExecInfo_disp(
     cl_kernel kernel,
@@ -4418,7 +4332,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMFree(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueSVMFree_disp(
     cl_command_queue command_queue,
@@ -4479,7 +4392,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemcpy(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueSVMMemcpy_disp(
     cl_command_queue command_queue,
@@ -4540,7 +4452,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemFill(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueSVMMemFill_disp(
     cl_command_queue command_queue,
@@ -4601,7 +4512,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMap(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueSVMMap_disp(
     cl_command_queue command_queue,
@@ -4653,7 +4563,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMUnmap(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueSVMUnmap_disp(
     cl_command_queue command_queue,
@@ -4693,7 +4602,6 @@ CL_API_ENTRY cl_int CL_API_CALL clSetDefaultDeviceCommandQueue(
         command_queue);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clSetDefaultDeviceCommandQueue_disp(
     cl_context context,
@@ -4729,7 +4637,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceAndHostTimer(
         host_timestamp);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetDeviceAndHostTimer_disp(
     cl_device_id device,
@@ -4762,7 +4669,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetHostTimer(
         host_timestamp);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetHostTimer_disp(
     cl_device_id device,
@@ -4799,7 +4705,6 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithIL(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_program CL_API_CALL clCreateProgramWithIL_disp(
     cl_context context,
@@ -4834,7 +4739,6 @@ CL_API_ENTRY cl_kernel CL_API_CALL clCloneKernel(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_kernel CL_API_CALL clCloneKernel_disp(
     cl_kernel source_kernel,
@@ -4883,7 +4787,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfo(
         param_value_size_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetKernelSubGroupInfo_disp(
     cl_kernel kernel,
@@ -4944,7 +4847,6 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMigrateMem(
         event);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueSVMMigrateMem_disp(
     cl_command_queue command_queue,
@@ -4993,7 +4895,6 @@ CL_API_ENTRY cl_int CL_API_CALL clSetProgramSpecializationConstant(
         spec_value);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clSetProgramSpecializationConstant_disp(
     cl_program program,
@@ -5031,7 +4932,6 @@ CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback(
         user_data);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clSetProgramReleaseCallback_disp(
     cl_program program,
@@ -5067,7 +4967,6 @@ CL_API_ENTRY cl_int CL_API_CALL clSetContextDestructorCallback(
         user_data);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clSetContextDestructorCallback_disp(
     cl_context context,
@@ -5112,7 +5011,6 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateBufferWithProperties(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateBufferWithProperties_disp(
     cl_context context,
@@ -5166,7 +5064,6 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties(
         errcode_ret);
 }
 
-///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateImageWithProperties_disp(
     cl_context context,
@@ -5189,8 +5086,9 @@ static cl_mem CL_API_CALL clCreateImageWithProperties_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
-///////////////////////////////////////////////////////////////////////////////
 
+
+///////////////////////////////////////////////////////////////////////////////
 // cl_ext_device_fission
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT(
@@ -5206,6 +5104,7 @@ CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT(
     return device->dispatch->clReleaseDeviceEXT(
         device);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clReleaseDeviceEXT_disp(
     cl_device_id device)
@@ -5216,6 +5115,9 @@ static cl_int CL_API_CALL clReleaseDeviceEXT_disp(
         device);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_ext_device_fission
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainDeviceEXT(
     cl_device_id device)
@@ -5230,6 +5132,7 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainDeviceEXT(
     return device->dispatch->clRetainDeviceEXT(
         device);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clRetainDeviceEXT_disp(
     cl_device_id device)
@@ -5240,6 +5143,9 @@ static cl_int CL_API_CALL clRetainDeviceEXT_disp(
         device);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_ext_device_fission
 
 CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT(
     cl_device_id in_device,
@@ -5266,6 +5172,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT(
         out_devices,
         num_devices);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clCreateSubDevicesEXT_disp(
     cl_device_id in_device,
@@ -5285,11 +5192,11 @@ static cl_int CL_API_CALL clCreateSubDevicesEXT_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
-///////////////////////////////////////////////////////////////////////////////
-
-// cl_khr_d3d10_sharing
 
 #if defined(_WIN32)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_d3d10_sharing
 
 CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR(
     cl_platform_id platform,
@@ -5322,6 +5229,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR(
         devices,
         num_devices);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR_disp(
     cl_platform_id platform,
@@ -5345,6 +5253,9 @@ static cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_d3d10_sharing
+
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10BufferKHR(
     cl_context context,
     cl_mem_flags flags,
@@ -5367,6 +5278,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10BufferKHR(
         resource,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateFromD3D10BufferKHR_disp(
     cl_context context,
@@ -5383,6 +5295,9 @@ static cl_mem CL_API_CALL clCreateFromD3D10BufferKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_d3d10_sharing
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR(
     cl_context context,
@@ -5409,6 +5324,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR(
         subresource,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR_disp(
     cl_context context,
@@ -5427,6 +5343,9 @@ static cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_d3d10_sharing
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR(
     cl_context context,
@@ -5453,6 +5372,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR(
         subresource,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR_disp(
     cl_context context,
@@ -5471,6 +5391,9 @@ static cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_d3d10_sharing
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR(
     cl_command_queue command_queue,
@@ -5500,6 +5423,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR(
         event_wait_list,
         event);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR_disp(
     cl_command_queue command_queue,
@@ -5520,6 +5444,9 @@ static cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_d3d10_sharing
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR(
     cl_command_queue command_queue,
@@ -5549,6 +5476,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR(
         event_wait_list,
         event);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR_disp(
     cl_command_queue command_queue,
@@ -5572,11 +5500,10 @@ static cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR_disp(
 
 #endif // defined(_WIN32)
 
-///////////////////////////////////////////////////////////////////////////////
-
-// cl_khr_d3d11_sharing
-
 #if defined(_WIN32)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_d3d11_sharing
 
 CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR(
     cl_platform_id platform,
@@ -5609,6 +5536,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR(
         devices,
         num_devices);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR_disp(
     cl_platform_id platform,
@@ -5632,6 +5560,9 @@ static cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_d3d11_sharing
+
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11BufferKHR(
     cl_context context,
     cl_mem_flags flags,
@@ -5654,6 +5585,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11BufferKHR(
         resource,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateFromD3D11BufferKHR_disp(
     cl_context context,
@@ -5670,6 +5602,9 @@ static cl_mem CL_API_CALL clCreateFromD3D11BufferKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_d3d11_sharing
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR(
     cl_context context,
@@ -5696,6 +5631,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR(
         subresource,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR_disp(
     cl_context context,
@@ -5714,6 +5650,9 @@ static cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_d3d11_sharing
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR(
     cl_context context,
@@ -5740,6 +5679,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR(
         subresource,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR_disp(
     cl_context context,
@@ -5758,6 +5698,9 @@ static cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_d3d11_sharing
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR(
     cl_command_queue command_queue,
@@ -5787,6 +5730,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR(
         event_wait_list,
         event);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR_disp(
     cl_command_queue command_queue,
@@ -5807,6 +5751,9 @@ static cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_d3d11_sharing
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR(
     cl_command_queue command_queue,
@@ -5836,6 +5783,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR(
         event_wait_list,
         event);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR_disp(
     cl_command_queue command_queue,
@@ -5859,11 +5807,10 @@ static cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR_disp(
 
 #endif // defined(_WIN32)
 
-///////////////////////////////////////////////////////////////////////////////
-
-// cl_khr_dx9_media_sharing
-
 #if defined(_WIN32)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_dx9_media_sharing
 
 CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR(
     cl_platform_id platform,
@@ -5899,6 +5846,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR(
         devices,
         num_devices);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR_disp(
     cl_platform_id platform,
@@ -5923,6 +5871,9 @@ static cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR_disp(
         num_devices);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_dx9_media_sharing
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR(
     cl_context context,
@@ -5952,6 +5903,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR(
         plane,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR_disp(
     cl_context context,
@@ -5972,6 +5924,9 @@ static cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_dx9_media_sharing
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR(
     cl_command_queue command_queue,
@@ -6001,6 +5956,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR(
         event_wait_list,
         event);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR_disp(
     cl_command_queue command_queue,
@@ -6021,6 +5977,9 @@ static cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_dx9_media_sharing
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR(
     cl_command_queue command_queue,
@@ -6050,6 +6009,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR(
         event_wait_list,
         event);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR_disp(
     cl_command_queue command_queue,
@@ -6074,7 +6034,6 @@ static cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR_disp(
 #endif // defined(_WIN32)
 
 ///////////////////////////////////////////////////////////////////////////////
-
 // cl_khr_egl_event
 
 CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromEGLSyncKHR(
@@ -6099,6 +6058,7 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromEGLSyncKHR(
         display,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_event CL_API_CALL clCreateEventFromEGLSyncKHR_disp(
     cl_context context,
@@ -6116,8 +6076,8 @@ static cl_event CL_API_CALL clCreateEventFromEGLSyncKHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
-///////////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////////////////////////
 // cl_khr_egl_image
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromEGLImageKHR(
@@ -6148,6 +6108,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromEGLImageKHR(
         properties,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateFromEGLImageKHR_disp(
     cl_context context,
@@ -6168,6 +6129,9 @@ static cl_mem CL_API_CALL clCreateFromEGLImageKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_egl_image
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR(
     cl_command_queue command_queue,
@@ -6197,6 +6161,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR(
         event_wait_list,
         event);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR_disp(
     cl_command_queue command_queue,
@@ -6217,6 +6182,9 @@ static cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_egl_image
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR(
     cl_command_queue command_queue,
@@ -6246,6 +6214,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR(
         event_wait_list,
         event);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR_disp(
     cl_command_queue command_queue,
@@ -6267,8 +6236,8 @@ static cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
-///////////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////////////////////////
 // cl_khr_gl_event
 
 CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromGLsyncKHR(
@@ -6290,6 +6259,7 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromGLsyncKHR(
         sync,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_event CL_API_CALL clCreateEventFromGLsyncKHR_disp(
     cl_context context,
@@ -6305,8 +6275,8 @@ static cl_event CL_API_CALL clCreateEventFromGLsyncKHR_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
-///////////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////////////////////////
 // cl_khr_gl_sharing
 
 CL_API_ENTRY cl_int CL_API_CALL clGetGLContextInfoKHR(
@@ -6336,6 +6306,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLContextInfoKHR(
         param_value,
         param_value_size_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetGLContextInfoKHR_disp(
     const cl_context_properties* properties,
@@ -6356,6 +6327,9 @@ static cl_int CL_API_CALL clGetGLContextInfoKHR_disp(
         param_value_size_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_gl_sharing
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLBuffer(
     cl_context context,
@@ -6379,6 +6353,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLBuffer(
         bufobj,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateFromGLBuffer_disp(
     cl_context context,
@@ -6395,6 +6370,9 @@ static cl_mem CL_API_CALL clCreateFromGLBuffer_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_gl_sharing
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture(
     cl_context context,
@@ -6424,6 +6402,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture(
         texture,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateFromGLTexture_disp(
     cl_context context,
@@ -6444,6 +6423,9 @@ static cl_mem CL_API_CALL clCreateFromGLTexture_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_gl_sharing
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer(
     cl_context context,
@@ -6467,6 +6449,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer(
         renderbuffer,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateFromGLRenderbuffer_disp(
     cl_context context,
@@ -6483,6 +6466,9 @@ static cl_mem CL_API_CALL clCreateFromGLRenderbuffer_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_gl_sharing
 
 CL_API_ENTRY cl_int CL_API_CALL clGetGLObjectInfo(
     cl_mem memobj,
@@ -6503,6 +6489,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLObjectInfo(
         gl_object_type,
         gl_object_name);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetGLObjectInfo_disp(
     cl_mem memobj,
@@ -6517,6 +6504,9 @@ static cl_int CL_API_CALL clGetGLObjectInfo_disp(
         gl_object_name);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_gl_sharing
 
 CL_API_ENTRY cl_int CL_API_CALL clGetGLTextureInfo(
     cl_mem memobj,
@@ -6543,6 +6533,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLTextureInfo(
         param_value,
         param_value_size_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetGLTextureInfo_disp(
     cl_mem memobj,
@@ -6561,6 +6552,9 @@ static cl_int CL_API_CALL clGetGLTextureInfo_disp(
         param_value_size_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_gl_sharing
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireGLObjects(
     cl_command_queue command_queue,
@@ -6590,6 +6584,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireGLObjects(
         event_wait_list,
         event);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueAcquireGLObjects_disp(
     cl_command_queue command_queue,
@@ -6610,6 +6605,9 @@ static cl_int CL_API_CALL clEnqueueAcquireGLObjects_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_gl_sharing
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseGLObjects(
     cl_command_queue command_queue,
@@ -6639,6 +6637,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseGLObjects(
         event_wait_list,
         event);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clEnqueueReleaseGLObjects_disp(
     cl_command_queue command_queue,
@@ -6659,6 +6658,9 @@ static cl_int CL_API_CALL clEnqueueReleaseGLObjects_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_gl_sharing
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
     cl_context context,
@@ -6688,6 +6690,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
         texture,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateFromGLTexture2D_disp(
     cl_context context,
@@ -6708,6 +6711,9 @@ static cl_mem CL_API_CALL clCreateFromGLTexture2D_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+// cl_khr_gl_sharing
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
     cl_context context,
@@ -6737,6 +6743,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
         texture,
         errcode_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_mem CL_API_CALL clCreateFromGLTexture3D_disp(
     cl_context context,
@@ -6758,8 +6765,8 @@ static cl_mem CL_API_CALL clCreateFromGLTexture3D_disp(
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
-///////////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////////////////////////
 // cl_khr_subgroups
 
 CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfoKHR(
@@ -6796,6 +6803,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfoKHR(
         param_value,
         param_value_size_ret);
 }
+
 #if defined(CL_ENABLE_LAYERS)
 static cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_disp(
     cl_kernel in_kernel,
@@ -7029,6 +7037,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clSetContextDestructorCallback_disp
 };
 #endif // defined(CL_ENABLE_LAYERS)
+
 #ifdef __cplusplus
 }
 #endif

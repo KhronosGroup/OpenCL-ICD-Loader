@@ -47,10 +47,9 @@ apihandles = {
 extern "C" {
 #endif
 
-///////////////////////////////////////////////////////////////////////////////
-// Core APIs:
 %for apis in coreapis.values():
 %for api in apis:
+///////////////////////////////////////////////////////////////////////////////
 %if not api.Name in apiskip:
 <%
       handle = api.Params[0]
@@ -158,9 +157,9 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 #endif // defined(CL_ENABLE_LAYERS)
 %  endif
 
-///////////////////////////////////////////////////////////////////////////////
 %endfor
 %else:
+
 #if defined(CL_ENABLE_LAYERS)
 extern ${api.RetType} CL_API_CALL ${api.Name + "_disp"}(
 %for i, param in enumerate(api.Params):
@@ -171,6 +170,7 @@ extern ${api.RetType} CL_API_CALL ${api.Name + "_disp"}(
 %  endif
 %endfor
 #endif // defined(CL_ENABLE_LAYERS)
+
 %endif
 %endfor
 %endfor
@@ -195,12 +195,14 @@ win32extensions = {
 %for extension in icdextensions:
 <%
     apis = extapis[extension]
-%>// ${extension}
+%>
 %if extension in win32extensions:
-
 #if defined(_WIN32)
+
 %endif
 %for api in apis:
+///////////////////////////////////////////////////////////////////////////////
+// ${extension}
 <%
       handle = api.Params[0]
       if handle.Type in apihandles:
@@ -210,6 +212,7 @@ win32extensions = {
 %>
 %for disp in [0, 1]:
 %  if disp == 1:
+
 #if defined(CL_ENABLE_LAYERS)
 %  endif
 ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("", "_disp")[disp]}(
@@ -267,17 +270,16 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 }
 %  if disp == 1:
 #endif // defined(CL_ENABLE_LAYERS)
+
 %  endif
 %endfor
 %endfor
-
 %if extension in win32extensions:
 #endif // defined(_WIN32)
-
 %endif
+%endfor
 ///////////////////////////////////////////////////////////////////////////////
 
-%endfor
 #if defined(CL_ENABLE_LAYERS)
 struct _cl_icd_dispatch khrMasterDispatch = {
     &clGetPlatformIDs_disp,
@@ -484,6 +486,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clSetContextDestructorCallback_disp
 };
 #endif // defined(CL_ENABLE_LAYERS)
+
 #ifdef __cplusplus
 }
 #endif
