@@ -456,6 +456,7 @@ void khrIcdShutdown(void)
     KHR_ICD_TRACE("Cleaning up Vendors\n");
     while (vendor) {
         nextVendor = vendor->next;
+        free(vendor->suffix);
         free(vendor);
         vendor = nextVendor;
     }
