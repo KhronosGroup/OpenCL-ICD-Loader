@@ -234,7 +234,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
             -registry ${OPENCL_ICD_LOADER_XML_PATH}
             -o ${OPENCL_ICD_LOADER_OUTPUT_DIRECTORY}
     )
-    add_custom_target(icd_loader_loader_copy
+    add_custom_target(icd_loader_copy
         COMMAND ${CMAKE_COMMAND} -E copy
             ${OPENCL_ICD_LOADER_OUTPUT_DIRECTORY}/icd_dispatch_generated.c
             ${CMAKE_CURRENT_SOURCE_DIR}/loader

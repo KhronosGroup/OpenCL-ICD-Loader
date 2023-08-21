@@ -38,6 +38,9 @@ static cl_int CL_API_CALL clGetPlatformIDs_shutdown(
     cl_platform_id* platforms,
     cl_uint* num_platforms)
 {
+    (void)num_entries;
+    (void)platforms;
+    (void)num_platforms;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -95,6 +98,11 @@ static cl_int CL_API_CALL clGetPlatformInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)platform;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -152,6 +160,11 @@ static cl_int CL_API_CALL clGetDeviceIDs_shutdown(
     cl_device_id* devices,
     cl_uint* num_devices)
 {
+    (void)platform;
+    (void)device_type;
+    (void)num_entries;
+    (void)devices;
+    (void)num_devices;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -209,6 +222,11 @@ static cl_int CL_API_CALL clGetDeviceInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)device;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -278,6 +296,11 @@ static cl_context CL_API_CALL clCreateContext_shutdown(
     void* user_data,
     cl_int* errcode_ret)
 {
+    (void)properties;
+    (void)num_devices;
+    (void)devices;
+    (void)pfn_notify;
+    (void)user_data;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -341,6 +364,10 @@ static cl_context CL_API_CALL clCreateContextFromType_shutdown(
     void* user_data,
     cl_int* errcode_ret)
 {
+    (void)properties;
+    (void)device_type;
+    (void)pfn_notify;
+    (void)user_data;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -374,6 +401,7 @@ static cl_int CL_API_CALL clRetainContext_disp(
 static cl_int CL_API_CALL clRetainContext_shutdown(
     cl_context context)
 {
+    (void)context;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -407,6 +435,7 @@ static cl_int CL_API_CALL clReleaseContext_disp(
 static cl_int CL_API_CALL clReleaseContext_shutdown(
     cl_context context)
 {
+    (void)context;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -464,6 +493,11 @@ static cl_int CL_API_CALL clGetContextInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)context;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -497,6 +531,7 @@ static cl_int CL_API_CALL clRetainCommandQueue_disp(
 static cl_int CL_API_CALL clRetainCommandQueue_shutdown(
     cl_command_queue command_queue)
 {
+    (void)command_queue;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -530,6 +565,7 @@ static cl_int CL_API_CALL clReleaseCommandQueue_disp(
 static cl_int CL_API_CALL clReleaseCommandQueue_shutdown(
     cl_command_queue command_queue)
 {
+    (void)command_queue;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -587,6 +623,11 @@ static cl_int CL_API_CALL clGetCommandQueueInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)command_queue;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -644,6 +685,10 @@ static cl_mem CL_API_CALL clCreateBuffer_shutdown(
     void* host_ptr,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)size;
+    (void)host_ptr;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -677,6 +722,7 @@ static cl_int CL_API_CALL clRetainMemObject_disp(
 static cl_int CL_API_CALL clRetainMemObject_shutdown(
     cl_mem memobj)
 {
+    (void)memobj;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -710,6 +756,7 @@ static cl_int CL_API_CALL clReleaseMemObject_disp(
 static cl_int CL_API_CALL clReleaseMemObject_shutdown(
     cl_mem memobj)
 {
+    (void)memobj;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -773,6 +820,12 @@ static cl_int CL_API_CALL clGetSupportedImageFormats_shutdown(
     cl_image_format* image_formats,
     cl_uint* num_image_formats)
 {
+    (void)context;
+    (void)flags;
+    (void)image_type;
+    (void)num_entries;
+    (void)image_formats;
+    (void)num_image_formats;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -830,6 +883,11 @@ static cl_int CL_API_CALL clGetMemObjectInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)memobj;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -887,6 +945,11 @@ static cl_int CL_API_CALL clGetImageInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)image;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -920,6 +983,7 @@ static cl_int CL_API_CALL clRetainSampler_disp(
 static cl_int CL_API_CALL clRetainSampler_shutdown(
     cl_sampler sampler)
 {
+    (void)sampler;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -953,6 +1017,7 @@ static cl_int CL_API_CALL clReleaseSampler_disp(
 static cl_int CL_API_CALL clReleaseSampler_shutdown(
     cl_sampler sampler)
 {
+    (void)sampler;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1010,6 +1075,11 @@ static cl_int CL_API_CALL clGetSamplerInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)sampler;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1067,6 +1137,10 @@ static cl_program CL_API_CALL clCreateProgramWithSource_shutdown(
     const size_t* lengths,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)count;
+    (void)strings;
+    (void)lengths;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1136,6 +1210,12 @@ static cl_program CL_API_CALL clCreateProgramWithBinary_shutdown(
     cl_int* binary_status,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)num_devices;
+    (void)device_list;
+    (void)lengths;
+    (void)binaries;
+    (void)binary_status;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1169,6 +1249,7 @@ static cl_int CL_API_CALL clRetainProgram_disp(
 static cl_int CL_API_CALL clRetainProgram_shutdown(
     cl_program program)
 {
+    (void)program;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1202,6 +1283,7 @@ static cl_int CL_API_CALL clReleaseProgram_disp(
 static cl_int CL_API_CALL clReleaseProgram_shutdown(
     cl_program program)
 {
+    (void)program;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1265,6 +1347,12 @@ static cl_int CL_API_CALL clBuildProgram_shutdown(
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
     void* user_data)
 {
+    (void)program;
+    (void)num_devices;
+    (void)device_list;
+    (void)options;
+    (void)pfn_notify;
+    (void)user_data;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1322,6 +1410,11 @@ static cl_int CL_API_CALL clGetProgramInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)program;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1385,6 +1478,12 @@ static cl_int CL_API_CALL clGetProgramBuildInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)program;
+    (void)device;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1430,6 +1529,8 @@ static cl_kernel CL_API_CALL clCreateKernel_shutdown(
     const char* kernel_name,
     cl_int* errcode_ret)
 {
+    (void)program;
+    (void)kernel_name;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1481,6 +1582,10 @@ static cl_int CL_API_CALL clCreateKernelsInProgram_shutdown(
     cl_kernel* kernels,
     cl_uint* num_kernels_ret)
 {
+    (void)program;
+    (void)num_kernels;
+    (void)kernels;
+    (void)num_kernels_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1514,6 +1619,7 @@ static cl_int CL_API_CALL clRetainKernel_disp(
 static cl_int CL_API_CALL clRetainKernel_shutdown(
     cl_kernel kernel)
 {
+    (void)kernel;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1547,6 +1653,7 @@ static cl_int CL_API_CALL clReleaseKernel_disp(
 static cl_int CL_API_CALL clReleaseKernel_shutdown(
     cl_kernel kernel)
 {
+    (void)kernel;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1598,6 +1705,10 @@ static cl_int CL_API_CALL clSetKernelArg_shutdown(
     size_t arg_size,
     const void* arg_value)
 {
+    (void)kernel;
+    (void)arg_index;
+    (void)arg_size;
+    (void)arg_value;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1655,6 +1766,11 @@ static cl_int CL_API_CALL clGetKernelInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)kernel;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1718,6 +1834,12 @@ static cl_int CL_API_CALL clGetKernelWorkGroupInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)kernel;
+    (void)device;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1763,6 +1885,8 @@ static cl_int CL_API_CALL clWaitForEvents_shutdown(
     cl_uint num_events,
     const cl_event* event_list)
 {
+    (void)num_events;
+    (void)event_list;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1820,6 +1944,11 @@ static cl_int CL_API_CALL clGetEventInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)event;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1853,6 +1982,7 @@ static cl_int CL_API_CALL clRetainEvent_disp(
 static cl_int CL_API_CALL clRetainEvent_shutdown(
     cl_event event)
 {
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1886,6 +2016,7 @@ static cl_int CL_API_CALL clReleaseEvent_disp(
 static cl_int CL_API_CALL clReleaseEvent_shutdown(
     cl_event event)
 {
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1943,6 +2074,11 @@ static cl_int CL_API_CALL clGetEventProfilingInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)event;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -1976,6 +2112,7 @@ static cl_int CL_API_CALL clFlush_disp(
 static cl_int CL_API_CALL clFlush_shutdown(
     cl_command_queue command_queue)
 {
+    (void)command_queue;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -2009,6 +2146,7 @@ static cl_int CL_API_CALL clFinish_disp(
 static cl_int CL_API_CALL clFinish_shutdown(
     cl_command_queue command_queue)
 {
+    (void)command_queue;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -2090,6 +2228,15 @@ static cl_int CL_API_CALL clEnqueueReadBuffer_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)buffer;
+    (void)blocking_read;
+    (void)offset;
+    (void)size;
+    (void)ptr;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -2171,6 +2318,15 @@ static cl_int CL_API_CALL clEnqueueWriteBuffer_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)buffer;
+    (void)blocking_write;
+    (void)offset;
+    (void)size;
+    (void)ptr;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -2252,6 +2408,15 @@ static cl_int CL_API_CALL clEnqueueCopyBuffer_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)src_buffer;
+    (void)dst_buffer;
+    (void)src_offset;
+    (void)dst_offset;
+    (void)size;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -2345,6 +2510,17 @@ static cl_int CL_API_CALL clEnqueueReadImage_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)image;
+    (void)blocking_read;
+    (void)origin;
+    (void)region;
+    (void)row_pitch;
+    (void)slice_pitch;
+    (void)ptr;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -2438,6 +2614,17 @@ static cl_int CL_API_CALL clEnqueueWriteImage_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)image;
+    (void)blocking_write;
+    (void)origin;
+    (void)region;
+    (void)input_row_pitch;
+    (void)input_slice_pitch;
+    (void)ptr;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -2519,6 +2706,15 @@ static cl_int CL_API_CALL clEnqueueCopyImage_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)src_image;
+    (void)dst_image;
+    (void)src_origin;
+    (void)dst_origin;
+    (void)region;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -2600,6 +2796,15 @@ static cl_int CL_API_CALL clEnqueueCopyImageToBuffer_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)src_image;
+    (void)dst_buffer;
+    (void)src_origin;
+    (void)region;
+    (void)dst_offset;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -2681,6 +2886,15 @@ static cl_int CL_API_CALL clEnqueueCopyBufferToImage_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)src_buffer;
+    (void)dst_image;
+    (void)src_offset;
+    (void)dst_origin;
+    (void)region;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -2768,6 +2982,15 @@ static void* CL_API_CALL clEnqueueMapBuffer_shutdown(
     cl_event* event,
     cl_int* errcode_ret)
 {
+    (void)command_queue;
+    (void)buffer;
+    (void)blocking_map;
+    (void)map_flags;
+    (void)offset;
+    (void)size;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -2867,6 +3090,17 @@ static void* CL_API_CALL clEnqueueMapImage_shutdown(
     cl_event* event,
     cl_int* errcode_ret)
 {
+    (void)command_queue;
+    (void)image;
+    (void)blocking_map;
+    (void)map_flags;
+    (void)origin;
+    (void)region;
+    (void)image_row_pitch;
+    (void)image_slice_pitch;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -2930,6 +3164,12 @@ static cl_int CL_API_CALL clEnqueueUnmapMemObject_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)memobj;
+    (void)mapped_ptr;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3011,6 +3251,15 @@ static cl_int CL_API_CALL clEnqueueNDRangeKernel_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)kernel;
+    (void)work_dim;
+    (void)global_work_offset;
+    (void)global_work_size;
+    (void)local_work_size;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3098,6 +3347,16 @@ static cl_int CL_API_CALL clEnqueueNativeKernel_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)user_func;
+    (void)args;
+    (void)cb_args;
+    (void)num_mem_objects;
+    (void)mem_list;
+    (void)args_mem_loc;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3149,6 +3408,10 @@ static cl_int CL_API_CALL clSetCommandQueueProperty_shutdown(
     cl_bool enable,
     cl_command_queue_properties* old_properties)
 {
+    (void)command_queue;
+    (void)properties;
+    (void)enable;
+    (void)old_properties;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3224,6 +3487,13 @@ static cl_mem CL_API_CALL clCreateImage2D_shutdown(
     void* host_ptr,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)image_format;
+    (void)image_width;
+    (void)image_height;
+    (void)image_row_pitch;
+    (void)host_ptr;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3311,6 +3581,15 @@ static cl_mem CL_API_CALL clCreateImage3D_shutdown(
     void* host_ptr,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)image_format;
+    (void)image_width;
+    (void)image_height;
+    (void)image_depth;
+    (void)image_row_pitch;
+    (void)image_slice_pitch;
+    (void)host_ptr;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3350,6 +3629,8 @@ static cl_int CL_API_CALL clEnqueueMarker_shutdown(
     cl_command_queue command_queue,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3395,6 +3676,9 @@ static cl_int CL_API_CALL clEnqueueWaitForEvents_shutdown(
     cl_uint num_events,
     const cl_event* event_list)
 {
+    (void)command_queue;
+    (void)num_events;
+    (void)event_list;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3428,6 +3712,7 @@ static cl_int CL_API_CALL clEnqueueBarrier_disp(
 static cl_int CL_API_CALL clEnqueueBarrier_shutdown(
     cl_command_queue command_queue)
 {
+    (void)command_queue;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3474,6 +3759,7 @@ extern void* CL_API_CALL clGetExtensionFunctionAddress_disp(
 static void* CL_API_CALL clGetExtensionFunctionAddress_shutdown(
     const char* func_name)
 {
+    (void)func_name;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, NULL);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3525,6 +3811,9 @@ static cl_command_queue CL_API_CALL clCreateCommandQueue_shutdown(
     cl_command_queue_properties properties,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)device;
+    (void)properties;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3582,6 +3871,10 @@ static cl_sampler CL_API_CALL clCreateSampler_shutdown(
     cl_filter_mode filter_mode,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)normalized_coords;
+    (void)addressing_mode;
+    (void)filter_mode;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3639,6 +3932,11 @@ static cl_int CL_API_CALL clEnqueueTask_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)kernel;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3696,6 +3994,10 @@ static cl_mem CL_API_CALL clCreateSubBuffer_shutdown(
     const void* buffer_create_info,
     cl_int* errcode_ret)
 {
+    (void)buffer;
+    (void)flags;
+    (void)buffer_create_type;
+    (void)buffer_create_info;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3741,6 +4043,9 @@ static cl_int CL_API_CALL clSetMemObjectDestructorCallback_shutdown(
     void (CL_CALLBACK* pfn_notify)(cl_mem memobj, void* user_data),
     void* user_data)
 {
+    (void)memobj;
+    (void)pfn_notify;
+    (void)user_data;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3780,6 +4085,7 @@ static cl_event CL_API_CALL clCreateUserEvent_shutdown(
     cl_context context,
     cl_int* errcode_ret)
 {
+    (void)context;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3819,6 +4125,8 @@ static cl_int CL_API_CALL clSetUserEventStatus_shutdown(
     cl_event event,
     cl_int execution_status)
 {
+    (void)event;
+    (void)execution_status;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3870,6 +4178,10 @@ static cl_int CL_API_CALL clSetEventCallback_shutdown(
     void (CL_CALLBACK* pfn_notify)(cl_event event, cl_int event_command_status, void *user_data),
     void* user_data)
 {
+    (void)event;
+    (void)command_exec_callback_type;
+    (void)pfn_notify;
+    (void)user_data;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -3981,6 +4293,20 @@ static cl_int CL_API_CALL clEnqueueReadBufferRect_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)buffer;
+    (void)blocking_read;
+    (void)buffer_origin;
+    (void)host_origin;
+    (void)region;
+    (void)buffer_row_pitch;
+    (void)buffer_slice_pitch;
+    (void)host_row_pitch;
+    (void)host_slice_pitch;
+    (void)ptr;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4092,6 +4418,20 @@ static cl_int CL_API_CALL clEnqueueWriteBufferRect_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)buffer;
+    (void)blocking_write;
+    (void)buffer_origin;
+    (void)host_origin;
+    (void)region;
+    (void)buffer_row_pitch;
+    (void)buffer_slice_pitch;
+    (void)host_row_pitch;
+    (void)host_slice_pitch;
+    (void)ptr;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4197,6 +4537,19 @@ static cl_int CL_API_CALL clEnqueueCopyBufferRect_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)src_buffer;
+    (void)dst_buffer;
+    (void)src_origin;
+    (void)dst_origin;
+    (void)region;
+    (void)src_row_pitch;
+    (void)src_slice_pitch;
+    (void)dst_row_pitch;
+    (void)dst_slice_pitch;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4254,6 +4607,11 @@ static cl_int CL_API_CALL clCreateSubDevices_shutdown(
     cl_device_id* out_devices,
     cl_uint* num_devices_ret)
 {
+    (void)in_device;
+    (void)properties;
+    (void)num_devices;
+    (void)out_devices;
+    (void)num_devices_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4287,6 +4645,7 @@ static cl_int CL_API_CALL clRetainDevice_disp(
 static cl_int CL_API_CALL clRetainDevice_shutdown(
     cl_device_id device)
 {
+    (void)device;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4320,6 +4679,7 @@ static cl_int CL_API_CALL clReleaseDevice_disp(
 static cl_int CL_API_CALL clReleaseDevice_shutdown(
     cl_device_id device)
 {
+    (void)device;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4383,6 +4743,11 @@ static cl_mem CL_API_CALL clCreateImage_shutdown(
     void* host_ptr,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)image_format;
+    (void)image_desc;
+    (void)host_ptr;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4440,6 +4805,10 @@ static cl_program CL_API_CALL clCreateProgramWithBuiltInKernels_shutdown(
     const char* kernel_names,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)num_devices;
+    (void)device_list;
+    (void)kernel_names;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4521,6 +4890,15 @@ static cl_int CL_API_CALL clCompileProgram_shutdown(
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
     void* user_data)
 {
+    (void)program;
+    (void)num_devices;
+    (void)device_list;
+    (void)options;
+    (void)num_input_headers;
+    (void)input_headers;
+    (void)header_include_names;
+    (void)pfn_notify;
+    (void)user_data;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4602,6 +4980,14 @@ static cl_program CL_API_CALL clLinkProgram_shutdown(
     void* user_data,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)num_devices;
+    (void)device_list;
+    (void)options;
+    (void)num_input_programs;
+    (void)input_programs;
+    (void)pfn_notify;
+    (void)user_data;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4635,6 +5021,7 @@ static cl_int CL_API_CALL clUnloadPlatformCompiler_disp(
 static cl_int CL_API_CALL clUnloadPlatformCompiler_shutdown(
     cl_platform_id platform)
 {
+    (void)platform;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4698,6 +5085,12 @@ static cl_int CL_API_CALL clGetKernelArgInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)kernel;
+    (void)arg_index;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4779,6 +5172,15 @@ static cl_int CL_API_CALL clEnqueueFillBuffer_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)buffer;
+    (void)pattern;
+    (void)pattern_size;
+    (void)offset;
+    (void)size;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4854,6 +5256,14 @@ static cl_int CL_API_CALL clEnqueueFillImage_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)image;
+    (void)fill_color;
+    (void)origin;
+    (void)region;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4923,6 +5333,13 @@ static cl_int CL_API_CALL clEnqueueMigrateMemObjects_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_mem_objects;
+    (void)mem_objects;
+    (void)flags;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -4974,6 +5391,10 @@ static cl_int CL_API_CALL clEnqueueMarkerWithWaitList_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5025,6 +5446,10 @@ static cl_int CL_API_CALL clEnqueueBarrierWithWaitList_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5042,6 +5467,8 @@ static void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_shutdown(
     cl_platform_id platform,
     const char* func_name)
 {
+    (void)platform;
+    (void)func_name;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, NULL);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5093,6 +5520,9 @@ static cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties_shutdown(
     const cl_queue_properties* properties,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)device;
+    (void)properties;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5156,6 +5586,11 @@ static cl_mem CL_API_CALL clCreatePipe_shutdown(
     const cl_pipe_properties* properties,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)pipe_packet_size;
+    (void)pipe_max_packets;
+    (void)properties;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5213,6 +5648,11 @@ static cl_int CL_API_CALL clGetPipeInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)pipe;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5264,6 +5704,10 @@ static void* CL_API_CALL clSVMAlloc_shutdown(
     size_t size,
     cl_uint alignment)
 {
+    (void)context;
+    (void)flags;
+    (void)size;
+    (void)alignment;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, NULL);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5306,6 +5750,8 @@ static void CL_API_CALL clSVMFree_shutdown(
     cl_context context,
     void* svm_pointer)
 {
+    (void)context;
+    (void)svm_pointer;
     // Nothing!
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5351,6 +5797,8 @@ static cl_sampler CL_API_CALL clCreateSamplerWithProperties_shutdown(
     const cl_sampler_properties* sampler_properties,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)sampler_properties;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5396,6 +5844,9 @@ static cl_int CL_API_CALL clSetKernelArgSVMPointer_shutdown(
     cl_uint arg_index,
     const void* arg_value)
 {
+    (void)kernel;
+    (void)arg_index;
+    (void)arg_value;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5447,6 +5898,10 @@ static cl_int CL_API_CALL clSetKernelExecInfo_shutdown(
     size_t param_value_size,
     const void* param_value)
 {
+    (void)kernel;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5522,6 +5977,14 @@ static cl_int CL_API_CALL clEnqueueSVMFree_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_svm_pointers;
+    (void)svm_pointers;
+    (void)pfn_free_func;
+    (void)user_data;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5597,6 +6060,14 @@ static cl_int CL_API_CALL clEnqueueSVMMemcpy_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)blocking_copy;
+    (void)dst_ptr;
+    (void)src_ptr;
+    (void)size;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5672,6 +6143,14 @@ static cl_int CL_API_CALL clEnqueueSVMMemFill_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)svm_ptr;
+    (void)pattern;
+    (void)pattern_size;
+    (void)size;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5747,6 +6226,14 @@ static cl_int CL_API_CALL clEnqueueSVMMap_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)blocking_map;
+    (void)flags;
+    (void)svm_ptr;
+    (void)size;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5804,6 +6291,11 @@ static cl_int CL_API_CALL clEnqueueSVMUnmap_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)svm_ptr;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5849,6 +6341,9 @@ static cl_int CL_API_CALL clSetDefaultDeviceCommandQueue_shutdown(
     cl_device_id device,
     cl_command_queue command_queue)
 {
+    (void)context;
+    (void)device;
+    (void)command_queue;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5894,6 +6389,9 @@ static cl_int CL_API_CALL clGetDeviceAndHostTimer_shutdown(
     cl_ulong* device_timestamp,
     cl_ulong* host_timestamp)
 {
+    (void)device;
+    (void)device_timestamp;
+    (void)host_timestamp;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5933,6 +6431,8 @@ static cl_int CL_API_CALL clGetHostTimer_shutdown(
     cl_device_id device,
     cl_ulong* host_timestamp)
 {
+    (void)device;
+    (void)host_timestamp;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -5984,6 +6484,9 @@ static cl_program CL_API_CALL clCreateProgramWithIL_shutdown(
     size_t length,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)il;
+    (void)length;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6023,6 +6526,7 @@ static cl_kernel CL_API_CALL clCloneKernel_shutdown(
     cl_kernel source_kernel,
     cl_int* errcode_ret)
 {
+    (void)source_kernel;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6098,6 +6602,14 @@ static cl_int CL_API_CALL clGetKernelSubGroupInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)kernel;
+    (void)device;
+    (void)param_name;
+    (void)input_value_size;
+    (void)input_value;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6173,6 +6685,14 @@ static cl_int CL_API_CALL clEnqueueSVMMigrateMem_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_svm_pointers;
+    (void)svm_pointers;
+    (void)sizes;
+    (void)flags;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6224,6 +6744,10 @@ static cl_int CL_API_CALL clSetProgramSpecializationConstant_shutdown(
     size_t spec_size,
     const void* spec_value)
 {
+    (void)program;
+    (void)spec_id;
+    (void)spec_size;
+    (void)spec_value;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6269,6 +6793,9 @@ static cl_int CL_API_CALL clSetProgramReleaseCallback_shutdown(
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
     void* user_data)
 {
+    (void)program;
+    (void)pfn_notify;
+    (void)user_data;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6314,6 +6841,9 @@ static cl_int CL_API_CALL clSetContextDestructorCallback_shutdown(
     void (CL_CALLBACK* pfn_notify)(cl_context context, void* user_data),
     void* user_data)
 {
+    (void)context;
+    (void)pfn_notify;
+    (void)user_data;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6377,6 +6907,11 @@ static cl_mem CL_API_CALL clCreateBufferWithProperties_shutdown(
     void* host_ptr,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)properties;
+    (void)flags;
+    (void)size;
+    (void)host_ptr;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6446,6 +6981,12 @@ static cl_mem CL_API_CALL clCreateImageWithProperties_shutdown(
     void* host_ptr,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)properties;
+    (void)flags;
+    (void)image_format;
+    (void)image_desc;
+    (void)host_ptr;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6484,6 +7025,7 @@ static cl_int CL_API_CALL clReleaseDeviceEXT_disp(
 static cl_int CL_API_CALL clReleaseDeviceEXT_shutdown(
     cl_device_id device)
 {
+    (void)device;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6520,6 +7062,7 @@ static cl_int CL_API_CALL clRetainDeviceEXT_disp(
 static cl_int CL_API_CALL clRetainDeviceEXT_shutdown(
     cl_device_id device)
 {
+    (void)device;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6580,6 +7123,11 @@ static cl_int CL_API_CALL clCreateSubDevicesEXT_shutdown(
     cl_device_id* out_devices,
     cl_uint* num_devices)
 {
+    (void)in_device;
+    (void)properties;
+    (void)num_entries;
+    (void)out_devices;
+    (void)num_devices;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6655,6 +7203,13 @@ static cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR_shutdown(
     cl_device_id* devices,
     cl_uint* num_devices)
 {
+    (void)platform;
+    (void)d3d_device_source;
+    (void)d3d_object;
+    (void)d3d_device_set;
+    (void)num_entries;
+    (void)devices;
+    (void)num_devices;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6709,6 +7264,9 @@ static cl_mem CL_API_CALL clCreateFromD3D10BufferKHR_shutdown(
     ID3D10Buffer* resource,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)resource;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6769,6 +7327,10 @@ static cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR_shutdown(
     UINT subresource,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)resource;
+    (void)subresource;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6829,6 +7391,10 @@ static cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR_shutdown(
     UINT subresource,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)resource;
+    (void)subresource;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6895,6 +7461,12 @@ static cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_objects;
+    (void)mem_objects;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -6961,6 +7533,12 @@ static cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_objects;
+    (void)mem_objects;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7037,6 +7615,13 @@ static cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR_shutdown(
     cl_device_id* devices,
     cl_uint* num_devices)
 {
+    (void)platform;
+    (void)d3d_device_source;
+    (void)d3d_object;
+    (void)d3d_device_set;
+    (void)num_entries;
+    (void)devices;
+    (void)num_devices;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7091,6 +7676,9 @@ static cl_mem CL_API_CALL clCreateFromD3D11BufferKHR_shutdown(
     ID3D11Buffer* resource,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)resource;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7151,6 +7739,10 @@ static cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR_shutdown(
     UINT subresource,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)resource;
+    (void)subresource;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7211,6 +7803,10 @@ static cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR_shutdown(
     UINT subresource,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)resource;
+    (void)subresource;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7277,6 +7873,12 @@ static cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_objects;
+    (void)mem_objects;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7343,6 +7945,12 @@ static cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_objects;
+    (void)mem_objects;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7425,6 +8033,14 @@ static cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR_shutdown(
     cl_device_id* devices,
     cl_uint* num_devices)
 {
+    (void)platform;
+    (void)num_media_adapters;
+    (void)media_adapter_type;
+    (void)media_adapters;
+    (void)media_adapter_set;
+    (void)num_entries;
+    (void)devices;
+    (void)num_devices;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7491,6 +8107,11 @@ static cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR_shutdown(
     cl_uint plane,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)adapter_type;
+    (void)surface_info;
+    (void)plane;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7557,6 +8178,12 @@ static cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_objects;
+    (void)mem_objects;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7623,6 +8250,12 @@ static cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_objects;
+    (void)mem_objects;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7679,6 +8312,9 @@ static cl_event CL_API_CALL clCreateEventFromEGLSyncKHR_shutdown(
     CLeglDisplayKHR display,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)sync;
+    (void)display;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7746,6 +8382,11 @@ static cl_mem CL_API_CALL clCreateFromEGLImageKHR_shutdown(
     const cl_egl_image_properties_khr* properties,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)egldisplay;
+    (void)eglimage;
+    (void)flags;
+    (void)properties;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7812,6 +8453,12 @@ static cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_objects;
+    (void)mem_objects;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7878,6 +8525,12 @@ static cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_objects;
+    (void)mem_objects;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7927,6 +8580,8 @@ static cl_event CL_API_CALL clCreateEventFromGLsyncKHR_shutdown(
     cl_GLsync sync,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)sync;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -7992,6 +8647,11 @@ static cl_int CL_API_CALL clGetGLContextInfoKHR_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)properties;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -8046,6 +8706,9 @@ static cl_mem CL_API_CALL clCreateFromGLBuffer_shutdown(
     cl_GLuint bufobj,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)bufobj;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -8112,6 +8775,11 @@ static cl_mem CL_API_CALL clCreateFromGLTexture_shutdown(
     cl_GLuint texture,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)target;
+    (void)miplevel;
+    (void)texture;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -8166,6 +8834,9 @@ static cl_mem CL_API_CALL clCreateFromGLRenderbuffer_shutdown(
     cl_GLuint renderbuffer,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)renderbuffer;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -8214,6 +8885,9 @@ static cl_int CL_API_CALL clGetGLObjectInfo_shutdown(
     cl_gl_object_type* gl_object_type,
     cl_GLuint* gl_object_name)
 {
+    (void)memobj;
+    (void)gl_object_type;
+    (void)gl_object_name;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -8274,6 +8948,11 @@ static cl_int CL_API_CALL clGetGLTextureInfo_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)memobj;
+    (void)param_name;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -8340,6 +9019,12 @@ static cl_int CL_API_CALL clEnqueueAcquireGLObjects_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_objects;
+    (void)mem_objects;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -8406,6 +9091,12 @@ static cl_int CL_API_CALL clEnqueueReleaseGLObjects_shutdown(
     const cl_event* event_wait_list,
     cl_event* event)
 {
+    (void)command_queue;
+    (void)num_objects;
+    (void)mem_objects;
+    (void)num_events_in_wait_list;
+    (void)event_wait_list;
+    (void)event;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -8472,6 +9163,11 @@ static cl_mem CL_API_CALL clCreateFromGLTexture2D_shutdown(
     cl_GLuint texture,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)target;
+    (void)miplevel;
+    (void)texture;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -8538,6 +9234,11 @@ static cl_mem CL_API_CALL clCreateFromGLTexture3D_shutdown(
     cl_GLuint texture,
     cl_int* errcode_ret)
 {
+    (void)context;
+    (void)flags;
+    (void)target;
+    (void)miplevel;
+    (void)texture;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)
@@ -8617,6 +9318,14 @@ static cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_shutdown(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    (void)in_kernel;
+    (void)in_device;
+    (void)param_name;
+    (void)input_value_size;
+    (void)input_value;
+    (void)param_value_size;
+    (void)param_value;
+    (void)param_value_size_ret;
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
 }
 #endif // defined(CL_ENABLE_LAYERS)

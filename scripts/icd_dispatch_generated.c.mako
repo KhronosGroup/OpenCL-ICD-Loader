@@ -182,6 +182,11 @@ static ${api.RetType} CL_API_CALL ${api.Name}_shutdown(
 %  endif
 %endfor
 {
+%for i, param in enumerate(api.Params):
+%  if param.Name != "" and param.Name != "errcode_ret":
+    (void)${param.Name};
+%  endif
+%endfor
 %if api.Name in ["clSVMFree"]:
     // Nothing!
 %elif api.Name in ["clSVMAlloc", "clGetExtensionFunctionAddress", "clGetExtensionFunctionAddressForPlatform"]:
@@ -305,6 +310,11 @@ static ${api.RetType} CL_API_CALL ${api.Name}_shutdown(
 %  endif
 %endfor
 {
+%for i, param in enumerate(api.Params):
+%  if param.Name != "" and param.Name != "errcode_ret":
+    (void)${param.Name};
+%  endif
+%endfor
 %if api.RetType in apihandles:
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
 %else:
