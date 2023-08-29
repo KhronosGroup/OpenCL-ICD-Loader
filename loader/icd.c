@@ -437,8 +437,8 @@ static struct KHRLayer shutdown_layer = {0};
 
 void khrIcdShutdown(void)
 {
-    KHRicdVendor* vendor = khrIcdVendors;
-    KHRicdVendor* nextVendor = NULL;
+    KHRicdVendor* prevVendor = NULL;
+    KHRicdVendor* vendor = NULL;
 
 #if defined(CL_ENABLE_LAYERS)
     struct KHRLayer* layer = khrFirstLayer;
@@ -454,6 +454,8 @@ void khrIcdShutdown(void)
 #endif
 
 #if defined(CL_ENABLE_LAYERS)
+    // Layers are freed in the reverse order they were added,
+    // so front-to-back.
     KHR_ICD_TRACE("Cleaning up Layers\n");
     // Handle the case where shutdown is called twice:
     if (layer != &shutdown_layer) {
@@ -468,14 +470,25 @@ void khrIcdShutdown(void)
     }
 #endif
 
+    // Vendors are freed in the reverse order they were added,
+    // so back-to-front.
     KHR_ICD_TRACE("Cleaning up Vendors\n");
-    while (vendor) {
-        nextVendor = vendor->next;
+    while (khrIcdVendors) {
+        if (khrIcdVendors->next == NULL) {
+            vendor = khrIcdVendors;
+            khrIcdVendors = NULL;
+        } else {
+            prevVendor = khrIcdVendors;
+            vendor = khrIcdVendors->next;
+            while (vendor->next) {
+                prevVendor = vendor;
+                vendor = vendor->next;
+            }
+            prevVendor->next = NULL;
+        }
         free(vendor->suffix);
         free(vendor);
-        vendor = nextVendor;
     }
-    khrIcdVendors = NULL;
 
     KHR_ICD_TRACE("Shutdown complete\n");
 }
