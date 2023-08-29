@@ -453,15 +453,6 @@ void khrIcdShutdown(void)
     khrFirstLayer = &shutdown_layer;
 #endif
 
-    KHR_ICD_TRACE("Cleaning up Vendors\n");
-    while (vendor) {
-        nextVendor = vendor->next;
-        free(vendor->suffix);
-        free(vendor);
-        vendor = nextVendor;
-    }
-    khrIcdVendors = NULL;
-
 #if defined(CL_ENABLE_LAYERS)
     KHR_ICD_TRACE("Cleaning up Layers\n");
     // Handle the case where shutdown is called twice:
@@ -476,6 +467,15 @@ void khrIcdShutdown(void)
         }
     }
 #endif
+
+    KHR_ICD_TRACE("Cleaning up Vendors\n");
+    while (vendor) {
+        nextVendor = vendor->next;
+        free(vendor->suffix);
+        free(vendor);
+        vendor = nextVendor;
+    }
+    khrIcdVendors = NULL;
 
     KHR_ICD_TRACE("Shutdown complete\n");
 }
