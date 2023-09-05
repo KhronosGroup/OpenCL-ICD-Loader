@@ -90,7 +90,7 @@ jobs:
       CC: ${{matrix.C_COMPILER}}
       CFLAGS: -Wall -Wextra -Werror -pedantic -m${{matrix.BIN}}
       DEB_INSTALLATION_PATH: /usr
-      INSTALL_LIBDIR: lib/x86_64-linux-gnu
+      INSTALL_LIBDIR: lib
 
     steps:
     - name: Install system CMake
@@ -110,7 +110,7 @@ jobs:
         path: external/OpenCL-Headers
         # ToDo: Change to KhronosGroup/OpenCL-Headers:main
         repository: StreamHPC/OpenCL-Headers
-        ref: update-ci
+        ref: release-cd
 
     - name: Configure, install & package OpenCL-Headers
       shell: bash
@@ -199,9 +199,13 @@ jobs:
         fi &&
         pkg-config OpenCL --libs | grep -q "\-lOpenCL"
 
+    - name: Test cllayerinfo (DEB)
+      shell: bash
+      run: cllayerinfo
+
     - name: Uninstall (DEB)
       shell: bash
-      run: apt-get remove -y ocl-icd-opencl-dev ocl-icd-libopencl1
+      run: apt-get remove -y "khronos-opencl-loader*"
 
     - name: Test install
       shell: bash

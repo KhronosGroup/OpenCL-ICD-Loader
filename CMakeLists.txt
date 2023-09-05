@@ -57,12 +57,6 @@ cmake_dependent_option(ENABLE_OPENCL_LAYERINFO "Enable building cllayerinfo tool
 
 include(GNUInstallDirs)
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR})
-else()
-  set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR}/x86_64-linux-gnu)
-endif()
-
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(CheckFunctionExists)
 include(JoinPaths)
@@ -232,7 +226,7 @@ install(
   TARGETS OpenCL
   EXPORT OpenCLICDLoaderTargets
   LIBRARY
-  DESTINATION ${INSTALL_LIBDIR} # obtained from GNUInstallDirs
+  DESTINATION ${CMAKE_INSTALL_LIBDIR} # obtained from GNUInstallDirs
 )
 install(
 # FILES $<TARGET_PDB_FILE:OpenCL> is cleanest, but is MSVC link.exe specific. LLVM's lld.exe and lld-link.exe don't support it (configure-time error)
@@ -248,7 +242,7 @@ if (ENABLE_OPENCL_LAYERINFO)
     EXPORT OpenCLICDLoaderTargets
     RUNTIME
       DESTINATION ${CMAKE_INSTALL_BINDIR}
-    COMPONENT runtime
+    COMPONENT cllayerinfo
   )
 endif()
 
@@ -292,12 +286,12 @@ install(
 # Separate namelink from shared library and symlink for DEB packaging
 install (TARGETS OpenCL
     LIBRARY
-      DESTINATION ${INSTALL_LIBDIR}
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT runtime
     NAMELINK_SKIP)
 
 install (TARGETS OpenCL
     LIBRARY
-      DESTINATION ${INSTALL_LIBDIR}
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT dev
     NAMELINK_ONLY)
