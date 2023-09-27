@@ -69,7 +69,7 @@ string(STRIP "${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}" CPACK_DEBIAN_PACKAGE_ARCHITE
 ##########################################################
 
 set(CPACK_DEB_COMPONENT_INSTALL ON)
-set(CPACK_DEBIAN_ENABLE_COMPONENT_DEPENDS ON) # Component dependencies are reflected in package relationships
+set(CPACK_DEBIAN_ENABLE_COMPONENT_DEPENDS OFF) # Component dependencies are NOT reflected in package relationships
 set(CPACK_COMPONENTS_ALL runtime dev cllayerinfo)
 
 set(PACKAGE_NAME_PREFIX "khronos-opencl-loader")
@@ -97,13 +97,12 @@ set(CPACK_DEBIAN_DEV_FILE_NAME "${CPACK_DEBIAN_DEV_PACKAGE_NAME}_${PACKAGE_VERSI
 set(CPACK_DEBIAN_DEV_PACKAGE_SECTION "libdevel")
 
 # Dependencies
-set(CPACK_DEBIAN_DEV_PACKAGE_DEPENDS "opencl-c-headers (>= ${CPACK_DEBIAN_PACKAGE_VERSION}) | opencl-headers (>= ${CPACK_DEBIAN_PACKAGE_VERSION})")
+set(CPACK_DEBIAN_DEV_PACKAGE_DEPENDS "opencl-c-headers (>= ${CPACK_DEBIAN_PACKAGE_VERSION}) | opencl-headers (>= ${CPACK_DEBIAN_PACKAGE_VERSION}), ${CPACK_DEBIAN_RUNTIME_PACKAGE_NAME} (>= ${CPACK_DEBIAN_PACKAGE_VERSION}) | libopencl1")
 set(CPACK_DEBIAN_DEV_PACKAGE_RECOMMENDS "libgl1-mesa-dev | libgl-dev")
 set(CPACK_DEBIAN_DEV_PACKAGE_CONFLICTS "opencl-dev")
-set(CPACK_DEBIAN_DEV_PACKAGE_BREAKS "amd-libopencl1, nvidia-libopencl1, ocl-icd-libopencl1 (<< ${CPACK_DEBIAN_PACKAGE_VERSION})")
-set(CPACK_DEBIAN_DEV_PACKAGE_REPLACES "amd-libopencl1, nvidia-libopencl1, ocl-icd-libopencl1 (<< ${CPACK_DEBIAN_PACKAGE_VERSION}), opencl-dev")
+set(CPACK_DEBIAN_DEV_PACKAGE_BREAKS "amd-libopencl1, nvidia-libopencl1")
+set(CPACK_DEBIAN_DEV_PACKAGE_REPLACES "amd-libopencl1, nvidia-libopencl1, opencl-dev")
 set(CPACK_DEBIAN_DEV_PACKAGE_PROVIDES "opencl-dev")
-set(CPACK_COMPONENT_DEV_DEPENDS runtime)
 
 ## Package cllayerinfo component
 set(CPACK_DEBIAN_CLLAYERINFO_PACKAGE_NAME "${PACKAGE_NAME_PREFIX}-cllayerinfo")
@@ -111,7 +110,3 @@ set(CPACK_DEBIAN_CLLAYERINFO_FILE_NAME "${CPACK_DEBIAN_CLLAYERINFO_PACKAGE_NAME}
 # Dependencies
 set(CPACK_DEBIAN_CLLAYERINFO_PACKAGE_DEPENDS "libc6")
 set(CPACK_DEBIAN_CLLAYERINFO_PACKAGE_SECTION "admin")
-set(CPACK_DEBIAN_CLLAYERINFO_PACKAGE_CONFLICTS "cllayerinfo")
-set(CPACK_DEBIAN_CLLAYERINFO_PACKAGE_REPLACES "cllayerinfo")
-set(CPACK_DEBIAN_CLLAYERINFO_PACKAGE_PROVIDES "cllayerinfo")
-set(CPACK_COMPONENT_CLLAYERINFO_DEPENDS runtime)

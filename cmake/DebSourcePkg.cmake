@@ -60,7 +60,7 @@ file(WRITE "${DEB_SOURCE_PKG_DIR}/control"
 Section: ${CPACK_DEBIAN_DEV_PACKAGE_SECTION}
 Priority: optional
 Maintainer: ${DEBIAN_PACKAGE_MAINTAINER}
-Build-Depends: cmake, debhelper-compat (=13), ${CPACK_DEBIAN_DEV_PACKAGE_DEPENDS}
+Build-Depends: cmake, debhelper-compat (=13), opencl-c-headers
 Rules-Requires-Root: no
 Homepage: ${CPACK_DEBIAN_PACKAGE_HOMEPAGE}
 Standards-Version: 4.6.2
@@ -81,8 +81,10 @@ Section: ${CPACK_DEBIAN_RUNTIME_PACKAGE_SECTION}
 Architecture: any
 Multi-Arch: same
 Depends: ${CPACK_DEBIAN_RUNTIME_PACKAGE_DEPENDS}
-Conflicts: ${CPACK_DEBIAN_RUNTIME_PACKAGE_CONFLICTS}
-Replaces: ${CPACK_DEBIAN_RUNTIME_PACKAGE_REPLACES}
+# Conflicts and replaces deliberately not added
+# The runtime package provides libOpenCL.so.1.0.0 and libOpenCL.so.1 via update-alternatives
+# Conflicts: ${CPACK_DEBIAN_RUNTIME_PACKAGE_CONFLICTS}
+# Replaces: ${CPACK_DEBIAN_RUNTIME_PACKAGE_REPLACES}
 Provides: ${CPACK_DEBIAN_RUNTIME_PACKAGE_PROVIDES}
 Description: ${CPACK_DEBIAN_RUNTIME_DESCRIPTION}
 
@@ -113,14 +115,32 @@ file(WRITE "${DEB_SOURCE_PKG_DIR}/rules"
 
 override_dh_auto_configure:
 \tdh_auto_configure -- -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+
+GENERATED_MAINTAINER_SCRIPTS := $(patsubst %.in,%,$(wildcard debian/*.alternatives.in))
+
+$(GENERATED_MAINTAINER_SCRIPTS): %: %.in
+\tsed \"s%@DEB_HOST_MULTIARCH@%$(DEB_HOST_MULTIARCH)%g\" < $< > $@
+
+execute_before_dh_install: $(GENERATED_MAINTAINER_SCRIPTS)
+\ttrue # An empty rule would confuse dh
 ")
 file(WRITE "${DEB_SOURCE_PKG_DIR}/${CPACK_DEBIAN_DEV_PACKAGE_NAME}.install"
 "usr/lib/*/pkgconfig
 usr/lib/*/lib*.so
 usr/share
 ")
+# The .so files are installed to a different directory, and then linked back
+# the the original location via update-alternatives.
 file(WRITE "${DEB_SOURCE_PKG_DIR}/${CPACK_DEBIAN_RUNTIME_PACKAGE_NAME}.install"
-"usr/lib/*/lib*.so.*
+"usr/lib/*/lib*.so.* usr/lib/\${DEB_HOST_MULTIARCH}/KhronosOpenCLICDLoader
+")
+file(WRITE "${DEB_SOURCE_PKG_DIR}/${CPACK_DEBIAN_RUNTIME_PACKAGE_NAME}.alternatives.in"
+"Name: libOpenCL.so.1.0.0-@DEB_HOST_MULTIARCH@
+Link: /usr/lib/@DEB_HOST_MULTIARCH@/libOpenCL.so.1.0.0
+Alternative: /usr/lib/@DEB_HOST_MULTIARCH@/KhronosOpenCLICDLoader/libOpenCL.so.1.0.0
+Dependents:
+  /usr/lib/@DEB_HOST_MULTIARCH@/libOpenCL.so.1 libOpenCL.so.1-@DEB_HOST_MULTIARCH@ /usr/lib/@DEB_HOST_MULTIARCH@/KhronosOpenCLICDLoader/libOpenCL.so.1
+Priority: 100
 ")
 file(WRITE "${DEB_SOURCE_PKG_DIR}/${CPACK_DEBIAN_CLLAYERINFO_PACKAGE_NAME}.install"
 "usr/bin
