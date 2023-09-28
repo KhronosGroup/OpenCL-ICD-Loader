@@ -587,7 +587,6 @@ jobs:
         GEN:
         - Xcode
         - Ninja Multi-Config
-        STD: [99, 11, 17]
         exclude:
         # These entries are excluded, since XCode selects its own compiler
         - C_COMPILER: gcc-11
