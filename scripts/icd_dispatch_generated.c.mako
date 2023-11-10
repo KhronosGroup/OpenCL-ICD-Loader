@@ -134,17 +134,17 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(${handle.Name}, ${invalid});
 %endif
 %if api.Name == "clCreateContext":
-    return ${api.Params[2].Name}[0]->dispatch->${api.Name}(
+    return KHR_ICD2_DISPATCH(${api.Params[2].Name}[0])->${api.Name}(
 %elif api.Name == "clWaitForEvents":
-    return ${api.Params[1].Name}[0]->dispatch->${api.Name}(
+    return KHR_ICD2_DISPATCH(${api.Params[1].Name}[0])->${api.Name}(
 %elif api.Name == "clCreateContextFromType":
-    return platform->dispatch->${api.Name}(
+    return KHR_ICD2_DISPATCH(platform)->${api.Name}(
 %elif api.Name == "clSVMFree":
-    ${handle.Name}->dispatch->${api.Name}(
+    KHR_ICD2_DISPATCH(${handle.Name})->${api.Name}(
 %elif api.Name == "clUnloadCompiler":
     return CL_SUCCESS;
 %else:
-    return ${handle.Name}->dispatch->${api.Name}(
+    return KHR_ICD2_DISPATCH(${handle.Name})->${api.Name}(
 %endif:
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
@@ -239,23 +239,23 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
     // api.Name == "clXXX":  # There are currently no API special cases here.
 %  else:
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(${handle.Name}, ${invalid});
-    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(${handle.Name}->dispatch->${api.Name});
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(${handle.Name})->${api.Name});
 % endif
 %else:
 %  if api.Name == "clGetGLContextInfoKHR":
     cl_platform_id platform = NULL;
     khrIcdContextPropertiesGetPlatform(properties, &platform);
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
-    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(platform->dispatch->${api.Name});
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(platform)->${api.Name});
 %  else:
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(${handle.Name}, ${invalid});
-    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(${handle.Name}->dispatch->${api.Name});
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(${handle.Name})->${api.Name});
 %  endif
 %endif
 %if api.Name == "clGetGLContextInfoKHR":
-    return platform->dispatch->${api.Name}(
+    return KHR_ICD2_DISPATCH(platform)->${api.Name}(
 %else:
-    return ${handle.Name}->dispatch->${api.Name}(
+    return KHR_ICD2_DISPATCH(${handle.Name})->${api.Name}(
 %endif
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
@@ -484,6 +484,117 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clSetContextDestructorCallback_disp
 };
 #endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+///////////////////////////////////////////////////////////////////////////////
+// Core APIs:
+%for apis in coreapis.values():
+%for api in apis:
+static ${api.RetType} CL_API_CALL ${api.Name}_unsupp(
+%for i, param in enumerate(api.Params):
+%  if i < len(api.Params)-1:
+    ${param.Type} ${param.Name}${param.TypeEnd},
+%  else:
+    ${param.Type} ${param.Name}${param.TypeEnd})
+%  endif
+%endfor
+{
+%for param in api.Params:
+%  if param.Name:
+    (void)${param.Name};
+%  endif
+%endfor
+%if api.Name == "clSVMAlloc" or api.Name == "clGetExtensionFunctionAddressForPlatform" or api.Name == "clGetExtensionFunctionAddress":
+    KHR_ICD_ERROR_RETURN_ERROR(NULL);
+%elif api.Name == "clSVMFree":
+    return;
+%elif api.RetType in apihandles or api.RetType == "void*":
+    KHR_ICD_ERROR_RETURN_HANDLE(CL_INVALID_OPERATION);
+%else:
+    KHR_ICD_ERROR_RETURN_ERROR(CL_INVALID_OPERATION);
+%endif
+}
+%endfor
+%endfor
+
+///////////////////////////////////////////////////////////////////////////////
+%for extension in icdextensions:
+<%
+    apis = extapis[extension]
+%>// ${extension}
+%if extension in win32extensions:
+
+#if defined(_WIN32)
+%endif
+%for api in apis:
+static ${api.RetType} CL_API_CALL ${api.Name}_unsupp(
+%for i, param in enumerate(api.Params):
+%  if i < len(api.Params)-1:
+    ${param.Type} ${param.Name}${param.TypeEnd},
+%  else:
+    ${param.Type} ${param.Name}${param.TypeEnd})
+%  endif
+%endfor
+{
+%for param in api.Params:
+%  if param.Name:
+    (void)${param.Name};
+%  endif
+%endfor
+%if api.RetType in apihandles or api.RetType == "void*":
+    KHR_ICD_ERROR_RETURN_HANDLE(CL_INVALID_OPERATION);
+%else:
+    KHR_ICD_ERROR_RETURN_ERROR(CL_INVALID_OPERATION);
+%endif
+}
+%endfor
+%if extension in win32extensions:
+#endif // defined(_WIN32)
+
+%endif
+///////////////////////////////////////////////////////////////////////////////
+
+%endfor
+
+void khrIcd2PopulateDispatchTable(
+    cl_platform_id platform,
+    clIcdGetFunctionAddressForPlatformKHR_fn p_clIcdGetFunctionAddressForPlatform,
+    struct _cl_icd_dispatch* dispatch)
+{
+///////////////////////////////////////////////////////////////////////////////
+// Core APIs:
+%for apis in coreapis.values():
+%for api in apis:
+   dispatch->${api.Name} = (${api.Name}_t *)(size_t)p_clIcdGetFunctionAddressForPlatform(platform, "${api.Name}");
+   if (!dispatch->${api.Name})
+       dispatch->${api.Name} = &${api.Name}_unsupp;
+%endfor
+%endfor
+
+///////////////////////////////////////////////////////////////////////////////
+%for extension in icdextensions:
+<%
+    apis = extapis[extension]
+%>// ${extension}
+%if extension in win32extensions:
+
+#if defined(_WIN32)
+%endif
+%for api in apis:
+   dispatch->${api.Name} = (${api.Name}_t *)(size_t)p_clIcdGetFunctionAddressForPlatform(platform, "${api.Name}");
+   if (!dispatch->${api.Name})
+       dispatch->${api.Name} = &${api.Name}_unsupp;
+%endfor
+%if extension in win32extensions:
+#endif // defined(_WIN32)
+
+%endif
+///////////////////////////////////////////////////////////////////////////////
+
+%endfor
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+
 #ifdef __cplusplus
 }
 #endif
