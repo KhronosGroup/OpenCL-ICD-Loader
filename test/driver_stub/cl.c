@@ -24,7 +24,7 @@ clIcdGetPlatformIDsKHR(cl_uint, cl_platform_id *, cl_uint *);
 
 struct _cl_platform_id
 {
-    CLIicdDispatchTable* dispatch;
+    CL_OBJECT_BODY;
     const char *profile;
     const char *version;
     const char *name;
@@ -35,42 +35,42 @@ struct _cl_platform_id
 
 struct _cl_device_id
 {
-    CLIicdDispatchTable* dispatch;
+    CL_OBJECT_BODY;
 };
 
 struct _cl_context
 {
-    CLIicdDispatchTable* dispatch;
+    CL_OBJECT_BODY;
 };
 
 struct _cl_command_queue
 {
-    CLIicdDispatchTable* dispatch;
+    CL_OBJECT_BODY;
 };
 
 struct _cl_mem
 {
-    CLIicdDispatchTable* dispatch;
+    CL_OBJECT_BODY;
 };
 
 struct _cl_program
 {
-    CLIicdDispatchTable* dispatch;
+    CL_OBJECT_BODY;
 };
 
 struct _cl_kernel
 {
-    CLIicdDispatchTable* dispatch;
+    CL_OBJECT_BODY;
 };
 
 struct _cl_event
 {
-    CLIicdDispatchTable* dispatch;
+    CL_OBJECT_BODY;
 };
 
 struct _cl_sampler
 {
-    CLIicdDispatchTable* dispatch;
+    CL_OBJECT_BODY;
 };
 
 static CLIicdDispatchTable* dispatchTable = NULL;
@@ -164,8 +164,8 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
     }
 
     if (devices != NULL) {
-        cl_device_id obj = (cl_device_id) malloc(sizeof(*obj));
-        obj->dispatch = dispatchTable;
+        cl_device_id obj = (cl_device_id) malloc(sizeof(struct _cl_device_id));
+        CL_INIT_OBJECT(obj, platform);
         devices[0] = obj;
     }
     if (num_devices) {
@@ -252,7 +252,7 @@ clCreateContext(const cl_context_properties * properties,
                 cl_int *                      errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     cl_context obj = (cl_context) malloc(sizeof(struct _cl_context));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, devices[0]);
     test_icd_stub_log("clCreateContext(%p, %u, %p, %p, %p, %p)\n",
                       properties,
                       num_devices,
@@ -280,7 +280,11 @@ clCreateContextFromType(const cl_context_properties * properties,
                         cl_int *                      errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     cl_context obj = (cl_context) malloc(sizeof(struct _cl_context));
-    obj->dispatch = dispatchTable;
+    cl_platform_id plt = platform;
+    for (const cl_context_properties * property = properties; *property; property += 2)
+        if (*property == (cl_context_properties)CL_CONTEXT_PLATFORM)
+            plt = (cl_platform_id)property[1];
+    CL_INIT_OBJECT(obj, plt);
     test_icd_stub_log("clCreateContextFromType(%p, %x, %p, %p, %p)\n",
                       properties,
                       device_type,
@@ -366,7 +370,7 @@ clCreateCommandQueue(cl_context                     context,
                      cl_int *                       errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     cl_command_queue obj = (cl_command_queue) malloc(sizeof(struct _cl_command_queue));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, context);
     test_icd_stub_log("clCreateCommandQueue(%p, %p, %x, %p)\n",
                       context,
                       device,
@@ -443,7 +447,7 @@ clCreateBuffer(cl_context    context ,
                cl_int *      errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     cl_mem obj = (cl_mem) malloc(sizeof(struct _cl_mem));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, context);
     test_icd_stub_log("clCreateBuffer(%p, %x, %u, %p, %p)\n",
                       context,
                       flags,
@@ -463,7 +467,7 @@ clCreateSubBuffer(cl_mem                    buffer ,
                   cl_int *                  errcode_ret) CL_API_SUFFIX__VERSION_1_1
 {
     cl_mem obj = (cl_mem) malloc(sizeof(struct _cl_mem));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, buffer);
     test_icd_stub_log("clCreateSubBuffer(%p, %x, %u, %p, %p)\n",
                       buffer,
                       flags,
@@ -477,14 +481,14 @@ clCreateSubBuffer(cl_mem                    buffer ,
 
 CL_API_ENTRY cl_mem CL_API_CALL
 clCreateImage(cl_context              context,
-                            cl_mem_flags            flags,
-                            const cl_image_format * image_format,
-                            const cl_image_desc *   image_desc,
-                            void *                  host_ptr,
-                            cl_int *                errcode_ret) CL_API_SUFFIX__VERSION_1_2
+              cl_mem_flags            flags,
+              const cl_image_format * image_format,
+              const cl_image_desc *   image_desc,
+              void *                  host_ptr,
+              cl_int *                errcode_ret) CL_API_SUFFIX__VERSION_1_2
 {
     cl_mem obj = (cl_mem) malloc(sizeof(struct _cl_mem));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, context);
     test_icd_stub_log("clCreateImage(%p, %x, %p, %p, %p, %p)\n",
                       context,
                       flags,
@@ -509,7 +513,7 @@ clCreateImage2D(cl_context              context ,
                 cl_int *                errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     cl_mem obj = (cl_mem) malloc(sizeof(struct _cl_mem));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, context);
     test_icd_stub_log("clCreateImage2D(%p, %x, %p, %u, %u, %u, %p, %p)\n",
                       context,
                       flags,
@@ -537,7 +541,7 @@ clCreateImage3D(cl_context              context,
                 cl_int *                errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     cl_mem obj = (cl_mem) malloc(sizeof(struct _cl_mem));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, context);
     test_icd_stub_log("clCreateImage3D(%p, %x, %p, %u, %u, %u, %u, %u, %p, %p)\n",
                       context,
                       flags,
@@ -563,7 +567,7 @@ clCreateBufferWithProperties(cl_context                context ,
                              cl_int *                  errcode_ret) CL_API_SUFFIX__VERSION_3_0
 {
     cl_mem obj = (cl_mem) malloc(sizeof(struct _cl_mem));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, context);
     test_icd_stub_log("clCreateBufferWithProperties(%p, %p, %x, %u, %p, %p)\n",
                       context,
                       properties,
@@ -586,7 +590,7 @@ clCreateImageWithProperties(cl_context                context,
                             cl_int *                  errcode_ret) CL_API_SUFFIX__VERSION_3_0
 {
     cl_mem obj = (cl_mem) malloc(sizeof(struct _cl_mem));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, context);
     test_icd_stub_log("clCreateImageWithProperties(%p, %p, %x, %p, %p, %p, %p)\n",
                       context,
                       properties,
@@ -706,7 +710,7 @@ clCreateSampler(cl_context           context ,
                 cl_int *             errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     cl_sampler obj = (cl_sampler) malloc(sizeof(struct _cl_sampler));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, context);
     test_icd_stub_log("clCreateSampler(%p, %u, %u, %u, %p)\n",
                       context,
                       normalized_coords,
@@ -765,7 +769,7 @@ clCreateProgramWithSource(cl_context         context ,
                           cl_int *           errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     cl_program obj = (cl_program) malloc(sizeof(struct _cl_program));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, context);
     test_icd_stub_log("clCreateProgramWithSource(%p, %u, %p, %p, %p)\n",
                       context,
                       count,
@@ -787,7 +791,7 @@ clCreateProgramWithBinary(cl_context                      context ,
                           cl_int *                        errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     cl_program obj = (cl_program) malloc(sizeof(struct _cl_program));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, context);
     test_icd_stub_log("clCreateProgramWithBinary(%p, %u, %p, %p, %p, %p, %p)\n",
                       context,
                       num_devices,
@@ -809,7 +813,7 @@ clCreateProgramWithBuiltInKernels(cl_context             context ,
                                   cl_int *               errcode_ret) CL_API_SUFFIX__VERSION_1_2
 {
     cl_program obj = (cl_program) malloc(sizeof(struct _cl_program));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, context);
     test_icd_stub_log("clCreateProgramWithBuiltInKernels(%p, %u, %p, %p, %p)\n",
                       context,
                       num_devices,
@@ -913,8 +917,8 @@ clLinkProgram(cl_context            context ,
               void *                user_data ,
               cl_int *              errcode_ret) CL_API_SUFFIX__VERSION_1_2
 {
-    cl_program obj = (cl_program) malloc(sizeof(cl_program));
-    obj->dispatch = dispatchTable;
+    cl_program obj = (cl_program) malloc(sizeof(struct _cl_program));
+    CL_INIT_OBJECT(obj, context);
     test_icd_stub_log("clLinkProgram(%p, %u, %p, %p, %u, %p, %p, %p, %p)\n",
                       context,
                       num_devices,
@@ -988,7 +992,7 @@ clCreateKernel(cl_program       program ,
                cl_int *         errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     cl_kernel obj = (cl_kernel) malloc(sizeof(struct _cl_kernel));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, program);
     test_icd_stub_log("clCreateKernel(%p, %p, %p)\n",
                       program,
                       kernel_name,
@@ -1150,7 +1154,7 @@ clCreateUserEvent(cl_context     context ,
                   cl_int *       errcode_ret) CL_API_SUFFIX__VERSION_1_1
 {
     cl_event obj = (cl_event) malloc(sizeof(struct _cl_event));
-    obj->dispatch = dispatchTable;
+    CL_INIT_OBJECT(obj, context);
     test_icd_stub_log("clCreateUserEvent(%p, %p)\n", context, errcode_ret);
     test_icd_stub_log("Value returned: %p\n", obj);
     return obj;
@@ -1938,14 +1942,17 @@ clIcdGetPlatformIDsKHR(cl_uint           num_entries,
         platform = (cl_platform_id) malloc(sizeof(struct _cl_platform_id));
         memset(platform, 0, sizeof(struct _cl_platform_id));
 
-        platform->dispatch = dispatchTable;
+        CL_INIT_PLATFORM(platform, dispatchTable);
         platform->version = "OpenCL 1.2 Stub";
         platform->vendor = "stubvendorxxx";
         platform->profile = "stubprofilexxx";
+#if defined(CL_ENABLE_ICD2)
+        platform->name = "ICD_LOADER_TEST_OPENCL_STUB_ICD2";
+#else
         platform->name = "ICD_LOADER_TEST_OPENCL_STUB";
+#endif
         platform->extensions = "cl_khr_icd cl_khr_gl cl_khr_d3d10";
         platform->suffix = "ilts";
-        platform->dispatch = dispatchTable;
         initialized = CL_TRUE;
     }
 

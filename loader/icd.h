@@ -20,6 +20,7 @@
 #define _ICD_H_
 
 #include "icd_platform.h"
+#include "icd_dispatch.h"
 
 #ifndef CL_USE_DEPRECATED_OPENCL_1_0_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_0_APIS
@@ -89,6 +90,11 @@ struct KHRicdVendorRec
 
     // the platform retrieved from clGetIcdPlatformIDsKHR
     cl_platform_id platform;
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    // the loader populated dispatch table for cl_khr_icd2 compliant platforms
+    struct KHRDisp dispData;
+#endif
 
     // next vendor in the list vendors
     KHRicdVendor *next;
@@ -201,11 +207,24 @@ do \
 #define KHR_ICD_WIDE_TRACE(...)
 #endif
 
+#define KHR_ICD_ERROR_RETURN_ERROR(_error)                          \
+do {                                                                \
+    return _error;                                                  \
+} while(0)
+
+#define KHR_ICD_ERROR_RETURN_HANDLE(_error)                         \
+do {                                                                \
+    if (errcode_ret) {                                              \
+        *errcode_ret = _error;                                      \
+    }                                                               \
+    return NULL;                                                    \
+} while(0)
+
 // Check if the passed-in handle is NULL, and if it is, return the error.
 #define KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(_handle, _error)       \
 do {                                                                \
     if (!_handle) {                                                 \
-        return _error;                                              \
+        KHR_ICD_ERROR_RETURN_ERROR(_error);                         \
     }                                                               \
 } while (0)
 
@@ -214,10 +233,7 @@ do {                                                                \
 #define KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(_handle, _error)      \
 do {                                                                \
     if (!_handle) {                                                 \
-        if (errcode_ret) {                                          \
-            *errcode_ret = _error;                                  \
-        }                                                           \
-        return NULL;                                                \
+        KHR_ICD_ERROR_RETURN_HANDLE(_error);                        \
     }                                                               \
 } while (0)
 
@@ -226,7 +242,7 @@ do {                                                                \
 #define KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(_pointer)             \
 do {                                                                \
     if (!_pointer) {                                                \
-        return CL_INVALID_OPERATION;                                \
+        KHR_ICD_ERROR_RETURN_ERROR(CL_INVALID_OPERATION);           \
     }                                                               \
 } while (0)
 
@@ -236,10 +252,7 @@ do {                                                                \
 #define KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(_pointer)            \
 do {                                                                \
     if (!_pointer) {                                                \
-        if (errcode_ret) {                                          \
-            *errcode_ret = CL_INVALID_OPERATION;                    \
-        }                                                           \
-        return NULL;                                                \
+        KHR_ICD_ERROR_RETURN_HANDLE(CL_INVALID_OPERATION);          \
     }                                                               \
 } while (0)
 
