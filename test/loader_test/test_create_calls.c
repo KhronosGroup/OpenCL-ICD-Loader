@@ -150,8 +150,11 @@ const struct clGetPlatformIDs_st clGetPlatformIDsData[NUM_ITEMS_clGetPlatformIDs
  */
 #define ENABLE_MISMATCHING_PRINTS 0
 
+const char *default_platform_to_find = "ICD_LOADER_TEST_OPENCL_STUB";
+
 int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
 {
+    const char *platform_to_find = NULL;
     cl_int ret_val;
     size_t param_val_ret_size;
     #define PLATFORM_NAME_SIZE 80
@@ -185,7 +188,9 @@ int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
     if (ret_val != CL_SUCCESS){
         return -1;
     }
-   
+
+    platform_to_find = log_getenv("APP_PLATFORM", "ICD_LOADER_TEST_OPENCL_STUB");
+
     for (i = 0; i < num_platforms; i++) {
         ret_val = clGetPlatformInfo(all_platforms[i],
                 CL_PLATFORM_NAME,
@@ -194,11 +199,12 @@ int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
                 &param_val_ret_size );  
 
         if (ret_val == CL_SUCCESS ){
-            if(!strcmp(platform_name, "ICD_LOADER_TEST_OPENCL_STUB")) {
+            if(!strcmp(platform_name, platform_to_find)) {
                 platform = all_platforms[i];                
             }
         }
     }
+    log_freeenv(platform_to_find);
     free(all_platforms);
 
 #if ENABLE_MISMATCHING_PRINTS
