@@ -3,6 +3,7 @@
 
 #include<CL/cl.h>
 #include<CL/cl_gl.h>
+#include "cl_khr_icd2.h"
 
 struct clCreateCommandQueue_st
 {
@@ -74,6 +75,25 @@ struct clSetContextDestructorCallback_st
     void *user_data;
 };
 
+struct clCreateInstanceKHR_st
+{
+    cl_instance_properties_khr *properties;
+    cl_int *errcode_ret;
+};
+
+struct clDestroyInstanceKHR_st
+{
+    cl_instance_khr instance;
+};
+
+struct clGetPlatformIDsForInstanceKHR_st
+{
+    cl_instance_khr instance;
+    cl_uint num_entries;
+    cl_platform_id *platforms;
+    cl_uint *num_platforms;
+};
+
 struct clGetPlatformIDs_st 
 {
     cl_uint num_entries;
@@ -120,6 +140,9 @@ struct clReleaseCommandQueue_st
 #define NUM_ITEMS_clReleaseContext 1
 #define NUM_ITEMS_clGetContextInfo 1
 #define NUM_ITEMS_clSetContextDestructorCallback 1
+#define NUM_ITEMS_clCreateInstanceKHR 1
+#define NUM_ITEMS_clDestroyInstanceKHR 1
+#define NUM_ITEMS_clGetPlatformIDsForInstanceKHR 1
 #define NUM_ITEMS_clGetPlatformIDs 1
 #define NUM_ITEMS_clGetPlatformInfo 1
 #define NUM_ITEMS_clGetDeviceIDs 1
