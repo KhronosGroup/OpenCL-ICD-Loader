@@ -76,6 +76,8 @@ void khrIcdVendorAdd(const char *libraryName)
 #if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     clIcdGetFunctionAddressForPlatformKHR_fn p_clIcdGetFunctionAddressForPlatform = NULL;
     clIcdSetPlatformDispatchDataKHR_fn p_clIcdSetPlatformDispatchData = NULL;
+    clIcdCreateInstancePlatformKHR_fn p_clIcdCreateInstancePlatform = NULL;
+    clIcdDestroyInstancePlatformKHR_fn p_clIcdDestroyInstancePlatform = NULL;
 #endif
     cl_uint i = 0;
     cl_uint platformCount = 0;
@@ -127,6 +129,8 @@ void khrIcdVendorAdd(const char *libraryName)
     // try to get clIcdGetFunctionAddressForPlatformKHR and clIcdSetPlatformDispatchDataKHR to detect cl_khr_icd2 support
     p_clIcdGetFunctionAddressForPlatform = (clIcdGetFunctionAddressForPlatformKHR_fn)(size_t)p_clGetExtensionFunctionAddress("clIcdGetFunctionAddressForPlatformKHR");
     p_clIcdSetPlatformDispatchData = (clIcdSetPlatformDispatchDataKHR_fn)(size_t)p_clGetExtensionFunctionAddress("clIcdSetPlatformDispatchDataKHR");
+    p_clIcdCreateInstancePlatform = (clIcdCreateInstancePlatformKHR_fn)(size_t)p_clGetExtensionFunctionAddress("clIcdCreateInstancePlatformKHR");
+    p_clIcdDestroyInstancePlatform = (clIcdDestroyInstancePlatformKHR_fn)(size_t)p_clGetExtensionFunctionAddress("clIcdDestroyInstancePlatformKHR");
 #endif
 
     // query the number of platforms available and allocate space to store them
@@ -154,32 +158,48 @@ void khrIcdVendorAdd(const char *libraryName)
     for (i = 0; i < platformCount; ++i)
     {
         KHRicdVendor* vendor = NULL;
-        char *extensions;
-        size_t extensionsSize;
-        char *suffix;
-        size_t suffixSize;
+        char *extensions = NULL;
+        size_t extensionsSize = 0;
+        char *suffix = NULL;
+        size_t suffixSize = 0;
+        cl_platform_id platform = platforms[i];
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+        cl_platform_id instance_platform = NULL;
+#endif
 
         // skip NULL platforms and non dispatchable platforms
-        if (!platforms[i] || !platforms[i]->dispatch)
+        if (!platform || !platform->dispatch)
         {
-            continue;
+            KHR_ICD_TRACE("found null platform or non dispatchable platform\n");
+            goto Error;
         }
 
 #if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
-        if (KHR_ICD2_HAS_TAG(platforms[i]) && !p_clIcdGetFunctionAddressForPlatform)
+        if (KHR_ICD2_HAS_TAG(platform) && !p_clIcdGetFunctionAddressForPlatform)
         {
            KHR_ICD_TRACE("found icd 2 object, but platform is missing clIcdGetFunctionAddressForPlatformKHR\n");
-           continue;
+           goto Error;
         }
-        if (KHR_ICD2_HAS_TAG(platforms[i]) && !p_clIcdSetPlatformDispatchData)
+        if (KHR_ICD2_HAS_TAG(platform) && !p_clIcdSetPlatformDispatchData)
         {
            KHR_ICD_TRACE("found icd 2 object, but platform is missing clIcdSetPlatformDispatchDataKHR\n");
-           continue;
+           goto Error;
         }
-        if (KHR_ICD2_HAS_TAG(platforms[i]) && !((intptr_t)((platforms[i])->dispatch->clUnloadCompiler) == CL_ICD2_TAG_KHR))
+        if (KHR_ICD2_HAS_TAG(platform) && !((intptr_t)((platform)->dispatch->clUnloadCompiler) == CL_ICD2_TAG_KHR))
         {
            KHR_ICD_TRACE("found icd 2 object, but platform is missing tag in clUnloadCompiler\n");
-           continue;
+           goto Error;
+        }
+        if (p_clIcdCreateInstancePlatform && p_clIcdDestroyInstancePlatform)
+        {
+            KHR_ICD_TRACE("found icd 2 object with instance support, creating instance platform\n");
+            instance_platform = p_clIcdCreateInstancePlatform(platform, NULL, &result);
+            if (CL_SUCCESS != result || !instance_platform)
+            {
+                KHR_ICD_TRACE("failed to create instance platform\n");
+                goto Error;
+            }
+            platform = instance_platform;
         }
 #endif
 
@@ -188,23 +208,30 @@ void khrIcdVendorAdd(const char *libraryName)
         if (!vendor)
         {
             KHR_ICD_TRACE("failed to allocate memory\n");
-            continue;
+            goto Error;
         }
         memset(vendor, 0, sizeof(*vendor));
 
 #if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
         // populate cl_khr_icd2 platform's loader managed dispatch tables
-        if (KHR_ICD2_HAS_TAG(platforms[i]))
+        if (KHR_ICD2_HAS_TAG(platform))
         {
-            khrIcd2PopulateDispatchTable(platforms[i], p_clIcdGetFunctionAddressForPlatform, &vendor->dispData.dispatch);
-            p_clIcdSetPlatformDispatchData(platforms[i], &vendor->dispData);
+            khrIcd2PopulateDispatchTable(platform, p_clIcdGetFunctionAddressForPlatform, &vendor->dispData.dispatch);
+            p_clIcdSetPlatformDispatchData(platform, &vendor->dispData);
             KHR_ICD_TRACE("found icd 2 platform, using loader managed dispatch\n");
+            if (p_clIcdCreateInstancePlatform && p_clIcdDestroyInstancePlatform)
+            {
+                vendor->clIcdSetPlatformDispatchData = p_clIcdSetPlatformDispatchData;
+                vendor->clIcdCreateInstancePlatform = p_clIcdCreateInstancePlatform;
+                vendor->clIcdDestroyInstancePlatform = p_clIcdDestroyInstancePlatform;
+            }
         }
+        vendor->instance_platform = instance_platform;
 #endif
 
         // call clGetPlatformInfo on the returned platform to get the supported extensions
-        result = KHR_ICD2_DISPATCH(platforms[i])->clGetPlatformInfo(
-            platforms[i],
+        result = KHR_ICD2_DISPATCH(platform)->clGetPlatformInfo(
+            platform,
             CL_PLATFORM_EXTENSIONS,
             0,
             NULL,
@@ -212,18 +239,16 @@ void khrIcdVendorAdd(const char *libraryName)
         if (CL_SUCCESS != result)
         {
             KHR_ICD_TRACE("failed query platform extensions\n");
-            free(vendor);
-            continue;
+            goto Error;
         }
         extensions = (char *)malloc(extensionsSize);
         if (!extensions)
         {
             KHR_ICD_TRACE("failed to allocate memory\n");
-            free(vendor);
-            continue;
+            goto Error;
         }
-        result = KHR_ICD2_DISPATCH(platforms[i])->clGetPlatformInfo(
-            platforms[i],
+        result = KHR_ICD2_DISPATCH(platform)->clGetPlatformInfo(
+            platform,
             CL_PLATFORM_EXTENSIONS,
             extensionsSize,
             extensions,
@@ -231,17 +256,14 @@ void khrIcdVendorAdd(const char *libraryName)
         if (CL_SUCCESS != result)
         {
             KHR_ICD_TRACE("failed query platform extensions\n");
-            free(extensions);
-            free(vendor);
-            continue;
+            goto Error;
         }
 
         if (strstr(extensions, "cl_khr_icd_unloadable"))
         {
             KHR_ICD_TRACE("found cl_khr_icd_unloadable extension support\n");
-            free(extensions);
-            result = KHR_ICD2_DISPATCH(platforms[i])->clGetPlatformInfo(
-                platforms[i],
+            result = KHR_ICD2_DISPATCH(platform)->clGetPlatformInfo(
+                platform,
                 CL_PLATFORM_UNLOADABLE_KHR,
                 sizeof(vendor->unloadable),
                 &vendor->unloadable,
@@ -253,14 +275,14 @@ void khrIcdVendorAdd(const char *libraryName)
             if (CL_SUCCESS != result)
             {
                 KHR_ICD_TRACE("found cl_khr_icd_unloadable but clGetPlatformInfo CL_PLATFORM_UNLOADABLE_KHR query failed\n");
-                free(vendor);
-                continue;
+                goto Error;
             }
         }
+        free(extensions);
 
         // call clGetPlatformInfo on the returned platform to get the suffix
-        result = KHR_ICD2_DISPATCH(platforms[i])->clGetPlatformInfo(
-            platforms[i],
+        result = KHR_ICD2_DISPATCH(platform)->clGetPlatformInfo(
+            platform,
             CL_PLATFORM_ICD_SUFFIX_KHR,
             0,
             NULL,
@@ -268,18 +290,16 @@ void khrIcdVendorAdd(const char *libraryName)
         if (CL_SUCCESS != result)
         {
             KHR_ICD_TRACE("failed query platform ICD suffix\n");
-            free(vendor);
-            continue;
+            goto Error;
         }
         suffix = (char *)malloc(suffixSize);
         if (!suffix)
         {
             KHR_ICD_TRACE("failed to allocate memory\n");
-            free(vendor);
-            continue;
+            goto Error;
         }
-        result = KHR_ICD2_DISPATCH(platforms[i])->clGetPlatformInfo(
-            platforms[i],
+        result = KHR_ICD2_DISPATCH(platform)->clGetPlatformInfo(
+            platform,
             CL_PLATFORM_ICD_SUFFIX_KHR,
             suffixSize,
             suffix,
@@ -287,19 +307,15 @@ void khrIcdVendorAdd(const char *libraryName)
         if (CL_SUCCESS != result)
         {
             KHR_ICD_TRACE("failed query platform ICD suffix\n");
-            free(suffix);
-            free(vendor);
-            continue;
+            goto Error;
         }
 
         // populate vendor data
         vendor->library = khrIcdOsLibraryLoad(libraryName);
         if (!vendor->library)
         {
-            free(suffix);
-            free(vendor);
             KHR_ICD_TRACE("failed get platform handle to library\n");
-            continue;
+            goto Error;
         }
         vendor->clGetExtensionFunctionAddress = p_clGetExtensionFunctionAddress;
         vendor->platform = platforms[i];
@@ -315,7 +331,17 @@ void khrIcdVendorAdd(const char *libraryName)
         lastVendor = vendor;
 
         KHR_ICD_TRACE("successfully added vendor %s with suffix %s\n", libraryName, suffix);
-
+        continue;
+Error:
+        free(extensions);
+        free(suffix);
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+        if (instance_platform)
+        {
+            vendor->clIcdDestroyInstancePlatform(instance_platform);
+        }
+#endif
+        free(vendor);
     }
 
 Done:
@@ -564,7 +590,11 @@ void khrIcdContextPropertiesGetPlatform(const cl_context_properties *properties,
 {
     if (properties == NULL && khrIcdVendors != NULL)
     {
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+        *outPlatform = khrIcdVendors[0].instance_platform ? khrIcdVendors[0].instance_platform : khrIcdVendors[0].platform;
+#else
         *outPlatform = khrIcdVendors[0].platform;
+#endif
     }
     else
     {
@@ -626,6 +656,10 @@ void khrIcdDeinitialize(void) {
     while (lastVendor) {
         KHRicdVendor *cur = lastVendor;
         free(cur->suffix);
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+        if (cur->instance_platform)
+            cur->clIcdDestroyInstancePlatform(cur->instance_platform);
+#endif
         if (cur->unloadable && !khrDisableLibraryUnloading)
             khrIcdOsLibraryUnload(cur->library);
         lastVendor = cur->prev;

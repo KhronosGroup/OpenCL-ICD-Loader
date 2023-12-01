@@ -66,3 +66,25 @@ clIcdSetPlatformDispatchDataKHR_t(
 typedef clIcdSetPlatformDispatchDataKHR_t *
 clIcdSetPlatformDispatchDataKHR_fn;
 #endif // !defined(CL_ICD2_TAG_KHR)
+
+#if !defined(CL_INSTANCE_PLATFORM_PROPERTIES_LIST_END_KHR)
+#define CL_INSTANCE_PLATFORM_PROPERTIES_LIST_END_KHR ((cl_instance_platform_properties_khr)0)
+
+typedef cl_properties cl_instance_platform_properties_khr;
+
+typedef cl_platform_id CL_API_CALL
+clIcdCreateInstancePlatformKHR_t(
+    cl_platform_id platform,
+    const cl_instance_platform_properties_khr *properties,
+    cl_int *errcode_ret);
+
+typedef clIcdCreateInstancePlatformKHR_t *
+clIcdCreateInstancePlatformKHR_fn;
+
+typedef cl_int CL_API_CALL
+clIcdDestroyInstancePlatformKHR_t(
+    cl_platform_id platform);
+
+typedef clIcdDestroyInstancePlatformKHR_t *
+clIcdDestroyInstancePlatformKHR_fn;
+#endif //!defined(CL_INSTANCE_PLATFORM_PROPERTIES_LIST_END_KHR)
