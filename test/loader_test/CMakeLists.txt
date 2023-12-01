@@ -1,4 +1,5 @@
 add_executable (icd_loader_test
+    ${CMAKE_SOURCE_DIR}/include/cl_khr_icd2.h
     test_kernel.c
     main.c
     test_platforms.c

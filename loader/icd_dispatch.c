@@ -65,6 +65,153 @@ clGetICDLoaderInfoOCLICD(
     return CL_SUCCESS;
 }
 
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+
+static clCreateInstanceKHR_t clCreateInstanceKHR;
+cl_instance_khr CL_API_CALL
+clCreateInstanceKHR(
+    const cl_instance_properties_khr *properties,
+    cl_int *errcode_ret)
+{
+#define KHR_ICD_ALLOC_AND_ZERO(var, num, type)                                 \
+    do                                                                         \
+    {                                                                          \
+        var = (type *)malloc(num * sizeof(type));                              \
+        if (!var)                                                              \
+        {                                                                      \
+           err = CL_OUT_OF_HOST_MEMORY;                                        \
+           goto error;                                                         \
+        }                                                                      \
+        memset(var, 0, num * sizeof(type));                                    \
+    } while (0)
+
+    (void) properties;
+    cl_int err = CL_SUCCESS;
+    cl_instance_khr instance = NULL;
+    cl_uint num_platforms = 0;
+
+    if (!khrIcdVendors)
+    {
+       err = CL_PLATFORM_NOT_FOUND_KHR;
+       goto error;
+    }
+
+    for (KHRicdVendor* vendor = khrIcdVendors; vendor; vendor = vendor->next)
+    {
+        if (vendor->clIcdCreateInstancePlatform)
+            num_platforms++;
+    }
+
+    KHR_ICD_ALLOC_AND_ZERO(instance, 1, struct _cl_instance_khr);
+    KHR_ICD_ALLOC_AND_ZERO(instance->platforms, num_platforms, cl_platform_id);
+    KHR_ICD_ALLOC_AND_ZERO(instance->vendors, num_platforms, KHRicdVendor *);
+    KHR_ICD_ALLOC_AND_ZERO(instance->dispDatas, num_platforms, struct KHRDisp);
+
+    num_platforms = 0;
+    for (KHRicdVendor* vendor = khrIcdVendors; vendor; vendor = vendor->next)
+    {
+        if (vendor->clIcdCreateInstancePlatform)
+        {
+            cl_platform_id platform;
+            platform = vendor->clIcdCreateInstancePlatform(vendor->platform, &err);
+            if (CL_SUCCESS != err)
+                continue;
+            vendor->clIcdSetPlatformDispatchData(platform, instance->dispDatas + num_platforms);
+            instance->platforms[num_platforms] = platform;
+            instance->vendors[num_platforms] = vendor;
+            memcpy(instance->dispDatas + num_platforms, &vendor->dispData, sizeof(struct KHRDisp));
+            num_platforms++;
+        }
+    }
+
+    if (!num_platforms)
+    {
+        err = CL_PLATFORM_NOT_FOUND_KHR;
+        goto error;
+    }
+
+    instance->num_platforms = num_platforms;
+
+    if (errcode_ret)
+        *errcode_ret = CL_SUCCESS;
+    return instance;
+error:
+    if (instance)
+    {
+        free(instance->dispDatas);
+        free(instance->vendors);
+        free(instance->platforms);
+        free(instance);
+    }
+    if (errcode_ret)
+        *errcode_ret = err;
+#undef KHR_ICD_ALLOC_AND_ZERO
+    return NULL;
+}
+
+static clDestroyInstanceKHR_t clDestroyInstanceKHR;
+cl_int CL_API_CALL
+clDestroyInstanceKHR(
+    cl_instance_khr instance)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(instance, CL_INVALID_INSTANCE_KHR);
+    for (cl_uint i = 0; i < instance->num_platforms; i++)
+        instance->vendors[i]->clIcdDestroyInstancePlatform(instance->platforms[i]);
+    free(instance->dispDatas);
+    free(instance->vendors);
+    free(instance->platforms);
+    free(instance);
+    return CL_SUCCESS;
+}
+
+static clGetPlatformIDsForInstanceKHR_t clGetPlatformIDsForInstanceKHR;
+cl_int CL_API_CALL
+clGetPlatformIDsForInstanceKHR(
+    cl_instance_khr instance,
+    cl_uint num_entries,
+    cl_platform_id* platforms,
+    cl_uint* num_platforms)
+{
+    cl_uint i;
+
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(instance, CL_INVALID_INSTANCE_KHR);
+    // should be impossible since create would have refused to
+    // create an empty instance
+    if (!instance->num_platforms)
+    {
+        return CL_INVALID_INSTANCE_KHR;
+    }
+    if (!num_entries && platforms)
+    {
+        return CL_INVALID_VALUE;
+    }
+    if (!platforms && !num_platforms)
+    {
+        return CL_INVALID_VALUE;
+    }
+    if (num_platforms)
+    {
+        *num_platforms = instance->num_platforms;
+    }
+    if (platforms)
+    {
+        for (i = 0; i < num_entries; ++i)
+        {
+            platforms[i] = NULL;
+        }
+        if (instance->num_platforms < num_entries)
+        {
+            num_entries = instance->num_platforms;
+        }
+        for (i = 0; i < num_entries; ++i)
+        {
+            platforms[i] = instance->platforms[i];
+        }
+    }
+    return CL_SUCCESS;
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+
 static void* khrIcdGetExtensionFunctionAddress(const char* function_name)
 {
 // Most extensions, including multi-vendor KHR and EXT extensions,
@@ -138,6 +285,13 @@ static void* khrIcdGetExtensionFunctionAddress(const char* function_name)
 
     // cl_icdl
     KHR_ICD_CHECK_EXTENSION_FUNCTION(clGetICDLoaderInfoOCLICD);
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    // cl_khr_instances
+    KHR_ICD_CHECK_EXTENSION_FUNCTION(clCreateInstanceKHR);
+    KHR_ICD_CHECK_EXTENSION_FUNCTION(clDestroyInstanceKHR);
+    KHR_ICD_CHECK_EXTENSION_FUNCTION(clGetPlatformIDsForInstanceKHR);
+#endif
 
 #undef KHR_ICD_CHECK_EXTENSION_FUNCTION
 

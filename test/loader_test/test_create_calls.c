@@ -11,8 +11,8 @@
 
 extern void CL_CALLBACK createcontext_callback(const char* a, const void* b, size_t c, void* d);
 
+cl_instance_khr instance;
 cl_platform_id platform;
-cl_uint num_platforms;
 cl_context context;
 cl_command_queue command_queue;
 cl_mem buffer;
@@ -135,10 +135,134 @@ const struct clCreateUserEvent_st clCreateUserEventData[NUM_ITEMS_clCreateUserEv
     {NULL, NULL}
 };
 
+const struct clCreateInstanceKHR_st clCreateInstanceKHRData[NUM_ITEMS_clCreateInstanceKHR] =
+{
+    {NULL, NULL}
+};
+
+struct clDestroyInstanceKHR_st clDestroyInstanceKHRData[NUM_ITEMS_clDestroyInstanceKHR] =
+{
+    {NULL}
+};
+
+struct clGetPlatformIDsForInstanceKHR_st clGetPlatformIDsForInstanceKHRData[NUM_ITEMS_clGetPlatformIDsForInstanceKHR] =
+{
+    {NULL, 0, NULL, NULL}
+};
+
 const struct clGetPlatformIDs_st clGetPlatformIDsData[NUM_ITEMS_clGetPlatformIDs] =
 {
     {0, NULL, 0}
 };
+
+int test_clCreateInstanceKHR(const struct clCreateInstanceKHR_st *data)
+{
+    clCreateInstanceKHR_fn clCreateInstanceKHR = (clCreateInstanceKHR_fn)
+      (intptr_t)clGetExtensionFunctionAddress("clCreateInstanceKHR");
+
+    if (!clCreateInstanceKHR) {
+        test_icd_app_log("clGetExtensionFunctionAddress failed!\n");
+        return 1;
+    }
+    instance = clCreateInstanceKHR(data->properties, data->errcode_ret);
+    if (!instance) {
+        test_icd_app_log("clCreateInstanceKHR failed!\n");
+        return 1;
+    }
+    clDestroyInstanceKHRData[0].instance = instance;
+    clGetPlatformIDsForInstanceKHRData[0].instance = instance;
+    return 0;
+}
+
+int test_clDestroyInstanceKHR(const struct clDestroyInstanceKHR_st *data)
+{
+    cl_int ret_val;
+    clDestroyInstanceKHR_fn clDestroyInstanceKHR = (clDestroyInstanceKHR_fn)
+      (intptr_t)clGetExtensionFunctionAddress("clDestroyInstanceKHR");
+
+    if (!clDestroyInstanceKHR) {
+        test_icd_app_log("clGetExtensionFunctionAddress failed!\n");
+        return 1;
+    }
+    ret_val = clDestroyInstanceKHR(data->instance);
+    if (ret_val != CL_SUCCESS) {
+        test_icd_app_log("clDestroyInstanceKHR failed!\n");
+        return 1;
+    }
+    return 0;
+}
+
+static cl_platform_id findPlatform(cl_uint num_platforms, cl_platform_id *platforms)
+{
+    const char *platform_to_find = NULL;
+    cl_int ret_val;
+    size_t param_val_ret_size;
+    #define PLATFORM_NAME_SIZE 80
+    char platform_name[PLATFORM_NAME_SIZE];
+    cl_uint i;
+
+    platform_to_find = log_getenv("APP_PLATFORM", "ICD_LOADER_TEST_OPENCL_STUB");
+
+    for (i = 0; i < num_platforms; i++) {
+        ret_val = clGetPlatformInfo(platforms[i],
+                CL_PLATFORM_NAME,
+                PLATFORM_NAME_SIZE,
+                (void*)platform_name,
+                &param_val_ret_size );
+
+        if (ret_val == CL_SUCCESS ){
+            if(!strcmp(platform_name, platform_to_find)) {
+                log_freeenv(platform_to_find);
+                return platforms[i];
+            }
+        }
+    }
+    log_freeenv(platform_to_find);
+    return NULL;
+}
+
+int test_clGetPlatformIDsForInstanceKHR(const struct clGetPlatformIDsForInstanceKHR_st *data)
+{
+    cl_int ret_val;
+    cl_platform_id *all_platforms;
+    cl_uint num_platforms;
+    clGetPlatformIDsForInstanceKHR_fn clGetPlatformIDsForInstanceKHR = (clGetPlatformIDsForInstanceKHR_fn)
+      (intptr_t)clGetExtensionFunctionAddress("clGetPlatformIDsForInstanceKHR");
+
+    if (!clGetPlatformIDsForInstanceKHR) {
+        test_icd_app_log("clGetExtensionFunctionAddress failed!\n");
+        return 1;
+    }
+    ret_val = clGetPlatformIDsForInstanceKHR(data->instance,
+                                             0, NULL, &num_platforms);
+
+    if (ret_val != CL_SUCCESS) {
+        test_icd_app_log("clGetPlatformIDsForInstanceKHR failed!\n");
+        return 1;
+    }
+
+    all_platforms = (cl_platform_id *)malloc(num_platforms * sizeof(cl_platform_id));
+
+    ret_val = clGetPlatformIDsForInstanceKHR(data->instance,
+                                             num_platforms,
+                                             all_platforms,
+                                             NULL);
+
+    if (ret_val != CL_SUCCESS) {
+        test_icd_app_log("clGetPlatformIDsForInstanceKHR failed!\n");
+        return 1;
+    }
+
+    platform = findPlatform(num_platforms, all_platforms);
+
+    if (!platform) {
+        test_icd_app_log("Failed to find stub platform!\n");
+    }
+
+    free(all_platforms);
+
+    return 0;
+}
 
 /*
  * Some log messages cause log mismatches when ICD loader calls a driver
@@ -154,18 +278,14 @@ const char *default_platform_to_find = "ICD_LOADER_TEST_OPENCL_STUB";
 
 int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
 {
-    const char *platform_to_find = NULL;
     cl_int ret_val;
-    size_t param_val_ret_size;
-    #define PLATFORM_NAME_SIZE 80
-    char platform_name[PLATFORM_NAME_SIZE];
-    cl_uint i;    
     cl_platform_id *all_platforms;
+    cl_uint num_platforms;
 
 #if ENABLE_MISMATCHING_PRINTS
     test_icd_app_log("clGetPlatformIDs(%u, %p, %p)\n",
                      data->num_entries,
-                     &platforms, 
+                     data->platforms,
                      &num_platforms);
 #else
     (void)data;
@@ -189,22 +309,12 @@ int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
         return -1;
     }
 
-    platform_to_find = log_getenv("APP_PLATFORM", "ICD_LOADER_TEST_OPENCL_STUB");
+    platform = findPlatform(num_platforms, all_platforms);
 
-    for (i = 0; i < num_platforms; i++) {
-        ret_val = clGetPlatformInfo(all_platforms[i],
-                CL_PLATFORM_NAME,
-                PLATFORM_NAME_SIZE,
-                (void*)platform_name,
-                &param_val_ret_size );  
-
-        if (ret_val == CL_SUCCESS ){
-            if(!strcmp(platform_name, platform_to_find)) {
-                platform = all_platforms[i];                
-            }
-        }
+    if (!platform) {
+        return -1;
     }
-    log_freeenv(platform_to_find);
+
     free(all_platforms);
 
 #if ENABLE_MISMATCHING_PRINTS
@@ -778,7 +888,15 @@ int test_clReleaseDevice(const struct clReleaseDevice_st* data)
 
 int test_create_calls(void)
 {
-    test_clGetPlatformIDs(clGetPlatformIDsData);
+    const char *var = log_getenv("USE_INSTANCE", NULL);
+    if (var) {
+        test_clCreateInstanceKHR(clCreateInstanceKHRData);
+
+        test_clGetPlatformIDsForInstanceKHR(clGetPlatformIDsForInstanceKHRData);
+        log_freeenv(var);
+    } else {
+        test_clGetPlatformIDs(clGetPlatformIDsData);
+    }
 
     context_properties[1] = (cl_context_properties) platform;
 
@@ -838,6 +956,7 @@ int test_create_calls(void)
 
 int test_release_calls(void)
 {
+    const char *var = log_getenv("USE_INSTANCE", NULL);
     test_clReleaseSampler(clReleaseSamplerData);
 
     test_clReleaseMemObject(clReleaseMemObjectData);
@@ -858,6 +977,10 @@ int test_release_calls(void)
 
     test_clReleaseDevice(clReleaseDeviceData);
 
+    if (var) {
+        test_clDestroyInstanceKHR(clDestroyInstanceKHRData);
+        log_freeenv(var);
+    }
     return 0;
 }
 

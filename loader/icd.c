@@ -59,6 +59,8 @@ void khrIcdVendorAdd(const char *libraryName)
 #if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     clIcdGetFunctionAddressForPlatformKHR_fn p_clIcdGetFunctionAddressForPlatform = NULL;
     clIcdSetPlatformDispatchDataKHR_fn p_clIcdSetPlatformDispatchData = NULL;
+    clIcdCreateInstancePlatformKHR_fn p_clIcdCreateInstancePlatform = NULL;
+    clIcdDestroyInstancePlatformKHR_fn p_clIcdDestroyInstancePlatform = NULL;
 #endif
     cl_uint i = 0;
     cl_uint platformCount = 0;
@@ -110,6 +112,8 @@ void khrIcdVendorAdd(const char *libraryName)
     // try to get clIcdGetFunctionAddressForPlatformKHR and clIcdSetPlatformDispatchDataKHR to detect cl_khr_icd2 support
     p_clIcdGetFunctionAddressForPlatform = (clIcdGetFunctionAddressForPlatformKHR_fn)(size_t)p_clGetExtensionFunctionAddress("clIcdGetFunctionAddressForPlatformKHR");
     p_clIcdSetPlatformDispatchData = (clIcdSetPlatformDispatchDataKHR_fn)(size_t)p_clGetExtensionFunctionAddress("clIcdSetPlatformDispatchDataKHR");
+    p_clIcdCreateInstancePlatform = (clIcdCreateInstancePlatformKHR_fn)(size_t)p_clGetExtensionFunctionAddress("clIcdCreateInstancePlatformKHR");
+    p_clIcdDestroyInstancePlatform = (clIcdDestroyInstancePlatformKHR_fn)(size_t)p_clGetExtensionFunctionAddress("clIcdDestroyInstancePlatformKHR");
 #endif
 
     // query the number of platforms available and allocate space to store them
@@ -175,6 +179,12 @@ void khrIcdVendorAdd(const char *libraryName)
             khrIcd2PopulateDispatchTable(platforms[i], p_clIcdGetFunctionAddressForPlatform, &vendor->dispData.dispatch);
             p_clIcdSetPlatformDispatchData(platforms[i], &vendor->dispData);
             KHR_ICD_TRACE("found icd 2 platform, using loader managed dispatch\n");
+            if (p_clIcdCreateInstancePlatform && p_clIcdDestroyInstancePlatform)
+            {
+                vendor->clIcdSetPlatformDispatchData = p_clIcdSetPlatformDispatchData;
+                vendor->clIcdCreateInstancePlatform = p_clIcdCreateInstancePlatform;
+                vendor->clIcdDestroyInstancePlatform = p_clIcdDestroyInstancePlatform;
+            }
         }
 #endif
 
