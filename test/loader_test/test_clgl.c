@@ -324,7 +324,7 @@ int test_clGetGLContextInfoKHR(const struct clGetGLContextInfoKHR_st* data)
 
 }
 
-int test_OpenGL_share()
+int test_OpenGL_share(void)
 {
 	int i;
 

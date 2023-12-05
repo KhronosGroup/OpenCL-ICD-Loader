@@ -189,7 +189,7 @@ int test_clRetainDevice(const struct clRetainDevice_st* data)
     return 0;
 }
 
-int test_platforms()
+int test_platforms(void)
 {
     int i;
 

@@ -3,18 +3,17 @@
 #include<platform/icd_test_log.h>
 #include "param_struct.h"
 
-extern int test_create_calls();
-extern int test_platforms();
-extern int test_cl_runtime();
-extern int test_kernel();
-extern int test_buffer_object();
-extern int test_program_objects();
-extern int test_image_objects();
-extern int test_sampler_objects();
-extern int test_OpenGL_share();
-extern int test_release_calls();
-
-extern int test_icd_match();
+extern int test_create_calls(void);
+extern int test_platforms(void);
+extern int test_cl_runtime(void);
+extern int test_kernel(void);
+extern int test_buffer_object(void);
+extern int test_program_objects(void);
+extern int test_image_objects(void);
+extern int test_sampler_objects(void);
+extern int test_OpenGL_share(void);
+extern int test_release_calls(void);
+extern int test_icd_match(void);
 
 int main(int argc, char **argv)
 {

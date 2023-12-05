@@ -50,7 +50,7 @@ int test_clGetCommandQueueInfo(const struct clGetCommandQueueInfo_st *data)
 
 }
 
-int test_cl_runtime()
+int test_cl_runtime(void)
 {
 	int i;
 

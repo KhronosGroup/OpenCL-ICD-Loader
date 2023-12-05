@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.16)
 
 project(PkgConfigTest
   LANGUAGES C
@@ -35,7 +35,12 @@ add_test(
   COMMAND ${PROJECT_NAME}
 )
 
-set_tests_properties(${PROJECT_NAME}
-  PROPERTIES
-    ENVIRONMENT "OCL_ICD_FILENAMES=${DRIVER_STUB_PATH}"
-)
+if(DEFINED DRIVER_STUB_PATH)
+  file(TO_CMAKE_PATH "${DRIVER_STUB_PATH}" DRIVER_STUB_PATH_CMAKE)
+  string(REGEX MATCH ".*/" DRIVER_STUB_DIR "${DRIVER_STUB_PATH_CMAKE}")
+  set_tests_properties(${PROJECT_NAME}
+    PROPERTIES
+      ENVIRONMENT "OCL_ICD_FILENAMES=${DRIVER_STUB_PATH}"
+      WORKING_DIRECTORY "${DRIVER_STUB_DIR}"
+  )
+endif()

@@ -762,7 +762,7 @@ int test_clReleaseDevice(const struct clReleaseDevice_st* data)
 
 }
 
-int test_create_calls()
+int test_create_calls(void)
 {
     test_clGetPlatformIDs(clGetPlatformIDsData);
 
@@ -818,7 +818,7 @@ int test_create_calls()
 
 }
 
-int test_release_calls()
+int test_release_calls(void)
 {
     test_clReleaseSampler(clReleaseSamplerData);
 

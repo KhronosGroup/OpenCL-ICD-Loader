@@ -6,7 +6,7 @@
 #endif
 #include <platform/icd_test_log.h>
 
-int test_icd_match()
+int test_icd_match(void)
 {
     int error = 0;
     char *app_log = NULL, *stub_log = NULL;

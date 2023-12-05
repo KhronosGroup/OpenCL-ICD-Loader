@@ -408,7 +408,7 @@ int test_clGetMemObjectInfo (const struct clGetMemObjectInfo_st *data)
     return 0;
 }
 
-int test_buffer_object()
+int test_buffer_object(void)
 {
     int i;
     for (i=0; i<NUM_ITEMS_clEnqueueReadBuffer; i++) {

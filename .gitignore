@@ -1,4 +1,22 @@
+# Build dir
+[Bb]uild/
+
+# Install dir
+[Ii]nstall/
+
+# External dir
+[Ee]xternal/
+
+# Package dir
+[Pp]ackage[-_\s\d]*/
+
+# Tackage dir
+[T]esting/
+
+# inc subdirs
 inc/CL/
 inc/EGL/
 inc/KHR/
-build/
+
+# Visual Studio Code
+.vscode

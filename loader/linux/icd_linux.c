@@ -197,10 +197,19 @@ static inline void khrIcdOsDirEnumerate(const char *path, const char *env,
                 }
                 free(dirElems);
             }
-        } else
+        }
+        else
+        {
             // use system provided ordering
             for (dirEntry = readdir(dir); dirEntry; dirEntry = readdir(dir) )
-                khrIcdOsDirEntryValidateAndAdd(dirEntry->d_name, path, extension, addFunc);
+            {
+                // only check entries different from '.' and '..'
+                if (strcmp(dirEntry->d_name, ".") && strcmp(dirEntry->d_name, ".."))
+                {
+                    khrIcdOsDirEntryValidateAndAdd(dirEntry->d_name, path, extension, addFunc);
+                }
+            }
+        }
 
         closedir(dir);
     }

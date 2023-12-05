@@ -185,6 +185,10 @@ void layerFree(WinLayer *pWinLayer)
 // for each vendor encountered
 BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVOID *lpContext)
 {
+    (void)InitOnce;
+    (void)Parameter;
+    (void)lpContext;
+
     LONG result;
     BOOL status = FALSE, currentStatus = FALSE;
     const char* platformsName = "SOFTWARE\\Khronos\\OpenCL\\Vendors";
