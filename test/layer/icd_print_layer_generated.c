@@ -2540,6 +2540,27 @@ return tdispatch->clGetKernelSubGroupInfoKHR(
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// cl_khr_suggested_local_work_size
+static cl_int CL_API_CALL clGetKernelSuggestedLocalWorkSizeKHR_wrap(
+    cl_command_queue command_queue,
+    cl_kernel kernel,
+    cl_uint work_dim,
+    const size_t* global_work_offset,
+    const size_t* global_work_size,
+    size_t* suggested_local_work_size) CL_API_SUFFIX__VERSION_3_0
+{
+printf("clGetKernelSuggestedLocalWorkSizeKHR\n");
+return tdispatch->clGetKernelSuggestedLocalWorkSizeKHR(
+            command_queue,
+            kernel,
+            work_dim,
+            global_work_offset,
+            global_work_size,
+            suggested_local_work_size);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 void _init_dispatch(void) {
     dispatch.clGetPlatformIDs = &clGetPlatformIDs_wrap;
     dispatch.clGetPlatformInfo = &clGetPlatformInfo_wrap;
@@ -2743,4 +2764,7 @@ void _init_dispatch(void) {
     dispatch.clCreateBufferWithProperties = &clCreateBufferWithProperties_wrap;
     dispatch.clCreateImageWithProperties = &clCreateImageWithProperties_wrap;
     dispatch.clSetContextDestructorCallback = &clSetContextDestructorCallback_wrap;
+
+  /* cl_khr_suggested_local_work_size */
+    dispatch.clGetKernelSuggestedLocalWorkSizeKHR = &clGetKernelSuggestedLocalWorkSizeKHR_wrap;
 }
