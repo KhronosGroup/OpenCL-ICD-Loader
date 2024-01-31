@@ -184,7 +184,8 @@ icdextensions = [
     'cl_khr_egl_image',
     'cl_khr_gl_event',
     'cl_khr_gl_sharing',
-    'cl_khr_subgroups'
+    'cl_khr_subgroups',
+    'cl_khr_suggested_local_work_size'
     ]
 win32extensions = {
     'cl_khr_d3d10_sharing',
@@ -482,6 +483,9 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clCreateBufferWithProperties_disp,
     &clCreateImageWithProperties_disp,
     &clSetContextDestructorCallback_disp
+
+  /* cl_khr_suggested_local_work_size */
+    &clGetKernelSuggestedLocalWorkSizeKHR_disp,
 };
 #endif // defined(CL_ENABLE_LAYERS)
 #ifdef __cplusplus

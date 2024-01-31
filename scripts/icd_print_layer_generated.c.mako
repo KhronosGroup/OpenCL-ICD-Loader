@@ -59,7 +59,8 @@ icdextensions = [
     'cl_khr_egl_image',
     'cl_khr_gl_event',
     'cl_khr_gl_sharing',
-    'cl_khr_subgroups'
+    'cl_khr_subgroups',
+    'cl_khr_suggested_local_work_size'
     ]
 win32extensions = {
     'cl_khr_d3d10_sharing',
@@ -307,4 +308,7 @@ void _init_dispatch(void) {
     dispatch.clCreateBufferWithProperties = &clCreateBufferWithProperties_wrap;
     dispatch.clCreateImageWithProperties = &clCreateImageWithProperties_wrap;
     dispatch.clSetContextDestructorCallback = &clSetContextDestructorCallback_wrap;
+
+  /* cl_khr_suggested_local_work_size */
+    dispatch.clGetKernelSuggestedLocalWorkSizeKHR = &clGetKernelSuggestedLocalWorkSizeKHR_wrap;
 }

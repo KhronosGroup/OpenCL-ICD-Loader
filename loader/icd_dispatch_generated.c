@@ -6823,6 +6823,59 @@ static cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_disp(
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// cl_khr_suggested_local_work_size
+
+CL_API_ENTRY cl_int CL_API_CALL clGetKernelSuggestedLocalWorkSizeKHR(
+    cl_command_queue command_queue,
+    cl_kernel kernel,
+    cl_uint work_dim,
+    const size_t* global_work_offset,
+    const size_t* global_work_size,
+    size_t* suggested_local_work_size)
+{
+#if defined(CL_ENABLE_LAYERS)
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetKernelSuggestedLocalWorkSizeKHR(
+            command_queue,
+            kernel,
+            work_dim,
+            global_work_offset,
+            global_work_size,
+            suggested_local_work_size);
+#endif // defined(CL_ENABLE_LAYERS)
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clGetKernelSuggestedLocalWorkSizeKHR);
+    return command_queue->dispatch->clGetKernelSuggestedLocalWorkSizeKHR(
+        command_queue,
+        kernel,
+        work_dim,
+        global_work_offset,
+        global_work_size,
+        suggested_local_work_size);
+}
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetKernelSuggestedLocalWorkSizeKHR_disp(
+    cl_command_queue command_queue,
+    cl_kernel kernel,
+    cl_uint work_dim,
+    const size_t* global_work_offset,
+    const size_t* global_work_size,
+    size_t* suggested_local_work_size)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(command_queue->dispatch->clGetKernelSuggestedLocalWorkSizeKHR);
+    return command_queue->dispatch->clGetKernelSuggestedLocalWorkSizeKHR(
+        command_queue,
+        kernel,
+        work_dim,
+        global_work_offset,
+        global_work_size,
+        suggested_local_work_size);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+
 #if defined(CL_ENABLE_LAYERS)
 struct _cl_icd_dispatch khrMasterDispatch = {
     &clGetPlatformIDs_disp,
@@ -7027,6 +7080,9 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clCreateBufferWithProperties_disp,
     &clCreateImageWithProperties_disp,
     &clSetContextDestructorCallback_disp
+
+  /* cl_khr_suggested_local_work_size */
+    &clGetKernelSuggestedLocalWorkSizeKHR_disp,
 };
 #endif // defined(CL_ENABLE_LAYERS)
 #ifdef __cplusplus
