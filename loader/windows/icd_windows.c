@@ -109,7 +109,7 @@ static WinLayer* pWinLayerBegin;
 static WinLayer* pWinLayerEnd;
 static WinLayer* pWinLayerCapacity;
 
-static int compareLayer(const void *a, const void *b)
+static int __cdecl compareLayer(const void *a, const void *b)
 {
     return ((WinLayer *)a)->priority < ((WinLayer *)b)->priority ? -1 :
            ((WinLayer *)a)->priority > ((WinLayer *)b)->priority ? 1 : 0;
