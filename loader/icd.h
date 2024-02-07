@@ -49,6 +49,9 @@
 #include <CL/cl.h>
 #include <CL/cl_ext.h>
 #include <CL/cl_icd.h>
+#if defined(CL_ENABLE_LAYERS)
+#include <CL/cl_layer.h>
+#endif // defined(CL_ENABLE_LAYERS)
 #include <stdio.h>
 
 /*
@@ -85,6 +88,9 @@ struct KHRicdVendorRec
     // the extension suffix for this platform
     char *suffix;
 
+    // can this vendor library be unloaded?
+    cl_bool unloadable;
+
     // function pointer to the ICD platform IDs extracted from the library
     pfn_clGetExtensionFunctionAddress clGetExtensionFunctionAddress;
 
@@ -98,6 +104,7 @@ struct KHRicdVendorRec
 
     // next vendor in the list vendors
     KHRicdVendor *next;
+    KHRicdVendor *prev;
 };
 
 // the global state
@@ -123,14 +130,17 @@ struct KHRLayer
 #ifdef CL_LAYER_INFO
     // The layer library name
     char *libraryName;
-    // the pointer to the clGetLayerInfo funciton
-    void *p_clGetLayerInfo;
+    // the pointer to the clGetLayerInfo function
+    pfn_clGetLayerInfo p_clGetLayerInfo;
 #endif
+    // the pointer to the clDeinitLayer function
+    pfn_clDeinitLayer p_clDeinitLayer;
 };
 
 // the global layer state
 extern struct KHRLayer * khrFirstLayer;
-extern struct _cl_icd_dispatch khrMasterDispatch;
+extern const struct _cl_icd_dispatch khrMainDispatch;
+extern const struct _cl_icd_dispatch khrDeinitDispatch;
 #endif // defined(CL_ENABLE_LAYERS)
 
 /* 
@@ -146,6 +156,9 @@ void khrIcdInitialize(void);
 
 // entrypoint to check and initialize trace.
 void khrIcdInitializeTrace(void);
+
+// entrypoint to release icd resources
+void khrIcdDeinitialize(void);
 
 // go through the list of vendors (in /etc/OpenCL.conf or through 
 // the registry) and call khrIcdVendorAdd for each vendor encountered
