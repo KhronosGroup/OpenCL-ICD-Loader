@@ -345,10 +345,10 @@ void khrIcdLayerAdd(const char *libraryName)
     if (khrFirstLayer) {
         targetDispatch = &(khrFirstLayer->dispatch);
     } else {
-        targetDispatch = &khrMasterDispatch;
+        targetDispatch = &khrMainDispatch;
     }
 
-    loaderDispatchNumEntries = sizeof(khrMasterDispatch)/sizeof(void*);
+    loaderDispatchNumEntries = sizeof(khrMainDispatch)/sizeof(void*);
     result = p_clInitLayer(
         loaderDispatchNumEntries,
         targetDispatch,

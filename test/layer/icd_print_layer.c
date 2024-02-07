@@ -21,7 +21,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct _cl_icd_dispatch dispatch;
 
 const struct _cl_icd_dispatch *tdispatch;
 
@@ -79,8 +78,6 @@ clInitLayer(
     const struct _cl_icd_dispatch **layer_dispatch_ret) {
   if (!target_dispatch || !layer_dispatch_ret || !num_entries_out || num_entries < sizeof(dispatch)/sizeof(dispatch.clGetPlatformIDs))
     return CL_INVALID_VALUE;
-
-  _init_dispatch();
 
   tdispatch = target_dispatch;
   *layer_dispatch_ret = &dispatch;
