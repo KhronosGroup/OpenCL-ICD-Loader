@@ -21,11 +21,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct _cl_icd_dispatch dispatch;
+#if !defined(CL_LAYER_API_VERSION_200)
+#define CL_LAYER_API_VERSION_200 200
+#endif //!defined(CL_LAYER_API_VERSION_200)
 
 const struct _cl_icd_dispatch *tdispatch;
 
-static cl_layer_api_version api_version = CL_LAYER_API_VERSION_100;
+static cl_layer_api_version api_version = CL_LAYER_API_VERSION_200;
 static const char name[] = "print_layer";
 
 static inline cl_int
@@ -80,8 +82,6 @@ clInitLayer(
   if (!target_dispatch || !layer_dispatch_ret || !num_entries_out || num_entries < sizeof(dispatch)/sizeof(dispatch.clGetPlatformIDs))
     return CL_INVALID_VALUE;
 
-  _init_dispatch();
-
   tdispatch = target_dispatch;
   *layer_dispatch_ret = &dispatch;
   *num_entries_out = sizeof(dispatch)/sizeof(dispatch.clGetPlatformIDs);
@@ -89,4 +89,8 @@ clInitLayer(
   return CL_SUCCESS;
 }
 
-
+CL_API_ENTRY cl_int CL_API_CALL
+clDeinitLayer(void) {
+  tdispatch = NULL;
+  return CL_SUCCESS;
+}
