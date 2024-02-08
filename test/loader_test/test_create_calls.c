@@ -780,11 +780,15 @@ int test_create_calls()
 
     test_clCreateBuffer(clCreateBufferData);
 
+    test_clReleaseMemObject(clReleaseMemObjectData);
+
     test_clCreateBufferWithProperties(clCreateBufferWithPropertiesData);
 
     test_clCreateSubBuffer(clCreateSubBufferData);
 
     test_clCreateImage(clCreateImageData);
+
+    test_clReleaseMemObject(clReleaseMemObjectDataImage);
 
     test_clCreateImageWithProperties(clCreateImageWithPropertiesData);
 

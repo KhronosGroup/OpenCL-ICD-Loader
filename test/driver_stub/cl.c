@@ -1835,11 +1835,13 @@ clEnqueueNativeKernel(cl_command_queue   command_queue ,
     return return_value;
 }
 
+static void extFunc(void) { }
+
 CL_API_ENTRY void * CL_API_CALL
 clGetExtensionFunctionAddressForPlatform(cl_platform_id  platform ,
                                          const char *    func_name) CL_API_SUFFIX__VERSION_1_2
 {
-    void *return_value = (void *) malloc(sizeof(void *));
+    void *return_value = (void *)(size_t)&extFunc;
     test_icd_stub_log("clGetExtensionFunctionAddressForPlatform(%p, %p)\n",
                       platform,
                       func_name);
