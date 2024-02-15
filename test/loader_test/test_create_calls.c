@@ -11,7 +11,6 @@
 
 extern void CL_CALLBACK createcontext_callback(const char* a, const void* b, size_t c, void* d);
 
-cl_platform_id*  all_platforms;
 cl_platform_id platform;
 cl_uint num_platforms;
 cl_context context;
@@ -96,10 +95,17 @@ struct clReleaseMemObject_st clReleaseMemObjectData[NUM_ITEMS_clReleaseMemObject
     {NULL}
 };
 
+struct clReleaseMemObject_st clReleaseMemObjectDataSubBuffer[NUM_ITEMS_clReleaseMemObject] =
+{
+    {NULL}
+};
+
 struct clReleaseMemObject_st clReleaseMemObjectDataImage[NUM_ITEMS_clReleaseMemObject] =
 {
     {NULL}
-};const struct clCreateProgramWithSource_st clCreateProgramWithSourceData[NUM_ITEMS_clCreateProgramWithSource] =
+};
+
+const struct clCreateProgramWithSource_st clCreateProgramWithSourceData[NUM_ITEMS_clCreateProgramWithSource] =
 {
     {NULL, 0, NULL, NULL, NULL}
 };
@@ -151,6 +157,7 @@ int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
     #define PLATFORM_NAME_SIZE 80
     char platform_name[PLATFORM_NAME_SIZE];
     cl_uint i;    
+    cl_platform_id *all_platforms;
 
 #if ENABLE_MISMATCHING_PRINTS
     test_icd_app_log("clGetPlatformIDs(%u, %p, %p)\n",
@@ -192,6 +199,7 @@ int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
             }
         }
     }
+    free(all_platforms);
 
 #if ENABLE_MISMATCHING_PRINTS
     test_icd_app_log("Value returned: %d\n", ret_val);
@@ -351,7 +359,7 @@ int test_clCreateSubBuffer(const struct clCreateSubBuffer_st *data)
                                 data->buffer_create_info,
                                 data->errcode_ret);
 
-    clReleaseMemObjectData->memobj = buffer;
+    clReleaseMemObjectDataSubBuffer->memobj = subBuffer;
 
     test_icd_app_log("Value returned: %p\n", subBuffer);
 
@@ -827,6 +835,8 @@ int test_release_calls()
     test_clReleaseSampler(clReleaseSamplerData);
 
     test_clReleaseMemObject(clReleaseMemObjectData);
+
+    test_clReleaseMemObject(clReleaseMemObjectDataSubBuffer);
 
     test_clReleaseMemObject(clReleaseMemObjectDataImage);
 
