@@ -47,10 +47,9 @@ apihandles = {
 extern "C" {
 #endif
 
-///////////////////////////////////////////////////////////////////////////////
-// Core APIs:
 %for apis in coreapis.values():
 %for api in apis:
+///////////////////////////////////////////////////////////////////////////////
 %if not api.Name in apiskip:
 <%
       handle = api.Params[0]
@@ -158,9 +157,9 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 #endif // defined(CL_ENABLE_LAYERS)
 %  endif
 
-///////////////////////////////////////////////////////////////////////////////
 %endfor
 %else:
+
 #if defined(CL_ENABLE_LAYERS)
 extern ${api.RetType} CL_API_CALL ${api.Name + "_disp"}(
 %for i, param in enumerate(api.Params):
@@ -171,7 +170,35 @@ extern ${api.RetType} CL_API_CALL ${api.Name + "_disp"}(
 %  endif
 %endfor
 #endif // defined(CL_ENABLE_LAYERS)
+
 %endif
+#if defined(CL_ENABLE_LAYERS)
+static ${api.RetType} CL_API_CALL ${api.Name}_shutdown(
+%for i, param in enumerate(api.Params):
+%  if i < len(api.Params)-1:
+    ${param.Type} ${param.Name}${param.TypeEnd},
+%  else:
+    ${param.Type} ${param.Name}${param.TypeEnd})
+%  endif
+%endfor
+{
+%for i, param in enumerate(api.Params):
+%  if param.Name != "" and param.Name != "errcode_ret":
+    (void)${param.Name};
+%  endif
+%endfor
+%if api.Name in ["clSVMFree"]:
+    // Nothing!
+%elif api.Name in ["clSVMAlloc", "clGetExtensionFunctionAddress", "clGetExtensionFunctionAddressForPlatform"]:
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, NULL);
+%elif api.RetType in apihandles or api.RetType == "void*":
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+%else:
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+%endif
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
 %endfor
 %endfor
 <%
@@ -195,12 +222,14 @@ win32extensions = {
 %for extension in icdextensions:
 <%
     apis = extapis[extension]
-%>// ${extension}
+%>
 %if extension in win32extensions:
-
 #if defined(_WIN32)
+
 %endif
 %for api in apis:
+///////////////////////////////////////////////////////////////////////////////
+// ${extension}
 <%
       handle = api.Params[0]
       if handle.Type in apihandles:
@@ -210,6 +239,7 @@ win32extensions = {
 %>
 %for disp in [0, 1]:
 %  if disp == 1:
+
 #if defined(CL_ENABLE_LAYERS)
 %  endif
 ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("", "_disp")[disp]}(
@@ -267,19 +297,42 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 }
 %  if disp == 1:
 #endif // defined(CL_ENABLE_LAYERS)
+
 %  endif
 %endfor
+#if defined(CL_ENABLE_LAYERS)
+static ${api.RetType} CL_API_CALL ${api.Name}_shutdown(
+%for i, param in enumerate(api.Params):
+%  if i < len(api.Params)-1:
+    ${param.Type} ${param.Name}${param.TypeEnd},
+%  else:
+    ${param.Type} ${param.Name}${param.TypeEnd})
+%  endif
 %endfor
+{
+%for i, param in enumerate(api.Params):
+%  if param.Name != "" and param.Name != "errcode_ret":
+    (void)${param.Name};
+%  endif
+%endfor
+%if api.RetType in apihandles:
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_OPERATION);
+%else:
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(NULL, CL_INVALID_OPERATION);
+%endif
+}
+#endif // defined(CL_ENABLE_LAYERS)
 
+%endfor
 %if extension in win32extensions:
 #endif // defined(_WIN32)
-
 %endif
+%endfor
 ///////////////////////////////////////////////////////////////////////////////
 
-%endfor
 #if defined(CL_ENABLE_LAYERS)
-struct _cl_icd_dispatch khrMasterDispatch = {
+
+struct _cl_icd_dispatch khrActualDispatch = {
     &clGetPlatformIDs_disp,
     &clGetPlatformInfo_disp,
     &clGetDeviceIDs_disp,
@@ -356,7 +409,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clEnqueueReleaseGLObjects_disp,
     &clGetGLContextInfoKHR_disp,
 
-  /* cl_khr_d3d10_sharing */
+    /* cl_khr_d3d10_sharing */
 #if defined(_WIN32)
     &clGetDeviceIDsFromD3D10KHR_disp,
     &clCreateFromD3D10BufferKHR_disp,
@@ -373,7 +426,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     NULL,
 #endif
 
-  /* OpenCL 1.1 */
+    /* OpenCL 1.1 */
     &clSetEventCallback_disp,
     &clCreateSubBuffer_disp,
     &clSetMemObjectDestructorCallback_disp,
@@ -383,15 +436,15 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clEnqueueWriteBufferRect_disp,
     &clEnqueueCopyBufferRect_disp,
 
-  /* cl_ext_device_fission */
+    /* cl_ext_device_fission */
     &clCreateSubDevicesEXT_disp,
     &clRetainDeviceEXT_disp,
     &clReleaseDeviceEXT_disp,
 
-  /* cl_khr_gl_event */
+    /* cl_khr_gl_event */
     &clCreateEventFromGLsyncKHR_disp,
 
-  /* OpenCL 1.2 */
+    /* OpenCL 1.2 */
     &clCreateSubDevices_disp,
     &clRetainDevice_disp,
     &clReleaseDevice_disp,
@@ -409,7 +462,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clGetExtensionFunctionAddressForPlatform_disp,
     &clCreateFromGLTexture_disp,
 
-  /* cl_khr_d3d11_sharing */
+    /* cl_khr_d3d11_sharing */
 #if defined(_WIN32)
     &clGetDeviceIDsFromD3D11KHR_disp,
     &clCreateFromD3D11BufferKHR_disp,
@@ -428,7 +481,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     NULL,
 #endif
 
-  /* cl_khr_dx9_media_sharing */
+    /* cl_khr_dx9_media_sharing */
 #if defined(_WIN32)
     &clGetDeviceIDsFromDX9MediaAdapterKHR_disp,
     &clEnqueueAcquireDX9MediaSurfacesKHR_disp,
@@ -439,15 +492,15 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     NULL,
 #endif
 
-  /* cl_khr_egl_image */
+    /* cl_khr_egl_image */
     &clCreateFromEGLImageKHR_disp,
     &clEnqueueAcquireEGLObjectsKHR_disp,
     &clEnqueueReleaseEGLObjectsKHR_disp,
 
-  /* cl_khr_egl_event */
+    /* cl_khr_egl_event */
     &clCreateEventFromEGLSyncKHR_disp,
 
-  /* OpenCL 2.0 */
+    /* OpenCL 2.0 */
     &clCreateCommandQueueWithProperties_disp,
     &clCreatePipe_disp,
     &clGetPipeInfo_disp,
@@ -462,10 +515,10 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clSetKernelArgSVMPointer_disp,
     &clSetKernelExecInfo_disp,
 
-  /* cl_khr_sub_groups */
+    /* cl_khr_sub_groups */
     &clGetKernelSubGroupInfoKHR_disp,
 
-  /* OpenCL 2.1 */
+    /* OpenCL 2.1 */
     &clCloneKernel_disp,
     &clCreateProgramWithIL_disp,
     &clEnqueueSVMMigrateMem_disp,
@@ -474,16 +527,223 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clGetKernelSubGroupInfo_disp,
     &clSetDefaultDeviceCommandQueue_disp,
 
-  /* OpenCL 2.2 */
+    /* OpenCL 2.2 */
     &clSetProgramReleaseCallback_disp,
     &clSetProgramSpecializationConstant_disp,
 
-  /* OpenCL 3.0 */
+    /* OpenCL 3.0 */
     &clCreateBufferWithProperties_disp,
     &clCreateImageWithProperties_disp,
-    &clSetContextDestructorCallback_disp
+    &clSetContextDestructorCallback_disp,
 };
+
+struct _cl_icd_dispatch khrShutdownDispatch = {
+    &clGetPlatformIDs_shutdown,
+    &clGetPlatformInfo_shutdown,
+    &clGetDeviceIDs_shutdown,
+    &clGetDeviceInfo_shutdown,
+    &clCreateContext_shutdown,
+    &clCreateContextFromType_shutdown,
+    &clRetainContext_shutdown,
+    &clReleaseContext_shutdown,
+    &clGetContextInfo_shutdown,
+    &clCreateCommandQueue_shutdown,
+    &clRetainCommandQueue_shutdown,
+    &clReleaseCommandQueue_shutdown,
+    &clGetCommandQueueInfo_shutdown,
+    &clSetCommandQueueProperty_shutdown,
+    &clCreateBuffer_shutdown,
+    &clCreateImage2D_shutdown,
+    &clCreateImage3D_shutdown,
+    &clRetainMemObject_shutdown,
+    &clReleaseMemObject_shutdown,
+    &clGetSupportedImageFormats_shutdown,
+    &clGetMemObjectInfo_shutdown,
+    &clGetImageInfo_shutdown,
+    &clCreateSampler_shutdown,
+    &clRetainSampler_shutdown,
+    &clReleaseSampler_shutdown,
+    &clGetSamplerInfo_shutdown,
+    &clCreateProgramWithSource_shutdown,
+    &clCreateProgramWithBinary_shutdown,
+    &clRetainProgram_shutdown,
+    &clReleaseProgram_shutdown,
+    &clBuildProgram_shutdown,
+    &clUnloadCompiler_shutdown,
+    &clGetProgramInfo_shutdown,
+    &clGetProgramBuildInfo_shutdown,
+    &clCreateKernel_shutdown,
+    &clCreateKernelsInProgram_shutdown,
+    &clRetainKernel_shutdown,
+    &clReleaseKernel_shutdown,
+    &clSetKernelArg_shutdown,
+    &clGetKernelInfo_shutdown,
+    &clGetKernelWorkGroupInfo_shutdown,
+    &clWaitForEvents_shutdown,
+    &clGetEventInfo_shutdown,
+    &clRetainEvent_shutdown,
+    &clReleaseEvent_shutdown,
+    &clGetEventProfilingInfo_shutdown,
+    &clFlush_shutdown,
+    &clFinish_shutdown,
+    &clEnqueueReadBuffer_shutdown,
+    &clEnqueueWriteBuffer_shutdown,
+    &clEnqueueCopyBuffer_shutdown,
+    &clEnqueueReadImage_shutdown,
+    &clEnqueueWriteImage_shutdown,
+    &clEnqueueCopyImage_shutdown,
+    &clEnqueueCopyImageToBuffer_shutdown,
+    &clEnqueueCopyBufferToImage_shutdown,
+    &clEnqueueMapBuffer_shutdown,
+    &clEnqueueMapImage_shutdown,
+    &clEnqueueUnmapMemObject_shutdown,
+    &clEnqueueNDRangeKernel_shutdown,
+    &clEnqueueTask_shutdown,
+    &clEnqueueNativeKernel_shutdown,
+    &clEnqueueMarker_shutdown,
+    &clEnqueueWaitForEvents_shutdown,
+    &clEnqueueBarrier_shutdown,
+    &clGetExtensionFunctionAddress_shutdown,
+    &clCreateFromGLBuffer_shutdown,
+    &clCreateFromGLTexture2D_shutdown,
+    &clCreateFromGLTexture3D_shutdown,
+    &clCreateFromGLRenderbuffer_shutdown,
+    &clGetGLObjectInfo_shutdown,
+    &clGetGLTextureInfo_shutdown,
+    &clEnqueueAcquireGLObjects_shutdown,
+    &clEnqueueReleaseGLObjects_shutdown,
+    &clGetGLContextInfoKHR_shutdown,
+
+    /* cl_khr_d3d10_sharing */
+#if defined(_WIN32)
+    &clGetDeviceIDsFromD3D10KHR_shutdown,
+    &clCreateFromD3D10BufferKHR_shutdown,
+    &clCreateFromD3D10Texture2DKHR_shutdown,
+    &clCreateFromD3D10Texture3DKHR_shutdown,
+    &clEnqueueAcquireD3D10ObjectsKHR_shutdown,
+    &clEnqueueReleaseD3D10ObjectsKHR_shutdown,
+#else
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+#endif
+
+    /* OpenCL 1.1 */
+    &clSetEventCallback_shutdown,
+    &clCreateSubBuffer_shutdown,
+    &clSetMemObjectDestructorCallback_shutdown,
+    &clCreateUserEvent_shutdown,
+    &clSetUserEventStatus_shutdown,
+    &clEnqueueReadBufferRect_shutdown,
+    &clEnqueueWriteBufferRect_shutdown,
+    &clEnqueueCopyBufferRect_shutdown,
+
+    /* cl_ext_device_fission */
+    &clCreateSubDevicesEXT_shutdown,
+    &clRetainDeviceEXT_shutdown,
+    &clReleaseDeviceEXT_shutdown,
+
+    /* cl_khr_gl_event */
+    &clCreateEventFromGLsyncKHR_shutdown,
+
+    /* OpenCL 1.2 */
+    &clCreateSubDevices_shutdown,
+    &clRetainDevice_shutdown,
+    &clReleaseDevice_shutdown,
+    &clCreateImage_shutdown,
+    &clCreateProgramWithBuiltInKernels_shutdown,
+    &clCompileProgram_shutdown,
+    &clLinkProgram_shutdown,
+    &clUnloadPlatformCompiler_shutdown,
+    &clGetKernelArgInfo_shutdown,
+    &clEnqueueFillBuffer_shutdown,
+    &clEnqueueFillImage_shutdown,
+    &clEnqueueMigrateMemObjects_shutdown,
+    &clEnqueueMarkerWithWaitList_shutdown,
+    &clEnqueueBarrierWithWaitList_shutdown,
+    &clGetExtensionFunctionAddressForPlatform_shutdown,
+    &clCreateFromGLTexture_shutdown,
+
+    /* cl_khr_d3d11_sharing */
+#if defined(_WIN32)
+    &clGetDeviceIDsFromD3D11KHR_shutdown,
+    &clCreateFromD3D11BufferKHR_shutdown,
+    &clCreateFromD3D11Texture2DKHR_shutdown,
+    &clCreateFromD3D11Texture3DKHR_shutdown,
+    &clCreateFromDX9MediaSurfaceKHR_shutdown,
+    &clEnqueueAcquireD3D11ObjectsKHR_shutdown,
+    &clEnqueueReleaseD3D11ObjectsKHR_shutdown,
+#else
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+#endif
+
+    /* cl_khr_dx9_media_sharing */
+#if defined(_WIN32)
+    &clGetDeviceIDsFromDX9MediaAdapterKHR_shutdown,
+    &clEnqueueAcquireDX9MediaSurfacesKHR_shutdown,
+    &clEnqueueReleaseDX9MediaSurfacesKHR_shutdown,
+#else
+    NULL,
+    NULL,
+    NULL,
+#endif
+
+    /* cl_khr_egl_image */
+    &clCreateFromEGLImageKHR_shutdown,
+    &clEnqueueAcquireEGLObjectsKHR_shutdown,
+    &clEnqueueReleaseEGLObjectsKHR_shutdown,
+
+    /* cl_khr_egl_event */
+    &clCreateEventFromEGLSyncKHR_shutdown,
+
+    /* OpenCL 2.0 */
+    &clCreateCommandQueueWithProperties_shutdown,
+    &clCreatePipe_shutdown,
+    &clGetPipeInfo_shutdown,
+    &clSVMAlloc_shutdown,
+    &clSVMFree_shutdown,
+    &clEnqueueSVMFree_shutdown,
+    &clEnqueueSVMMemcpy_shutdown,
+    &clEnqueueSVMMemFill_shutdown,
+    &clEnqueueSVMMap_shutdown,
+    &clEnqueueSVMUnmap_shutdown,
+    &clCreateSamplerWithProperties_shutdown,
+    &clSetKernelArgSVMPointer_shutdown,
+    &clSetKernelExecInfo_shutdown,
+
+    /* cl_khr_sub_groups */
+    &clGetKernelSubGroupInfoKHR_shutdown,
+
+    /* OpenCL 2.1 */
+    &clCloneKernel_shutdown,
+    &clCreateProgramWithIL_shutdown,
+    &clEnqueueSVMMigrateMem_shutdown,
+    &clGetDeviceAndHostTimer_shutdown,
+    &clGetHostTimer_shutdown,
+    &clGetKernelSubGroupInfo_shutdown,
+    &clSetDefaultDeviceCommandQueue_shutdown,
+
+    /* OpenCL 2.2 */
+    &clSetProgramReleaseCallback_shutdown,
+    &clSetProgramSpecializationConstant_shutdown,
+
+    /* OpenCL 3.0 */
+    &clCreateBufferWithProperties_shutdown,
+    &clCreateImageWithProperties_shutdown,
+    &clSetContextDestructorCallback_shutdown,
+};
+
 #endif // defined(CL_ENABLE_LAYERS)
+
 #ifdef __cplusplus
 }
 #endif

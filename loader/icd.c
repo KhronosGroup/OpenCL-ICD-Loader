@@ -303,10 +303,10 @@ void khrIcdLayerAdd(const char *libraryName)
     if (khrFirstLayer) {
         targetDispatch = &(khrFirstLayer->dispatch);
     } else {
-        targetDispatch = &khrMasterDispatch;
+        targetDispatch = &khrActualDispatch;
     }
 
-    loaderDispatchNumEntries = sizeof(khrMasterDispatch)/sizeof(void*);
+    loaderDispatchNumEntries = sizeof(khrActualDispatch)/sizeof(void*);
     result = p_clInitLayer(
         loaderDispatchNumEntries,
         targetDispatch,
@@ -430,3 +430,65 @@ void khrIcdContextPropertiesGetPlatform(const cl_context_properties *properties,
     }
 }
 
+#if defined(CL_ENABLE_LAYERS)
+extern struct _cl_icd_dispatch khrShutdownDispatch;
+static struct KHRLayer shutdown_layer = {0};
+#endif
+
+void khrIcdShutdown(void)
+{
+    KHRicdVendor* prevVendor = NULL;
+    KHRicdVendor* vendor = NULL;
+
+#if defined(CL_ENABLE_LAYERS)
+    struct KHRLayer* layer = khrFirstLayer;
+    struct KHRLayer* nextLayer = NULL;
+#endif
+
+    KHR_ICD_TRACE("Shutdown starting\n");
+
+#if defined(CL_ENABLE_LAYERS)
+    KHR_ICD_TRACE("Installing shutdown layer\n");
+    shutdown_layer.dispatch = khrShutdownDispatch;
+    khrFirstLayer = &shutdown_layer;
+#endif
+
+#if defined(CL_ENABLE_LAYERS)
+    // Layers are freed in the reverse order they were added,
+    // so front-to-back.
+    KHR_ICD_TRACE("Cleaning up Layers\n");
+    // Handle the case where shutdown is called twice:
+    if (layer != &shutdown_layer) {
+        while (layer) {
+            nextLayer = layer->next;
+#if defined(CL_LAYER_INFO)
+            free(layer->libraryName);
+#endif
+            free(layer);
+            layer = nextLayer;
+        }
+    }
+#endif
+
+    // Vendors are freed in the reverse order they were added,
+    // so back-to-front.
+    KHR_ICD_TRACE("Cleaning up Vendors\n");
+    while (khrIcdVendors) {
+        if (khrIcdVendors->next == NULL) {
+            vendor = khrIcdVendors;
+            khrIcdVendors = NULL;
+        } else {
+            prevVendor = khrIcdVendors;
+            vendor = khrIcdVendors->next;
+            while (vendor->next) {
+                prevVendor = vendor;
+                vendor = vendor->next;
+            }
+            prevVendor->next = NULL;
+        }
+        free(vendor->suffix);
+        free(vendor);
+    }
+
+    KHR_ICD_TRACE("Shutdown complete\n");
+}
