@@ -443,3 +443,11 @@ void khrIcdOsLibraryUnload(void *library)
 {
     FreeLibrary( (HMODULE)library);
 }
+
+BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
+    if (fdwReason == DLL_PROCESS_DETACH) {
+        khrIcdVendorCleanup();
+        khrIcdLayerCleanup();
+    }
+    return TRUE;
+}
