@@ -1,4 +1,5 @@
 set (OPENCL_PRINT_LAYER_SOURCES
+    ${CMAKE_SOURCE_DIR}/include/cl_khr_icd2.h
     icd_print_layer.c
     icd_print_layer.h
     icd_print_layer_generated.c)

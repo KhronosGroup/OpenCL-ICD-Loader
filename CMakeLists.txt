@@ -52,6 +52,7 @@ endif()
 # It is currently needed default while the specification is being formalized,
 # and to study the performance impact.
 option (ENABLE_OPENCL_LAYERS "Enable OpenCL Layers" ON)
+option (ENABLE_OPENCL_LOADER_MANAGED_DISPATCH "Enable OpenCL Loader managed dispatch" ON)
 include(CMakeDependentOption)
 cmake_dependent_option(ENABLE_OPENCL_LAYERINFO "Enable building cllayerinfo tool" ON ENABLE_OPENCL_LAYERS OFF)
 
@@ -65,6 +66,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/loader/icd_cmake_config.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/icd_cmake_config.h)
 
 set (OPENCL_ICD_LOADER_SOURCES
+    include/cl_khr_icd2.h
     loader/icd.c
     loader/icd.h
     loader/icd_version.h
@@ -73,6 +75,7 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd_dispatch_generated.c
     loader/icd_envvars.h
     loader/icd_platform.h)
+include_directories (include)
 
 if (WIN32)
     list (APPEND OPENCL_ICD_LOADER_SOURCES
@@ -158,6 +161,7 @@ set (OPENCL_COMPILE_DEFINITIONS
     OPENCL_ICD_LOADER_VERSION_MINOR=0
     OPENCL_ICD_LOADER_VERSION_REV=6
     $<$<BOOL:${ENABLE_OPENCL_LAYERS}>:CL_ENABLE_LAYERS>
+    $<$<BOOL:${ENABLE_OPENCL_LOADER_MANAGED_DISPATCH}>:CL_ENABLE_LOADER_MANAGED_DISPATCH>
 )
 
 target_compile_definitions (OpenCL
