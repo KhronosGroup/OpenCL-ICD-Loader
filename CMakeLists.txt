@@ -125,7 +125,6 @@ if (WIN32)
 
     # Generate a DLL without a "lib" prefix for mingw.
     if (MINGW OR MSYS OR CYGWIN)
-        set_target_properties(OpenCL PROPERTIES PREFIX "")
         set_target_properties(OpenCL PROPERTIES LINK_FLAGS "-Wl,-disable-stdcall-fixup")
     endif()
 else()
