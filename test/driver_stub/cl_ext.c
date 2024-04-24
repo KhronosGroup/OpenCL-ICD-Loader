@@ -3,6 +3,14 @@
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS
 #include "CL/cl.h"
 #include "CL/cl_ext.h"
+#include "cl_khr_icd2.h"
+
+#if defined(CL_ENABLE_ICD2)
+CL_API_ENTRY clIcdGetFunctionAddressForPlatformKHR_t clIcdGetFunctionAddressForPlatformKHR;
+CL_API_ENTRY clIcdSetPlatformDispatchDataKHR_t clIcdSetPlatformDispatchDataKHR;
+CL_API_ENTRY clIcdCreateInstancePlatformKHR_t clIcdCreateInstancePlatformKHR;
+CL_API_ENTRY clIcdDestroyInstancePlatformKHR_t clIcdDestroyInstancePlatformKHR;
+#endif
 
 struct driverStubextFunc_st 
 {
@@ -15,6 +23,12 @@ struct driverStubextFunc_st
 static struct driverStubextFunc_st clExtensions[] = 
 {
     EXT_FUNC(clIcdGetPlatformIDsKHR),
+#ifdef CL_ENABLE_ICD2
+    EXT_FUNC(clIcdGetFunctionAddressForPlatformKHR),
+    EXT_FUNC(clIcdSetPlatformDispatchDataKHR),
+    EXT_FUNC(clIcdCreateInstancePlatformKHR),
+    EXT_FUNC(clIcdDestroyInstancePlatformKHR),
+#endif //CL_ENABLE_ICD2
 };
 
 static const int clExtensionCount = sizeof(clExtensions) / sizeof(clExtensions[0]);

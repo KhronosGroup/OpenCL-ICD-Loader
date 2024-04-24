@@ -168,17 +168,29 @@ jobs:
         if /I "${{matrix.BIN}}"=="x64" set REG=reg
         if /I "${{matrix.BIN}}"=="x86" set REG=%systemroot%\Syswow64\reg.exe
         %REG% ADD HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Release/OpenCLDriverStub.dll /t REG_DWORD /d 0
-        %CTEST_EXE% -C Release --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
+        %CTEST_EXE% -C Release --output-on-failure --parallel %NUMBER_OF_PROCESSORS% -R opencl_icd_loader_test^|cllayerinfo_test
         if errorlevel 1 (
           exit /b %errorlevel%
         )
         %REG% DELETE HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Release/OpenCLDriverStub.dll /f
+        %REG% ADD HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Release/OpenCLDriverStubICD2.dll /t REG_DWORD /d 0
+        %CTEST_EXE% -C Release --output-on-failure --parallel %NUMBER_OF_PROCESSORS% -R opencl_icd_loader_icd2_test^|opencl_icd_loader_icd2_instance_test
+        if errorlevel 1 (
+          exit /b %errorlevel%
+        )
+        %REG% DELETE HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Release/OpenCLDriverStubICD2.dll /f
         %REG% ADD HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Debug/OpenCLDriverStub.dll /t REG_DWORD /d 0
-        %CTEST_EXE% -C Debug --output-on-failure --parallel %NUMBER_OF_PROCESSORS%
+        %CTEST_EXE% -C Debug --output-on-failure --parallel %NUMBER_OF_PROCESSORS% -R opencl_icd_loader_test^|cllayerinfo_test
         if errorlevel 1 (
           exit /b %errorlevel%
         )
         %REG% DELETE HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Debug/OpenCLDriverStub.dll /f
+        %REG% ADD HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Debug/OpenCLDriverStubICD2.dll /t REG_DWORD /d 0
+        %CTEST_EXE% -C Debug --output-on-failure --parallel %NUMBER_OF_PROCESSORS% -R opencl_icd_loader_icd2_test^|opencl_icd_loader_icd2_instance_test
+        if errorlevel 1 (
+          exit /b %errorlevel%
+        )
+        %REG% DELETE HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors /v %GITHUB_WORKSPACE%/build/Debug/OpenCLDriverStubICD2.dll /f
 
     - name: Install
       shell: cmd

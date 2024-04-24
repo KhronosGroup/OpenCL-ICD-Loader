@@ -11,14 +11,31 @@
 static FILE *app_log_file;
 static FILE *stub_log_file;
 
+static const char *test_icd_get_app_log_file_name(void)
+{
+    const char *app_log_file_name = getenv("APP_LOG_FILE");
+    if (!app_log_file_name)
+        app_log_file_name = APP_LOG_FILE;
+    return app_log_file_name;
+}
+
+static const char *test_icd_get_stub_log_file_name(void)
+{
+    const char *stub_log_file_name = getenv("APP_STUB_FILE");
+    if (!stub_log_file_name)
+        stub_log_file_name = STUB_LOG_FILE;
+    return stub_log_file_name;
+}
+
 int test_icd_initialize_app_log(void)
 {
-    app_log_file = fopen(APP_LOG_FILE, "w");
+    const char *app_log_file_name = test_icd_get_app_log_file_name();
+    app_log_file = fopen(app_log_file_name, "w");
     if (!app_log_file) {
-		printf("Unable to open file %s\n", APP_LOG_FILE);
+        printf("Unable to open file %s\n", app_log_file_name);
         return -1;
     }
-    
+
     return 0;
 }
 
@@ -37,12 +54,13 @@ void test_icd_app_log(const char *format, ...)
 
 int test_icd_initialize_stub_log(void)
 {
-   	stub_log_file = fopen(STUB_LOG_FILE, "w");
+    const char *stub_log_file_name = test_icd_get_stub_log_file_name();
+    stub_log_file = fopen(stub_log_file_name, "w");
     if (!stub_log_file) {
-		printf("Unable to open file %s\n", STUB_LOG_FILE);
+        printf("Unable to open file %s\n", stub_log_file_name);
         return -1;
     }
-    
+
     return 0;
 
 }
@@ -94,10 +112,10 @@ static char *test_icd_get_log(const char *filename)
 
 char *test_icd_get_app_log(void)
 {
-    return test_icd_get_log(APP_LOG_FILE);
+    return test_icd_get_log(test_icd_get_app_log_file_name());
 }
 
 char *test_icd_get_stub_log(void)
 {
-    return test_icd_get_log(STUB_LOG_FILE);
+    return test_icd_get_log(test_icd_get_stub_log_file_name());
 }
