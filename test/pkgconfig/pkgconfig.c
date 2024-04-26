@@ -7,6 +7,7 @@
 #include <stdio.h>  // printf
 #include <stdlib.h> // malloc
 #include <stdint.h> // UINTMAX_MAX
+#include <string.h> // strcmp
 
 void checkErr(cl_int err, const char * name)
 {
@@ -21,6 +22,7 @@ int main(void)
 {
     cl_int CL_err = CL_SUCCESS;
     cl_uint numPlatforms = 0;
+    cl_int stub_platform_found = CL_FALSE;
 
     CL_err = clGetPlatformIDs(0, NULL, &numPlatforms);
     checkErr(CL_err, "clGetPlatformIDs(numPlatforms)");
@@ -48,8 +50,20 @@ int main(void)
         checkErr(CL_err, "clGetPlatformInfo(CL_PLATFORM_VENDOR, vendor_length, platform_name)");
 
         printf("%s\n", platform_name);
+
+        if (strcmp(platform_name, "stubvendorxxx") == 0)
+        {
+            stub_platform_found = CL_TRUE;
+        }
+
         fflush(NULL);
         free(platform_name);
+    }
+
+    if (!stub_platform_found)
+    {
+        printf("Did not locate stub platform\n");
+        return -1;
     }
 
     return 0;
