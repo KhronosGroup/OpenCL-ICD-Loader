@@ -18,8 +18,5 @@ inc/CL/
 inc/EGL/
 inc/KHR/
 
-# CMake
-CMakeFiles/
-
 # Visual Studio Code
 .vscode

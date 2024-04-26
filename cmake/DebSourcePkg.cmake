@@ -25,6 +25,8 @@ if(NOT DEFINED DEBIAN_DISTROSERIES)
 endif()
 if(NOT DEFINED ORIG_ARCHIVE)
     message(WARNING "ORIG_ARCHIVE is not set")
+elseif(NOT EXISTS "${ORIG_ARCHIVE}")
+    message(FATAL_ERROR "ORIG_ARCHIVE is defined, but the file does not exist at \"${ORIG_ARCHIVE}\"")
 endif()
 if(NOT DEFINED LATEST_RELEASE_VERSION)
     message(WARNING "LATEST_RELEASE_VERSION is not set")
@@ -43,11 +45,14 @@ set(PROJECT_VERSION "${CMAKE_MATCH_1}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
 # Package.cmake contains all details for packaging
-include(Package)
+include(PackageSetup)
 
+# Append a space after every newline in the description. This format is required
+# in the control file.
 string(REPLACE "\n" "\n " CPACK_DEBIAN_DEV_DESCRIPTION "${CPACK_DEBIAN_DEV_DESCRIPTION}")
 string(REPLACE "\n" "\n " CPACK_DEBIAN_RUNTIME_DESCRIPTION "${CPACK_DEBIAN_RUNTIME_DESCRIPTION}")
 string(REPLACE "\n" "\n " CPACK_DEBIAN_CLLAYERINFO_DESCRIPTION "${CPACK_DEBIAN_CLLAYERINFO_DESCRIPTION}")
+
 set(DEB_SOURCE_PKG_DIR "${CMAKE_CURRENT_LIST_DIR}/../debian")
 # Write debian/control
 file(WRITE "${DEB_SOURCE_PKG_DIR}/control"

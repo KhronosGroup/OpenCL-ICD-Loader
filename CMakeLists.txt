@@ -46,7 +46,7 @@ if(DEFINED BUILD_SHARED_LIBS)
 else()
   set(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT ON)
 endif()
-  option(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS "Build OpenCL ICD Loader as shared library" ${OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT})
+option(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS "Build OpenCL ICD Loader as shared library" ${OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT})
 
 # This option enables/disables support for OpenCL layers in the ICD loader.
 # It is currently needed default while the specification is being formalized,
@@ -239,7 +239,6 @@ install(
 if (ENABLE_OPENCL_LAYERINFO)
   install(
     TARGETS cllayerinfo
-    EXPORT OpenCLICDLoaderTargets
     RUNTIME
       DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT cllayerinfo
