@@ -93,11 +93,9 @@ clGetPlatformIDs(cl_uint           num_entries ,
 }
 
 CL_API_ENTRY cl_int CL_API_CALL
-clGetPlatformInfo(cl_platform_id    platform,
-                  cl_platform_info  param_name,
-                  size_t            param_value_size,
-                  void *            param_value,
-                  size_t *          param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+clGetPlatformInfo(cl_platform_id platform_id, cl_platform_info param_name,
+                  size_t param_value_size, void *param_value,
+                  size_t *param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
 {
     cl_int ret = CL_SUCCESS;
     const char *returnString = NULL;
@@ -116,23 +114,15 @@ clGetPlatformInfo(cl_platform_id    platform,
     }
     // select the string to return
     switch(param_name) {
-        case CL_PLATFORM_PROFILE:
-            returnString = platform->profile;
-            break;
-        case CL_PLATFORM_VERSION:
-            returnString = platform->version;
-            break;
-        case CL_PLATFORM_NAME:
-            returnString = platform->name;
-            break;
-        case CL_PLATFORM_VENDOR:
-            returnString = platform->vendor;
-            break;
+        case CL_PLATFORM_PROFILE: returnString = platform_id->profile; break;
+        case CL_PLATFORM_VERSION: returnString = platform_id->version; break;
+        case CL_PLATFORM_NAME: returnString = platform_id->name; break;
+        case CL_PLATFORM_VENDOR: returnString = platform_id->vendor; break;
         case CL_PLATFORM_EXTENSIONS:
-            returnString = platform->extensions;
+            returnString = platform_id->extensions;
             break;
         case CL_PLATFORM_ICD_SUFFIX_KHR:
-            returnString = platform->suffix;
+            returnString = platform_id->suffix;
             break;
         default:
             ret = CL_INVALID_VALUE;
@@ -162,12 +152,9 @@ done:
 
 
 /* Device APIs */
-CL_API_ENTRY cl_int CL_API_CALL
-clGetDeviceIDs(cl_platform_id   platform,
-               cl_device_type   device_type,
-               cl_uint          num_entries,
-               cl_device_id *   devices,
-               cl_uint *        num_devices) CL_API_SUFFIX__VERSION_1_0
+CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
+    cl_platform_id platform_id, cl_device_type device_type, cl_uint num_entries,
+    cl_device_id *devices, cl_uint *num_devices) CL_API_SUFFIX__VERSION_1_0
 {
     cl_int ret = CL_SUCCESS;
 
@@ -186,12 +173,8 @@ clGetDeviceIDs(cl_platform_id   platform,
     }
 
 done:
-    test_icd_stub_log("clGetDeviceIDs(%p, %x, %u, %p, %p)\n",
-                      platform,
-                      device_type,
-                      num_entries,
-                      devices,
-                      num_devices);
+    test_icd_stub_log("clGetDeviceIDs(%p, %x, %u, %p, %p)\n", platform_id,
+                      device_type, num_entries, devices, num_devices);
     test_icd_stub_log("Value returned: %d\n", ret);
     return ret;
 }
@@ -950,10 +933,10 @@ clLinkProgram(cl_context            context ,
 
 
 CL_API_ENTRY cl_int CL_API_CALL
-clUnloadPlatformCompiler(cl_platform_id  platform) CL_API_SUFFIX__VERSION_1_2
+clUnloadPlatformCompiler(cl_platform_id platform_id) CL_API_SUFFIX__VERSION_1_2
 {
     cl_int return_value = CL_OUT_OF_RESOURCES;
-    test_icd_stub_log("clUnloadPlatformCompiler(%p)\n", platform);
+    test_icd_stub_log("clUnloadPlatformCompiler(%p)\n", platform_id);
     test_icd_stub_log("Value returned: %d\n", return_value);
     return return_value;
 }
@@ -1837,14 +1820,13 @@ clEnqueueNativeKernel(cl_command_queue   command_queue ,
 
 static void extFunc(void) { }
 
-CL_API_ENTRY void * CL_API_CALL
-clGetExtensionFunctionAddressForPlatform(cl_platform_id  platform ,
-                                         const char *    func_name) CL_API_SUFFIX__VERSION_1_2
+CL_API_ENTRY void *CL_API_CALL clGetExtensionFunctionAddressForPlatform(
+    cl_platform_id platform_id,
+    const char *func_name) CL_API_SUFFIX__VERSION_1_2
 {
     void *return_value = (void *)(size_t)&extFunc;
     test_icd_stub_log("clGetExtensionFunctionAddressForPlatform(%p, %p)\n",
-                      platform,
-                      func_name);
+                      platform_id, func_name);
 
     test_icd_stub_log("Value returned: %p\n", return_value);
     return return_value;
