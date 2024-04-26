@@ -3,34 +3,32 @@ name: Release
 on:
   push:
     tags:
-    - "*"
+    - "v*"
 env:
   distroseries: jammy
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
     - name: Add PPA
-      shell: bash
       run: sudo add-apt-repository -y ppa:${{ vars.PPA }}
 
     - name: Install prerequisites
-      shell: bash
       run: sudo apt-get update -qq && sudo apt-get install -y cmake devscripts debhelper-compat=13 opencl-c-headers
 
     - name: Import GPG signing key
-      shell: bash
       run: echo "${{ secrets.DEB_SIGNING_KEY }}" | gpg --import
 
     - name: Download and extract source code
-      shell: bash
       run: |
         wget -O $GITHUB_WORKSPACE/source.orig.tar.gz https://github.com/$GITHUB_REPOSITORY/archive/refs/tags/$GITHUB_REF_NAME.tar.gz
         tar -xvf $GITHUB_WORKSPACE/source.orig.tar.gz
 
     - name: Configure project out-of-tree
-      shell: bash
       run: cmake
         -S $GITHUB_WORKSPACE/OpenCL-ICD-Loader*
         -B $GITHUB_WORKSPACE/../build
@@ -42,7 +40,6 @@ jobs:
         -D DEBIAN_VERSION_SUFFIX=${{ vars.DEB_VERSION_SUFFIX }}
 
     - name: Generate packaging scripts
-      shell: bash
       run: cmake
         -D CMAKE_CACHE_PATH=$GITHUB_WORKSPACE/../build/CMakeCache.txt
         -D ORIG_ARCHIVE=$GITHUB_WORKSPACE/source.orig.tar.gz
@@ -52,26 +49,22 @@ jobs:
         -D DEBIAN_VERSION_SUFFIX=${{ vars.DEB_VERSION_SUFFIX }}
         -P $GITHUB_WORKSPACE/OpenCL-ICD-Loader*/cmake/DebSourcePkg.cmake
 
-    - name: List packaging scripts
-      shell: bash
-      run: cat $GITHUB_WORKSPACE/OpenCL-ICD-Loader*/debian/*
-
     - name: Build source package
-      shell: bash
       run: |
         cd $GITHUB_WORKSPACE/OpenCL-ICD-Loader*/
         debuild -S -sa
 
     - name: Build binary package
-      shell: bash
       run: cpack
         -G DEB
         -C Release
         -B $GITHUB_WORKSPACE/../build
         --config $GITHUB_WORKSPACE/../build/CPackConfig.cmake
 
+    # The following step does not depend on the previous step "Build binary package",
+    # but if the binary package build is unsuccessful, it is better not to push the
+    # source packages to the PPA
     - name: Push source package to the PPA
-      shell: bash
       run: dput ppa:${{ vars.PPA }} $GITHUB_WORKSPACE/*source.changes
 
     - name: Create GitHub release
