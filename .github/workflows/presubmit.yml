@@ -561,7 +561,8 @@ jobs:
         C_COMPILER:
         - /usr/bin/clang
         - gcc-11
-        - gcc-13
+        # Disabled due to problems with the __API_AVAILABLE macro
+        # - gcc-13
         GEN:
         - Xcode
         - Ninja Multi-Config
