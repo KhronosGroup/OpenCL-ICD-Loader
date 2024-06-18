@@ -514,7 +514,7 @@ int test_clFinish(const struct clFinish_st* data)
     return 0;
 }
 
-int test_kernel()
+int test_kernel(void)
 {
     int i;
 

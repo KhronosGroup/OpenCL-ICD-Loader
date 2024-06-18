@@ -1,0 +1,723 @@
+name: Presubmit
+
+on:
+  push:
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      matrix:
+        CMAKE: [3.26.4]
+        C_COMPILER:
+          - gcc-11
+          - gcc-13
+          - clang-14
+          - clang-16
+        BIN: [64]
+        CONF:
+          - GEN: Unix Makefiles
+            CONFIG: Debug
+          - GEN: Unix Makefiles
+            CONFIG: Release
+          - GEN: Ninja Multi-Config
+            CONFIG: Release
+        IMAGE:
+          - khronosgroup/docker-images:opencl-sdk-intelcpu-ubuntu-22.04.20230717
+        include:
+          - CMAKE: system
+            C_COMPILER: gcc-9
+            BIN: 64
+            CONF:
+              GEN: Unix Makefiles
+              CONFIG: Debug
+            IMAGE: khronosgroup/docker-images:opencl-sdk-intelcpu-ubuntu-20.04.20230717
+          - CMAKE: system
+            C_COMPILER: gcc-9
+            BIN: 64
+            CONF:
+              GEN: Unix Makefiles
+              CONFIG: Release
+            IMAGE: khronosgroup/docker-images:opencl-sdk-intelcpu-ubuntu-20.04.20230717
+          - CMAKE: system
+            C_COMPILER: gcc-9
+            BIN: 32
+            CONF:
+              GEN: Unix Makefiles
+              CONFIG: Debug
+            IMAGE: khronosgroup/docker-images:opencl-sdk-intelcpu-ubuntu-20.04.20230717
+          - CMAKE: system
+            C_COMPILER: gcc-9
+            BIN: 32
+            CONF:
+              GEN: Unix Makefiles
+              CONFIG: Release
+            IMAGE: khronosgroup/docker-images:opencl-sdk-intelcpu-ubuntu-20.04.20230717
+    container: ${{matrix.IMAGE}}
+    env:
+      CMAKE_EXE: /opt/Kitware/CMake/${{ matrix.CMAKE }}/bin/cmake
+      CPACK_EXE: /opt/Kitware/CMake/${{ matrix.CMAKE }}/bin/cpack
+      CTEST_EXE: /opt/Kitware/CMake/${{ matrix.CMAKE }}/bin/ctest
+      CC: ${{matrix.C_COMPILER}}
+      CFLAGS: -Wall -Wextra -Werror -pedantic -m${{matrix.BIN}}
+      DEB_INSTALLATION_PATH: /usr
+
+    steps:
+    - name: Install system CMake
+      if: ${{matrix.CMAKE}} == 'system'
+      run: apt-get update -qq && apt-get install -y cmake &&
+        echo "CMAKE_EXE=cmake" >> "$GITHUB_ENV" &&
+        echo "CPACK_EXE=cpack" >> "$GITHUB_ENV" &&
+        echo "CTEST_EXE=ctest" >> "$GITHUB_ENV"
+
+    - name: Checkout OpenCL-ICD-Loader
+      uses: actions/checkout@v4
+
+    - name: Checkout OpenCL-Headers
+      uses: actions/checkout@v4
+      with:
+        path: external/OpenCL-Headers
+        repository: KhronosGroup/OpenCL-Headers
+
+    - name: Configure, install & package OpenCL-Headers
+      run: $CMAKE_EXE
+        -G "${{matrix.CONF.GEN}}"
+        `if [[ "${{matrix.CONF.GEN}}" == "Unix Makefiles" ]]; then echo "-D CMAKE_BUILD_TYPE=${{matrix.CONF.CONFIG}}"; fi`
+        -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
+        -D CPACK_PACKAGING_INSTALL_PREFIX=$DEB_INSTALLATION_PATH
+        -D BUILD_TESTING=OFF
+        -S $GITHUB_WORKSPACE/external/OpenCL-Headers
+        -B $GITHUB_WORKSPACE/external/OpenCL-Headers/build &&
+        $CMAKE_EXE
+        --build $GITHUB_WORKSPACE/external/OpenCL-Headers/build
+        --target install
+        --parallel `nproc` &&
+        $CPACK_EXE
+        --config "$GITHUB_WORKSPACE/external/OpenCL-Headers/build/CPackConfig.cmake"
+        -G DEB
+        -C ${{matrix.CONF.CONFIG}}
+        -B "$GITHUB_WORKSPACE/external/OpenCL-Headers/package-deb"
+
+    - name: Configure
+      run: $CMAKE_EXE
+        -G "${{matrix.CONF.GEN}}"
+        `if [[ "${{matrix.CONF.GEN}}" == "Unix Makefiles" ]]; then echo "-D CMAKE_BUILD_TYPE=${{matrix.CONF.CONFIG}}"; fi`
+        -D BUILD_TESTING=ON
+        -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/install
+        -D CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
+        -D CPACK_PACKAGING_INSTALL_PREFIX=$DEB_INSTALLATION_PATH
+        -S $GITHUB_WORKSPACE
+        -B $GITHUB_WORKSPACE/build
+
+    - name: Build
+      run: if [[ "${{matrix.CONF.GEN}}" == "Unix Makefiles" ]];
+        then
+          $CMAKE_EXE --build $GITHUB_WORKSPACE/build --config ${{matrix.CONF.CONFIG}} --parallel `nproc`;
+        else
+          $CMAKE_EXE --build $GITHUB_WORKSPACE/build --config Debug;
+          $CMAKE_EXE --build $GITHUB_WORKSPACE/build --config Release;
+        fi
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
+      run: if [[ "${{matrix.CONF.GEN}}" == "Unix Makefiles" ]];
+        then
+          $CTEST_EXE --output-on-failure --no-tests=error --parallel `nproc`;
+        else
+          $CTEST_EXE --output-on-failure --no-tests=error -C Debug   --parallel `nproc`;
+          $CTEST_EXE --output-on-failure --no-tests=error -C Release --parallel `nproc`;
+        fi
+
+    - name: Package DEB
+      run: $CPACK_EXE
+        --config "$GITHUB_WORKSPACE/build/CPackConfig.cmake"
+        -G DEB
+        -C ${{matrix.CONF.CONFIG}}
+        -B "$GITHUB_WORKSPACE/package-deb"
+
+    - name: Consume (DEB)
+      run: dpkg -i $GITHUB_WORKSPACE/external/OpenCL-Headers/package-deb/*.deb &&
+        dpkg -i $GITHUB_WORKSPACE/package-deb/*.deb &&
+        $CMAKE_EXE
+        -G "${{matrix.CONF.GEN}}"
+        `if [[ "${{matrix.CONF.GEN}}" == "Unix Makefiles" ]]; then echo "-D CMAKE_BUILD_TYPE=${{matrix.CONF.CONFIG}}"; fi`
+        -D DRIVER_STUB_PATH=$GITHUB_WORKSPACE/build/`if [[ "${{matrix.CONF.GEN}}" == "Unix Makefiles" ]]; then echo "libOpenCLDriverStub.so"; else echo "${{ matrix.CONF.CONFIG }}/libOpenCLDriverStub.so"; fi`
+        -S $GITHUB_WORKSPACE/test/pkgconfig/bare
+        -B $GITHUB_WORKSPACE/build_package &&
+        if [[ "${{matrix.CONF.GEN}}" == "Unix Makefiles" ]];
+        then
+          $CMAKE_EXE --build $GITHUB_WORKSPACE/build_package --config ${{matrix.CONF.CONFIG}} --parallel `nproc`;
+        else
+          $CMAKE_EXE --build $GITHUB_WORKSPACE/build_package --config Debug;
+          $CMAKE_EXE --build $GITHUB_WORKSPACE/build_package --config Release;
+        fi
+
+    - name: Run consume test (DEB)
+      if: matrix.BIN != 32
+      working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build_package
+      run: if [[ "${{matrix.CONF.GEN}}" == "Unix Makefiles" ]];
+        then
+          $CTEST_EXE -C ${{matrix.CONF.CONFIG}} --output-on-failure --no-tests=error --parallel `nproc`;
+        else
+          $CTEST_EXE -C Debug --output-on-failure --no-tests=error --parallel `nproc`;
+          $CTEST_EXE -C Release --output-on-failure --no-tests=error --parallel `nproc`;
+        fi
+
+    - name: Test pkg-config (DEB)
+      # We expect no pre-processor and compile flags (--cflags) but we do expect link flags (--libs)
+      run: if [[ $(pkg-config OpenCL --cflags) ]];
+        then
+          exit 1;
+        fi &&
+        pkg-config OpenCL --libs | grep -q "\-lOpenCL"
+
+    - name: Test cllayerinfo (DEB)
+      run: cllayerinfo
+
+    - name: Uninstall (DEB)
+      run: apt-get remove -y "khronos-opencl-loader*" opencl-c-headers
+
+    - name: Test install
+      run: $CMAKE_EXE --build $GITHUB_WORKSPACE/build --target install --config ${{matrix.CONF.CONFIG}} --parallel `nproc`
+
+    - name: Consume (install)
+      run: $CMAKE_EXE
+        -G "${{matrix.CONF.GEN}}"
+        `if [[ "${{matrix.CONF.GEN}}" == "Unix Makefiles" ]]; then echo "-D CMAKE_BUILD_TYPE=${{matrix.CONF.CONFIG}}"; fi`
+        -D CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/install;$GITHUB_WORKSPACE/external/OpenCL-Headers/install"
+        -D DRIVER_STUB_PATH=$GITHUB_WORKSPACE/build/`if [[ "${{matrix.CONF.GEN}}" == "Unix Makefiles" ]]; then echo "libOpenCLDriverStub.so"; else echo "${{ matrix.CONF.CONFIG }}/libOpenCLDriverStub.so"; fi`
+        -S $GITHUB_WORKSPACE/test/pkgconfig/bare
+        -B $GITHUB_WORKSPACE/build_install &&
+        if [[ "${{matrix.CONF.GEN}}" == "Unix Makefiles" ]];
+        then
+          $CMAKE_EXE --build $GITHUB_WORKSPACE/build_install --parallel `nproc`;
+        else
+          $CMAKE_EXE --build $GITHUB_WORKSPACE/build_install --config Debug;
+          $CMAKE_EXE --build $GITHUB_WORKSPACE/build_install --config Release;
+        fi
+
+    - name: Run consume test (install)
+      if: matrix.BIN != 32
+      working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build_install
+      run: if [[ "${{matrix.CONF.GEN}}" == "Unix Makefiles" ]];
+        then
+          $CTEST_EXE -C ${{matrix.CONF.CONFIG}} --output-on-failure --no-tests=error --parallel `nproc`;
+        else
+          $CTEST_EXE -C Debug --output-on-failure --no-tests=error --parallel `nproc`;
+          $CTEST_EXE -C Release --output-on-failure --no-tests=error --parallel `nproc`;
+        fi
+
+    - name: Test pkg-config (install)
+      # We expect no pre-processor and compile flags (--cflags) but we do expect link flags (--libs)
+      run: export PKG_CONFIG_PATH="$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/share/pkgconfig" &&
+        pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/external/OpenCL-Headers/install/include" &&
+        pkg-config OpenCL --libs | grep -q "\-L$GITHUB_WORKSPACE/install/lib \-lOpenCL"
+
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    strategy:
+      matrix:
+        VER: [v142, v143, clangcl]
+        GEN: [Visual Studio 17 2022, Ninja Multi-Config]
+        BIN: [x64]
+        exclude:
+        - VER: clangcl
+          GEN: Ninja Multi-Config
+        include:
+        - VER: v142
+          GEN: Visual Studio 17 2022
+          BIN: x86
+    env:
+      NINJA_URL: https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-win.zip
+      NINJA_ROOT: C:\Tools\Ninja
+      VS_ROOT: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise'
+      UseMultiToolTask: true # Better parallel MSBuild execution
+      EnforceProcessCountAcrossBuilds: 'true'
+      MultiProcMaxCount: '3'
+      # C4152: nonstandard extension, function/data pointer conversion in expression
+      # C4201: nonstandard extension used: nameless struct/union
+      # C4310: cast truncates constant value
+      CFLAGS: /W4 /WX /wd4152 /wd4201 /wd4310
+
+    steps:
+    - name: Cache Ninja install
+      if: matrix.GEN == 'Ninja Multi-Config'
+      id: ninja-install
+      uses: actions/cache@v4
+      with:
+        path: |
+          C:\Tools\Ninja
+        key: ${{runner.os}}-ninja-${{env.NINJA_URL}}
+
+    - name: Install Ninja
+      if: matrix.GEN == 'Ninja Multi-Config' && steps.ninja-install.outputs.cache-hit != 'true'
+      run: |
+        Invoke-WebRequest ${env:NINJA_URL} -OutFile ~\Downloads\ninja-win.zip
+        Expand-Archive ~\Downloads\ninja-win.zip -DestinationPath ${env:NINJA_ROOT}\
+        Remove-Item ~\Downloads\*
+
+    - name: Checkout OpenCL-ICD-Loader
+      uses: actions/checkout@v4
+
+    - name: Checkout OpenCL-Headers
+      uses: actions/checkout@v4
+      with:
+        repository: KhronosGroup/OpenCL-Headers
+        path: external/OpenCL-Headers
+
+    - name: Build & install OpenCL-Headers (MSBuild)
+      if: matrix.GEN == 'Visual Studio 17 2022'
+      run: |
+        $BIN = if('${{matrix.BIN}}' -eq 'x86') {'Win32'} else {'x64'}
+        & cmake `
+          -G "${{matrix.GEN}}" `
+          -A $BIN `
+          -T ${{matrix.VER}} `
+          -D BUILD_TESTING=OFF `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_INSTALL_PREFIX=${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install `
+          -S ${env:GITHUB_WORKSPACE}\external\OpenCL-Headers `
+          -B ${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\build
+        if ($LASTEXITCODE -ne 0) { throw "Configuring OpenCL-Headers failed." }
+        & cmake `
+          --build "${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\build" `
+          --target install `
+          -- `
+          /verbosity:minimal `
+          /maxCpuCount `
+          /noLogo
+        if ($LASTEXITCODE -ne 0) { throw "Building OpenCL-Headers failed." }
+
+    - name: Build & install OpenCL-Headers (Ninja Multi-Config)
+      if: matrix.GEN == 'Ninja Multi-Config'
+      run: |
+        $VER = switch ('${{matrix.VER}}') { `
+          'v142' {'14.2'} `
+          'v143' {'14.4'} }
+        Import-Module "${env:VS_ROOT}\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+        Enter-VsDevShell -VsInstallPath ${env:VS_ROOT} -SkipAutomaticLocation -DevCmdArguments "-host_arch=x64 -arch=${{matrix.BIN}} -vcvars_ver=$VER"
+        & cmake `
+          -G "${{matrix.GEN}}" `
+          -D CMAKE_MAKE_PROGRAM="${env:NINJA_ROOT}\ninja.exe"  `
+          -D BUILD_TESTING=OFF `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_INSTALL_PREFIX=${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install `
+          -S ${env:GITHUB_WORKSPACE}\external\OpenCL-Headers `
+          -B ${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\build
+        if ($LASTEXITCODE -ne 0) { throw "Configuring OpenCL-Headers failed." }
+        & cmake `
+          --build "${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\build" `
+          --target install `
+          -- `
+          -j ${env:NUMBER_OF_PROCESSORS}
+        if ($LASTEXITCODE -ne 0) { throw "Building OpenCL-Headers failed." }
+
+    - name: Configure (MSBuild)
+      if: matrix.GEN == 'Visual Studio 17 2022'
+      run: |
+        $BIN = if('${{matrix.BIN}}' -eq 'x86') {'Win32'} else {'x64'}
+        & cmake `
+          -G "${{matrix.GEN}}" `
+          -A $BIN `
+          -T ${{matrix.VER}} `
+          -D BUILD_TESTING=ON `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_INSTALL_PREFIX=${env:GITHUB_WORKSPACE}\install `
+          -D CMAKE_PREFIX_PATH=${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install `
+          -S ${env:GITHUB_WORKSPACE} `
+          -B ${env:GITHUB_WORKSPACE}\build
+        if ($LASTEXITCODE -ne 0) { throw "Configuring OpenCL-ICD-Loader failed." }
+
+    - name: Configure (Ninja Multi-Config)
+      if: matrix.GEN == 'Ninja Multi-Config'
+      run: |
+        $VER = switch ('${{matrix.VER}}') { `
+          'v142' {'14.2'} `
+          'v143' {'14.4'} }
+        Import-Module "${env:VS_ROOT}\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+        Enter-VsDevShell -VsInstallPath ${env:VS_ROOT} -SkipAutomaticLocation -DevCmdArguments "-host_arch=x64 -arch=${{matrix.BIN}} -vcvars_ver=$VER"
+        & cmake `
+          -G "${{matrix.GEN}}" `
+          -D CMAKE_MAKE_PROGRAM="${env:NINJA_ROOT}\ninja.exe" `
+          -D BUILD_TESTING=ON `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
+          -D CMAKE_INSTALL_PREFIX=${env:GITHUB_WORKSPACE}\install `
+          -D CMAKE_PREFIX_PATH=${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install `
+          -S ${env:GITHUB_WORKSPACE} `
+          -B ${env:GITHUB_WORKSPACE}\build
+        if ($LASTEXITCODE -ne 0) { throw "Configuring OpenCL-ICD-Loader failed." }
+
+    - name: Build (MSBuild)
+      if: matrix.GEN == 'Visual Studio 17 2022'
+      run: |
+        foreach ($Config in 'Release','Debug') {
+          & cmake `
+            --build "${env:GITHUB_WORKSPACE}\build" `
+            --config $Config `
+            -- `
+            /verbosity:minimal `
+            /maxCpuCount `
+            /noLogo
+          if ($LASTEXITCODE -ne 0) { throw "Building OpenCL-ICD-Loader in $Config failed." }
+        }
+
+    - name: Build (Ninja Multi-Config)
+      if: matrix.GEN == 'Ninja Multi-Config'
+      run: |
+        $VER = switch ('${{matrix.VER}}') { `
+          'v142' {'14.2'} `
+          'v143' {'14.4'} }
+        Import-Module "${env:VS_ROOT}\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+        Enter-VsDevShell -VsInstallPath ${env:VS_ROOT} -SkipAutomaticLocation -DevCmdArguments "-host_arch=x64 -arch=${{matrix.BIN}} -vcvars_ver=$VER"
+        foreach ($Config in 'Release','Debug') {
+          & cmake `
+            --build "${env:GITHUB_WORKSPACE}\build" `
+            --config $Config `
+            -- `
+            -j ${env:NUMBER_OF_PROCESSORS}
+          if ($LASTEXITCODE -ne 0) { throw "Building OpenCL-ICD-Loader in $Config failed." }
+        }
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
+      run: |
+        $REG = if('${{matrix.BIN}}' -eq 'x64') {"reg"} else {"${env:SystemRoot}\Syswow64\reg.exe"}
+        $KEY_NAME = "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors"
+        foreach ($Config in 'Release','Debug') {
+          $VALUE_NAME = "${env:GITHUB_WORKSPACE}/build/$Config/OpenCLDriverStub.dll"
+          & $REG ADD $KEY_NAME /v $VALUE_NAME /t REG_DWORD /d 0
+          & ctest -C $Config --output-on-failure --no-tests=error --parallel ${env:NUMBER_OF_PROCESSORS}
+          if ($LASTEXITCODE -ne 0) { throw "Testing OpenCL-ICD-Loader in $Config failed." }
+          & $REG DELETE $KEY_NAME /v $VALUE_NAME /f
+        }
+
+    - name: Install
+      run: |
+        & cmake `
+          --build "${env:GITHUB_WORKSPACE}\build" `
+          --config Release `
+          --target install
+        if ($LASTEXITCODE -ne 0) { throw "Installing OpenCL-ICD-Loader failed." }
+
+    - name: "Consume (MSBuild standalone): Configure/Build/Test"
+      if: matrix.GEN == 'Visual Studio 17 2022'
+      run: |
+        $BIN = if('${{matrix.BIN}}' -eq 'x86') {'Win32'} else {'x64'}
+        & cmake `
+          -G '${{matrix.GEN}}' `
+          -A $BIN `
+          -T ${{matrix.VER}} `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
+          -D CMAKE_PREFIX_PATH="${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install;${env:GITHUB_WORKSPACE}\install" `
+          -D DRIVER_STUB_PATH="${env:GITHUB_WORKSPACE}\build\Release\OpenCLDriverStub.dll" `
+          -S "${env:GITHUB_WORKSPACE}\test\pkgconfig\bare" `
+          -B "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\bare"
+        if ($LASTEXITCODE -ne 0) { throw "Configuring OpenCL-ICD-Loader standalone consume test failed." }
+        $REG = if('${{matrix.BIN}}' -eq 'x64') {"reg"} else {"${env:SystemRoot}\Syswow64\reg.exe"}
+        $KEY_NAME = "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors"
+        $VALUE_NAME = "${env:GITHUB_WORKSPACE}/build/Release/OpenCLDriverStub.dll"
+        & $REG ADD $KEY_NAME /v $VALUE_NAME /t REG_DWORD /d 0
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+        foreach ($Config in 'Release','Debug') {
+          & cmake `
+            --build "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\bare" `
+            --config $Config
+          if ($LASTEXITCODE -ne 0) { throw "Building OpenCL-ICD-Loader standalone consume test in $Config failed." }
+          & cd ${env:GITHUB_WORKSPACE}\downstream\pkgconfig\bare
+          & ctest --output-on-failure --no-tests=error -C $Config
+          if ($LASTEXITCODE -ne 0) { throw "Running OpenCL-ICD-Loader standalone consume test in $Config failed." }
+        }
+        & $REG DELETE $KEY_NAME /v $VALUE_NAME /f
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+
+    - name: "Consume (Ninja-Multi-Config standalone): Configure/Build/Test"
+      if: matrix.GEN == 'Ninja Multi-Config'
+      run: |
+        $VER = switch ('${{matrix.VER}}') { `
+          'v142' {'14.2'} `
+          'v143' {'14.4'} }
+        Import-Module "${env:VS_ROOT}\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+        Enter-VsDevShell -VsInstallPath ${env:VS_ROOT} -SkipAutomaticLocation -DevCmdArguments "-host_arch=x64 -arch=${{matrix.BIN}} -vcvars_ver=$VER"
+        & cmake `
+          -G '${{matrix.GEN}}' `
+          -D CMAKE_MAKE_PROGRAM="${env:NINJA_ROOT}\ninja.exe" `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
+          -D CMAKE_PREFIX_PATH="${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install;${env:GITHUB_WORKSPACE}\install" `
+          -D DRIVER_STUB_PATH="${env:GITHUB_WORKSPACE}\build\Release\OpenCLDriverStub.dll" `
+          -S "${env:GITHUB_WORKSPACE}\test\pkgconfig\bare" `
+          -B "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\bare"
+        if ($LASTEXITCODE -ne 0) { throw "Configuring OpenCL-ICD-Loader standalone consume test failed." }
+        $REG = if('${{matrix.BIN}}' -eq 'x64') {"reg"} else {"${env:SystemRoot}\Syswow64\reg.exe"}
+        $KEY_NAME = "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors"
+        $VALUE_NAME = "${env:GITHUB_WORKSPACE}/build/Release/OpenCLDriverStub.dll"
+        & $REG ADD $KEY_NAME /v $VALUE_NAME /t REG_DWORD /d 0
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+        foreach ($Config in 'Release','Debug') {
+          & cmake `
+            --build "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\bare" `
+            --config $Config
+          if ($LASTEXITCODE -ne 0) { throw "Building OpenCL-ICD-Loader standalone consume test in $Config failed." }
+          & cd ${env:GITHUB_WORKSPACE}\downstream\pkgconfig\bare
+          & ctest --output-on-failure --no-tests=error -C $Config
+          if ($LASTEXITCODE -ne 0) { throw "Running OpenCL-ICD-Loader standalone consume test in $Config failed." }
+        }
+        & $REG DELETE $KEY_NAME /v $VALUE_NAME /f
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+
+    - name: Consume (Emulate SDK presence)
+      run: |
+        New-Item -Type Directory -Path ${env:GITHUB_WORKSPACE}\install\share\cmake\OpenCL
+        $workspace = ${env:GITHUB_WORKSPACE}.replace("\", "/")
+        New-Item -Type File -Path ${env:GITHUB_WORKSPACE}\install\share\cmake\OpenCL\OpenCLConfig.cmake -Value "include(`"$workspace/external/OpenCL-Headers/install/share/cmake/OpenCLHeaders/OpenCLHeadersTargets.cmake`")`r`ninclude(`"`${CMAKE_CURRENT_LIST_DIR}/../OpenCLICDLoader/OpenCLICDLoaderTargets.cmake`")"
+
+    - name: "Consume (MSBuild SDK): Configure/Build/Test"
+      if: matrix.GEN == 'Visual Studio 17 2022'
+      run: |
+        $BIN = if('${{matrix.BIN}}' -eq 'x86') {'Win32'} else {'x64'}
+        & cmake `
+          -G '${{matrix.GEN}}' `
+          -A $BIN `
+          -T ${{matrix.VER}} `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
+          -D CMAKE_PREFIX_PATH="${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install;${env:GITHUB_WORKSPACE}\install" `
+          -D DRIVER_STUB_PATH="${env:GITHUB_WORKSPACE}\build\Release\OpenCLDriverStub.dll" `
+          -S "${env:GITHUB_WORKSPACE}\test\pkgconfig\sdk" `
+          -B "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\sdk"
+        if ($LASTEXITCODE -ne 0) { throw "Configuring OpenCL-ICD-Loader in-SDK consume test failed." }
+        $REG = if('${{matrix.BIN}}' -eq 'x64') {"reg"} else {"${env:SystemRoot}\Syswow64\reg.exe"}
+        $KEY_NAME = "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors"
+        $VALUE_NAME = "${env:GITHUB_WORKSPACE}/build/Release/OpenCLDriverStub.dll"
+        & $REG ADD $KEY_NAME /v $VALUE_NAME /t REG_DWORD /d 0
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+        foreach ($Config in 'Release','Debug') {
+          & cmake `
+            --build "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\sdk" `
+            --config $Config
+          if ($LASTEXITCODE -ne 0) { throw "Building OpenCL-ICD-Loader in-SDK consume test in $Config failed." }
+          & cd ${env:GITHUB_WORKSPACE}\downstream\pkgconfig\sdk
+          & ctest --output-on-failure --no-tests=error -C $Config
+          if ($LASTEXITCODE -ne 0) { throw "Running OpenCL-ICD-Loader in-SDK consume test in $Config failed." }
+        }
+        & $REG DELETE $KEY_NAME /v $VALUE_NAME /f
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+
+    - name: "Consume (Ninja-Multi-Config SDK): Configure/Build/Test"
+      if: matrix.GEN == 'Ninja Multi-Config'
+      run: |
+        $VER = switch ('${{matrix.VER}}') { `
+          'v142' {'14.2'} `
+          'v143' {'14.4'} }
+        Import-Module "${env:VS_ROOT}\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+        Enter-VsDevShell -VsInstallPath ${env:VS_ROOT} -SkipAutomaticLocation -DevCmdArguments "-host_arch=x64 -arch=${{matrix.BIN}} -vcvars_ver=$VER"
+        & cmake `
+          -G '${{matrix.GEN}}' `
+          -D CMAKE_MAKE_PROGRAM="${env:NINJA_ROOT}\ninja.exe" `
+          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
+          -D CMAKE_PREFIX_PATH="${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install;${env:GITHUB_WORKSPACE}\install" `
+          -D DRIVER_STUB_PATH="${env:GITHUB_WORKSPACE}\build\Release\OpenCLDriverStub.dll" `
+          -S "${env:GITHUB_WORKSPACE}\test\pkgconfig\sdk" `
+          -B "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\sdk"
+        if ($LASTEXITCODE -ne 0) { throw "Configuring OpenCL-ICD-Loader in-SDK consume test failed." }
+        $REG = if('${{matrix.BIN}}' -eq 'x64') {"reg"} else {"${env:SystemRoot}\Syswow64\reg.exe"}
+        $KEY_NAME = "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors"
+        $VALUE_NAME = "${env:GITHUB_WORKSPACE}/build/Release/OpenCLDriverStub.dll"
+        & $REG ADD $KEY_NAME /v $VALUE_NAME /t REG_DWORD /d 0
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+        foreach ($Config in 'Release','Debug') {
+          & cmake `
+            --build "${env:GITHUB_WORKSPACE}\downstream\pkgconfig\sdk" `
+            --config $Config
+          if ($LASTEXITCODE -ne 0) { throw "Building OpenCL-ICD-Loader in-SDK consume test in $Config failed." }
+          & cd ${env:GITHUB_WORKSPACE}\downstream\pkgconfig\sdk
+          & ctest --output-on-failure --no-tests=error -C $Config
+          if ($LASTEXITCODE -ne 0) { throw "Running OpenCL-ICD-Loader in-SDK consume test in $Config failed." }
+        }
+        & $REG DELETE $KEY_NAME /v $VALUE_NAME /f
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+
+  macos:
+    runs-on: macos-latest
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      matrix:
+        C_COMPILER:
+        - /usr/bin/clang
+        - gcc-11
+        # Disabled due to problems with the __API_AVAILABLE macro
+        # - gcc-13
+        GEN:
+        - Xcode
+        - Ninja Multi-Config
+        exclude:
+        # These entries are excluded, since XCode selects its own compiler
+        - C_COMPILER: gcc-11
+          GEN: Xcode
+        - C_COMPILER: gcc-13
+          GEN: Xcode
+    env:
+      CFLAGS: -Wall -Wextra -pedantic -Werror
+      CC: ${{ matrix.C_COMPILER }}
+
+    steps:
+    - name: Checkout OpenCL-ICD-Loader
+      uses: actions/checkout@v4
+
+    - name: Checkout OpenCL-Headers
+      uses: actions/checkout@v4
+      with:
+        repository: KhronosGroup/OpenCL-Headers
+        path: external/OpenCL-Headers
+
+    - name: Create Build Environment
+      run: |
+        # Install Ninja only if it's the selected generator and it's not available.
+        if [[ "${{matrix.GEN}}" == "Ninja Multi-Config" && ! `which ninja` ]]; then brew install ninja; fi &&
+        if [[ ! `which pkg-config` ]]; then brew install pkg-config; fi &&
+        cmake --version
+
+    - name: Build & install OpenCL-Headers
+      run: cmake
+        -G "${{matrix.GEN}}"
+        -D BUILD_TESTING=OFF
+        -D CMAKE_C_EXTENSIONS=OFF
+        -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
+        -S $GITHUB_WORKSPACE/external/OpenCL-Headers
+        -B $GITHUB_WORKSPACE/external/OpenCL-Headers/build &&
+        cmake
+        --build $GITHUB_WORKSPACE/external/OpenCL-Headers/build
+        --target install
+        --config Release
+        --parallel `sysctl -n hw.logicalcpu`
+
+    - name: Configure
+      run: cmake
+        -G "${{matrix.GEN}}"
+        -D BUILD_TESTING=ON
+        -D CMAKE_C_EXTENSIONS=OFF
+        -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/install
+        -D CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
+        -S $GITHUB_WORKSPACE
+        -B $GITHUB_WORKSPACE/build
+
+    - name: Build
+      run: |
+        cmake --build $GITHUB_WORKSPACE/build --config Release --parallel `sysctl -n hw.logicalcpu`
+        cmake --build $GITHUB_WORKSPACE/build --config Debug --parallel `sysctl -n hw.logicalcpu`
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/OpenCL-ICD-Loader/build
+      run: |
+        ctest -C Release --output-on-failure --no-tests=error --parallel `sysctl -n hw.logicalcpu`
+        ctest -C Debug --output-on-failure --no-tests=error --parallel `sysctl -n hw.logicalcpu`
+
+    - name: Test install
+      run: |
+        cmake --build $GITHUB_WORKSPACE/build --config Release --target install
+
+    - name: Consume (install)
+      run: cmake
+        -G "${{matrix.GEN}}"
+        -D CMAKE_C_EXTENSIONS=OFF
+        -D CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/external/OpenCL-Headers/install;$GITHUB_WORKSPACE/install"
+        -S $GITHUB_WORKSPACE/test/pkgconfig/bare
+        -B $GITHUB_WORKSPACE/build_install &&
+        cmake --build $GITHUB_WORKSPACE/build_install --config Release --parallel `sysctl -n hw.logicalcpu` &&
+        cmake --build $GITHUB_WORKSPACE/build_install --config Debug --parallel `sysctl -n hw.logicalcpu`
+
+    - name: Test pkg-config
+      run: |
+        export PKG_CONFIG_PATH=$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/share/pkgconfig &&
+        pkg-config OpenCL --cflags | grep -q "\-I$GITHUB_WORKSPACE/external/OpenCL-Headers/install/include" &&
+        pkg-config OpenCL --libs | grep -q "\-L$GITHUB_WORKSPACE/install/lib -lOpenCL"
+
+    - name: Consume pkg-config
+      run: export PKG_CONFIG_PATH=$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/share/pkgconfig &&
+        cmake
+        -G "${{matrix.GEN}}"
+        -D CMAKE_C_EXTENSIONS=OFF
+        -D CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/external/OpenCL-Headers/install"
+        -D DRIVER_STUB_PATH=$GITHUB_WORKSPACE/build/Release/libOpenCLDriverStub.dylib
+        -B $GITHUB_WORKSPACE/build/downstream/pkgconfig
+        -S $GITHUB_WORKSPACE/test/pkgconfig/pkgconfig &&
+        cmake --build $GITHUB_WORKSPACE/build/downstream/pkgconfig --config Release --parallel `sysctl -n hw.logicalcpu` &&
+        cmake --build $GITHUB_WORKSPACE/build/downstream/pkgconfig --config Debug --parallel `sysctl -n hw.logicalcpu` &&
+        cd $GITHUB_WORKSPACE/build/downstream/pkgconfig &&
+        ctest -C Release --output-on-failure --no-tests=error --parallel `sysctl -n hw.logicalcpu` &&
+        ctest -C Debug --output-on-failure --no-tests=error --parallel `sysctl -n hw.logicalcpu`
+
+  android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      matrix:
+        ABI:
+        - arm64-v8a
+        - x86_64
+        API_LEVEL:
+        - android-19
+        - android-33
+        CONFIG:
+        - Debug
+        - Release
+    env:
+      CFLAGS: -Wall -Wextra -pedantic -Werror
+    steps:
+    - name: Checkout OpenCL-ICD-Loader
+      uses: actions/checkout@v4
+
+    - name: Checkout OpenCL-Headers
+      uses: actions/checkout@v4
+      with:
+        repository: KhronosGroup/OpenCL-Headers
+        path: external/OpenCL-Headers
+
+    - name: Configure & install OpenCL-Headers
+      run: cmake
+        -G "Unix Makefiles"
+        -D CMAKE_BUILD_TYPE=${{matrix.CONFIG}}
+        -D CMAKE_C_EXTENSIONS=OFF
+        -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
+        -D BUILD_TESTING=OFF
+        -S $GITHUB_WORKSPACE/external/OpenCL-Headers
+        -B $GITHUB_WORKSPACE/external/OpenCL-Headers/build &&
+        cmake
+        --build $GITHUB_WORKSPACE/external/OpenCL-Headers/build
+        --target install
+        --
+        -j`nproc`
+
+    - name: Configure
+      run: cmake
+        -G "Unix Makefiles"
+        -D BUILD_TESTING=ON
+        -D CMAKE_BUILD_TYPE=${{matrix.CONFIG}}
+        -D CMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake
+        -D ANDROID_ABI=${{matrix.ABI}}
+        -D ANDROID_PLATFORM=${{matrix.API_LEVEL}}
+        -D CMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY
+        -D CMAKE_FIND_ROOT_PATH=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
+        -S $GITHUB_WORKSPACE
+        -B $GITHUB_WORKSPACE/build
+
+    - name: Build
+      run: cmake --build $GITHUB_WORKSPACE/build --parallel `nproc`

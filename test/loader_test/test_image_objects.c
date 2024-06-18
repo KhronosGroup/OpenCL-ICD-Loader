@@ -333,7 +333,7 @@ int test_clGetImageInfo(const struct clGetImageInfo_st *data)
 
 }
 
-int test_image_objects()
+int test_image_objects(void)
 {
     int i;
 
