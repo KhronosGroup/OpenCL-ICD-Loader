@@ -560,7 +560,9 @@ jobs:
       matrix:
         C_COMPILER:
         - /usr/bin/clang
-        - gcc-11
+        # Disabled due to problems with __has_cpp_attribute
+        # See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=114007
+        # - gcc-11
         # Disabled due to problems with the __API_AVAILABLE macro
         # - gcc-13
         GEN:
