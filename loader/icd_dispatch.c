@@ -36,12 +36,12 @@ clGetICDLoaderInfoOCLICD(
     static const char cl_icdl_NAME[]        = OPENCL_ICD_LOADER_NAME_STRING;
     static const char cl_icdl_VENDOR[]      = OPENCL_ICD_LOADER_VENDOR_STRING;
     size_t            pvs;
-    void *            pv;
+    const void *      pv = NULL;
 
 #define KHR_ICD_CASE_STRING_PARAM_NAME(name)                                   \
     case CL_ICDL_ ## name:                                                     \
         pvs = strlen(cl_icdl_ ## name) + 1;                                    \
-        pv = (void *)cl_icdl_ ## name;                                         \
+        pv = (const void *)cl_icdl_ ## name;                                   \
         break
 
     switch (param_name) {
