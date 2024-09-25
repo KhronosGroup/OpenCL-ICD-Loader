@@ -324,12 +324,14 @@ void khrIcdLayerAdd(const char *libraryName)
 
     cl_uint limit = layerDispatchNumEntries < loaderDispatchNumEntries ? layerDispatchNumEntries : loaderDispatchNumEntries;
 
-    for (cl_uint i = 0; i < limit; i++)
+    for (cl_uint i = 0; i < limit; i++) {
         ((void **)&(layer->dispatch))[i] =
             ((void *const*)layerDispatch)[i] ?
                 ((void *const*)layerDispatch)[i] : ((void *const*)targetDispatch)[i];
-    for (cl_uint i = limit; i < loaderDispatchNumEntries; i++)
+    }
+    for (cl_uint i = limit; i < loaderDispatchNumEntries; i++) {
         ((void **)&(layer->dispatch))[i] = ((void *const*)targetDispatch)[i];
+    }
 
     KHR_ICD_TRACE("successfully added layer %s\n", libraryName);
     return;
