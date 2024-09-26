@@ -129,7 +129,7 @@ struct dirElem
 static int compareDirElem(const void *a, const void *b)
 {
     // sort files the same way libc alpahnumerically sorts directory entries.
-    return strcoll(((struct dirElem *)a)->d_name, ((struct dirElem *)b)->d_name);
+    return strcoll(((const struct dirElem *)a)->d_name, ((const struct dirElem *)b)->d_name);
 }
 
 static inline void khrIcdOsDirEnumerate(const char *path, const char *env,
