@@ -152,11 +152,17 @@ void khrIcdVendorsEnumerateEnv(void);
 // add a vendor's implementation to the list of libraries
 void khrIcdVendorAdd(const char *libraryName);
 
+// cleanup a list of vendor icds
+void khrIcdVendorCleanup();
+
 // read layers from environment variables
 void khrIcdLayersEnumerateEnv(void);
 
 // add a layer to the layer chain
 void khrIcdLayerAdd(const char *libraryName);
+
+// cleanup a layer chain
+void khrIcdLayerCleanup();
 
 // dynamically load a library.  returns NULL on failure
 // n.b, this call is OS-specific
