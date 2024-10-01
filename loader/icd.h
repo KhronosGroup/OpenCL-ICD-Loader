@@ -20,6 +20,7 @@
 #define _ICD_H_
 
 #include "icd_platform.h"
+#include "icd_dispatch.h"
 
 #ifndef CL_USE_DEPRECATED_OPENCL_1_0_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_0_APIS
@@ -48,6 +49,9 @@
 #include <CL/cl.h>
 #include <CL/cl_ext.h>
 #include <CL/cl_icd.h>
+#if defined(CL_ENABLE_LAYERS)
+#include <CL/cl_layer.h>
+#endif // defined(CL_ENABLE_LAYERS)
 #include <stdio.h>
 
 /*
@@ -84,15 +88,37 @@ struct KHRicdVendorRec
     // the extension suffix for this platform
     char *suffix;
 
+    // can this vendor library be unloaded?
+    cl_bool unloadable;
+
     // function pointer to the ICD platform IDs extracted from the library
     pfn_clGetExtensionFunctionAddress clGetExtensionFunctionAddress;
 
     // the platform retrieved from clGetIcdPlatformIDsKHR
     cl_platform_id platform;
 
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    // the loader populated dispatch table for cl_khr_icd2 compliant platforms
+    struct KHRDisp dispData;
+    clIcdSetPlatformDispatchDataKHR_fn clIcdSetPlatformDispatchData;
+    clIcdCreateInstancePlatformKHR_fn clIcdCreateInstancePlatform;
+    clIcdDestroyInstancePlatformKHR_fn clIcdDestroyInstancePlatform;
+#endif
+
     // next vendor in the list vendors
     KHRicdVendor *next;
+    KHRicdVendor *prev;
 };
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+struct _cl_instance_khr
+{
+    cl_uint num_platforms;
+    cl_platform_id *platforms;
+    KHRicdVendor **vendors;
+    struct KHRDisp *dispDatas;
+};
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 
 // the global state
 extern KHRicdVendor * khrIcdVendors;
@@ -117,14 +143,17 @@ struct KHRLayer
 #ifdef CL_LAYER_INFO
     // The layer library name
     char *libraryName;
-    // the pointer to the clGetLayerInfo funciton
-    void *p_clGetLayerInfo;
+    // the pointer to the clGetLayerInfo function
+    pfn_clGetLayerInfo p_clGetLayerInfo;
 #endif
+    // the pointer to the clDeinitLayer function
+    pfn_clDeinitLayer p_clDeinitLayer;
 };
 
 // the global layer state
 extern struct KHRLayer * khrFirstLayer;
-extern struct _cl_icd_dispatch khrMasterDispatch;
+extern const struct _cl_icd_dispatch khrMainDispatch;
+extern const struct _cl_icd_dispatch khrDeinitDispatch;
 #endif // defined(CL_ENABLE_LAYERS)
 
 /* 
@@ -140,6 +169,9 @@ void khrIcdInitialize(void);
 
 // entrypoint to check and initialize trace.
 void khrIcdInitializeTrace(void);
+
+// entrypoint to release icd resources
+void khrIcdDeinitialize(void);
 
 // go through the list of vendors (in /etc/OpenCL.conf or through 
 // the registry) and call khrIcdVendorAdd for each vendor encountered
@@ -201,11 +233,24 @@ do \
 #define KHR_ICD_WIDE_TRACE(...)
 #endif
 
+#define KHR_ICD_ERROR_RETURN_ERROR(_error)                          \
+do {                                                                \
+    return _error;                                                  \
+} while(0)
+
+#define KHR_ICD_ERROR_RETURN_HANDLE(_error)                         \
+do {                                                                \
+    if (errcode_ret) {                                              \
+        *errcode_ret = _error;                                      \
+    }                                                               \
+    return NULL;                                                    \
+} while(0)
+
 // Check if the passed-in handle is NULL, and if it is, return the error.
 #define KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(_handle, _error)       \
 do {                                                                \
     if (!_handle) {                                                 \
-        return _error;                                              \
+        KHR_ICD_ERROR_RETURN_ERROR(_error);                         \
     }                                                               \
 } while (0)
 
@@ -214,10 +259,7 @@ do {                                                                \
 #define KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(_handle, _error)      \
 do {                                                                \
     if (!_handle) {                                                 \
-        if (errcode_ret) {                                          \
-            *errcode_ret = _error;                                  \
-        }                                                           \
-        return NULL;                                                \
+        KHR_ICD_ERROR_RETURN_HANDLE(_error);                        \
     }                                                               \
 } while (0)
 
@@ -226,7 +268,7 @@ do {                                                                \
 #define KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(_pointer)             \
 do {                                                                \
     if (!_pointer) {                                                \
-        return CL_INVALID_OPERATION;                                \
+        KHR_ICD_ERROR_RETURN_ERROR(CL_INVALID_OPERATION);           \
     }                                                               \
 } while (0)
 
@@ -236,10 +278,7 @@ do {                                                                \
 #define KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(_pointer)            \
 do {                                                                \
     if (!_pointer) {                                                \
-        if (errcode_ret) {                                          \
-            *errcode_ret = CL_INVALID_OPERATION;                    \
-        }                                                           \
-        return NULL;                                                \
+        KHR_ICD_ERROR_RETURN_HANDLE(CL_INVALID_OPERATION);          \
     }                                                               \
 } while (0)
 

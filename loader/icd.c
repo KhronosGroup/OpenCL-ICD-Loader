@@ -19,13 +19,11 @@
 #include "icd.h"
 #include "icd_dispatch.h"
 #include "icd_envvars.h"
-#if defined(CL_ENABLE_LAYERS)
-#include <CL/cl_layer.h>
-#endif // defined(CL_ENABLE_LAYERS)
 #include <stdlib.h>
 #include <string.h>
 
 KHRicdVendor *khrIcdVendors = NULL;
+static KHRicdVendor *lastVendor = NULL;
 int khrEnableTrace = 0;
 
 #if defined(CL_ENABLE_LAYERS)
@@ -58,6 +56,12 @@ void khrIcdVendorAdd(const char *libraryName)
     cl_int result = CL_SUCCESS;
     pfn_clGetExtensionFunctionAddress p_clGetExtensionFunctionAddress = NULL;
     pfn_clIcdGetPlatformIDs p_clIcdGetPlatformIDs = NULL;
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    clIcdGetFunctionAddressForPlatformKHR_fn p_clIcdGetFunctionAddressForPlatform = NULL;
+    clIcdSetPlatformDispatchDataKHR_fn p_clIcdSetPlatformDispatchData = NULL;
+    clIcdCreateInstancePlatformKHR_fn p_clIcdCreateInstancePlatform = NULL;
+    clIcdDestroyInstancePlatformKHR_fn p_clIcdDestroyInstancePlatform = NULL;
+#endif
     cl_uint i = 0;
     cl_uint platformCount = 0;
     cl_platform_id *platforms = NULL;
@@ -104,6 +108,14 @@ void khrIcdVendorAdd(const char *libraryName)
         goto Done;
     }
 
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    // try to get clIcdGetFunctionAddressForPlatformKHR and clIcdSetPlatformDispatchDataKHR to detect cl_khr_icd2 support
+    p_clIcdGetFunctionAddressForPlatform = (clIcdGetFunctionAddressForPlatformKHR_fn)(size_t)p_clGetExtensionFunctionAddress("clIcdGetFunctionAddressForPlatformKHR");
+    p_clIcdSetPlatformDispatchData = (clIcdSetPlatformDispatchDataKHR_fn)(size_t)p_clGetExtensionFunctionAddress("clIcdSetPlatformDispatchDataKHR");
+    p_clIcdCreateInstancePlatform = (clIcdCreateInstancePlatformKHR_fn)(size_t)p_clGetExtensionFunctionAddress("clIcdCreateInstancePlatformKHR");
+    p_clIcdDestroyInstancePlatform = (clIcdDestroyInstancePlatformKHR_fn)(size_t)p_clGetExtensionFunctionAddress("clIcdDestroyInstancePlatformKHR");
+#endif
+
     // query the number of platforms available and allocate space to store them
     result = p_clIcdGetPlatformIDs(0, NULL, &platformCount);
     if (CL_SUCCESS != result)
@@ -132,12 +144,65 @@ void khrIcdVendorAdd(const char *libraryName)
         char *suffix;
         size_t suffixSize;
 
-        // call clGetPlatformInfo on the returned platform to get the suffix
-        if (!platforms[i])
+        // skip NULL platforms and non dispatchable platforms
+        if (!platforms[i] || !platforms[i]->dispatch)
         {
             continue;
         }
-        result = platforms[i]->dispatch->clGetPlatformInfo(
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+        if (KHR_ICD2_HAS_TAG(platforms[i]) && !p_clIcdGetFunctionAddressForPlatform)
+        {
+           KHR_ICD_TRACE("found icd 2 object, but platform is missing clIcdGetFunctionAddressForPlatformKHR\n");
+           continue;
+        }
+        if (KHR_ICD2_HAS_TAG(platforms[i]) && !p_clIcdSetPlatformDispatchData)
+        {
+           KHR_ICD_TRACE("found icd 2 object, but platform is missing clIcdSetPlatformDispatchDataKHR\n");
+           continue;
+        }
+        if (KHR_ICD2_HAS_TAG(platforms[i]) && !((size_t)((platforms[i])->dispatch->clUnloadCompiler) == CL_ICD2_TAG_KHR))
+        {
+           KHR_ICD_TRACE("found icd 2 object, but platform is missing tag in clUnloadCompiler\n");
+           continue;
+        }
+#endif
+
+        // allocate a structure for the vendor
+        vendor = (KHRicdVendor*)malloc(sizeof(*vendor) );
+        if (!vendor)
+        {
+            KHR_ICD_TRACE("failed to allocate memory\n");
+            continue;
+        }
+        memset(vendor, 0, sizeof(*vendor));
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+        // populate cl_khr_icd2 platform's loader managed dispatch tables
+        if (KHR_ICD2_HAS_TAG(platforms[i]))
+        {
+            khrIcd2PopulateDispatchTable(platforms[i], p_clIcdGetFunctionAddressForPlatform, &vendor->dispData.dispatch);
+            p_clIcdSetPlatformDispatchData(platforms[i], &vendor->dispData);
+            KHR_ICD_TRACE("found icd 2 platform, using loader managed dispatch\n");
+            if (p_clIcdCreateInstancePlatform && p_clIcdDestroyInstancePlatform)
+            {
+                vendor->clIcdSetPlatformDispatchData = p_clIcdSetPlatformDispatchData;
+                vendor->clIcdCreateInstancePlatform = p_clIcdCreateInstancePlatform;
+                vendor->clIcdDestroyInstancePlatform = p_clIcdDestroyInstancePlatform;
+            }
+        }
+#endif
+
+        // call clGetPlatformInfo on the returned platform to get the suffix
+
+        KHR_ICD2_DISPATCH(platforms[i])->clGetPlatformInfo(
+            platforms[i],
+            CL_PLATFORM_UNLOADABLE_KHR,
+            sizeof(vendor->unloadable),
+            &vendor->unloadable,
+            NULL);
+
+        result = KHR_ICD2_DISPATCH(platforms[i])->clGetPlatformInfo(
             platforms[i],
             CL_PLATFORM_ICD_SUFFIX_KHR,
             0,
@@ -145,14 +210,16 @@ void khrIcdVendorAdd(const char *libraryName)
             &suffixSize);
         if (CL_SUCCESS != result)
         {
+            free(vendor);
             continue;
         }
         suffix = (char *)malloc(suffixSize);
         if (!suffix)
         {
+            free(vendor);
             continue;
         }
-        result = platforms[i]->dispatch->clGetPlatformInfo(
+        result = KHR_ICD2_DISPATCH(platforms[i])->clGetPlatformInfo(
             platforms[i],
             CL_PLATFORM_ICD_SUFFIX_KHR,
             suffixSize,
@@ -163,16 +230,6 @@ void khrIcdVendorAdd(const char *libraryName)
             free(suffix);
             continue;
         }
-
-        // allocate a structure for the vendor
-        vendor = (KHRicdVendor*)malloc(sizeof(*vendor) );
-        if (!vendor) 
-        {
-            free(suffix);
-            KHR_ICD_TRACE("failed to allocate memory\n");
-            continue;
-        }
-        memset(vendor, 0, sizeof(*vendor) );
 
         // populate vendor data
         vendor->library = khrIcdOsLibraryLoad(libraryName);
@@ -188,11 +245,13 @@ void khrIcdVendorAdd(const char *libraryName)
         vendor->suffix = suffix;
 
         // add this vendor to the list of vendors at the tail
-        {
-            KHRicdVendor **prevNextPointer = NULL;
-            for (prevNextPointer = &khrIcdVendors; *prevNextPointer; prevNextPointer = &( (*prevNextPointer)->next) );
-            *prevNextPointer = vendor;
+        if (lastVendor) {
+            lastVendor->next = vendor;
+            vendor->prev = lastVendor;
+        } else {
+            khrIcdVendors = vendor;
         }
+        lastVendor = vendor;
 
         KHR_ICD_TRACE("successfully added vendor %s with suffix %s\n", libraryName, suffix);
 
@@ -217,6 +276,7 @@ void khrIcdLayerAdd(const char *libraryName)
     cl_int result = CL_SUCCESS;
     pfn_clGetLayerInfo p_clGetLayerInfo = NULL;
     pfn_clInitLayer p_clInitLayer = NULL;
+    pfn_clDeinitLayer p_clDeinitLayer = NULL;
     struct KHRLayer *layerIterator = NULL;
     struct KHRLayer *layer = NULL;
     cl_layer_api_version api_version = 0;
@@ -266,6 +326,13 @@ void khrIcdLayerAdd(const char *libraryName)
         goto Done;
     }
 
+    p_clDeinitLayer = (pfn_clDeinitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clDeinitLayer");
+    if (!p_clDeinitLayer)
+    {
+        KHR_ICD_TRACE("failed to get function address clDeinitLayer\n");
+        goto Done;
+    }
+
     result = p_clGetLayerInfo(CL_LAYER_API_VERSION, sizeof(api_version), &api_version, NULL);
     if (CL_SUCCESS != result)
     {
@@ -273,7 +340,7 @@ void khrIcdLayerAdd(const char *libraryName)
         goto Done;
     }
 
-    if (CL_LAYER_API_VERSION_100 != api_version)
+    if (CL_LAYER_API_VERSION_200 != api_version)
     {
         KHR_ICD_TRACE("unsupported api version\n");
         goto Done;
@@ -296,17 +363,18 @@ void khrIcdLayerAdd(const char *libraryName)
             goto Done;
         }
         memcpy(layer->libraryName, libraryName, sz_name);
-        layer->p_clGetLayerInfo = (void *)(size_t)p_clGetLayerInfo;
+        layer->p_clGetLayerInfo = p_clGetLayerInfo;
     }
 #endif
+    layer->p_clDeinitLayer = p_clDeinitLayer;
 
     if (khrFirstLayer) {
         targetDispatch = &(khrFirstLayer->dispatch);
     } else {
-        targetDispatch = &khrMasterDispatch;
+        targetDispatch = &khrMainDispatch;
     }
 
-    loaderDispatchNumEntries = sizeof(khrMasterDispatch)/sizeof(void*);
+    loaderDispatchNumEntries = sizeof(khrMainDispatch)/sizeof(void*);
     result = p_clInitLayer(
         loaderDispatchNumEntries,
         targetDispatch,
@@ -430,3 +498,43 @@ void khrIcdContextPropertiesGetPlatform(const cl_context_properties *properties,
     }
 }
 
+#if defined(CL_ENABLE_LAYERS)
+static struct KHRLayer deinitLayer = {0};
+#endif
+
+void khrIcdDeinitialize(void) {
+
+    KHR_ICD_TRACE("ICD Loader deinitialization\n");
+
+#if defined(CL_ENABLE_LAYERS)
+    // free layers first in reverse order of their creation (front to back)
+    // they may still need to use vendors while terminating
+    KHR_ICD_TRACE("Finalizing and unloading layers\n");
+    struct KHRLayer *head = khrFirstLayer;
+    deinitLayer.dispatch = khrDeinitDispatch;
+    khrFirstLayer = &deinitLayer;
+
+    while(head) {
+        struct KHRLayer *cur = head;
+#ifdef CL_LAYER_INFO
+	free(cur->libraryName);
+#endif
+        cur->p_clDeinitLayer();
+        khrIcdOsLibraryUnload(cur->library);
+        head = cur->next;
+        free(cur);
+    }
+#endif // defined(CL_ENABLE_LAYERS)
+
+    // free vendor in reverse order of their creation (back to front)
+    KHR_ICD_TRACE("Finalizing and unloading vendors\n");
+    while (lastVendor) {
+        KHRicdVendor *cur = lastVendor;
+        free(cur->suffix);
+        if (cur->unloadable)
+            khrIcdOsLibraryUnload(cur->library);
+        lastVendor = cur->prev;
+        free(cur);
+    }
+    khrIcdVendors = NULL;
+}
