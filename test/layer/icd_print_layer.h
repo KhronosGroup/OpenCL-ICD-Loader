@@ -54,8 +54,6 @@ extern struct _cl_icd_dispatch dispatch;
 
 extern const struct _cl_icd_dispatch *tdispatch;
 
-extern void _init_dispatch(void);
-
 #ifdef __cplusplus
 }
 #endif

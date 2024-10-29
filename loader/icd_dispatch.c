@@ -303,7 +303,7 @@ static inline void* clGetExtensionFunctionAddressForPlatform_body(
     // to get the extension function address.
 
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, NULL);
-    return platform->dispatch->clGetExtensionFunctionAddressForPlatform(
+    return KHR_ICD2_DISPATCH(platform)->clGetExtensionFunctionAddressForPlatform(
         platform,
         function_name);
 }
