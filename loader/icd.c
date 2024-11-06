@@ -279,7 +279,7 @@ void khrIcdLayerAdd(const char *libraryName)
         goto Done;
     }
 
-    layer = (struct KHRLayer*)calloc(sizeof(struct KHRLayer), 1);
+    layer = (struct KHRLayer*)calloc(1, sizeof(struct KHRLayer));
     if (!layer)
     {
         KHR_ICD_TRACE("failed to allocate memory\n");
