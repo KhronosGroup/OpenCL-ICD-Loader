@@ -46,13 +46,13 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
 
         EnumAdapters.adapter_count = 0;
         EnumAdapters.adapters = NULL;
-        PFN_LoaderEnumAdapters2 pEnumAdapters2 = (PFN_LoaderEnumAdapters2)GetProcAddress(h, "D3DKMTEnumAdapters2");
+        PFN_LoaderEnumAdapters2 pEnumAdapters2 = (PFN_LoaderEnumAdapters2)(void*)GetProcAddress(h, "D3DKMTEnumAdapters2");
         if (!pEnumAdapters2)
         {
             KHR_ICD_TRACE("GetProcAddress failed for D3DKMTEnumAdapters2\n");
             goto out;
         }
-        PFN_LoaderQueryAdapterInfo pQueryAdapterInfo = (PFN_LoaderQueryAdapterInfo)GetProcAddress(h, "D3DKMTQueryAdapterInfo");
+        PFN_LoaderQueryAdapterInfo pQueryAdapterInfo = (PFN_LoaderQueryAdapterInfo)(void*)GetProcAddress(h, "D3DKMTQueryAdapterInfo");
         if (!pQueryAdapterInfo)
         {
             KHR_ICD_TRACE("GetProcAddress failed for D3DKMTQueryAdapterInfo\n");

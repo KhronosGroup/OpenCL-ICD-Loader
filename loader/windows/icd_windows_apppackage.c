@@ -44,7 +44,7 @@ bool khrIcdOsVendorsEnumerateAppPackage(void)
         return ret;
 
     PFN_GetPackagesByPackageFamily pGetPackagesByPackageFamily =
-        (PFN_GetPackagesByPackageFamily)GetProcAddress(h, "GetPackagesByPackageFamily");
+        (PFN_GetPackagesByPackageFamily)(void*)GetProcAddress(h, "GetPackagesByPackageFamily");
     if (!pGetPackagesByPackageFamily)
     {
         KHR_ICD_TRACE("GetProcAddress failed for GetPackagesByPackageFamily\n");
@@ -52,7 +52,7 @@ bool khrIcdOsVendorsEnumerateAppPackage(void)
     }
 
     PFN_GetPackagePathByFullName pGetPackagePathByFullName =
-        (PFN_GetPackagePathByFullName)GetProcAddress(h, "GetPackagePathByFullName");
+        (PFN_GetPackagePathByFullName)(void*)GetProcAddress(h, "GetPackagePathByFullName");
     if (!pGetPackagePathByFullName)
     {
         KHR_ICD_TRACE("GetProcAddress failed for GetPackagePathByFullName\n");
