@@ -281,7 +281,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     if (hDXGI)
     {
         IDXGIFactory* pFactory = NULL;
-        PFN_CREATE_DXGI_FACTORY pCreateDXGIFactory = (PFN_CREATE_DXGI_FACTORY)GetProcAddress(hDXGI, "CreateDXGIFactory");
+        PFN_CREATE_DXGI_FACTORY pCreateDXGIFactory = (PFN_CREATE_DXGI_FACTORY)(void*)GetProcAddress(hDXGI, "CreateDXGIFactory");
         if (pCreateDXGIFactory)
         {
             HRESULT hr = pCreateDXGIFactory(&IID_IDXGIFactory, (void **)&pFactory);
