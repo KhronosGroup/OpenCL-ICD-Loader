@@ -19,7 +19,7 @@
 #ifndef _ICD_PLATFORM_H_
 #define _ICD_PLATFORM_H_
 
-#if defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__)
+#if defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__) || defined(__QNXNTO__)
 
 #define PATH_SEPARATOR  ':'
 #define DIRECTORY_SYMBOL '/'

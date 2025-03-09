@@ -187,7 +187,11 @@ static inline void khrIcdOsDirEnumerate(const char *path, const char *env,
                          break;
                     memcpy(nameCopy, dirEntry->d_name, sz);
                     dirElems[elemCount].d_name = nameCopy;
+#if defined(__QNXNTO__)
+                    dirElems[elemCount].d_type = _DEXTRA_FIRST(dirEntry)->d_type;
+#else
                     dirElems[elemCount].d_type = dirEntry->d_type;
+#endif
                     elemCount++;
                 }
                 qsort(dirElems, elemCount, sizeof(struct dirElem), compareDirElem);
