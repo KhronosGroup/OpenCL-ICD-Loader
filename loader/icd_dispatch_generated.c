@@ -6824,7 +6824,7 @@ static cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_disp(
 ///////////////////////////////////////////////////////////////////////////////
 
 #if defined(CL_ENABLE_LAYERS)
-struct _cl_icd_dispatch khrMasterDispatch = {
+const struct _cl_icd_dispatch khrMainDispatch = {
     &clGetPlatformIDs_disp,
     &clGetPlatformInfo_disp,
     &clGetDeviceIDs_disp,
@@ -7027,10 +7027,11 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clCreateBufferWithProperties_disp,
     &clCreateImageWithProperties_disp,
     &clSetContextDestructorCallback_disp
-};
+}
+;
 #endif // defined(CL_ENABLE_LAYERS)
 
-#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) || defined(CL_ENABLE_LAYERS)
 ///////////////////////////////////////////////////////////////////////////////
 // Core APIs:
 static cl_int CL_API_CALL clGetPlatformIDs_unsupp(
@@ -9167,7 +9168,217 @@ static cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_unsupp(
 }
 ///////////////////////////////////////////////////////////////////////////////
 
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) || defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+const struct _cl_icd_dispatch khrDeinitDispatch = {
+    &clGetPlatformIDs_unsupp,
+    &clGetPlatformInfo_unsupp,
+    &clGetDeviceIDs_unsupp,
+    &clGetDeviceInfo_unsupp,
+    &clCreateContext_unsupp,
+    &clCreateContextFromType_unsupp,
+    &clRetainContext_unsupp,
+    &clReleaseContext_unsupp,
+    &clGetContextInfo_unsupp,
+    &clCreateCommandQueue_unsupp,
+    &clRetainCommandQueue_unsupp,
+    &clReleaseCommandQueue_unsupp,
+    &clGetCommandQueueInfo_unsupp,
+    &clSetCommandQueueProperty_unsupp,
+    &clCreateBuffer_unsupp,
+    &clCreateImage2D_unsupp,
+    &clCreateImage3D_unsupp,
+    &clRetainMemObject_unsupp,
+    &clReleaseMemObject_unsupp,
+    &clGetSupportedImageFormats_unsupp,
+    &clGetMemObjectInfo_unsupp,
+    &clGetImageInfo_unsupp,
+    &clCreateSampler_unsupp,
+    &clRetainSampler_unsupp,
+    &clReleaseSampler_unsupp,
+    &clGetSamplerInfo_unsupp,
+    &clCreateProgramWithSource_unsupp,
+    &clCreateProgramWithBinary_unsupp,
+    &clRetainProgram_unsupp,
+    &clReleaseProgram_unsupp,
+    &clBuildProgram_unsupp,
+    &clUnloadCompiler_unsupp,
+    &clGetProgramInfo_unsupp,
+    &clGetProgramBuildInfo_unsupp,
+    &clCreateKernel_unsupp,
+    &clCreateKernelsInProgram_unsupp,
+    &clRetainKernel_unsupp,
+    &clReleaseKernel_unsupp,
+    &clSetKernelArg_unsupp,
+    &clGetKernelInfo_unsupp,
+    &clGetKernelWorkGroupInfo_unsupp,
+    &clWaitForEvents_unsupp,
+    &clGetEventInfo_unsupp,
+    &clRetainEvent_unsupp,
+    &clReleaseEvent_unsupp,
+    &clGetEventProfilingInfo_unsupp,
+    &clFlush_unsupp,
+    &clFinish_unsupp,
+    &clEnqueueReadBuffer_unsupp,
+    &clEnqueueWriteBuffer_unsupp,
+    &clEnqueueCopyBuffer_unsupp,
+    &clEnqueueReadImage_unsupp,
+    &clEnqueueWriteImage_unsupp,
+    &clEnqueueCopyImage_unsupp,
+    &clEnqueueCopyImageToBuffer_unsupp,
+    &clEnqueueCopyBufferToImage_unsupp,
+    &clEnqueueMapBuffer_unsupp,
+    &clEnqueueMapImage_unsupp,
+    &clEnqueueUnmapMemObject_unsupp,
+    &clEnqueueNDRangeKernel_unsupp,
+    &clEnqueueTask_unsupp,
+    &clEnqueueNativeKernel_unsupp,
+    &clEnqueueMarker_unsupp,
+    &clEnqueueWaitForEvents_unsupp,
+    &clEnqueueBarrier_unsupp,
+    &clGetExtensionFunctionAddress_unsupp,
+    &clCreateFromGLBuffer_unsupp,
+    &clCreateFromGLTexture2D_unsupp,
+    &clCreateFromGLTexture3D_unsupp,
+    &clCreateFromGLRenderbuffer_unsupp,
+    &clGetGLObjectInfo_unsupp,
+    &clGetGLTextureInfo_unsupp,
+    &clEnqueueAcquireGLObjects_unsupp,
+    &clEnqueueReleaseGLObjects_unsupp,
+    &clGetGLContextInfoKHR_unsupp,
+
+  /* cl_khr_d3d10_sharing */
+#if defined(_WIN32)
+    &clGetDeviceIDsFromD3D10KHR_unsupp,
+    &clCreateFromD3D10BufferKHR_unsupp,
+    &clCreateFromD3D10Texture2DKHR_unsupp,
+    &clCreateFromD3D10Texture3DKHR_unsupp,
+    &clEnqueueAcquireD3D10ObjectsKHR_unsupp,
+    &clEnqueueReleaseD3D10ObjectsKHR_unsupp,
+#else
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+#endif
+
+  /* OpenCL 1.1 */
+    &clSetEventCallback_unsupp,
+    &clCreateSubBuffer_unsupp,
+    &clSetMemObjectDestructorCallback_unsupp,
+    &clCreateUserEvent_unsupp,
+    &clSetUserEventStatus_unsupp,
+    &clEnqueueReadBufferRect_unsupp,
+    &clEnqueueWriteBufferRect_unsupp,
+    &clEnqueueCopyBufferRect_unsupp,
+
+  /* cl_ext_device_fission */
+    &clCreateSubDevicesEXT_unsupp,
+    &clRetainDeviceEXT_unsupp,
+    &clReleaseDeviceEXT_unsupp,
+
+  /* cl_khr_gl_event */
+    &clCreateEventFromGLsyncKHR_unsupp,
+
+  /* OpenCL 1.2 */
+    &clCreateSubDevices_unsupp,
+    &clRetainDevice_unsupp,
+    &clReleaseDevice_unsupp,
+    &clCreateImage_unsupp,
+    &clCreateProgramWithBuiltInKernels_unsupp,
+    &clCompileProgram_unsupp,
+    &clLinkProgram_unsupp,
+    &clUnloadPlatformCompiler_unsupp,
+    &clGetKernelArgInfo_unsupp,
+    &clEnqueueFillBuffer_unsupp,
+    &clEnqueueFillImage_unsupp,
+    &clEnqueueMigrateMemObjects_unsupp,
+    &clEnqueueMarkerWithWaitList_unsupp,
+    &clEnqueueBarrierWithWaitList_unsupp,
+    &clGetExtensionFunctionAddressForPlatform_unsupp,
+    &clCreateFromGLTexture_unsupp,
+
+  /* cl_khr_d3d11_sharing */
+#if defined(_WIN32)
+    &clGetDeviceIDsFromD3D11KHR_unsupp,
+    &clCreateFromD3D11BufferKHR_unsupp,
+    &clCreateFromD3D11Texture2DKHR_unsupp,
+    &clCreateFromD3D11Texture3DKHR_unsupp,
+    &clCreateFromDX9MediaSurfaceKHR_unsupp,
+    &clEnqueueAcquireD3D11ObjectsKHR_unsupp,
+    &clEnqueueReleaseD3D11ObjectsKHR_unsupp,
+#else
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+#endif
+
+  /* cl_khr_dx9_media_sharing */
+#if defined(_WIN32)
+    &clGetDeviceIDsFromDX9MediaAdapterKHR_unsupp,
+    &clEnqueueAcquireDX9MediaSurfacesKHR_unsupp,
+    &clEnqueueReleaseDX9MediaSurfacesKHR_unsupp,
+#else
+    NULL,
+    NULL,
+    NULL,
+#endif
+
+  /* cl_khr_egl_image */
+    &clCreateFromEGLImageKHR_unsupp,
+    &clEnqueueAcquireEGLObjectsKHR_unsupp,
+    &clEnqueueReleaseEGLObjectsKHR_unsupp,
+
+  /* cl_khr_egl_event */
+    &clCreateEventFromEGLSyncKHR_unsupp,
+
+  /* OpenCL 2.0 */
+    &clCreateCommandQueueWithProperties_unsupp,
+    &clCreatePipe_unsupp,
+    &clGetPipeInfo_unsupp,
+    &clSVMAlloc_unsupp,
+    &clSVMFree_unsupp,
+    &clEnqueueSVMFree_unsupp,
+    &clEnqueueSVMMemcpy_unsupp,
+    &clEnqueueSVMMemFill_unsupp,
+    &clEnqueueSVMMap_unsupp,
+    &clEnqueueSVMUnmap_unsupp,
+    &clCreateSamplerWithProperties_unsupp,
+    &clSetKernelArgSVMPointer_unsupp,
+    &clSetKernelExecInfo_unsupp,
+
+  /* cl_khr_sub_groups */
+    &clGetKernelSubGroupInfoKHR_unsupp,
+
+  /* OpenCL 2.1 */
+    &clCloneKernel_unsupp,
+    &clCreateProgramWithIL_unsupp,
+    &clEnqueueSVMMigrateMem_unsupp,
+    &clGetDeviceAndHostTimer_unsupp,
+    &clGetHostTimer_unsupp,
+    &clGetKernelSubGroupInfo_unsupp,
+    &clSetDefaultDeviceCommandQueue_unsupp,
+
+  /* OpenCL 2.2 */
+    &clSetProgramReleaseCallback_unsupp,
+    &clSetProgramSpecializationConstant_unsupp,
+
+  /* OpenCL 3.0 */
+    &clCreateBufferWithProperties_unsupp,
+    &clCreateImageWithProperties_unsupp,
+    &clSetContextDestructorCallback_unsupp
+}
+;
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 void khrIcd2PopulateDispatchTable(
     cl_platform_id platform,
     clIcdGetFunctionAddressForPlatformKHR_fn p_clIcdGetFunctionAddressForPlatform,
