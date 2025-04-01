@@ -397,10 +397,17 @@ jobs:
         $KEY_NAME = "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors"
         foreach ($Config in 'Release','Debug') {
           $VALUE_NAME = "${env:GITHUB_WORKSPACE}/build/$Config/OpenCLDriverStub.dll"
+          $VALUE_NAME_2 = "${env:GITHUB_WORKSPACE}/build/$Config/OpenCLDriverStubICD2.dll"
           & $REG ADD $KEY_NAME /v $VALUE_NAME /t REG_DWORD /d 0
+          if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+          & $REG ADD $KEY_NAME /v $VALUE_NAME_2 /t REG_DWORD /d 0
+          if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
           & ctest -C $Config --output-on-failure --no-tests=error --parallel ${env:NUMBER_OF_PROCESSORS}
           if ($LASTEXITCODE -ne 0) { throw "Testing OpenCL-ICD-Loader in $Config failed." }
+          & $REG DELETE $KEY_NAME /v $VALUE_NAME_2 /f
+          if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
           & $REG DELETE $KEY_NAME /v $VALUE_NAME /f
+          if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
         }
 
     - name: Install
@@ -429,7 +436,10 @@ jobs:
         $REG = if('${{matrix.BIN}}' -eq 'x64') {"reg"} else {"${env:SystemRoot}\Syswow64\reg.exe"}
         $KEY_NAME = "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors"
         $VALUE_NAME = "${env:GITHUB_WORKSPACE}/build/Release/OpenCLDriverStub.dll"
+        $VALUE_NAME_2 = "${env:GITHUB_WORKSPACE}/build/Release/OpenCLDriverStubICD2.dll"
         & $REG ADD $KEY_NAME /v $VALUE_NAME /t REG_DWORD /d 0
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+        & $REG ADD $KEY_NAME /v $VALUE_NAME_2 /t REG_DWORD /d 0
         if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
         foreach ($Config in 'Release','Debug') {
           & cmake `
@@ -441,6 +451,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Running OpenCL-ICD-Loader standalone consume test in $Config failed." }
         }
         & $REG DELETE $KEY_NAME /v $VALUE_NAME /f
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+        & $REG DELETE $KEY_NAME /v $VALUE_NAME_2 /f
         if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
 
     - name: "Consume (Ninja-Multi-Config standalone): Configure/Build/Test"
@@ -464,7 +476,10 @@ jobs:
         $REG = if('${{matrix.BIN}}' -eq 'x64') {"reg"} else {"${env:SystemRoot}\Syswow64\reg.exe"}
         $KEY_NAME = "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors"
         $VALUE_NAME = "${env:GITHUB_WORKSPACE}/build/Release/OpenCLDriverStub.dll"
+        $VALUE_NAME_2 = "${env:GITHUB_WORKSPACE}/build/Release/OpenCLDriverStubICD2.dll"
         & $REG ADD $KEY_NAME /v $VALUE_NAME /t REG_DWORD /d 0
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+        & $REG ADD $KEY_NAME /v $VALUE_NAME_2 /t REG_DWORD /d 0
         if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
         foreach ($Config in 'Release','Debug') {
           & cmake `
@@ -476,6 +491,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Running OpenCL-ICD-Loader standalone consume test in $Config failed." }
         }
         & $REG DELETE $KEY_NAME /v $VALUE_NAME /f
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+        & $REG DELETE $KEY_NAME /v $VALUE_NAME_2 /f
         if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
 
     - name: Consume (Emulate SDK presence)
@@ -502,7 +519,10 @@ jobs:
         $REG = if('${{matrix.BIN}}' -eq 'x64') {"reg"} else {"${env:SystemRoot}\Syswow64\reg.exe"}
         $KEY_NAME = "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors"
         $VALUE_NAME = "${env:GITHUB_WORKSPACE}/build/Release/OpenCLDriverStub.dll"
+        $VALUE_NAME_2 = "${env:GITHUB_WORKSPACE}/build/Release/OpenCLDriverStubICD2.dll"
         & $REG ADD $KEY_NAME /v $VALUE_NAME /t REG_DWORD /d 0
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+        & $REG ADD $KEY_NAME /v $VALUE_NAME_2 /t REG_DWORD /d 0
         if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
         foreach ($Config in 'Release','Debug') {
           & cmake `
@@ -514,6 +534,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Running OpenCL-ICD-Loader in-SDK consume test in $Config failed." }
         }
         & $REG DELETE $KEY_NAME /v $VALUE_NAME /f
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+        & $REG DELETE $KEY_NAME /v $VALUE_NAME_2 /f
         if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
 
     - name: "Consume (Ninja-Multi-Config SDK): Configure/Build/Test"
@@ -537,7 +559,10 @@ jobs:
         $REG = if('${{matrix.BIN}}' -eq 'x64') {"reg"} else {"${env:SystemRoot}\Syswow64\reg.exe"}
         $KEY_NAME = "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenCL\Vendors"
         $VALUE_NAME = "${env:GITHUB_WORKSPACE}/build/Release/OpenCLDriverStub.dll"
+        $VALUE_NAME_2 = "${env:GITHUB_WORKSPACE}/build/Release/OpenCLDriverStubICD2.dll"
         & $REG ADD $KEY_NAME /v $VALUE_NAME /t REG_DWORD /d 0
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+        & $REG ADD $KEY_NAME /v $VALUE_NAME_2 /t REG_DWORD /d 0
         if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
         foreach ($Config in 'Release','Debug') {
           & cmake `
@@ -549,6 +574,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Running OpenCL-ICD-Loader in-SDK consume test in $Config failed." }
         }
         & $REG DELETE $KEY_NAME /v $VALUE_NAME /f
+        if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
+        & $REG DELETE $KEY_NAME /v $VALUE_NAME_2 /f
         if ($LASTEXITCODE -ne 0) { throw "Editing registry failed." }
 
   macos:

@@ -1,6 +1,12 @@
 #ifndef _ICD_TEST_LOG_H_
 #define _ICD_TEST_LOG_H_
 
+#if defined(_WIN32)
+#include <windows.h>
+#else
+#include <stdlib.h>
+#endif
+
 #if defined(_WIN32) || defined(__CYGWIN__)
     #define DllExport __declspec(dllexport)
 #else
@@ -14,6 +20,9 @@
         #define DllExport
     #endif
 #endif
+
+DllExport const char * log_getenv(const char *name, const char *dflt);
+DllExport void log_freeenv(const char *var);
 
 DllExport int test_icd_initialize_app_log(void);
 DllExport void test_icd_app_log(const char *format, ...);

@@ -5,20 +5,82 @@
 #include<CL/cl.h>
 #include<platform/icd_test_log.h>
 
+#if defined(_WIN32)
+#include <windows.h>
+#endif
+
 #define APP_LOG_FILE  "icd_test_app_log.txt"
 #define STUB_LOG_FILE "icd_test_stub_log.txt"
+
+const char * log_getenv(const char *name, const char *dflt) {
+#if defined(_WIN32)
+    char *retVal = NULL;
+    DWORD valSize;
+
+    valSize = GetEnvironmentVariableA(name, NULL, 0);
+
+    // valSize DOES include the null terminator, so for any set variable
+    // will always be at least 1. If it's 0, the variable wasn't set.
+    if (valSize == 0) {
+        if (dflt) {
+            size_t sz = strlen(dflt) + 1;
+            retVal = (char *)malloc(sz);
+            if (retVal)
+                strcpy(retVal, dflt);
+        }
+        return retVal;
+    }
+
+    // Allocate the space necessary for the registry entry
+    retVal = (char *)malloc(valSize);
+
+    if (NULL != retVal) {
+        GetEnvironmentVariableA(name, retVal, valSize);
+    }
+
+    return retVal;
+#else
+    const char *var = NULL;
+    var = getenv(name);
+    if (!var)
+        var = dflt;
+    return var;
+#endif
+}
+
+void log_freeenv(const char *var) {
+#if defined(_WIN32)
+    if (var)
+        free((void *)var);
+#else
+    (void)var;
+#endif
+}
 
 static FILE *app_log_file;
 static FILE *stub_log_file;
 
+static const char *test_icd_get_app_log_file_name(void)
+{
+    return log_getenv("APP_LOG_FILE", APP_LOG_FILE);
+}
+
+static const char *test_icd_get_stub_log_file_name(void)
+{
+    return log_getenv("APP_STUB_FILE", STUB_LOG_FILE);
+}
+
 int test_icd_initialize_app_log(void)
 {
-    app_log_file = fopen(APP_LOG_FILE, "w");
+    const char *app_log_file_name = test_icd_get_app_log_file_name();
+    app_log_file = fopen(app_log_file_name, "w");
     if (!app_log_file) {
-		printf("Unable to open file %s\n", APP_LOG_FILE);
+        printf("Unable to open file %s\n", app_log_file_name);
+        log_freeenv(app_log_file_name);
         return -1;
     }
-    
+
+    log_freeenv(app_log_file_name);
     return 0;
 }
 
@@ -37,14 +99,16 @@ void test_icd_app_log(const char *format, ...)
 
 int test_icd_initialize_stub_log(void)
 {
-   	stub_log_file = fopen(STUB_LOG_FILE, "w");
+    const char *stub_log_file_name = test_icd_get_stub_log_file_name();
+    stub_log_file = fopen(stub_log_file_name, "w");
     if (!stub_log_file) {
-		printf("Unable to open file %s\n", STUB_LOG_FILE);
+        printf("Unable to open file %s\n", stub_log_file_name);
+        log_freeenv(stub_log_file_name);
         return -1;
     }
-    
-    return 0;
 
+    log_freeenv(stub_log_file_name);
+    return 0;
 }
 
 void test_icd_close_stub_log(void)
@@ -67,6 +131,7 @@ static char *test_icd_get_log(const char *filename)
     char *source = NULL;
 
     fp = fopen(filename, "rb");
+    log_freeenv(filename);
 
     if (fp) {
         size_t fsize = 0;
@@ -94,10 +159,10 @@ static char *test_icd_get_log(const char *filename)
 
 char *test_icd_get_app_log(void)
 {
-    return test_icd_get_log(APP_LOG_FILE);
+    return test_icd_get_log(test_icd_get_app_log_file_name());
 }
 
 char *test_icd_get_stub_log(void)
 {
-    return test_icd_get_log(STUB_LOG_FILE);
+    return test_icd_get_log(test_icd_get_stub_log_file_name());
 }
