@@ -16,6 +16,8 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
+#include <CL/cl.h>
+
 #if !defined(CL_ICD2_TAG_KHR)
 #if INTPTR_MAX == INT32_MAX
 #define CL_ICD2_TAG_KHR ((intptr_t)0x434C3331)
