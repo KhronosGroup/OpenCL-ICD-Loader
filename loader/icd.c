@@ -159,7 +159,7 @@ void khrIcdVendorAdd(const char *libraryName)
            KHR_ICD_TRACE("found icd 2 object, but platform is missing clIcdSetPlatformDispatchDataKHR\n");
            continue;
         }
-        if (KHR_ICD2_HAS_TAG(platforms[i]) && !((intptr_t)((platforms[i])->dispatch->clUnloadCompiler) == CL_ICD2_TAG_KHR))
+        if (KHR_ICD2_HAS_TAG(platforms[i]) && !KHR_ICD2_HAS_TAG2(platforms[i]))
         {
            KHR_ICD_TRACE("found icd 2 object, but platform is missing tag in clUnloadCompiler\n");
            continue;
