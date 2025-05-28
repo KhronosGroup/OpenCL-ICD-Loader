@@ -74,7 +74,7 @@ struct KHRDisp
 };
 
 #define KHR_ICD2_HAS_TAG(object)                                               \
-(((intptr_t)((object)->dispatch->clGetPlatformIDs)) == CL_ICD2_TAG_KHR)
+((object)->dispatch->clGetPlatformIDs_icd2_tag == CL_ICD2_TAG_KHR)
 
 #define KHR_ICD2_DISPATCH(object)                                              \
 (KHR_ICD2_HAS_TAG(object) ?                                                    \
