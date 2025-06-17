@@ -280,7 +280,7 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 %endfor
 #if defined(CL_ENABLE_LAYERS)
 struct _cl_icd_dispatch khrMasterDispatch = {
-    &clGetPlatformIDs_disp,
+    {&clGetPlatformIDs_disp},
     &clGetPlatformInfo_disp,
     &clGetDeviceIDs_disp,
     &clGetDeviceInfo_disp,
@@ -311,7 +311,7 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clRetainProgram_disp,
     &clReleaseProgram_disp,
     &clBuildProgram_disp,
-    &clUnloadCompiler_disp,
+    {&clUnloadCompiler_disp},
     &clGetProgramInfo_disp,
     &clGetProgramBuildInfo_disp,
     &clCreateKernel_disp,
