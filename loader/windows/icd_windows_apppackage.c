@@ -33,7 +33,7 @@ typedef LONG (WINAPI *PFN_GetPackagePathByFullName)(
     _Out_writes_opt_(*pathLength) PWSTR path
     );
 
-bool khrIcdOsVendorsEnumerateAppPackage(void)
+bool khrIcdOsVendorsEnumerateAppPackage(WinAdapterList *adapterList)
 {
     bool ret = false;
     WCHAR *buffer = NULL;
@@ -113,7 +113,7 @@ bool khrIcdOsVendorsEnumerateAppPackage(void)
     char narrowDllPath[MAX_PATH];
     WideCharToMultiByte(CP_UTF8, 0, dllPath, -1, narrowDllPath, MAX_PATH, NULL, NULL);
 
-    ret = adapterAdd(narrowDllPath, ZeroLuid);
+    ret = adapterAdd(adapterList, narrowDllPath, ZeroLuid);
 
 cleanup:
     FreeLibrary(h);

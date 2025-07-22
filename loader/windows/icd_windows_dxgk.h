@@ -19,4 +19,4 @@
 #include <stdbool.h>
 #include "icd_windows.h"
 
-bool khrIcdOsVendorsEnumerateDXGK(void);
+bool khrIcdOsVendorsEnumerateDXGK(WinAdapterList *adapterList);
