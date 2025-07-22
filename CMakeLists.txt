@@ -69,7 +69,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/loader/icd_cmake_config.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/icd_cmake_config.h)
 
 set (OPENCL_ICD_LOADER_SOURCES
-    include/cl_khr_icd2.h
     loader/icd.c
     loader/icd.h
     loader/icd_version.h
