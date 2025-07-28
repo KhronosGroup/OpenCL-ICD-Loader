@@ -181,6 +181,13 @@ void khrIcdContextPropertiesGetPlatform(
     const cl_context_properties *properties, 
     cl_platform_id *outPlatform);
 
+// condition anonyous union initialization to usage
+#if __CL_HAS_ANON_STRUCT__
+#define ICD_ANON_UNION_INIT_MEMBER(a) {a}
+#else
+#define ICD_ANON_UNION_INIT_MEMBER(a) a
+#endif
+
 // internal tracing macros
 #define KHR_ICD_TRACE(...) \
 do \
