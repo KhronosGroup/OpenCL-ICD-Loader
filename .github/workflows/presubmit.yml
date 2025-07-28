@@ -17,6 +17,9 @@ jobs:
     strategy:
       matrix:
         CMAKE: [3.26.4]
+        CMAKE_C_EXTENSIONS:
+          - OFF
+          - ON
         C_COMPILER:
           - gcc-11
           - gcc-13
@@ -36,6 +39,7 @@ jobs:
           - CMAKE: system
             C_COMPILER: gcc-9
             BIN: 64
+            CMAKE_C_EXTENSIONS: ON
             CONF:
               GEN: Unix Makefiles
               CONFIG: Debug
@@ -43,6 +47,7 @@ jobs:
           - CMAKE: system
             C_COMPILER: gcc-9
             BIN: 64
+            CMAKE_C_EXTENSIONS: ON
             CONF:
               GEN: Unix Makefiles
               CONFIG: Release
@@ -50,6 +55,7 @@ jobs:
           - CMAKE: system
             C_COMPILER: gcc-9
             BIN: 32
+            CMAKE_C_EXTENSIONS: ON
             CONF:
               GEN: Unix Makefiles
               CONFIG: Debug
@@ -57,6 +63,7 @@ jobs:
           - CMAKE: system
             C_COMPILER: gcc-9
             BIN: 32
+            CMAKE_C_EXTENSIONS: ON
             CONF:
               GEN: Unix Makefiles
               CONFIG: Release
@@ -94,6 +101,7 @@ jobs:
         -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
         -D CPACK_PACKAGING_INSTALL_PREFIX=$DEB_INSTALLATION_PATH
         -D BUILD_TESTING=OFF
+        -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}}
         -S $GITHUB_WORKSPACE/external/OpenCL-Headers
         -B $GITHUB_WORKSPACE/external/OpenCL-Headers/build &&
         $CMAKE_EXE
@@ -111,6 +119,7 @@ jobs:
         -G "${{matrix.CONF.GEN}}"
         `if [[ "${{matrix.CONF.GEN}}" == "Unix Makefiles" ]]; then echo "-D CMAKE_BUILD_TYPE=${{matrix.CONF.CONFIG}}"; fi`
         -D BUILD_TESTING=ON
+        -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}}
         -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/install
         -D CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
         -D CPACK_PACKAGING_INSTALL_PREFIX=$DEB_INSTALLATION_PATH
@@ -231,6 +240,9 @@ jobs:
         VER: [v142, v143, clangcl]
         GEN: [Visual Studio 17 2022, Ninja Multi-Config]
         BIN: [x64]
+        CMAKE_C_EXTENSIONS:
+        - OFF
+        - ON
         exclude:
         - VER: clangcl
           GEN: Ninja Multi-Config
@@ -238,6 +250,7 @@ jobs:
         - VER: v142
           GEN: Visual Studio 17 2022
           BIN: x86
+          CMAKE_C_EXTENSIONS: ON
     env:
       NINJA_URL: https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-win.zip
       NINJA_ROOT: C:\Tools\Ninja
@@ -285,7 +298,7 @@ jobs:
           -A $BIN `
           -T ${{matrix.VER}} `
           -D BUILD_TESTING=OFF `
-          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}} `
           -D CMAKE_INSTALL_PREFIX=${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install `
           -S ${env:GITHUB_WORKSPACE}\external\OpenCL-Headers `
           -B ${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\build
@@ -311,7 +324,7 @@ jobs:
           -G "${{matrix.GEN}}" `
           -D CMAKE_MAKE_PROGRAM="${env:NINJA_ROOT}\ninja.exe"  `
           -D BUILD_TESTING=OFF `
-          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}} `
           -D CMAKE_INSTALL_PREFIX=${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install `
           -S ${env:GITHUB_WORKSPACE}\external\OpenCL-Headers `
           -B ${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\build
@@ -332,7 +345,7 @@ jobs:
           -A $BIN `
           -T ${{matrix.VER}} `
           -D BUILD_TESTING=ON `
-          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}} `
           -D CMAKE_INSTALL_PREFIX=${env:GITHUB_WORKSPACE}\install `
           -D CMAKE_PREFIX_PATH=${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install `
           -S ${env:GITHUB_WORKSPACE} `
@@ -351,7 +364,7 @@ jobs:
           -G "${{matrix.GEN}}" `
           -D CMAKE_MAKE_PROGRAM="${env:NINJA_ROOT}\ninja.exe" `
           -D BUILD_TESTING=ON `
-          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}} `
           -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
           -D CMAKE_INSTALL_PREFIX=${env:GITHUB_WORKSPACE}\install `
           -D CMAKE_PREFIX_PATH=${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install `
@@ -426,7 +439,7 @@ jobs:
           -G '${{matrix.GEN}}' `
           -A $BIN `
           -T ${{matrix.VER}} `
-          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}} `
           -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
           -D CMAKE_PREFIX_PATH="${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install;${env:GITHUB_WORKSPACE}\install" `
           -D DRIVER_STUB_PATH="${env:GITHUB_WORKSPACE}\build\Release\OpenCLDriverStub.dll" `
@@ -466,7 +479,7 @@ jobs:
         & cmake `
           -G '${{matrix.GEN}}' `
           -D CMAKE_MAKE_PROGRAM="${env:NINJA_ROOT}\ninja.exe" `
-          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}} `
           -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
           -D CMAKE_PREFIX_PATH="${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install;${env:GITHUB_WORKSPACE}\install" `
           -D DRIVER_STUB_PATH="${env:GITHUB_WORKSPACE}\build\Release\OpenCLDriverStub.dll" `
@@ -509,7 +522,7 @@ jobs:
           -G '${{matrix.GEN}}' `
           -A $BIN `
           -T ${{matrix.VER}} `
-          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}} `
           -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
           -D CMAKE_PREFIX_PATH="${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install;${env:GITHUB_WORKSPACE}\install" `
           -D DRIVER_STUB_PATH="${env:GITHUB_WORKSPACE}\build\Release\OpenCLDriverStub.dll" `
@@ -549,7 +562,7 @@ jobs:
         & cmake `
           -G '${{matrix.GEN}}' `
           -D CMAKE_MAKE_PROGRAM="${env:NINJA_ROOT}\ninja.exe" `
-          -D CMAKE_C_EXTENSIONS=OFF `
+          -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}} `
           -D CMAKE_EXE_LINKER_FLAGS=/INCREMENTAL `
           -D CMAKE_PREFIX_PATH="${env:GITHUB_WORKSPACE}\external\OpenCL-Headers\install;${env:GITHUB_WORKSPACE}\install" `
           -D DRIVER_STUB_PATH="${env:GITHUB_WORKSPACE}\build\Release\OpenCLDriverStub.dll" `
@@ -592,6 +605,9 @@ jobs:
         # - gcc-11
         # Disabled due to problems with the __API_AVAILABLE macro
         # - gcc-13
+        CMAKE_C_EXTENSIONS:
+        - OFF
+        - ON
         GEN:
         - Xcode
         - Ninja Multi-Config
@@ -626,7 +642,7 @@ jobs:
       run: cmake
         -G "${{matrix.GEN}}"
         -D BUILD_TESTING=OFF
-        -D CMAKE_C_EXTENSIONS=OFF
+        -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}}
         -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
         -S $GITHUB_WORKSPACE/external/OpenCL-Headers
         -B $GITHUB_WORKSPACE/external/OpenCL-Headers/build &&
@@ -640,7 +656,7 @@ jobs:
       run: cmake
         -G "${{matrix.GEN}}"
         -D BUILD_TESTING=ON
-        -D CMAKE_C_EXTENSIONS=OFF
+        -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}}
         -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/install
         -D CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
         -S $GITHUB_WORKSPACE
@@ -664,7 +680,7 @@ jobs:
     - name: Consume (install)
       run: cmake
         -G "${{matrix.GEN}}"
-        -D CMAKE_C_EXTENSIONS=OFF
+        -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}}
         -D CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/external/OpenCL-Headers/install;$GITHUB_WORKSPACE/install"
         -S $GITHUB_WORKSPACE/test/pkgconfig/bare
         -B $GITHUB_WORKSPACE/build_install &&
@@ -681,7 +697,7 @@ jobs:
       run: export PKG_CONFIG_PATH=$GITHUB_WORKSPACE/install/lib/pkgconfig:$GITHUB_WORKSPACE/external/OpenCL-Headers/install/share/pkgconfig &&
         cmake
         -G "${{matrix.GEN}}"
-        -D CMAKE_C_EXTENSIONS=OFF
+        -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}}
         -D CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/external/OpenCL-Headers/install"
         -D DRIVER_STUB_PATH=$GITHUB_WORKSPACE/build/Release/libOpenCLDriverStub.dylib
         -B $GITHUB_WORKSPACE/build/downstream/pkgconfig
@@ -724,7 +740,7 @@ jobs:
       run: cmake
         -G "Unix Makefiles"
         -D CMAKE_BUILD_TYPE=${{matrix.CONFIG}}
-        -D CMAKE_C_EXTENSIONS=OFF
+        -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}}
         -D CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/external/OpenCL-Headers/install
         -D BUILD_TESTING=OFF
         -S $GITHUB_WORKSPACE/external/OpenCL-Headers
@@ -739,6 +755,7 @@ jobs:
       run: cmake
         -G "Unix Makefiles"
         -D BUILD_TESTING=ON
+        -D CMAKE_C_EXTENSIONS=${{matrix.CMAKE_C_EXTENSIONS}}
         -D CMAKE_BUILD_TYPE=${{matrix.CONFIG}}
         -D CMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake
         -D ANDROID_ABI=${{matrix.ABI}}
