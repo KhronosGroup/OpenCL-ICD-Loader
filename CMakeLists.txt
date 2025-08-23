@@ -68,6 +68,11 @@ check_function_exists(__secure_getenv HAVE___SECURE_GETENV)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/loader/icd_cmake_config.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/icd_cmake_config.h)
 
+if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup()
+endif()
+
 set (OPENCL_ICD_LOADER_SOURCES
     loader/icd.c
     loader/icd.h
