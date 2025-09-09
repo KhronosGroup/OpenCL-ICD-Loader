@@ -7,3 +7,4 @@ Description: Khronos OpenCL ICD Loader
 Requires: OpenCL-Headers
 Version: 3.0
 Libs: -L${libdir} -lOpenCL
+Libs.private:@OPENCL_LIBS_PRIVATE_PC@

@@ -12,28 +12,32 @@ join_paths(OPENCL_LIBDIR_PC "\${exec_prefix}" "${CMAKE_INSTALL_LIBDIR}")
 set(pkg_config_location ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 set(PKGCONFIG_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
-# Configure and install OpenCL.pc for installing the project
-configure_file(
-  OpenCL.pc.in
-  ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_install/OpenCL.pc
-  @ONLY)
-install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_install/OpenCL.pc
-  DESTINATION ${pkg_config_location}
-  COMPONENT pkgconfig_install)
+set(OPENCL_LIBS_PRIVATE_PC "")
 
-# Configure and install OpenCL.pc for the Debian package
-set(PKGCONFIG_PREFIX "${CPACK_PACKAGING_INSTALL_PREFIX}")
-configure_file(
-  OpenCL.pc.in
-  ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_package/OpenCL.pc
-  @ONLY)
+function(install_opencl_pc)
+  # Configure and install OpenCL.pc for installing the project
+  configure_file(
+    OpenCL.pc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_install/OpenCL.pc
+    @ONLY)
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_install/OpenCL.pc
+    DESTINATION ${pkg_config_location}
+    COMPONENT pkgconfig_install)
 
-install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_package/OpenCL.pc
-  DESTINATION ${pkg_config_location}
-  COMPONENT dev
-  EXCLUDE_FROM_ALL)
+  # Configure and install OpenCL.pc for the Debian package
+  set(PKGCONFIG_PREFIX "${CPACK_PACKAGING_INSTALL_PREFIX}")
+  configure_file(
+    OpenCL.pc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_package/OpenCL.pc
+    @ONLY)
+
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig_package/OpenCL.pc
+    DESTINATION ${pkg_config_location}
+    COMPONENT dev
+    EXCLUDE_FROM_ALL)
+endfunction()
 
 set(CPACK_DEBIAN_PACKAGE_DEBUG ON)
 
