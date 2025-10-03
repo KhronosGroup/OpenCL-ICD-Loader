@@ -182,7 +182,7 @@ void khrIcdContextPropertiesGetPlatform(
     cl_platform_id *outPlatform);
 
 // condition anonyous union initialization to usage
-#if __CL_HAS_ANON_STRUCT__
+#if __CL_HAS_ANON_UNION__
 #define ICD_ANON_UNION_INIT_MEMBER(a) {a}
 #else
 #define ICD_ANON_UNION_INIT_MEMBER(a) a
