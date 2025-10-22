@@ -265,3 +265,8 @@ void khrIcdOsLibraryUnload(void *library)
 {
     dlclose(library);
 }
+
+static
+void __attribute__((destructor)) khrIcdDestructor(void) {
+    khrIcdDeinitialize();
+}
