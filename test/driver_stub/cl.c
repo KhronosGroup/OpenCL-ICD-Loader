@@ -17,6 +17,7 @@
 #include <CL/cl.h>
 #include <platform/icd_test_log.h>
 #include "icd_structs.h"
+#include "cl_khr_icd2.h"
 
 #define CL_PLATFORM_ICD_SUFFIX_KHR                  0x0920
 CL_API_ENTRY cl_int CL_API_CALL
@@ -31,6 +32,7 @@ struct _cl_platform_id
     const char *vendor;
     const char *extensions;
     const char *suffix;
+    cl_device_id device;
 };
 
 struct _cl_device_id
@@ -74,7 +76,7 @@ struct _cl_sampler
 };
 
 static CLIicdDispatchTable* dispatchTable = NULL;
-static cl_platform_id platform = NULL;
+static cl_platform_id stub_platform = NULL;
 static cl_bool initialized = CL_FALSE;
 
 CL_API_ENTRY cl_int CL_API_CALL
@@ -124,6 +126,18 @@ clGetPlatformInfo(cl_platform_id platform_id, cl_platform_info param_name,
         case CL_PLATFORM_ICD_SUFFIX_KHR:
             returnString = platform_id->suffix;
             break;
+        case CL_PLATFORM_UNLOADABLE_KHR:
+            if (param_value_size && param_value_size < sizeof(cl_bool)) {
+                ret = CL_INVALID_VALUE;
+                goto done;
+            }
+            if (param_value) {
+                *(cl_bool *)param_value = CL_TRUE;
+            }
+            if (param_value_size_ret) {
+                *param_value_size_ret = sizeof(cl_bool);
+            }
+            goto done;
         default:
             ret = CL_INVALID_VALUE;
             goto done;
@@ -164,9 +178,11 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
     }
 
     if (devices != NULL) {
-        cl_device_id obj = (cl_device_id) malloc(sizeof(struct _cl_device_id));
-        CL_INIT_OBJECT(obj, platform);
-        devices[0] = obj;
+        if (!platform_id->device) {
+            platform_id->device = (cl_device_id) malloc(sizeof(struct _cl_device_id));
+            CL_INIT_OBJECT(platform_id->device, stub_platform);
+        }
+        devices[0] = platform_id->device;
     }
     if (num_devices) {
         *num_devices = 1;
@@ -280,7 +296,7 @@ clCreateContextFromType(const cl_context_properties * properties,
                         cl_int *                      errcode_ret) CL_API_SUFFIX__VERSION_1_0
 {
     cl_context obj = (cl_context) malloc(sizeof(struct _cl_context));
-    cl_platform_id plt = platform;
+    cl_platform_id plt = stub_platform;
     for (const cl_context_properties * property = properties; *property; property += 2)
         if (*property == (cl_context_properties)CL_CONTEXT_PLATFORM)
             plt = (cl_platform_id)property[1];
@@ -1930,6 +1946,7 @@ clEnqueueBarrier(cl_command_queue  command_queue) CL_API_SUFFIX__VERSION_1_0
 }
 
 extern cl_int cliIcdDispatchTableCreate(CLIicdDispatchTable **outDispatchTable);
+extern void cliIcdDispatchTableDestroy(CLIicdDispatchTable *dispatchTable);
 
 CL_API_ENTRY cl_int CL_API_CALL
 clIcdGetPlatformIDsKHR(cl_uint           num_entries,
@@ -1939,20 +1956,20 @@ clIcdGetPlatformIDsKHR(cl_uint           num_entries,
     cl_int result = CL_SUCCESS;
     if (!initialized) {
         result = cliIcdDispatchTableCreate(&dispatchTable);
-        platform = (cl_platform_id) malloc(sizeof(struct _cl_platform_id));
-        memset(platform, 0, sizeof(struct _cl_platform_id));
+        stub_platform = (cl_platform_id) malloc(sizeof(struct _cl_platform_id));
+        memset(stub_platform, 0, sizeof(struct _cl_platform_id));
 
-        CL_INIT_PLATFORM(platform, dispatchTable);
-        platform->version = "OpenCL 1.2 Stub";
-        platform->vendor = "stubvendorxxx";
-        platform->profile = "stubprofilexxx";
+        CL_INIT_PLATFORM(stub_platform, dispatchTable);
+        stub_platform->version = "OpenCL 1.2 Stub";
+        stub_platform->vendor = "stubvendorxxx";
+        stub_platform->profile = "stubprofilexxx";
 #if defined(CL_ENABLE_ICD2)
-        platform->name = "ICD_LOADER_TEST_OPENCL_STUB_ICD2";
+        stub_platform->name = "ICD_LOADER_TEST_OPENCL_STUB_ICD2";
 #else
-        platform->name = "ICD_LOADER_TEST_OPENCL_STUB";
+        stub_platform->name = "ICD_LOADER_TEST_OPENCL_STUB";
 #endif
-        platform->extensions = "cl_khr_icd cl_khr_gl cl_khr_d3d10";
-        platform->suffix = "ilts";
+        stub_platform->extensions = "cl_khr_icd cl_khr_icd_unloadable cl_khr_gl cl_khr_d3d10";
+        stub_platform->suffix = "ilts";
         initialized = CL_TRUE;
     }
 
@@ -1964,7 +1981,7 @@ clIcdGetPlatformIDsKHR(cl_uint           num_entries,
     }
 
     if (platforms && num_entries == 1) {
-        platforms[0] = platform;
+        platforms[0] = stub_platform;
     }
 
 Done:
@@ -1975,3 +1992,31 @@ Done:
     return result;
 }
 
+static void deinit(void) {
+    if (initialized) {
+        free(stub_platform->device);
+        stub_platform->device = NULL;
+        free(stub_platform);
+        stub_platform = NULL;
+        cliIcdDispatchTableDestroy(dispatchTable);
+        dispatchTable = NULL;
+        initialized = CL_FALSE;
+    }
+}
+
+#if defined(_WIN32)
+#include <windows.h>
+BOOL APIENTRY DllMain(HINSTANCE hinst, DWORD reason, LPVOID reserved) {
+    (void)hinst;
+    (void)reserved;
+    if (reason == DLL_PROCESS_DETACH) {
+        deinit();
+    }
+    return TRUE;
+}
+#else
+static
+void __attribute__((destructor)) khrIcdDestructor(void) {
+    deinit();
+}
+#endif

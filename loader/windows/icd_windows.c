@@ -195,7 +195,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     HKEY platformsKey = NULL;
     DWORD dwIndex;
 
-    khrIcdInitializeTrace();
+    khrIcdInitializeEnvOptions();
     khrIcdVendorsEnumerateEnv();
 
     currentStatus = khrIcdOsVendorsEnumerateDXGK();
@@ -447,3 +447,14 @@ void khrIcdOsLibraryUnload(void *library)
 {
     FreeLibrary( (HMODULE)library);
 }
+
+#ifndef CL_LAYER_INFO
+BOOL APIENTRY DllMain(HINSTANCE hinst, DWORD reason, LPVOID reserved) {
+    (void)hinst;
+    (void)reserved;
+    if (reason == DLL_PROCESS_DETACH) {
+        khrIcdDeinitialize();
+    }
+    return TRUE;
+}
+#endif

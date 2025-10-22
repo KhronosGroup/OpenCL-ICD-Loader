@@ -2,6 +2,8 @@
     global:
 clGetLayerInfo;
 clInitLayer;
+clInitLayerWithProperties;
+clDeinitLayer;
 
     local:
         *;

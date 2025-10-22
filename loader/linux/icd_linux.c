@@ -218,7 +218,7 @@ static inline void khrIcdOsDirEnumerate(const char *path, const char *env,
 // go through the list of vendors in the two configuration files
 void khrIcdOsVendorsEnumerate(void)
 {
-    khrIcdInitializeTrace();
+    khrIcdInitializeEnvOptions();
     khrIcdVendorsEnumerateEnv();
 
     khrIcdOsDirEnumerate(ICD_VENDOR_PATH, "OCL_ICD_VENDORS", ".icd", khrIcdVendorAdd, 0);
@@ -265,3 +265,10 @@ void khrIcdOsLibraryUnload(void *library)
 {
     dlclose(library);
 }
+
+#ifndef CL_LAYER_INFO
+static
+void __attribute__((destructor)) khrIcdDestructor(void) {
+    khrIcdDeinitialize();
+}
+#endif
