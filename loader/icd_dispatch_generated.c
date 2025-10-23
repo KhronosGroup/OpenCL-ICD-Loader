@@ -6824,7 +6824,7 @@ static cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_disp(
 ///////////////////////////////////////////////////////////////////////////////
 
 #if defined(CL_ENABLE_LAYERS)
-struct _cl_icd_dispatch khrMasterDispatch = {
+const struct _cl_icd_dispatch khrMainDispatch = {
     ICD_ANON_UNION_INIT_MEMBER(&clGetPlatformIDs_disp),
     &clGetPlatformInfo_disp,
     &clGetDeviceIDs_disp,
@@ -7027,7 +7027,8 @@ struct _cl_icd_dispatch khrMasterDispatch = {
     &clCreateBufferWithProperties_disp,
     &clCreateImageWithProperties_disp,
     &clSetContextDestructorCallback_disp
-};
+}
+;
 #endif // defined(CL_ENABLE_LAYERS)
 
 #if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
