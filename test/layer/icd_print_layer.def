@@ -1,3 +1,4 @@
 EXPORTS
 clGetLayerInfo
 clInitLayer
+clDeinitLayer
