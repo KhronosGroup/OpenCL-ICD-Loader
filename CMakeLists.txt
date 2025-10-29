@@ -127,6 +127,7 @@ set_target_properties (OpenCL PROPERTIES VERSION 1\.0\.0 SOVERSION "1")
 
 if (WIN32)
     target_link_libraries (OpenCL PRIVATE cfgmgr32.lib runtimeobject.lib)
+    string(APPEND OPENCL_LIBS_PRIVATE_PC " -lcfgmgr32 -lruntimeobject")
 
     # Generate a DLL without a "lib" prefix for mingw.
     if (MINGW OR MSYS OR CYGWIN)
@@ -135,6 +136,7 @@ if (WIN32)
     endif()
 else()
     target_link_libraries (OpenCL PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+    string(APPEND OPENCL_LIBS_PRIVATE_PC " ${CMAKE_THREAD_LIBS_INIT}")
     if (NOT APPLE)
         set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/loader/linux/icd_exports.map")
         if (OPENCL_ICD_LOADER_PIC)
@@ -177,6 +179,9 @@ target_include_directories (OpenCL
     loader
 )
 target_link_libraries (OpenCL PUBLIC ${CMAKE_DL_LIBS})
+if(CMAKE_DL_LIBS STREQUAL "dl")
+  string(APPEND OPENCL_LIBS_PRIVATE_PC " -ldl")
+endif()
 
 if (ENABLE_OPENCL_LAYERINFO)
 
@@ -297,3 +302,4 @@ install (TARGETS OpenCL
       DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT dev
     NAMELINK_ONLY)
+install_opencl_pc()
