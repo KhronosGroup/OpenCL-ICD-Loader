@@ -123,7 +123,8 @@ int test_clCompileProgram(const struct clCompileProgram_st *data)
 
 int test_clLinkProgram(const struct clLinkProgram_st *data)
 {
-    cl_program program;
+    cl_program linked_program;
+    cl_int ret_val;
     test_icd_app_log("clLinkProgram(%p, %u, %p, %p, %u, %p, %p, %p, %p)\n",
                      context,
                      data->num_devices,
@@ -135,7 +136,7 @@ int test_clLinkProgram(const struct clLinkProgram_st *data)
                      data->user_data,
                      data->errcode_ret);
 
-    program=clLinkProgram(context,
+    linked_program=clLinkProgram(context,
                         data->num_devices,
                         data->device_list,
                         data->options,
@@ -145,7 +146,11 @@ int test_clLinkProgram(const struct clLinkProgram_st *data)
                         data->user_data,
                         data->errcode_ret);
 
-    test_icd_app_log("Value returned: %p\n", program);
+    test_icd_app_log("Value returned: %p\n", linked_program);
+
+    test_icd_app_log("clReleaseProgram(%p)\n", linked_program);
+    ret_val = clReleaseProgram(linked_program);
+    test_icd_app_log("Value returned: %d\n", ret_val);
 
     return 0;
 
@@ -230,7 +235,7 @@ int test_clGetProgramBuildInfo(const struct clGetProgramBuildInfo_st *data)
 
 }
 
-int test_program_objects()
+int test_program_objects(void)
 {
     int i;
 

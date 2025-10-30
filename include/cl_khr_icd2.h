@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 The Khronos Group Inc.
+ * Copyright (c) 2016-2025 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,31 +16,28 @@
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
 
-#ifndef OPENCL_CL_ICDL_H
-#define OPENCL_CL_ICDL_H
-
 #include <CL/cl.h>
 
-#ifdef __cplusplus
-extern "C" {
+#if !defined(CL_ICD2_TAG_KHR)
+#if INTPTR_MAX == INT32_MAX
+#define CL_ICD2_TAG_KHR ((intptr_t)0x434C3331)
+#else
+#define CL_ICD2_TAG_KHR ((intptr_t)0x4F50454E434C3331)
 #endif
 
-typedef cl_uint cl_icdl_info;
+typedef void * CL_API_CALL
+clIcdGetFunctionAddressForPlatformKHR_t(
+    cl_platform_id platform,
+    const char* func_name);
 
-#define CL_ICDL_OCL_VERSION 1
-#define CL_ICDL_VERSION     2
-#define CL_ICDL_NAME        3
-#define CL_ICDL_VENDOR      4
+typedef clIcdGetFunctionAddressForPlatformKHR_t *
+clIcdGetFunctionAddressForPlatformKHR_fn;
 
-typedef cl_int
-(CL_API_CALL * pfn_clGetICDLoaderInfoOCLICD)(cl_icdl_info param_name,
-                                             size_t       param_value_size,
-                                             void *       param_value,
-                                             size_t *     param_value_size_ret);
+typedef cl_int CL_API_CALL
+clIcdSetPlatformDispatchDataKHR_t(
+    cl_platform_id platform,
+    void *disp_data);
 
-#ifdef __cplusplus
-}
-#endif
-
-
-#endif /* OPENCL_CL_ICDL_H */
+typedef clIcdSetPlatformDispatchDataKHR_t *
+clIcdSetPlatformDispatchDataKHR_fn;
+#endif // !defined(CL_ICD2_TAG_KHR)

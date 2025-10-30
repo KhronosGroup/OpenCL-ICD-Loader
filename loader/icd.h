@@ -20,6 +20,7 @@
 #define _ICD_H_
 
 #include "icd_platform.h"
+#include "icd_dispatch.h"
 
 #ifndef CL_USE_DEPRECATED_OPENCL_1_0_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_0_APIS
@@ -90,6 +91,11 @@ struct KHRicdVendorRec
     // the platform retrieved from clGetIcdPlatformIDsKHR
     cl_platform_id platform;
 
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    // the loader populated dispatch table for cl_khr_icd2 compliant platforms
+    struct KHRDisp dispData;
+#endif
+
     // next vendor in the list vendors
     KHRicdVendor *next;
 };
@@ -124,7 +130,7 @@ struct KHRLayer
 
 // the global layer state
 extern struct KHRLayer * khrFirstLayer;
-extern struct _cl_icd_dispatch khrMasterDispatch;
+extern const struct _cl_icd_dispatch khrMainDispatch;
 #endif // defined(CL_ENABLE_LAYERS)
 
 /* 
@@ -175,6 +181,13 @@ void khrIcdContextPropertiesGetPlatform(
     const cl_context_properties *properties, 
     cl_platform_id *outPlatform);
 
+// condition anonyous union initialization to usage
+#if __CL_HAS_ANON_UNION__
+#define ICD_ANON_UNION_INIT_MEMBER(a) {a}
+#else
+#define ICD_ANON_UNION_INIT_MEMBER(a) a
+#endif
+
 // internal tracing macros
 #define KHR_ICD_TRACE(...) \
 do \
@@ -201,29 +214,53 @@ do \
 #define KHR_ICD_WIDE_TRACE(...)
 #endif
 
-// if handle is NULL then return invalid_handle_error_code
-#define KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(handle,invalid_handle_error_code) \
-do \
-{ \
-    if (!handle) \
-    { \
-        return invalid_handle_error_code; \
-    } \
+#define KHR_ICD_ERROR_RETURN_ERROR(_error)                          \
+do {                                                                \
+    return _error;                                                  \
+} while(0)
+
+#define KHR_ICD_ERROR_RETURN_HANDLE(_error)                         \
+do {                                                                \
+    if (errcode_ret) {                                              \
+        *errcode_ret = _error;                                      \
+    }                                                               \
+    return NULL;                                                    \
+} while(0)
+
+// Check if the passed-in handle is NULL, and if it is, return the error.
+#define KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(_handle, _error)       \
+do {                                                                \
+    if (!_handle) {                                                 \
+        KHR_ICD_ERROR_RETURN_ERROR(_error);                         \
+    }                                                               \
 } while (0)
 
-// if handle is NULL then set errcode_ret to invalid_handle_error and return NULL 
-// (NULL being an invalid handle)
-#define KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(handle,invalid_handle_error) \
-do \
-{ \
-    if (!handle) \
-    { \
-        if (errcode_ret) \
-        { \
-            *errcode_ret = invalid_handle_error; \
-        } \
-        return NULL; \
-    } \
+// Check if the passed-in handle is NULL, and if it is, first check and set
+// errcode_ret to the error, then return NULL (NULL being an invalid handle).
+#define KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(_handle, _error)      \
+do {                                                                \
+    if (!_handle) {                                                 \
+        KHR_ICD_ERROR_RETURN_HANDLE(_error);                        \
+    }                                                               \
+} while (0)
+
+// Check if the passed-in function pointer is NULL, and if it is, return
+// CL_INVALID_OPERATION.
+#define KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(_pointer)             \
+do {                                                                \
+    if (!_pointer) {                                                \
+        KHR_ICD_ERROR_RETURN_ERROR(CL_INVALID_OPERATION);           \
+    }                                                               \
+} while (0)
+
+// Check if the passed-in function pointer is NULL, and if it is, first
+// check and set errcode_ret to CL_INVALID_OPERATION, then return NULL
+// (NULL being an invalid handle).
+#define KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(_pointer)            \
+do {                                                                \
+    if (!_pointer) {                                                \
+        KHR_ICD_ERROR_RETURN_HANDLE(CL_INVALID_OPERATION);          \
+    }                                                               \
 } while (0)
 
 #endif

@@ -18,13 +18,13 @@
 
 #include "icd.h"
 #include "icd_dispatch.h"
-#include "cl_icdl_private.h"
 #include "icd_version.h"
 
 #include <stdlib.h>
 #include <string.h>
 
-static cl_int
+static clGetICDLoaderInfoOCLICD_t clGetICDLoaderInfoOCLICD;
+cl_int CL_API_CALL
 clGetICDLoaderInfoOCLICD(
     cl_icdl_info param_name,
     size_t       param_value_size,
@@ -36,12 +36,12 @@ clGetICDLoaderInfoOCLICD(
     static const char cl_icdl_NAME[]        = OPENCL_ICD_LOADER_NAME_STRING;
     static const char cl_icdl_VENDOR[]      = OPENCL_ICD_LOADER_VENDOR_STRING;
     size_t            pvs;
-    void *            pv;
+    const void *      pv = NULL;
 
 #define KHR_ICD_CASE_STRING_PARAM_NAME(name)                                   \
     case CL_ICDL_ ## name:                                                     \
         pvs = strlen(cl_icdl_ ## name) + 1;                                    \
-        pv = (void *)cl_icdl_ ## name;                                         \
+        pv = (const void *)cl_icdl_ ## name;                                   \
         break
 
     switch (param_name) {
@@ -303,9 +303,25 @@ static inline void* clGetExtensionFunctionAddressForPlatform_body(
     // to get the extension function address.
 
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, NULL);
-    return platform->dispatch->clGetExtensionFunctionAddressForPlatform(
+
+#define KHR_ICD_REJECT_EXTENSION_FUNCTION(name)                                \
+    do                                                                         \
+    {                                                                          \
+        if (!strcmp(function_name, #name))                                     \
+        {                                                                      \
+            return NULL;                                                       \
+        }                                                                      \
+    } while (0)
+
+    // Reject ICD-specific functions that could be misused by users
+    KHR_ICD_REJECT_EXTENSION_FUNCTION(clIcdGetPlatformIDsKHR);
+    KHR_ICD_REJECT_EXTENSION_FUNCTION(clIcdGetFunctionAddressForPlatformKHR);
+    KHR_ICD_REJECT_EXTENSION_FUNCTION(clIcdSetPlatformDispatchDataKHR);
+
+    return KHR_ICD2_DISPATCH(platform)->clGetExtensionFunctionAddressForPlatform(
         platform,
         function_name);
+#undef KHR_ICD_REJECT_EXTENSION_FUNCTION
 }
 
 void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_disp(

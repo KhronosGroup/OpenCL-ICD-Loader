@@ -4,9 +4,7 @@ This repo contains the source code and tests for the Khronos official OpenCL ICD
 
 ## CI Build Status
 
-[![Windows Build Status](https://github.com/KhronosGroup/OpenCL-ICD-Loader/workflows/Windows/badge.svg)](https://github.com/KhronosGroup/OpenCL-ICD-Loader/actions?query=workflow%3AWindows)
-[![Linux Build Status](https://github.com/KhronosGroup/OpenCL-ICD-Loader/workflows/Linux/badge.svg)](https://github.com/KhronosGroup/OpenCL-ICD-Loader/actions?query=workflow%3ALinux)
-[![MacOS Build Status](https://github.com/KhronosGroup/OpenCL-ICD-Loader/workflows/MacOS/badge.svg)](https://github.com/KhronosGroup/OpenCL-ICD-Loader/actions?query=workflow%3AMacOS)
+[![Build Status](https://github.com/KhronosGroup/OpenCL-ICD-Loader/actions/workflows/presubmit.yml/badge.svg?branch=main)](https://github.com/KhronosGroup/OpenCL-ICD-Loader/actions/workflows/presubmit.yml)
 
 ## Introduction
 

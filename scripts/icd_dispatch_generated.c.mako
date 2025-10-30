@@ -1,4 +1,5 @@
 <%
+from mako.template import Template
 # APIs to skip - they need to be done "manually":
 apiskip = {
     'clGetPlatformIDs',                         # to query platforms
@@ -22,8 +23,10 @@ apihandles = {
     'cl_program'        : 'CL_INVALID_PROGRAM',
     'cl_sampler'        : 'CL_INVALID_SAMPLER',
     }
+
+table_template = Template(filename='dispatch_table.mako')
 %>/*
- * Copyright (c) 2012-2020 The Khronos Group Inc.
+ * Copyright (c) 2012-2023 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -134,17 +137,17 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(${handle.Name}, ${invalid});
 %endif
 %if api.Name == "clCreateContext":
-    return ${api.Params[2].Name}[0]->dispatch->${api.Name}(
+    return KHR_ICD2_DISPATCH(${api.Params[2].Name}[0])->${api.Name}(
 %elif api.Name == "clWaitForEvents":
-    return ${api.Params[1].Name}[0]->dispatch->${api.Name}(
+    return KHR_ICD2_DISPATCH(${api.Params[1].Name}[0])->${api.Name}(
 %elif api.Name == "clCreateContextFromType":
-    return platform->dispatch->${api.Name}(
+    return KHR_ICD2_DISPATCH(platform)->${api.Name}(
 %elif api.Name == "clSVMFree":
-    ${handle.Name}->dispatch->${api.Name}(
+    KHR_ICD2_DISPATCH(${handle.Name})->${api.Name}(
 %elif api.Name == "clUnloadCompiler":
     return CL_SUCCESS;
 %else:
-    return ${handle.Name}->dispatch->${api.Name}(
+    return KHR_ICD2_DISPATCH(${handle.Name})->${api.Name}(
 %endif:
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
@@ -239,20 +242,23 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
     // api.Name == "clXXX":  # There are currently no API special cases here.
 %  else:
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(${handle.Name}, ${invalid});
-% endif
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(${handle.Name})->${api.Name});
+%  endif
 %else:
 %  if api.Name == "clGetGLContextInfoKHR":
     cl_platform_id platform = NULL;
     khrIcdContextPropertiesGetPlatform(properties, &platform);
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(platform)->${api.Name});
 %  else:
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(${handle.Name}, ${invalid});
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(${handle.Name})->${api.Name});
 %  endif
 %endif
 %if api.Name == "clGetGLContextInfoKHR":
-    return platform->dispatch->${api.Name}(
+    return KHR_ICD2_DISPATCH(platform)->${api.Name}(
 %else:
-    return ${handle.Name}->dispatch->${api.Name}(
+    return KHR_ICD2_DISPATCH(${handle.Name})->${api.Name}(
 %endif
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
@@ -276,211 +282,119 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 
 %endfor
 #if defined(CL_ENABLE_LAYERS)
-struct _cl_icd_dispatch khrMasterDispatch = {
-    &clGetPlatformIDs_disp,
-    &clGetPlatformInfo_disp,
-    &clGetDeviceIDs_disp,
-    &clGetDeviceInfo_disp,
-    &clCreateContext_disp,
-    &clCreateContextFromType_disp,
-    &clRetainContext_disp,
-    &clReleaseContext_disp,
-    &clGetContextInfo_disp,
-    &clCreateCommandQueue_disp,
-    &clRetainCommandQueue_disp,
-    &clReleaseCommandQueue_disp,
-    &clGetCommandQueueInfo_disp,
-    &clSetCommandQueueProperty_disp,
-    &clCreateBuffer_disp,
-    &clCreateImage2D_disp,
-    &clCreateImage3D_disp,
-    &clRetainMemObject_disp,
-    &clReleaseMemObject_disp,
-    &clGetSupportedImageFormats_disp,
-    &clGetMemObjectInfo_disp,
-    &clGetImageInfo_disp,
-    &clCreateSampler_disp,
-    &clRetainSampler_disp,
-    &clReleaseSampler_disp,
-    &clGetSamplerInfo_disp,
-    &clCreateProgramWithSource_disp,
-    &clCreateProgramWithBinary_disp,
-    &clRetainProgram_disp,
-    &clReleaseProgram_disp,
-    &clBuildProgram_disp,
-    &clUnloadCompiler_disp,
-    &clGetProgramInfo_disp,
-    &clGetProgramBuildInfo_disp,
-    &clCreateKernel_disp,
-    &clCreateKernelsInProgram_disp,
-    &clRetainKernel_disp,
-    &clReleaseKernel_disp,
-    &clSetKernelArg_disp,
-    &clGetKernelInfo_disp,
-    &clGetKernelWorkGroupInfo_disp,
-    &clWaitForEvents_disp,
-    &clGetEventInfo_disp,
-    &clRetainEvent_disp,
-    &clReleaseEvent_disp,
-    &clGetEventProfilingInfo_disp,
-    &clFlush_disp,
-    &clFinish_disp,
-    &clEnqueueReadBuffer_disp,
-    &clEnqueueWriteBuffer_disp,
-    &clEnqueueCopyBuffer_disp,
-    &clEnqueueReadImage_disp,
-    &clEnqueueWriteImage_disp,
-    &clEnqueueCopyImage_disp,
-    &clEnqueueCopyImageToBuffer_disp,
-    &clEnqueueCopyBufferToImage_disp,
-    &clEnqueueMapBuffer_disp,
-    &clEnqueueMapImage_disp,
-    &clEnqueueUnmapMemObject_disp,
-    &clEnqueueNDRangeKernel_disp,
-    &clEnqueueTask_disp,
-    &clEnqueueNativeKernel_disp,
-    &clEnqueueMarker_disp,
-    &clEnqueueWaitForEvents_disp,
-    &clEnqueueBarrier_disp,
-    &clGetExtensionFunctionAddress_disp,
-    &clCreateFromGLBuffer_disp,
-    &clCreateFromGLTexture2D_disp,
-    &clCreateFromGLTexture3D_disp,
-    &clCreateFromGLRenderbuffer_disp,
-    &clGetGLObjectInfo_disp,
-    &clGetGLTextureInfo_disp,
-    &clEnqueueAcquireGLObjects_disp,
-    &clEnqueueReleaseGLObjects_disp,
-    &clGetGLContextInfoKHR_disp,
-
-  /* cl_khr_d3d10_sharing */
-#if defined(_WIN32)
-    &clGetDeviceIDsFromD3D10KHR_disp,
-    &clCreateFromD3D10BufferKHR_disp,
-    &clCreateFromD3D10Texture2DKHR_disp,
-    &clCreateFromD3D10Texture3DKHR_disp,
-    &clEnqueueAcquireD3D10ObjectsKHR_disp,
-    &clEnqueueReleaseD3D10ObjectsKHR_disp,
-#else
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-#endif
-
-  /* OpenCL 1.1 */
-    &clSetEventCallback_disp,
-    &clCreateSubBuffer_disp,
-    &clSetMemObjectDestructorCallback_disp,
-    &clCreateUserEvent_disp,
-    &clSetUserEventStatus_disp,
-    &clEnqueueReadBufferRect_disp,
-    &clEnqueueWriteBufferRect_disp,
-    &clEnqueueCopyBufferRect_disp,
-
-  /* cl_ext_device_fission */
-    &clCreateSubDevicesEXT_disp,
-    &clRetainDeviceEXT_disp,
-    &clReleaseDeviceEXT_disp,
-
-  /* cl_khr_gl_event */
-    &clCreateEventFromGLsyncKHR_disp,
-
-  /* OpenCL 1.2 */
-    &clCreateSubDevices_disp,
-    &clRetainDevice_disp,
-    &clReleaseDevice_disp,
-    &clCreateImage_disp,
-    &clCreateProgramWithBuiltInKernels_disp,
-    &clCompileProgram_disp,
-    &clLinkProgram_disp,
-    &clUnloadPlatformCompiler_disp,
-    &clGetKernelArgInfo_disp,
-    &clEnqueueFillBuffer_disp,
-    &clEnqueueFillImage_disp,
-    &clEnqueueMigrateMemObjects_disp,
-    &clEnqueueMarkerWithWaitList_disp,
-    &clEnqueueBarrierWithWaitList_disp,
-    &clGetExtensionFunctionAddressForPlatform_disp,
-    &clCreateFromGLTexture_disp,
-
-  /* cl_khr_d3d11_sharing */
-#if defined(_WIN32)
-    &clGetDeviceIDsFromD3D11KHR_disp,
-    &clCreateFromD3D11BufferKHR_disp,
-    &clCreateFromD3D11Texture2DKHR_disp,
-    &clCreateFromD3D11Texture3DKHR_disp,
-    &clCreateFromDX9MediaSurfaceKHR_disp,
-    &clEnqueueAcquireD3D11ObjectsKHR_disp,
-    &clEnqueueReleaseD3D11ObjectsKHR_disp,
-#else
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-#endif
-
-  /* cl_khr_dx9_media_sharing */
-#if defined(_WIN32)
-    &clGetDeviceIDsFromDX9MediaAdapterKHR_disp,
-    &clEnqueueAcquireDX9MediaSurfacesKHR_disp,
-    &clEnqueueReleaseDX9MediaSurfacesKHR_disp,
-#else
-    NULL,
-    NULL,
-    NULL,
-#endif
-
-  /* cl_khr_egl_image */
-    &clCreateFromEGLImageKHR_disp,
-    &clEnqueueAcquireEGLObjectsKHR_disp,
-    &clEnqueueReleaseEGLObjectsKHR_disp,
-
-  /* cl_khr_egl_event */
-    &clCreateEventFromEGLSyncKHR_disp,
-
-  /* OpenCL 2.0 */
-    &clCreateCommandQueueWithProperties_disp,
-    &clCreatePipe_disp,
-    &clGetPipeInfo_disp,
-    &clSVMAlloc_disp,
-    &clSVMFree_disp,
-    &clEnqueueSVMFree_disp,
-    &clEnqueueSVMMemcpy_disp,
-    &clEnqueueSVMMemFill_disp,
-    &clEnqueueSVMMap_disp,
-    &clEnqueueSVMUnmap_disp,
-    &clCreateSamplerWithProperties_disp,
-    &clSetKernelArgSVMPointer_disp,
-    &clSetKernelExecInfo_disp,
-
-  /* cl_khr_sub_groups */
-    &clGetKernelSubGroupInfoKHR_disp,
-
-  /* OpenCL 2.1 */
-    &clCloneKernel_disp,
-    &clCreateProgramWithIL_disp,
-    &clEnqueueSVMMigrateMem_disp,
-    &clGetDeviceAndHostTimer_disp,
-    &clGetHostTimer_disp,
-    &clGetKernelSubGroupInfo_disp,
-    &clSetDefaultDeviceCommandQueue_disp,
-
-  /* OpenCL 2.2 */
-    &clSetProgramReleaseCallback_disp,
-    &clSetProgramSpecializationConstant_disp,
-
-  /* OpenCL 3.0 */
-    &clCreateBufferWithProperties_disp,
-    &clCreateImageWithProperties_disp,
-    &clSetContextDestructorCallback_disp
-};
+const struct _cl_icd_dispatch khrMainDispatch = ${table_template.render(suffix = 'disp')};
 #endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+///////////////////////////////////////////////////////////////////////////////
+// Core APIs:
+%for apis in coreapis.values():
+%for api in apis:
+static ${api.RetType} CL_API_CALL ${api.Name}_unsupp(
+%for i, param in enumerate(api.Params):
+%  if i < len(api.Params)-1:
+    ${param.Type} ${param.Name}${param.TypeEnd},
+%  else:
+    ${param.Type} ${param.Name}${param.TypeEnd})
+%  endif
+%endfor
+{
+%for param in api.Params:
+%  if param.Name:
+    (void)${param.Name};
+%  endif
+%endfor
+%if api.Name == "clSVMAlloc" or api.Name == "clGetExtensionFunctionAddressForPlatform" or api.Name == "clGetExtensionFunctionAddress":
+    KHR_ICD_ERROR_RETURN_ERROR(NULL);
+%elif api.Name == "clSVMFree":
+    return;
+%elif api.RetType in apihandles or api.RetType == "void*":
+    KHR_ICD_ERROR_RETURN_HANDLE(CL_INVALID_OPERATION);
+%else:
+    KHR_ICD_ERROR_RETURN_ERROR(CL_INVALID_OPERATION);
+%endif
+}
+%endfor
+%endfor
+
+///////////////////////////////////////////////////////////////////////////////
+%for extension in icdextensions:
+<%
+    apis = extapis[extension]
+%>// ${extension}
+%if extension in win32extensions:
+
+#if defined(_WIN32)
+%endif
+%for api in apis:
+static ${api.RetType} CL_API_CALL ${api.Name}_unsupp(
+%for i, param in enumerate(api.Params):
+%  if i < len(api.Params)-1:
+    ${param.Type} ${param.Name}${param.TypeEnd},
+%  else:
+    ${param.Type} ${param.Name}${param.TypeEnd})
+%  endif
+%endfor
+{
+%for param in api.Params:
+%  if param.Name:
+    (void)${param.Name};
+%  endif
+%endfor
+%if api.RetType in apihandles or api.RetType == "void*":
+    KHR_ICD_ERROR_RETURN_HANDLE(CL_INVALID_OPERATION);
+%else:
+    KHR_ICD_ERROR_RETURN_ERROR(CL_INVALID_OPERATION);
+%endif
+}
+%endfor
+%if extension in win32extensions:
+#endif // defined(_WIN32)
+
+%endif
+///////////////////////////////////////////////////////////////////////////////
+
+%endfor
+
+void khrIcd2PopulateDispatchTable(
+    cl_platform_id platform,
+    clIcdGetFunctionAddressForPlatformKHR_fn p_clIcdGetFunctionAddressForPlatform,
+    struct _cl_icd_dispatch* dispatch)
+{
+///////////////////////////////////////////////////////////////////////////////
+// Core APIs:
+%for apis in coreapis.values():
+%for api in apis:
+   dispatch->${api.Name} = (${api.Name}_t *)(size_t)p_clIcdGetFunctionAddressForPlatform(platform, "${api.Name}");
+   if (!dispatch->${api.Name})
+       dispatch->${api.Name} = &${api.Name}_unsupp;
+%endfor
+%endfor
+
+///////////////////////////////////////////////////////////////////////////////
+%for extension in icdextensions:
+<%
+    apis = extapis[extension]
+%>// ${extension}
+%if extension in win32extensions:
+
+#if defined(_WIN32)
+%endif
+%for api in apis:
+   dispatch->${api.Name} = (${api.Name}_t *)(size_t)p_clIcdGetFunctionAddressForPlatform(platform, "${api.Name}");
+   if (!dispatch->${api.Name})
+       dispatch->${api.Name} = &${api.Name}_unsupp;
+%endfor
+%if extension in win32extensions:
+#endif // defined(_WIN32)
+
+%endif
+///////////////////////////////////////////////////////////////////////////////
+
+%endfor
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+
 #ifdef __cplusplus
 }
 #endif

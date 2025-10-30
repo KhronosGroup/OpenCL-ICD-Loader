@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 3.16)
 
 # Include guard for including this project multiple times
 if(TARGET OpenCL)
@@ -6,7 +6,7 @@ if(TARGET OpenCL)
 endif()
 
 project (OpenCL-ICD-Loader
-    VERSION 1.2.5
+    VERSION 1.0.7
     LANGUAGES C)
 
 find_package (Threads REQUIRED)
@@ -46,19 +46,23 @@ if(DEFINED BUILD_SHARED_LIBS)
 else()
   set(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT ON)
 endif()
-  option(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS "Build OpenCL ICD Loader as shared library" ${OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT})
+option(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS "Build OpenCL ICD Loader as shared library" ${OPENCL_ICD_LOADER_BUILD_SHARED_LIBS_DEFAULT})
 
 # This option enables/disables support for OpenCL layers in the ICD loader.
 # It is currently needed default while the specification is being formalized,
 # and to study the performance impact.
 option (ENABLE_OPENCL_LAYERS "Enable OpenCL Layers" ON)
+option (ENABLE_OPENCL_LOADER_MANAGED_DISPATCH "Enable OpenCL Loader managed dispatch" ON)
 include(CMakeDependentOption)
 cmake_dependent_option(ENABLE_OPENCL_LAYERINFO "Enable building cllayerinfo tool" ON ENABLE_OPENCL_LAYERS OFF)
 
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-include(JoinPaths)
+include(GNUInstallDirs)
 
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(CheckFunctionExists)
+include(JoinPaths)
+include(Package)
+
 check_function_exists(secure_getenv HAVE_SECURE_GETENV)
 check_function_exists(__secure_getenv HAVE___SECURE_GETENV)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/loader/icd_cmake_config.h.in
@@ -68,12 +72,12 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd.c
     loader/icd.h
     loader/icd_version.h
-    loader/cl_icdl_private.h
     loader/icd_dispatch.c
     loader/icd_dispatch.h
     loader/icd_dispatch_generated.c
     loader/icd_envvars.h
     loader/icd_platform.h)
+include_directories (include)
 
 if (WIN32)
     list (APPEND OPENCL_ICD_LOADER_SOURCES
@@ -119,8 +123,8 @@ endif()
 
 add_library (OpenCL::OpenCL ALIAS OpenCL)
 
-# We could eventually use OpenCL-ICD-Loader_VERSION or PROJECT_VERSION here instead of a hardcoded 1.2.
-set_target_properties (OpenCL PROPERTIES VERSION "1.2" SOVERSION "1")
+# We could eventually use OpenCL-ICD-Loader_VERSION or PROJECT_VERSION here instead of a hardcoded 1.0.0.
+set_target_properties (OpenCL PROPERTIES VERSION 1\.0\.0 SOVERSION "1")
 
 if (WIN32)
     target_link_libraries (OpenCL PRIVATE cfgmgr32.lib runtimeobject.lib)
@@ -155,10 +159,12 @@ endif ()
 
 set (OPENCL_COMPILE_DEFINITIONS
     CL_TARGET_OPENCL_VERSION=300
+    CL_NO_NON_ICD_DISPATCH_EXTENSION_PROTOTYPES
     OPENCL_ICD_LOADER_VERSION_MAJOR=3
     OPENCL_ICD_LOADER_VERSION_MINOR=0
     OPENCL_ICD_LOADER_VERSION_REV=${PROJECT_VERSION_PATCH}
     $<$<BOOL:${ENABLE_OPENCL_LAYERS}>:CL_ENABLE_LAYERS>
+    $<$<BOOL:${ENABLE_OPENCL_LOADER_MANAGED_DISPATCH}>:CL_ENABLE_LOADER_MANAGED_DISPATCH>
 )
 
 target_compile_definitions (OpenCL
@@ -220,13 +226,11 @@ if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR OPENCL_ICD_LOADER_BUILD_TESTING)
     add_subdirectory (test)
 endif()
 
-include (GNUInstallDirs)
-
 install(
   TARGETS OpenCL
   EXPORT OpenCLICDLoaderTargets
   LIBRARY
-    DESTINATION ${CMAKE_INSTALL_LIBDIR} # obtained from GNUInstallDirs
+  DESTINATION ${CMAKE_INSTALL_LIBDIR} # obtained from GNUInstallDirs
 )
 install(
 # FILES $<TARGET_PDB_FILE:OpenCL> is cleanest, but is MSVC link.exe specific. LLVM's lld.exe and lld-link.exe don't support it (configure-time error)
@@ -239,9 +243,9 @@ install(
 if (ENABLE_OPENCL_LAYERINFO)
   install(
     TARGETS cllayerinfo
-    EXPORT OpenCLICDLoaderTargets
     RUNTIME
       DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT cllayerinfo
   )
 endif()
 
@@ -261,10 +265,12 @@ install(
   FILE OpenCLICDLoaderTargets.cmake
   NAMESPACE OpenCL::
   DESTINATION ${config_package_location}
+  COMPONENT dev
 )
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderConfig.cmake
   DESTINATION ${config_package_location}
+  COMPONENT dev
 )
 
 unset(CMAKE_SIZEOF_VOID_P)
@@ -277,20 +283,18 @@ write_basic_package_version_file(
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCLICDLoader/OpenCLICDLoaderConfigVersion.cmake
   DESTINATION ${config_package_location}
+  COMPONENT dev
 )
 
+# Separate namelink from shared library and symlink for DEB packaging
 install (TARGETS OpenCL
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    LIBRARY
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT runtime
+    NAMELINK_SKIP)
 
-join_paths(OPENCL_LIBDIR_PC "\${exec_prefix}" "${CMAKE_INSTALL_LIBDIR}")
-join_paths(OPENCL_INCLUDEDIR_PC "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
-
-if (NOT MSVC)
-  configure_file(OpenCL.pc.in OpenCL.pc @ONLY)
-  set(pkg_config_location ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
-  install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenCL.pc
-    DESTINATION ${pkg_config_location})
-endif()
+install (TARGETS OpenCL
+    LIBRARY
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT dev
+    NAMELINK_ONLY)

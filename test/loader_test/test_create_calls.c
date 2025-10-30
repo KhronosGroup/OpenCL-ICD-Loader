@@ -11,7 +11,6 @@
 
 extern void CL_CALLBACK createcontext_callback(const char* a, const void* b, size_t c, void* d);
 
-cl_platform_id*  all_platforms;
 cl_platform_id platform;
 cl_uint num_platforms;
 cl_context context;
@@ -96,10 +95,17 @@ struct clReleaseMemObject_st clReleaseMemObjectData[NUM_ITEMS_clReleaseMemObject
     {NULL}
 };
 
+struct clReleaseMemObject_st clReleaseMemObjectDataSubBuffer[NUM_ITEMS_clReleaseMemObject] =
+{
+    {NULL}
+};
+
 struct clReleaseMemObject_st clReleaseMemObjectDataImage[NUM_ITEMS_clReleaseMemObject] =
 {
     {NULL}
-};const struct clCreateProgramWithSource_st clCreateProgramWithSourceData[NUM_ITEMS_clCreateProgramWithSource] =
+};
+
+const struct clCreateProgramWithSource_st clCreateProgramWithSourceData[NUM_ITEMS_clCreateProgramWithSource] =
 {
     {NULL, 0, NULL, NULL, NULL}
 };
@@ -144,13 +150,17 @@ const struct clGetPlatformIDs_st clGetPlatformIDsData[NUM_ITEMS_clGetPlatformIDs
  */
 #define ENABLE_MISMATCHING_PRINTS 0
 
+const char *default_platform_to_find = "ICD_LOADER_TEST_OPENCL_STUB";
+
 int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
 {
+    const char *platform_to_find = NULL;
     cl_int ret_val;
     size_t param_val_ret_size;
     #define PLATFORM_NAME_SIZE 80
     char platform_name[PLATFORM_NAME_SIZE];
     cl_uint i;    
+    cl_platform_id *all_platforms;
 
 #if ENABLE_MISMATCHING_PRINTS
     test_icd_app_log("clGetPlatformIDs(%u, %p, %p)\n",
@@ -178,7 +188,9 @@ int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
     if (ret_val != CL_SUCCESS){
         return -1;
     }
-   
+
+    platform_to_find = log_getenv("APP_PLATFORM", "ICD_LOADER_TEST_OPENCL_STUB");
+
     for (i = 0; i < num_platforms; i++) {
         ret_val = clGetPlatformInfo(all_platforms[i],
                 CL_PLATFORM_NAME,
@@ -187,11 +199,13 @@ int test_clGetPlatformIDs(const struct clGetPlatformIDs_st* data)
                 &param_val_ret_size );  
 
         if (ret_val == CL_SUCCESS ){
-            if(!strcmp(platform_name, "ICD_LOADER_TEST_OPENCL_STUB")) {
+            if(!strcmp(platform_name, platform_to_find)) {
                 platform = all_platforms[i];                
             }
         }
     }
+    log_freeenv(platform_to_find);
+    free(all_platforms);
 
 #if ENABLE_MISMATCHING_PRINTS
     test_icd_app_log("Value returned: %d\n", ret_val);
@@ -351,7 +365,7 @@ int test_clCreateSubBuffer(const struct clCreateSubBuffer_st *data)
                                 data->buffer_create_info,
                                 data->errcode_ret);
 
-    clReleaseMemObjectData->memobj = buffer;
+    clReleaseMemObjectDataSubBuffer->memobj = subBuffer;
 
     test_icd_app_log("Value returned: %p\n", subBuffer);
 
@@ -762,7 +776,7 @@ int test_clReleaseDevice(const struct clReleaseDevice_st* data)
 
 }
 
-int test_create_calls()
+int test_create_calls(void)
 {
     test_clGetPlatformIDs(clGetPlatformIDsData);
 
@@ -780,11 +794,15 @@ int test_create_calls()
 
     test_clCreateBuffer(clCreateBufferData);
 
+    test_clReleaseMemObject(clReleaseMemObjectData);
+
     test_clCreateBufferWithProperties(clCreateBufferWithPropertiesData);
 
     test_clCreateSubBuffer(clCreateSubBufferData);
 
     test_clCreateImage(clCreateImageData);
+
+    test_clReleaseMemObject(clReleaseMemObjectDataImage);
 
     test_clCreateImageWithProperties(clCreateImageWithPropertiesData);
 
@@ -818,11 +836,13 @@ int test_create_calls()
 
 }
 
-int test_release_calls()
+int test_release_calls(void)
 {
     test_clReleaseSampler(clReleaseSamplerData);
 
     test_clReleaseMemObject(clReleaseMemObjectData);
+
+    test_clReleaseMemObject(clReleaseMemObjectDataSubBuffer);
 
     test_clReleaseMemObject(clReleaseMemObjectDataImage);
 

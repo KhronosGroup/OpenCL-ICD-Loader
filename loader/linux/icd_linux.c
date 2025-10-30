@@ -129,10 +129,11 @@ struct dirElem
 static int compareDirElem(const void *a, const void *b)
 {
     // sort files the same way libc alpahnumerically sorts directory entries.
-    return strcoll(((struct dirElem *)a)->d_name, ((struct dirElem *)b)->d_name);
+    return strcoll(((const struct dirElem *)a)->d_name, ((const struct dirElem *)b)->d_name);
 }
 
-static inline void khrIcdOsDirEnumerate(char *path, char *env, const char *extension,
+static inline void khrIcdOsDirEnumerate(const char *path, const char *env,
+                                        const char *extension,
                                         khrIcdFileAdd addFunc, int bSort)
 {
     DIR *dir = NULL;
@@ -186,7 +187,11 @@ static inline void khrIcdOsDirEnumerate(char *path, char *env, const char *exten
                          break;
                     memcpy(nameCopy, dirEntry->d_name, sz);
                     dirElems[elemCount].d_name = nameCopy;
+#if defined(__QNXNTO__)
+                    dirElems[elemCount].d_type = _DEXTRA_FIRST(dirEntry)->d_type;
+#else
                     dirElems[elemCount].d_type = dirEntry->d_type;
+#endif
                     elemCount++;
                 }
                 qsort(dirElems, elemCount, sizeof(struct dirElem), compareDirElem);

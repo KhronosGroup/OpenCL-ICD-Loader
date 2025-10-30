@@ -59,6 +59,42 @@
 #include <CL/cl_ext.h>
 #include <CL/cl_egl.h>
 #include <CL/cl_icd.h>
+#include "cl_khr_icd2.h"
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+
+extern void khrIcd2PopulateDispatchTable(
+    cl_platform_id platform,
+    clIcdGetFunctionAddressForPlatformKHR_fn p_clIcdGetFunctionAddressForPlatform,
+    struct _cl_icd_dispatch* dispatch);
+
+struct KHRDisp
+{
+    struct _cl_icd_dispatch dispatch;
+};
+
+#define KHR_ICD2_HAS_TAG(object)                                               \
+(((intptr_t)((object)->dispatch->clGetPlatformIDs)) == CL_ICD2_TAG_KHR)
+
+#define KHR_ICD2_DISPATCH(object)                                              \
+(KHR_ICD2_HAS_TAG(object) ?                                                    \
+    &(object)->dispData->dispatch :                                            \
+    (object)->dispatch)
+
+#define KHR_ICD_OBJECT_BODY {                                                  \
+    cl_icd_dispatch *dispatch;                                                 \
+    struct KHRDisp  *dispData;                                                 \
+}
+
+#else // ! defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+
+#define KHR_ICD2_DISPATCH(object) ((object)->dispatch)
+
+#define KHR_ICD_OBJECT_BODY {                                                  \
+    cl_icd_dispatch *dispatch;                                                 \
+}
+
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 
 /*
  *
@@ -67,49 +103,31 @@
  */
 
 struct _cl_platform_id
-{
-    cl_icd_dispatch *dispatch;
-};
+KHR_ICD_OBJECT_BODY;
 
 struct _cl_device_id
-{
-    cl_icd_dispatch *dispatch;
-};
+KHR_ICD_OBJECT_BODY;
 
 struct _cl_context
-{
-    cl_icd_dispatch *dispatch;
-};
+KHR_ICD_OBJECT_BODY;
 
 struct _cl_command_queue
-{
-    cl_icd_dispatch *dispatch;
-};
+KHR_ICD_OBJECT_BODY;
 
 struct _cl_mem
-{
-    cl_icd_dispatch *dispatch;
-};
+KHR_ICD_OBJECT_BODY;
 
 struct _cl_program
-{
-    cl_icd_dispatch *dispatch;
-};
+KHR_ICD_OBJECT_BODY;
 
 struct _cl_kernel
-{
-    cl_icd_dispatch *dispatch;
-};
+KHR_ICD_OBJECT_BODY;
 
 struct _cl_event
-{
-    cl_icd_dispatch *dispatch;
-};
+KHR_ICD_OBJECT_BODY;
 
 struct _cl_sampler
-{
-    cl_icd_dispatch *dispatch;
-};
+KHR_ICD_OBJECT_BODY;
 
 #endif // _ICD_DISPATCH_H_
 

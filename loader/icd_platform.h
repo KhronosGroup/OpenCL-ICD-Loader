@@ -19,13 +19,17 @@
 #ifndef _ICD_PLATFORM_H_
 #define _ICD_PLATFORM_H_
 
-#if defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__)
+#if defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__) || defined(__QNXNTO__)
 
 #define PATH_SEPARATOR  ':'
 #define DIRECTORY_SYMBOL '/'
 #ifdef __ANDROID__
+#ifndef ICD_VENDOR_PATH
 #define ICD_VENDOR_PATH "/system/vendor/Khronos/OpenCL/vendors"
+#endif // ICD_VENDOR_PATH
+#ifndef LAYER_PATH
 #define LAYER_PATH "/system/vendor/Khronos/OpenCL/layers"
+#endif // LAYER_PATH
 #else
 #define ICD_VENDOR_PATH "/etc/OpenCL/vendors"
 #define LAYER_PATH "/etc/OpenCL/layers"
