@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2019 The Khronos Group Inc.
+* Copyright (c) 2019-2026 The Khronos Group Inc.
 * Copyright (c) 2019 Valve Corporation
 * Copyright (c) 2019 LunarG, Inc.
 *
