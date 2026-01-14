@@ -19,7 +19,6 @@
 #include "icd.h"
 #include "icd_envvars.h"
 
-#include <dlfcn.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -235,35 +234,6 @@ void khrIcdOsVendorsEnumerate(void)
 void khrIcdOsVendorsEnumerateOnce(void)
 {
     pthread_once(&initialized, khrIcdOsVendorsEnumerate);
-}
-
-/*
- *
- * Dynamic library loading functions
- *
- */
-
-// dynamically load a library.  returns NULL on failure
-void *khrIcdOsLibraryLoad(const char *libraryName)
-{
-    void* ret = dlopen (libraryName, RTLD_NOW);
-    if (NULL == ret)
-    {
-        KHR_ICD_TRACE("Failed to load driver because %s.\n", dlerror());
-    }
-    return ret;
-}
-
-// get a function pointer from a loaded library.  returns NULL on failure.
-void *khrIcdOsLibraryGetFunctionAddress(void *library, const char *functionName)
-{
-    return dlsym(library, functionName);
-}
-
-// unload a library
-void khrIcdOsLibraryUnload(void *library)
-{
-    dlclose(library);
 }
 
 #ifndef CL_LAYER_INFO

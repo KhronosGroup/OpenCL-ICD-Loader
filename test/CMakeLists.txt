@@ -6,6 +6,7 @@ add_subdirectory (loader_test)
 if (ENABLE_OPENCL_LAYERS)
     add_subdirectory (layer)
 endif ()
+add_subdirectory (plugin_test)
 
 set_target_properties (IcdLog OpenCLDriverStub OpenCLDriverStubICD2 icd_loader_test
     PROPERTIES
@@ -29,6 +30,11 @@ if (ENABLE_OPENCL_LAYERINFO)
         COMMAND cllayerinfo
     )
 endif ()
+
+add_test (
+    NAME plugin_loader_test
+    COMMAND cl_plugin_loader_test
+)
 
 get_property(GENERATOR_IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if (GENERATOR_IS_MULTI_CONFIG)
@@ -54,3 +60,9 @@ if (ENABLE_OPENCL_LAYERINFO)
             WORKING_DIRECTORY "${TEST_WORKING_DIRECTORY}"
     )
 endif()
+
+set_tests_properties(plugin_loader_test
+    PROPERTIES
+        ENVIRONMENT "PLUGIN=$<TARGET_FILE:CLPlugin>;OCL_ICD_FILENAMES=$<TARGET_FILE:OpenCLDriverStubICD2>"
+        WORKING_DIRECTORY "${TEST_WORKING_DIRECTORY}"
+)

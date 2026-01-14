@@ -24,7 +24,6 @@
 
 KHRicdVendor *khrIcdVendors = NULL;
 static KHRicdVendor *lastVendor = NULL;
-int khrEnableTrace = 0;
 static int khrDisableLibraryUnloading = 0;
 static int khrForceLegacyTermination = 0;
 

@@ -21,6 +21,8 @@
 
 #include "icd_platform.h"
 #include "icd_dispatch.h"
+#include "icd_trace.h"
+#include "icd_library.h"
 
 #ifndef CL_USE_DEPRECATED_OPENCL_1_0_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_0_APIS
@@ -110,8 +112,6 @@ struct KHRicdVendorRec
 // the global state
 extern KHRicdVendor * khrIcdVendors;
 
-extern int khrEnableTrace;
-
 #if defined(CL_ENABLE_LAYERS)
 /*
  * KHRLayer
@@ -177,18 +177,6 @@ void khrIcdLayersEnumerateEnv(void);
 // add a layer to the layer chain
 void khrIcdLayerAdd(const char *libraryName);
 
-// dynamically load a library.  returns NULL on failure
-// n.b, this call is OS-specific
-void *khrIcdOsLibraryLoad(const char *libraryName);
-
-// get a function pointer from a loaded library.  returns NULL on failure.
-// n.b, this call is OS-specific
-void *khrIcdOsLibraryGetFunctionAddress(void *library, const char *functionName);
-
-// unload a library.
-// n.b, this call is OS-specific
-void khrIcdOsLibraryUnload(void *library);
-
 // parse properties and determine the platform to use from them
 void khrIcdContextPropertiesGetPlatform(
     const cl_context_properties *properties, 
@@ -199,32 +187,6 @@ void khrIcdContextPropertiesGetPlatform(
 #define ICD_ANON_UNION_INIT_MEMBER(a) {a}
 #else
 #define ICD_ANON_UNION_INIT_MEMBER(a) a
-#endif
-
-// internal tracing macros
-#define KHR_ICD_TRACE(...) \
-do \
-{ \
-    if (khrEnableTrace) \
-    { \
-        fprintf(stderr, "KHR ICD trace at %s:%d: ", __FILE__, __LINE__); \
-        fprintf(stderr, __VA_ARGS__); \
-    } \
-} while (0)
-
-#ifdef _WIN32
-#define KHR_ICD_WIDE_TRACE(...) \
-do \
-{ \
-    if (khrEnableTrace) \
-    { \
-        fwprintf(stderr, L"KHR ICD trace at %hs:%d: ", __FILE__, __LINE__); \
-        fwprintf(stderr, __VA_ARGS__); \
-    } \
-} while (0)
-
-#else
-#define KHR_ICD_WIDE_TRACE(...)
 #endif
 
 #define KHR_ICD_ERROR_RETURN_ERROR(_error)                          \

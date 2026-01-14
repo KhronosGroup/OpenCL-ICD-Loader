@@ -411,43 +411,6 @@ void khrIcdOsVendorsEnumerateOnce()
     InitOnceExecuteOnce(&initialized, khrIcdOsVendorsEnumerate, NULL, NULL);
 }
 
-/*
- *
- * Dynamic library loading functions
- *
- */
-
-// dynamically load a library.  returns NULL on failure
-void *khrIcdOsLibraryLoad(const char *libraryName)
-{
-    HMODULE hTemp = LoadLibraryExA(libraryName, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
-    if (!hTemp && GetLastError() == ERROR_INVALID_PARAMETER)
-    {
-        hTemp = LoadLibraryExA(libraryName, NULL, 0);
-    }
-    if (!hTemp)
-    {
-        KHR_ICD_TRACE("Failed to load driver. Windows error code is %"PRIuDW".\n", GetLastError());
-    }
-    return (void*)hTemp;
-}
-
-// get a function pointer from a loaded library.  returns NULL on failure.
-void *khrIcdOsLibraryGetFunctionAddress(void *library, const char *functionName)
-{
-    if (!library || !functionName)
-    {
-        return NULL;
-    }
-    return GetProcAddress( (HMODULE)library, functionName);
-}
-
-// unload a library.
-void khrIcdOsLibraryUnload(void *library)
-{
-    FreeLibrary( (HMODULE)library);
-}
-
 #ifndef CL_LAYER_INFO
 BOOL APIENTRY DllMain(HINSTANCE hinst, DWORD reason, LPVOID reserved) {
     (void)hinst;
