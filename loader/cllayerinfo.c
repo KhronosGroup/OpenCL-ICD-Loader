@@ -19,7 +19,6 @@
 #include "icd.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <CL/cl_layer.h>
 #if defined(_WIN32)
 #include <io.h>
 #include <share.h>
@@ -90,7 +89,7 @@ static void restore_outputs(void)
 void printLayerInfo(const struct KHRLayer *layer)
 {
     cl_layer_api_version api_version = 0;
-    pfn_clGetLayerInfo p_clGetLayerInfo = (pfn_clGetLayerInfo)(size_t)layer->p_clGetLayerInfo;
+    pfn_clGetLayerInfo p_clGetLayerInfo = layer->p_clGetLayerInfo;
     cl_int result = CL_SUCCESS;
     size_t sz;
 
@@ -113,20 +112,26 @@ void printLayerInfo(const struct KHRLayer *layer)
     }
 }
 
+static void run_silently(void (*pfn)(void))
+{
+    silence_layers();
+    atexit(restore_outputs);
+    pfn();
+    restore_outputs();
+    atexit(silence_layers);
+}
+
 int main (int argc, char *argv[])
 {
     (void)argc;
     (void)argv;
-    silence_layers();
-    atexit(restore_outputs);
-    khrIcdInitialize();
-    restore_outputs();
-    atexit(silence_layers);
+    run_silently(&khrIcdInitialize);
     const struct KHRLayer *layer = khrFirstLayer;
     while (layer)
     {
         printLayerInfo(layer);
         layer = layer->next;
     }
+    run_silently(&khrIcdDeinitialize);
     return 0;
 }

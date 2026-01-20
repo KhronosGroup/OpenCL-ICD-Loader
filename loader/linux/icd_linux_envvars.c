@@ -23,12 +23,26 @@
 
 #include "icd_cmake_config.h"
 
+#include "icd_envvars.h"
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
+
+static char *khrIcd_dup(const char *val)
+{
+    if (!val)
+        return NULL;
+    size_t sz = strlen(val) + 1;
+    char *ret = malloc(sz);
+    if (!ret)
+        return NULL;
+    memcpy(ret, val, sz);
+    return ret;
+}
 
 char *khrIcd_getenv(const char *name) {
-    // No allocation of memory necessary for Linux.
-    return getenv(name);
+    // A copy of the variable is returned in order to avoid modification
+    return khrIcd_dup(getenv(name));
 }
 
 char *khrIcd_secure_getenv(const char *name) {
@@ -44,9 +58,9 @@ char *khrIcd_secure_getenv(const char *name) {
 #else
 // Linux
 #ifdef HAVE_SECURE_GETENV
-    return secure_getenv(name);
+    return khrIcd_dup(secure_getenv(name));
 #elif defined(HAVE___SECURE_GETENV)
-    return __secure_getenv(name);
+    return khrIcd_dup(__secure_getenv(name));
 #else
 #pragma message(                                                                       \
     "Warning:  Falling back to non-secure getenv for environmental lookups!  Consider" \
@@ -57,7 +71,5 @@ char *khrIcd_secure_getenv(const char *name) {
 }
 
 void khrIcd_free_getenv(char *val) {
-    // No freeing of memory necessary for Linux, but we should at least touch
-    // val to get rid of compiler warnings.
-    (void)val;
+    free((void*)val);
 }

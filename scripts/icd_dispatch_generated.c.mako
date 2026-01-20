@@ -285,7 +285,7 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 const struct _cl_icd_dispatch khrMainDispatch = ${table_template.render(suffix = 'disp')};
 #endif // defined(CL_ENABLE_LAYERS)
 
-#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) || defined(CL_ENABLE_LAYERS)
 ///////////////////////////////////////////////////////////////////////////////
 // Core APIs:
 %for apis in coreapis.values():
@@ -355,7 +355,13 @@ static ${api.RetType} CL_API_CALL ${api.Name}_unsupp(
 ///////////////////////////////////////////////////////////////////////////////
 
 %endfor
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) || defined(CL_ENABLE_LAYERS)
 
+#if defined(CL_ENABLE_LAYERS)
+const struct _cl_icd_dispatch khrDeinitDispatch = ${table_template.render(suffix = 'unsupp')};
+#endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 void khrIcd2PopulateDispatchTable(
     cl_platform_id platform,
     clIcdGetFunctionAddressForPlatformKHR_fn p_clIcdGetFunctionAddressForPlatform,
