@@ -15,6 +15,8 @@
  *
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
+#ifndef _ICD_WINDOWS_H_
+#define _ICD_WINDOWS_H_
 
 #include <stdbool.h>
 #include <windows.h>
@@ -32,4 +34,6 @@ const char* getOpenCLRegKeyName(void);
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

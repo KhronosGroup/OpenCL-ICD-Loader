@@ -15,6 +15,9 @@
  *
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
+#ifndef _CL_PLUGIN_H_
+#define _CL_PLUGIN_H_
+
 #define PLUGIN_INIT plugin_init
 #define XSTRING(x) TO_STRING(x)
 #define TO_STRING(x) #x
@@ -25,3 +28,5 @@
 
 typedef int plugin_init_fn(void);
 typedef plugin_init_fn *plugin_init_pfn;
+
+#endif
