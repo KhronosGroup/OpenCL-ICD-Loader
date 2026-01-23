@@ -231,7 +231,8 @@ if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR OPENCL_ICD_LOADER_BUILD_TESTING)
     add_subdirectory (test)
 
     set (CL_PLUGIN_LOADER_TEST_SOURCES
-        loader/cl_plugin_loader_test.c
+        test/plugin_test/cl_plugin_loader_test.c
+        test/plugin_test/cl_plugin.h
         loader/icd_envvars.h
         loader/icd_trace.c
         loader/icd_trace.h
