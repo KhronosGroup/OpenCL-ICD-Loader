@@ -22,6 +22,16 @@
 #include <stddef.h>
 #include <stdio.h>
 
+/*
+ * This test program uses loader components for portability (environment,
+ * library) in order to repeatedly load, initialize, and unload a plugin. The
+ * interface of the plugin is defined in `cl_plugin.h`. This interface define
+ * an initialization function and return results. A plugin that is linked to
+ * the OpenCL ICD Loader, and uses OpenCL functionalities in its initialization
+ * function, will allow checking that the loader initialization and
+ * deinitialization are working correctly.
+ */
+
 int main(int argc, char *argv[]) {
   (void)argc;
   (void)argv;
