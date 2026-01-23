@@ -30,7 +30,7 @@
 // dynamically load a library.  returns NULL on failure
 void *khrIcdOsLibraryLoad(const char *libraryName)
 {
-    void* ret = dlopen (libraryName, RTLD_NOW);
+    void* ret = dlopen(libraryName, RTLD_NOW);
     if (NULL == ret)
     {
         KHR_ICD_TRACE("Failed to load driver because %s.\n", dlerror());
