@@ -411,7 +411,7 @@ void khrIcdOsVendorsEnumerateOnce()
     InitOnceExecuteOnce(&initialized, khrIcdOsVendorsEnumerate, NULL, NULL);
 }
 
-#ifndef CL_LAYER_INFO
+#if !defined(CL_LAYER_INFO) && defined(CL_SHARED_BUILD)
 BOOL APIENTRY DllMain(HINSTANCE hinst, DWORD reason, LPVOID reserved) {
     (void)hinst;
     (void)reserved;
