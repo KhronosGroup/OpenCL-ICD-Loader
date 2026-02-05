@@ -230,43 +230,6 @@ endif()
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR OPENCL_ICD_LOADER_BUILD_TESTING) AND BUILD_TESTING)
     add_subdirectory (test)
 
-    set (CL_PLUGIN_LOADER_TEST_SOURCES
-        test/plugin_test/cl_plugin_loader_test.c
-        test/plugin_test/cl_plugin.h
-        loader/icd_envvars.h
-        loader/icd_trace.c
-        loader/icd_trace.h
-        loader/icd_library.h
-    )
-
-    if (WIN32)
-        list (APPEND CL_PLUGIN_LOADER_TEST_SOURCES
-            loader/windows/icd_windows_formats.h
-            loader/windows/icd_windows_envvars.c
-            loader/windows/icd_windows_library.c)
-        # Only add the DXSDK include directory if the environment variable is
-        # defined.  Since the DXSDK has merged into the Windows SDK, this is
-        # only required in rare cases.
-        if (DEFINED ENV{DXSDK_DIR} AND NOT (MINGW OR MSYS OR CYGWIN))
-            include_directories ($ENV{DXSDK_DIR}/Include)
-        endif ()
-    else ()
-        list (APPEND CL_PLUGIN_LOADER_TEST_SOURCES
-            loader/linux/icd_linux_envvars.c
-            loader/linux/icd_linux_library.c)
-    endif ()
-
-    add_executable(cl_plugin_loader_test ${CL_PLUGIN_LOADER_TEST_SOURCES})
-
-    add_executable(OpenCL::cl_plugin_loader_test ALIAS cl_plugin_loader_test)
-
-    target_link_libraries (cl_plugin_loader_test PUBLIC ${CMAKE_DL_LIBS})
-
-    target_include_directories (cl_plugin_loader_test
-      PRIVATE
-        ${CMAKE_CURRENT_BINARY_DIR}
-        loader
-        test/plugin_test)
 endif ()
 
 
