@@ -75,6 +75,9 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd_dispatch.c
     loader/icd_dispatch.h
     loader/icd_dispatch_generated.c
+    loader/icd_trace.c
+    loader/icd_trace.h
+    loader/icd_library.h
     loader/icd_envvars.h
     loader/icd_platform.h)
 include_directories (include)
@@ -84,8 +87,10 @@ if (WIN32)
         loader/windows/adapter.h
         loader/windows/icd_windows.c
         loader/windows/icd_windows.h
+        loader/windows/icd_windows_formats.h
         loader/windows/icd_windows_dxgk.c
         loader/windows/icd_windows_dxgk.h
+        loader/windows/icd_windows_library.c
         loader/windows/icd_windows_envvars.c
         loader/windows/icd_windows_hkr.c
         loader/windows/icd_windows_hkr.h
@@ -109,6 +114,7 @@ if (WIN32)
 else ()
     list (APPEND OPENCL_ICD_LOADER_SOURCES
         loader/linux/icd_linux.c
+        loader/linux/icd_linux_library.c
         loader/linux/icd_linux_envvars.c
         loader/linux/icd_exports.map)
 endif ()
@@ -223,7 +229,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR OPENCL_ICD_LOADER_BUILD_TESTING)
 endif()
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR OPENCL_ICD_LOADER_BUILD_TESTING) AND BUILD_TESTING)
     add_subdirectory (test)
-endif()
+
+endif ()
+
 
 install(
   TARGETS OpenCL

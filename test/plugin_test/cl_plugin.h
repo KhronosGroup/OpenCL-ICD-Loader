@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2026 The Khronos Group Inc.
+ * Copyright (c) 2026 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,18 @@
  *
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
-#ifndef _ICD_WINDOWS_H_
-#define _ICD_WINDOWS_H_
+#ifndef _CL_PLUGIN_H_
+#define _CL_PLUGIN_H_
 
-#include <stdbool.h>
-#include <windows.h>
-#include "icd_windows_formats.h"
+#define PLUGIN_INIT plugin_init
+#define XSTRING(x) TO_STRING(x)
+#define TO_STRING(x) #x
+#define PLUGIN_INIT_NAME XSTRING(PLUGIN_INIT)
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-extern const LUID ZeroLuid;
+#define PLUGIN_SUCCESS 0
+#define PLUGIN_ERROR   1
 
-BOOL adapterAdd(const char* szName, LUID luid);
-
-// Do not free the memory returned by this function.
-const char* getOpenCLRegKeyName(void);
-
-#ifdef __cplusplus
-}
-#endif
+typedef int plugin_init_fn(void);
+typedef plugin_init_fn *plugin_init_pfn;
 
 #endif

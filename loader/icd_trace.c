@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2026 The Khronos Group Inc.
+ * Copyright (c) 2026 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,6 @@
  *
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
-#ifndef _ICD_WINDOWS_H_
-#define _ICD_WINDOWS_H_
+#include "icd_trace.h"
 
-#include <stdbool.h>
-#include <windows.h>
-#include "icd_windows_formats.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-extern const LUID ZeroLuid;
-
-BOOL adapterAdd(const char* szName, LUID luid);
-
-// Do not free the memory returned by this function.
-const char* getOpenCLRegKeyName(void);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
+int khrEnableTrace = 0;

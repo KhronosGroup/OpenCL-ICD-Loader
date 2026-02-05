@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2026 The Khronos Group Inc.
+ * Copyright (c) 2026 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,38 @@
  *
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
-#ifndef _ICD_WINDOWS_H_
-#define _ICD_WINDOWS_H_
 
-#include <stdbool.h>
-#include <windows.h>
-#include "icd_windows_formats.h"
+#ifndef _ICD_TRACE_H_
+#define _ICD_TRACE_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-extern const LUID ZeroLuid;
+#include <stdio.h>
 
-BOOL adapterAdd(const char* szName, LUID luid);
+extern int khrEnableTrace;
 
-// Do not free the memory returned by this function.
-const char* getOpenCLRegKeyName(void);
+// internal tracing macros
+#define KHR_ICD_TRACE(...) \
+do \
+{ \
+    if (khrEnableTrace) \
+    { \
+        fprintf(stderr, "KHR ICD trace at %s:%d: ", __FILE__, __LINE__); \
+        fprintf(stderr, __VA_ARGS__); \
+    } \
+} while (0)
 
-#ifdef __cplusplus
-}
+#ifdef _WIN32
+#define KHR_ICD_WIDE_TRACE(...) \
+do \
+{ \
+    if (khrEnableTrace) \
+    { \
+        fwprintf(stderr, L"KHR ICD trace at %hs:%d: ", __FILE__, __LINE__); \
+        fwprintf(stderr, __VA_ARGS__); \
+    } \
+} while (0)
+
+#else
+#define KHR_ICD_WIDE_TRACE(...)
 #endif
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2026 The Khronos Group Inc.
+ * Copyright (c) 2026 The Khronos Group Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,20 @@
  *
  * OpenCL is a trademark of Apple Inc. used under license by Khronos.
  */
-#ifndef _ICD_WINDOWS_H_
-#define _ICD_WINDOWS_H_
 
-#include <stdbool.h>
-#include <windows.h>
-#include "icd_windows_formats.h"
+#ifndef _ICD_WINDOWS_FORMATS_H_
+#define _ICD_WINDOWS_FORMATS_H_
 
-#ifdef __cplusplus
-extern "C" {
+#ifdef _LP64
+#define PRIDW_PREFIX
+#define PRIUL_PREFIX
+#else
+#define PRIDW_PREFIX "l"
+#define PRIUL_PREFIX "l"
 #endif
-extern const LUID ZeroLuid;
-
-BOOL adapterAdd(const char* szName, LUID luid);
-
-// Do not free the memory returned by this function.
-const char* getOpenCLRegKeyName(void);
-
-#ifdef __cplusplus
-}
-#endif
+#define PRIuDW PRIDW_PREFIX "u"
+#define PRIxDW PRIDW_PREFIX "x"
+#define PRIuUL PRIUL_PREFIX "u"
+#define PRIxUL PRIUL_PREFIX "x"
 
 #endif
