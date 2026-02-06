@@ -52,8 +52,8 @@ option(OPENCL_ICD_LOADER_BUILD_SHARED_LIBS "Build OpenCL ICD Loader as shared li
 # It is currently needed default while the specification is being formalized,
 # and to study the performance impact.
 option (ENABLE_OPENCL_LAYERS "Enable OpenCL Layers" ON)
-option (ENABLE_OPENCL_LOADER_MANAGED_DISPATCH "Enable OpenCL Loader managed dispatch" ON)
 include(CMakeDependentOption)
+cmake_dependent_option(ENABLE_OPENCL_LOADER_MANAGED_DISPATCH "Enable OpenCL Loader managed dispatch" ON OPENCL_ICD_LOADER_BUILD_SHARED_LIBS OFF)
 cmake_dependent_option(ENABLE_OPENCL_LAYERINFO "Enable building cllayerinfo tool" ON ENABLE_OPENCL_LAYERS OFF)
 
 include(GNUInstallDirs)
@@ -170,6 +170,7 @@ set (OPENCL_COMPILE_DEFINITIONS
     OPENCL_ICD_LOADER_VERSION_REV=8
     $<$<BOOL:${ENABLE_OPENCL_LAYERS}>:CL_ENABLE_LAYERS>
     $<$<BOOL:${ENABLE_OPENCL_LOADER_MANAGED_DISPATCH}>:CL_ENABLE_LOADER_MANAGED_DISPATCH>
+    $<$<BOOL:${OPENCL_ICD_LOADER_BUILD_SHARED_LIBS}>:CL_SHARED_BUILD>
 )
 
 target_compile_definitions (OpenCL
