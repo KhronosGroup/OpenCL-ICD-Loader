@@ -19,6 +19,11 @@
 #include "icd_structs.h"
 #include "cl_khr_icd2.h"
 
+#if defined(CL_ENABLE_ICD2)
+CL_API_ENTRY clIcdCreateInstancePlatformKHR_t clIcdCreateInstancePlatformKHR;
+CL_API_ENTRY clIcdDestroyInstancePlatformKHR_t clIcdDestroyInstancePlatformKHR;
+#endif
+
 #define CL_PLATFORM_ICD_SUFFIX_KHR                  0x0920
 CL_API_ENTRY cl_int CL_API_CALL
 clIcdGetPlatformIDsKHR(cl_uint, cl_platform_id *, cl_uint *);
@@ -33,6 +38,7 @@ struct _cl_platform_id
     const char *extensions;
     const char *suffix;
     cl_device_id device;
+    cl_bool instance;
 };
 
 struct _cl_device_id
@@ -180,7 +186,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
     if (devices != NULL) {
         if (!platform_id->device) {
             platform_id->device = (cl_device_id) malloc(sizeof(struct _cl_device_id));
-            CL_INIT_OBJECT(platform_id->device, stub_platform);
+            CL_INIT_OBJECT(platform_id->device, platform_id);
         }
         devices[0] = platform_id->device;
     }
@@ -1948,6 +1954,33 @@ clEnqueueBarrier(cl_command_queue  command_queue) CL_API_SUFFIX__VERSION_1_0
 extern cl_int cliIcdDispatchTableCreate(CLIicdDispatchTable **outDispatchTable);
 extern void cliIcdDispatchTableDestroy(CLIicdDispatchTable *dispatchTable);
 
+static cl_platform_id createPlatform(void)
+{
+    cl_platform_id platform =
+        (cl_platform_id) malloc(sizeof(struct _cl_platform_id));
+    memset(platform, 0, sizeof(struct _cl_platform_id));
+
+    CL_INIT_PLATFORM(platform, dispatchTable);
+    platform->version = "OpenCL 1.2 Stub";
+    platform->vendor = "stubvendorxxx";
+    platform->profile = "stubprofilexxx";
+#if defined(CL_ENABLE_ICD2)
+    platform->name = "ICD_LOADER_TEST_OPENCL_STUB_ICD2";
+#else
+    platform->name = "ICD_LOADER_TEST_OPENCL_STUB";
+#endif
+    platform->extensions = "cl_khr_icd cl_khr_icd_unloadable cl_khr_gl cl_khr_d3d10";
+    platform->suffix = "ilts";
+    return platform;
+}
+
+static void destroyPlatform(cl_platform_id platform)
+{
+    free(platform->device);
+    platform->device = NULL;
+    free(platform);
+}
+
 CL_API_ENTRY cl_int CL_API_CALL
 clIcdGetPlatformIDsKHR(cl_uint           num_entries,
                        cl_platform_id * platforms,
@@ -1956,20 +1989,7 @@ clIcdGetPlatformIDsKHR(cl_uint           num_entries,
     cl_int result = CL_SUCCESS;
     if (!initialized) {
         result = cliIcdDispatchTableCreate(&dispatchTable);
-        stub_platform = (cl_platform_id) malloc(sizeof(struct _cl_platform_id));
-        memset(stub_platform, 0, sizeof(struct _cl_platform_id));
-
-        CL_INIT_PLATFORM(stub_platform, dispatchTable);
-        stub_platform->version = "OpenCL 1.2 Stub";
-        stub_platform->vendor = "stubvendorxxx";
-        stub_platform->profile = "stubprofilexxx";
-#if defined(CL_ENABLE_ICD2)
-        stub_platform->name = "ICD_LOADER_TEST_OPENCL_STUB_ICD2";
-#else
-        stub_platform->name = "ICD_LOADER_TEST_OPENCL_STUB";
-#endif
-        stub_platform->extensions = "cl_khr_icd cl_khr_icd_unloadable cl_khr_gl cl_khr_d3d10";
-        stub_platform->suffix = "ilts";
+        stub_platform = createPlatform();
         initialized = CL_TRUE;
     }
 
@@ -1992,11 +2012,40 @@ Done:
     return result;
 }
 
+#if defined(CL_ENABLE_ICD2)
+CL_API_ENTRY cl_platform_id CL_API_CALL
+clIcdCreateInstancePlatformKHR(
+    cl_platform_id platform,
+    const cl_instance_platform_properties_khr *properties,
+    cl_int *errcode_ret)
+{
+    (void)properties;
+    if (!platform || platform->dispatch != dispatchTable) {
+        *errcode_ret = CL_INVALID_PLATFORM;
+        return NULL;
+    }
+    cl_platform_id platform_ret = createPlatform();
+    platform_ret->instance = CL_TRUE;
+    if (errcode_ret) {
+        *errcode_ret = CL_SUCCESS;
+    }
+    return platform_ret;
+}
+
+CL_API_ENTRY cl_int CL_API_CALL
+clIcdDestroyInstancePlatformKHR(
+    cl_platform_id platform)
+{
+    if (!platform || platform->dispatch != dispatchTable || !platform->instance)
+        return CL_INVALID_PLATFORM;
+    destroyPlatform(platform);
+    return CL_SUCCESS;
+}
+#endif
+
 static void deinit(void) {
     if (initialized) {
-        free(stub_platform->device);
-        stub_platform->device = NULL;
-        free(stub_platform);
+        destroyPlatform(stub_platform);
         stub_platform = NULL;
         cliIcdDispatchTableDestroy(dispatchTable);
         dispatchTable = NULL;

@@ -102,6 +102,10 @@ struct KHRicdVendorRec
 #if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     // the loader populated dispatch table for cl_khr_icd2 compliant platforms
     struct KHRDisp dispData;
+    clIcdSetPlatformDispatchDataKHR_fn clIcdSetPlatformDispatchData;
+    clIcdCreateInstancePlatformKHR_fn clIcdCreateInstancePlatform;
+    clIcdDestroyInstancePlatformKHR_fn clIcdDestroyInstancePlatform;
+    cl_platform_id instance_platform;
 #endif
 
     // next vendor in the list vendors
