@@ -278,7 +278,6 @@ void khrIcdVendorAdd(const char *libraryName)
                 goto Error;
             }
         }
-        free(extensions);
 
         // call clGetPlatformInfo on the returned platform to get the suffix
         result = KHR_ICD2_DISPATCH(platform)->clGetPlatformInfo(
@@ -330,6 +329,7 @@ void khrIcdVendorAdd(const char *libraryName)
         }
         lastVendor = vendor;
 
+        free(extensions);
         KHR_ICD_TRACE("successfully added vendor %s with suffix %s\n", libraryName, suffix);
         continue;
 Error:
