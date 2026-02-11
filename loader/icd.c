@@ -338,7 +338,7 @@ Error:
 #if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
         if (instance_platform)
         {
-            vendor->clIcdDestroyInstancePlatform(instance_platform);
+            p_clIcdDestroyInstancePlatform(instance_platform);
         }
 #endif
         free(vendor);
