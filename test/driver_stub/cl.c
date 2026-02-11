@@ -20,7 +20,6 @@
 #include "cl_khr_icd2.h"
 
 #if defined(CL_ENABLE_ICD2)
-#include "cl_khr_icd2.h"
 CL_API_ENTRY clIcdCreateInstancePlatformKHR_t clIcdCreateInstancePlatformKHR;
 CL_API_ENTRY clIcdDestroyInstancePlatformKHR_t clIcdDestroyInstancePlatformKHR;
 #endif
