@@ -73,8 +73,17 @@ struct KHRDisp
     struct _cl_icd_dispatch dispatch;
 };
 
+#if __CL_HAS_ANON_UNION__
+#define KHR_ICD2_HAS_TAG(object)                                               \
+((object)->dispatch->clGetPlatformIDs_icd2_tag == CL_ICD2_TAG_KHR)
+#define KHR_ICD2_HAS_TAG2(object)                                              \
+((object)->dispatch->clUnloadCompiler_icd2_tag == CL_ICD2_TAG_KHR)
+#else
 #define KHR_ICD2_HAS_TAG(object)                                               \
 (((intptr_t)((object)->dispatch->clGetPlatformIDs)) == CL_ICD2_TAG_KHR)
+#define KHR_ICD2_HAS_TAG2(object)                                              \
+(((intptr_t)((object)->dispatch->clUnloadCompiler)) == CL_ICD2_TAG_KHR)
+#endif
 
 #define KHR_ICD2_DISPATCH(object)                                              \
 (KHR_ICD2_HAS_TAG(object) ?                                                    \
