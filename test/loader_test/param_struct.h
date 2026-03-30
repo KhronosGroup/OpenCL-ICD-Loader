@@ -745,6 +745,7 @@ struct clReleaseKernel_st
 #define NUM_ITEMS_clGetKernelInfo 1
 #define NUM_ITEMS_clGetKernelArgInfo 1
 #define NUM_ITEMS_clGetKernelWorkGroupInfo 1
+#define NUM_ITEMS_clGetKernelSuggestedLocalWorkSize 1
 
 struct clSetKernelArg_st 
 {
@@ -781,6 +782,16 @@ struct clGetKernelWorkGroupInfo_st
     size_t param_value_size; 
     void *param_value;
     size_t *param_value_size_ret;
+};
+
+struct clGetKernelSuggestedLocalWorkSize_st
+{
+    cl_command_queue command_queue;
+    cl_kernel kernel;
+    cl_uint work_dim;
+    const size_t *global_work_offset;
+    const size_t *global_work_size;
+    size_t *suggested_local_work_size;
 };
 
 #define NUM_ITEMS_clEnqueueMigrateMemObjects 1

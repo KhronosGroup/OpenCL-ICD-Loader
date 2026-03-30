@@ -14,7 +14,7 @@ add_executable (icd_loader_test
 
 target_compile_definitions(icd_loader_test
     PRIVATE
-        CL_TARGET_OPENCL_VERSION=300
+        CL_TARGET_OPENCL_VERSION=310
 )
 
 target_link_libraries (icd_loader_test OpenCL IcdLog OpenCL::Headers)

@@ -164,3 +164,6 @@ clSetProgramSpecializationConstant
 clCreateBufferWithProperties
 clCreateImageWithProperties
 clSetContextDestructorCallback
+
+; OpenCL 3.1 API
+clGetKernelSuggestedLocalWorkSize

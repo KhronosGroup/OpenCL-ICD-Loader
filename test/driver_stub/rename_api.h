@@ -105,5 +105,6 @@
 #define clCreateBufferWithProperties             ___clCreateBufferWithProperties
 #define clCreateImageWithProperties              ___clCreateImageWithProperties
 #define clSetContextDestructorCallback           ___clSetContextDestructorCallback
+#define clGetKernelSuggestedLocalWorkSize        ___clGetKernelSuggestedLocalWorkSize
 
 #endif /* __RENAME_API_H__ */

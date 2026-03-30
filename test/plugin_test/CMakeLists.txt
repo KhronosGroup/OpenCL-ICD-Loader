@@ -12,7 +12,7 @@ if (WIN32)
 endif ()
 
 add_library (CLPlugin MODULE ${CL_PLUGIN_SOURCES})
-target_compile_definitions(CLPlugin PRIVATE CL_TARGET_OPENCL_VERSION=300)
+target_compile_definitions(CLPlugin PRIVATE CL_TARGET_OPENCL_VERSION=310)
 target_link_libraries (CLPlugin OpenCL OpenCL::Headers)
 
 set (CL_PLUGIN_LOADER_TEST_SOURCES
