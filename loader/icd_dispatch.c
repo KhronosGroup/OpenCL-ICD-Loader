@@ -183,7 +183,11 @@ static inline cl_int clGetPlatformIDs_body(
     {
         if (num_entries && platforms)
         {
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+            *(platforms++) = vendor->instance_platform ? vendor->instance_platform : vendor->platform;
+#else
             *(platforms++) = vendor->platform;
+#endif
             --num_entries;
         }
         if (num_platforms)
