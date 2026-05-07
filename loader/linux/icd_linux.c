@@ -239,6 +239,6 @@ void khrIcdOsVendorsEnumerateOnce(void)
 #ifndef CL_LAYER_INFO
 static
 void __attribute__((destructor)) khrIcdDestructor(void) {
-    khrIcdDeinitialize();
+    khrIcdDeinitialize(1);
 }
 #endif

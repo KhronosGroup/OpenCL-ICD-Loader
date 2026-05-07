@@ -121,6 +121,15 @@ static void run_silently(void (*pfn)(void))
     atexit(silence_layers);
 }
 
+static void run_silently_int(void (*pfn)(int), int arg)
+{
+    silence_layers();
+    atexit(restore_outputs);
+    pfn(arg);
+    restore_outputs();
+    atexit(silence_layers);
+}
+
 int main (int argc, char *argv[])
 {
     (void)argc;
@@ -132,6 +141,6 @@ int main (int argc, char *argv[])
         printLayerInfo(layer);
         layer = layer->next;
     }
-    run_silently(&khrIcdDeinitialize);
+    run_silently_int(&khrIcdDeinitialize, 1);
     return 0;
 }

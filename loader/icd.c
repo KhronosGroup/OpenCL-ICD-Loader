@@ -584,13 +584,12 @@ void khrIcdContextPropertiesGetPlatform(const cl_context_properties *properties,
 static struct KHRLayer deinitLayer = {0};
 #endif
 
-void khrIcdDeinitialize(void) {
+void khrIcdDeinitialize(int unloadLibraries) {
     if (khrForceLegacyTermination)
     {
         KHR_ICD_TRACE("ICD Loader deinitialization disabled\n");
         return;
     }
-
     KHR_ICD_TRACE("ICD Loader deinitialization\n");
 
 #if defined(CL_ENABLE_LAYERS)
@@ -614,7 +613,7 @@ void khrIcdDeinitialize(void) {
                 KHR_ICD_TRACE("error reported in layer deinitialization\n");
             }
         }
-        if (!khrDisableLibraryUnloading)
+        if (unloadLibraries && !khrDisableLibraryUnloading)
             khrIcdOsLibraryUnload(cur->library);
         head = cur->next;
         free(cur);
@@ -626,7 +625,7 @@ void khrIcdDeinitialize(void) {
     while (lastVendor) {
         KHRicdVendor *cur = lastVendor;
         free(cur->suffix);
-        if (cur->unloadable && !khrDisableLibraryUnloading)
+        if (cur->unloadable && unloadLibraries && !khrDisableLibraryUnloading)
             khrIcdOsLibraryUnload(cur->library);
         lastVendor = cur->prev;
         free(cur);

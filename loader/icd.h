@@ -158,7 +158,7 @@ void khrIcdInitialize(void);
 void khrIcdInitializeEnvOptions(void);
 
 // entrypoint to release icd resources
-void khrIcdDeinitialize(void);
+void khrIcdDeinitialize(int unloadLibraries);
 
 // go through the list of vendors (in /etc/OpenCL.conf or through 
 // the registry) and call khrIcdVendorAdd for each vendor encountered
