@@ -5191,6 +5191,57 @@ static cl_mem CL_API_CALL clCreateImageWithProperties_disp(
 
 ///////////////////////////////////////////////////////////////////////////////
 
+CL_API_ENTRY cl_int CL_API_CALL clGetKernelSuggestedLocalWorkSize(
+    cl_command_queue command_queue,
+    cl_kernel kernel,
+    cl_uint work_dim,
+    const size_t* global_work_offset,
+    const size_t* global_work_size,
+    size_t* suggested_local_work_size)
+{
+#if defined(CL_ENABLE_LAYERS)
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetKernelSuggestedLocalWorkSize(
+            command_queue,
+            kernel,
+            work_dim,
+            global_work_offset,
+            global_work_size,
+            suggested_local_work_size);
+#endif // defined(CL_ENABLE_LAYERS)
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clGetKernelSuggestedLocalWorkSize(
+        command_queue,
+        kernel,
+        work_dim,
+        global_work_offset,
+        global_work_size,
+        suggested_local_work_size);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetKernelSuggestedLocalWorkSize_disp(
+    cl_command_queue command_queue,
+    cl_kernel kernel,
+    cl_uint work_dim,
+    const size_t* global_work_offset,
+    const size_t* global_work_size,
+    size_t* suggested_local_work_size)
+{
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clGetKernelSuggestedLocalWorkSize(
+        command_queue,
+        kernel,
+        work_dim,
+        global_work_offset,
+        global_work_size,
+        suggested_local_work_size);
+}
+#endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+
 // cl_ext_device_fission
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT(
@@ -7026,7 +7077,10 @@ const struct _cl_icd_dispatch khrMainDispatch = {
   /* OpenCL 3.0 */
     &clCreateBufferWithProperties_disp,
     &clCreateImageWithProperties_disp,
-    &clSetContextDestructorCallback_disp
+    &clSetContextDestructorCallback_disp,
+
+  /* OpenCL 3.1 */
+    &clGetKernelSuggestedLocalWorkSize_disp,
 }
 ;
 #endif // defined(CL_ENABLE_LAYERS)
@@ -8621,6 +8675,22 @@ static cl_mem CL_API_CALL clCreateImageWithProperties_unsupp(
     (void)errcode_ret;
     KHR_ICD_ERROR_RETURN_HANDLE(CL_INVALID_OPERATION);
 }
+static cl_int CL_API_CALL clGetKernelSuggestedLocalWorkSize_unsupp(
+    cl_command_queue command_queue,
+    cl_kernel kernel,
+    cl_uint work_dim,
+    const size_t* global_work_offset,
+    const size_t* global_work_size,
+    size_t* suggested_local_work_size)
+{
+    (void)command_queue;
+    (void)kernel;
+    (void)work_dim;
+    (void)global_work_offset;
+    (void)global_work_size;
+    (void)suggested_local_work_size;
+    KHR_ICD_ERROR_RETURN_ERROR(CL_INVALID_OPERATION);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // cl_ext_device_fission
@@ -9373,7 +9443,10 @@ const struct _cl_icd_dispatch khrDeinitDispatch = {
   /* OpenCL 3.0 */
     &clCreateBufferWithProperties_unsupp,
     &clCreateImageWithProperties_unsupp,
-    &clSetContextDestructorCallback_unsupp
+    &clSetContextDestructorCallback_unsupp,
+
+  /* OpenCL 3.1 */
+    &clGetKernelSuggestedLocalWorkSize_unsupp,
 }
 ;
 #endif // defined(CL_ENABLE_LAYERS)
@@ -9728,6 +9801,9 @@ void khrIcd2PopulateDispatchTable(
    dispatch->clCreateImageWithProperties = (clCreateImageWithProperties_t *)(size_t)p_clIcdGetFunctionAddressForPlatform(platform, "clCreateImageWithProperties");
    if (!dispatch->clCreateImageWithProperties)
        dispatch->clCreateImageWithProperties = &clCreateImageWithProperties_unsupp;
+   dispatch->clGetKernelSuggestedLocalWorkSize = (clGetKernelSuggestedLocalWorkSize_t *)(size_t)p_clIcdGetFunctionAddressForPlatform(platform, "clGetKernelSuggestedLocalWorkSize");
+   if (!dispatch->clGetKernelSuggestedLocalWorkSize)
+       dispatch->clGetKernelSuggestedLocalWorkSize = &clGetKernelSuggestedLocalWorkSize_unsupp;
 
 ///////////////////////////////////////////////////////////////////////////////
 // cl_ext_device_fission

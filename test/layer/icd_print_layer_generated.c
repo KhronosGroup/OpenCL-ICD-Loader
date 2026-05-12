@@ -1950,6 +1950,25 @@ return tdispatch->clCreateImageWithProperties(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+static cl_int CL_API_CALL clGetKernelSuggestedLocalWorkSize_wrap(
+    cl_command_queue command_queue,
+    cl_kernel kernel,
+    cl_uint work_dim,
+    const size_t* global_work_offset,
+    const size_t* global_work_size,
+    size_t* suggested_local_work_size) CL_API_SUFFIX__VERSION_3_1
+{
+printf("clGetKernelSuggestedLocalWorkSize\n");
+return tdispatch->clGetKernelSuggestedLocalWorkSize(
+            command_queue,
+            kernel,
+            work_dim,
+            global_work_offset,
+            global_work_size,
+            suggested_local_work_size);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 // cl_ext_device_fission
 static cl_int CL_API_CALL clReleaseDeviceEXT_wrap(
@@ -2742,6 +2761,9 @@ struct _cl_icd_dispatch dispatch = {
   /* OpenCL 3.0 */
     &clCreateBufferWithProperties_wrap,
     &clCreateImageWithProperties_wrap,
-    &clSetContextDestructorCallback_wrap
+    &clSetContextDestructorCallback_wrap,
+
+  /* OpenCL 3.1 */
+    &clGetKernelSuggestedLocalWorkSize_wrap,
 }
 ;

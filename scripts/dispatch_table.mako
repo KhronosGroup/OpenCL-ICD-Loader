@@ -200,5 +200,8 @@
   /* OpenCL 3.0 */
     &clCreateBufferWithProperties_${suffix},
     &clCreateImageWithProperties_${suffix},
-    &clSetContextDestructorCallback_${suffix}
+    &clSetContextDestructorCallback_${suffix},
+
+  /* OpenCL 3.1 */
+    &clGetKernelSuggestedLocalWorkSize_${suffix},
 }

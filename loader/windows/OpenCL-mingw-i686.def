@@ -160,3 +160,6 @@ clSetProgramSpecializationConstant@16 == clSetProgramSpecializationConstant
 clCreateBufferWithProperties@28 == clCreateBufferWithProperties
 clCreateImageWithProperties@32 == clCreateImageWithProperties
 clSetContextDestructorCallback@12 == clSetContextDestructorCallback
+
+; OpenCL 3.1 API
+clGetKernelSuggestedLocalWorkSize@24 == clGetKernelSuggestedLocalWorkSize

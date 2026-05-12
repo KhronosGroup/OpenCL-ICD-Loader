@@ -1091,6 +1091,27 @@ clGetKernelInfo(cl_kernel        kernel ,
 }
 
 CL_API_ENTRY cl_int CL_API_CALL
+clGetKernelSuggestedLocalWorkSize(cl_command_queue command_queue,
+                                  cl_kernel        kernel,
+                                  cl_uint          work_dim,
+                                  const size_t *   global_work_offset,
+                                  const size_t *   global_work_size,
+                                  size_t *         suggested_local_work_size) CL_API_SUFFIX__VERSION_3_1
+{
+    cl_int return_value = CL_OUT_OF_RESOURCES;
+    test_icd_stub_log("clGetKernelSuggestedLocalWorkSize(%p, %p, %u, %p, %p, %p)\n",
+                      command_queue,
+                      kernel,
+                      work_dim,
+                      global_work_offset,
+                      global_work_size,
+                      suggested_local_work_size);
+
+    test_icd_stub_log("Value returned: %d\n", return_value);
+    return return_value;
+}
+
+CL_API_ENTRY cl_int CL_API_CALL
 clGetKernelArgInfo(cl_kernel        kernel ,
                    cl_uint          arg_indx ,
                    cl_kernel_arg_info   param_name ,

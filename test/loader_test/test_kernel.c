@@ -138,6 +138,33 @@ int test_clGetKernelWorkGroupInfo(const struct clGetKernelWorkGroupInfo_st* data
     return 0;
 }
 
+struct clGetKernelSuggestedLocalWorkSize_st clGetKernelSuggestedLocalWorkSizeData[NUM_ITEMS_clGetKernelSuggestedLocalWorkSize] =
+{
+    {NULL, NULL, 0, NULL, NULL, NULL}
+};
+
+int test_clGetKernelSuggestedLocalWorkSize(const struct clGetKernelSuggestedLocalWorkSize_st* data)
+{
+    test_icd_app_log("clGetKernelSuggestedLocalWorkSize(%p, %p, %u, %p, %p, %p)\n",
+                     command_queue,
+                     kernel,
+                     data->work_dim,
+                     data->global_work_offset,
+                     data->global_work_size,
+                     data->suggested_local_work_size);
+
+    ret_val=clGetKernelSuggestedLocalWorkSize(command_queue,
+            kernel,
+            data->work_dim,
+            data->global_work_offset,
+            data->global_work_size,
+            data->suggested_local_work_size);
+
+    test_icd_app_log("Value returned: %d\n", ret_val);
+
+    return 0;
+}
+
 struct clEnqueueMigrateMemObjects_st clEnqueueMigrateMemObjectsData[NUM_ITEMS_clEnqueueMigrateMemObjects] =
 {
     {NULL, 0, NULL, 0x0, 0, NULL, NULL}

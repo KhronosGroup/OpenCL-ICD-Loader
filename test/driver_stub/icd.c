@@ -248,6 +248,9 @@ cl_int cliIcdDispatchTableCreate(CLIicdDispatchTable **outDispatchTable)
     ICD_DISPATCH_TABLE_ENTRY ( clCreateImageWithProperties );
     ICD_DISPATCH_TABLE_ENTRY ( clSetContextDestructorCallback );
 
+    /* OpenCL 3.1 */
+    ICD_DISPATCH_TABLE_ENTRY ( clGetKernelSuggestedLocalWorkSize );
+
     // return success
     *outDispatchTable = dispatchTable;
     return CL_SUCCESS;
@@ -470,6 +473,9 @@ void * CL_API_CALL clIcdGetFunctionAddressForPlatformKHR(
     ICD_GET_FUNCTION_ADDRESS ( clCreateBufferWithProperties );
     ICD_GET_FUNCTION_ADDRESS ( clCreateImageWithProperties );
     ICD_GET_FUNCTION_ADDRESS ( clSetContextDestructorCallback );
+
+    /* OpenCL 3.1 */
+    ICD_GET_FUNCTION_ADDRESS ( clGetKernelSuggestedLocalWorkSize );
 
     return NULL;
 }

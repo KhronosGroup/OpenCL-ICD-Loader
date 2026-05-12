@@ -79,17 +79,17 @@ jobs:
 
     steps:
     - name: Install system CMake
-      if: ${{matrix.CMAKE}} == 'system'
+      if: matrix.CMAKE == 'system'
       run: apt-get update -qq && apt-get install -y cmake &&
         echo "CMAKE_EXE=cmake" >> "$GITHUB_ENV" &&
         echo "CPACK_EXE=cpack" >> "$GITHUB_ENV" &&
         echo "CTEST_EXE=ctest" >> "$GITHUB_ENV"
 
     - name: Checkout OpenCL-ICD-Loader
-      uses: actions/checkout@v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
     - name: Checkout OpenCL-Headers
-      uses: actions/checkout@v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         path: external/OpenCL-Headers
         repository: KhronosGroup/OpenCL-Headers
@@ -267,7 +267,7 @@ jobs:
     - name: Cache Ninja install
       if: matrix.GEN == 'Ninja Multi-Config'
       id: ninja-install
-      uses: actions/cache@v4
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       with:
         path: |
           C:\Tools\Ninja
@@ -281,10 +281,10 @@ jobs:
         Remove-Item ~\Downloads\*
 
     - name: Checkout OpenCL-ICD-Loader
-      uses: actions/checkout@v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
     - name: Checkout OpenCL-Headers
-      uses: actions/checkout@v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         repository: KhronosGroup/OpenCL-Headers
         path: external/OpenCL-Headers
@@ -623,10 +623,10 @@ jobs:
 
     steps:
     - name: Checkout OpenCL-ICD-Loader
-      uses: actions/checkout@v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
     - name: Checkout OpenCL-Headers
-      uses: actions/checkout@v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         repository: KhronosGroup/OpenCL-Headers
         path: external/OpenCL-Headers
@@ -728,10 +728,10 @@ jobs:
       CFLAGS: -Wall -Wextra -pedantic -Werror
     steps:
     - name: Checkout OpenCL-ICD-Loader
-      uses: actions/checkout@v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
     - name: Checkout OpenCL-Headers
-      uses: actions/checkout@v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         repository: KhronosGroup/OpenCL-Headers
         path: external/OpenCL-Headers
