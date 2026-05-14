@@ -15,13 +15,9 @@
 #include "rename_api.h"
 
 #include <CL/cl.h>
+#include <CL/cl_ext.h>
 #include <platform/icd_test_log.h>
 #include "icd_structs.h"
-#include "cl_khr_icd2.h"
-
-#define CL_PLATFORM_ICD_SUFFIX_KHR                  0x0920
-CL_API_ENTRY cl_int CL_API_CALL
-clIcdGetPlatformIDsKHR(cl_uint, cl_platform_id *, cl_uint *);
 
 struct _cl_platform_id
 {
