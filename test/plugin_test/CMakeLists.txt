@@ -15,6 +15,11 @@ add_library (CLPlugin MODULE ${CL_PLUGIN_SOURCES})
 target_compile_definitions(CLPlugin PRIVATE CL_TARGET_OPENCL_VERSION=310)
 target_link_libraries (CLPlugin OpenCL OpenCL::Headers)
 
+# Reconfigure the ICD loader CMake config file, since it is included by
+# some ICD loader files that this plugin uses.
+configure_file(../../loader/icd_cmake_config.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/icd_cmake_config.h)
+
 set (CL_PLUGIN_LOADER_TEST_SOURCES
     cl_plugin_loader_test.c
     cl_plugin.h
@@ -49,5 +54,5 @@ target_link_libraries (cl_plugin_loader_test PUBLIC ${CMAKE_DL_LIBS})
 
 target_include_directories (cl_plugin_loader_test
   PRIVATE
-    ${CMAKE_BINARY_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
     ../../loader)
