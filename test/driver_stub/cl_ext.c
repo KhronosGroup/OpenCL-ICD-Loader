@@ -1,14 +1,8 @@
 #include <string.h>
 
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS
-#include "CL/cl.h"
-#include "CL/cl_ext.h"
-#include "cl_khr_icd2.h"
-
-#if defined(CL_ENABLE_ICD2)
-CL_API_ENTRY clIcdGetFunctionAddressForPlatformKHR_t clIcdGetFunctionAddressForPlatformKHR;
-CL_API_ENTRY clIcdSetPlatformDispatchDataKHR_t clIcdSetPlatformDispatchDataKHR;
-#endif
+#include <CL/cl.h>
+#include <CL/cl_ext.h>
 
 struct driverStubextFunc_st 
 {

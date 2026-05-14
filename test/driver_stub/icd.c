@@ -15,23 +15,9 @@
 // themselves via the dispatch table. Include this before cl headers.
 #include "rename_api.h"
 
-#include "CL/cl.h"
-#include "CL/cl_gl.h"
-
-#if defined(CL_ENABLE_ICD2)
-#include "cl_khr_icd2.h"
-CL_API_ENTRY clIcdGetFunctionAddressForPlatformKHR_t clIcdGetFunctionAddressForPlatformKHR;
-CL_API_ENTRY clIcdSetPlatformDispatchDataKHR_t clIcdSetPlatformDispatchDataKHR;
-#endif
-
-/*
- * Prototypes for deprecated functions no longer present in cl.h
- */
-extern CL_API_ENTRY cl_int CL_API_CALL
-clSetCommandQueueProperty(cl_command_queue              /* command_queue */,
-                          cl_command_queue_properties   /* properties */, 
-                          cl_bool                       /* enable */,
-                          cl_command_queue_properties * /* old_properties */);
+#include <CL/cl.h>
+#include <CL/cl_gl.h>
+#include <CL/cl_ext.h>
 
 #define ICD_DISPATCH_TABLE_ENTRY(fn) \
     assert(dispatchTable->entryCount < 256); \
