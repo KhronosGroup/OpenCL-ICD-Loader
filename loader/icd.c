@@ -403,43 +403,43 @@ void khrIcdLayerAdd(const char *libraryName)
         goto Done;
     }
 
-    if (CL_LAYER_API_VERSION_100 == api_version)
-    {
-        /*
-         * v1.0 layer: exports clInitLayer (ICD loader v1.0 API).
-         * No clDeinitLayer; the layer is responsible for cleanup via atexit().
-         * This path is always used regardless of khrForceLegacyTermination.
-         */
-        p_clInitLayer = (pfn_clInitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clInitLayer");
-        if (!p_clInitLayer)
-        {
-            KHR_ICD_TRACE("v1.0 layer missing required symbol clInitLayer\n");
-            goto Done;
-        }
-    }
-    else if (CL_LAYER_API_VERSION_200 == api_version)
-    {
-        /*
-         * v2.0 layer: exports clInitLayerWithProperties (ICD loader v2.0 API).
-         * clDeinitLayer is optional; its absence is not a failure.
-         */
-        p_clInitLayerWithProperties = (pfn_clInitLayerWithProperties)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clInitLayerWithProperties");
-        if (!p_clInitLayerWithProperties)
-        {
-            KHR_ICD_TRACE("v2.0 layer missing required symbol clInitLayerWithProperties\n");
-            goto Done;
-        }
-
-        p_clDeinitLayer = (pfn_clDeinitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clDeinitLayer");
-        if (!p_clDeinitLayer)
-        {
-            KHR_ICD_TRACE("layer does not support clDeinitLayer\n");
-        }
-    }
-    else
-    {
-        KHR_ICD_TRACE("unsupported layer api version %u\n", (unsigned)api_version);
+    if (CL_LAYER_API_VERSION_100 == api_version) {
+      /*
+       * v1.0 layer: exports clInitLayer (ICD loader v1.0 API).
+       * No clDeinitLayer; the layer is responsible for cleanup via atexit().
+       * This path is always used regardless of khrForceLegacyTermination.
+       */
+      p_clInitLayer =
+          (pfn_clInitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(
+              library, "clInitLayer");
+      if (!p_clInitLayer) {
+        KHR_ICD_TRACE("v1.0 layer missing required symbol clInitLayer\n");
         goto Done;
+      }
+    } else if (CL_LAYER_API_VERSION_200 == api_version) {
+      /*
+       * v2.0 layer: exports clInitLayerWithProperties (ICD loader v2.0 API).
+       * clDeinitLayer is optional; its absence is not a failure.
+       */
+      p_clInitLayerWithProperties = (pfn_clInitLayerWithProperties)(size_t)
+          khrIcdOsLibraryGetFunctionAddress(library,
+                                            "clInitLayerWithProperties");
+      if (!p_clInitLayerWithProperties) {
+        KHR_ICD_TRACE(
+            "v2.0 layer missing required symbol clInitLayerWithProperties\n");
+        goto Done;
+      }
+
+      p_clDeinitLayer =
+          (pfn_clDeinitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(
+              library, "clDeinitLayer");
+      if (!p_clDeinitLayer) {
+        KHR_ICD_TRACE("layer does not support clDeinitLayer\n");
+      }
+    } else {
+      KHR_ICD_TRACE("unsupported layer api version %u\n",
+                    (unsigned)api_version);
+      goto Done;
     }
 
     /*
@@ -448,16 +448,17 @@ void khrIcdLayerAdd(const char *libraryName)
      * This is a last-resort escape hatch; the version-based path above is
      * the preferred mechanism for backward compatibility.
      */
-    if (khrForceLegacyTermination && !p_clInitLayer)
-    {
-        p_clInitLayer = (pfn_clInitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clInitLayer");
-        if (!p_clInitLayer)
-        {
-            KHR_ICD_TRACE("OCL_ICD_FORCE_LEGACY_TERMINATION set but layer missing clInitLayer\n");
-            goto Done;
-        }
-        p_clInitLayerWithProperties = NULL;
-        p_clDeinitLayer = NULL;
+    if (khrForceLegacyTermination && !p_clInitLayer) {
+      p_clInitLayer =
+          (pfn_clInitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(
+              library, "clInitLayer");
+      if (!p_clInitLayer) {
+        KHR_ICD_TRACE("OCL_ICD_FORCE_LEGACY_TERMINATION set but layer missing "
+                      "clInitLayer\n");
+        goto Done;
+      }
+      p_clInitLayerWithProperties = NULL;
+      p_clDeinitLayer = NULL;
     }
 
     layer = (struct KHRLayer*)calloc(sizeof(struct KHRLayer), 1);
@@ -489,22 +490,15 @@ void khrIcdLayerAdd(const char *libraryName)
     }
 
     loaderDispatchNumEntries = sizeof(khrMainDispatch)/sizeof(void*);
-    if (p_clInitLayer)
-    {
-        /* v1.0 path: use clInitLayer */
-        result = p_clInitLayer(
-            loaderDispatchNumEntries,
-            targetDispatch,
-            &layerDispatchNumEntries,
-            &layerDispatch);
+    if (p_clInitLayer) {
+      /* v1.0 path: use clInitLayer */
+      result = p_clInitLayer(loaderDispatchNumEntries, targetDispatch,
+                             &layerDispatchNumEntries, &layerDispatch);
     } else {
-        /* v2.0 path: use clInitLayerWithProperties */
-        result = p_clInitLayerWithProperties(
-            loaderDispatchNumEntries,
-            targetDispatch,
-            &layerDispatchNumEntries,
-            &layerDispatch,
-            NULL);
+      /* v2.0 path: use clInitLayerWithProperties */
+      result = p_clInitLayerWithProperties(
+          loaderDispatchNumEntries, targetDispatch, &layerDispatchNumEntries,
+          &layerDispatch, NULL);
     }
     if (CL_SUCCESS != result)
     {
