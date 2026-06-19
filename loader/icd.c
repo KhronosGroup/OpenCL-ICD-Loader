@@ -22,6 +22,22 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
+ * CL_LAYER_API_VERSION_200 identifies layers built against ICD loader v2.0.
+ * Such layers export clInitLayerWithProperties instead of clInitLayer, and
+ * optionally export clDeinitLayer for explicit teardown.
+ *
+ * CL_LAYER_API_VERSION_100 (defined in <CL/cl_layer.h>) identifies layers
+ * built against ICD loader v1.0 that export only clInitLayer.
+ *
+ * The loader selects the initialization path based on the version returned by
+ * clGetLayerInfo(CL_LAYER_API_VERSION), ensuring both generations of layers
+ * are supported without requiring any environment-variable workaround.
+ */
+#ifndef CL_LAYER_API_VERSION_200
+#define CL_LAYER_API_VERSION_200 200
+#endif
+
 KHRicdVendor *khrIcdVendors = NULL;
 static KHRicdVendor *lastVendor = NULL;
 static int khrDisableLibraryUnloading = 0;
@@ -387,27 +403,30 @@ void khrIcdLayerAdd(const char *libraryName)
         goto Done;
     }
 
-    if (CL_LAYER_API_VERSION_100 != api_version)
+    if (CL_LAYER_API_VERSION_100 == api_version)
     {
-        KHR_ICD_TRACE("unsupported api version\n");
-        goto Done;
-    }
-
-    // Support old version of layers, which should rely on at_exit for termination.
-    // In this case use clInitLayer to initialize layers
-    if (khrForceLegacyTermination)
-    {
+        /*
+         * v1.0 layer: exports clInitLayer (ICD loader v1.0 API).
+         * No clDeinitLayer; the layer is responsible for cleanup via atexit().
+         * This path is always used regardless of khrForceLegacyTermination.
+         */
         p_clInitLayer = (pfn_clInitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clInitLayer");
         if (!p_clInitLayer)
         {
-            KHR_ICD_TRACE("failed to get function address clInitLayer\n");
+            KHR_ICD_TRACE("v1.0 layer missing required symbol clInitLayer\n");
             goto Done;
         }
-    } else { // New scheme, relies on clInitLayerWithProperties and the optional clDeinitLayer for termination
+    }
+    else if (CL_LAYER_API_VERSION_200 == api_version)
+    {
+        /*
+         * v2.0 layer: exports clInitLayerWithProperties (ICD loader v2.0 API).
+         * clDeinitLayer is optional; its absence is not a failure.
+         */
         p_clInitLayerWithProperties = (pfn_clInitLayerWithProperties)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clInitLayerWithProperties");
         if (!p_clInitLayerWithProperties)
         {
-            KHR_ICD_TRACE("failed to get function address clInitLayerWithProperties\n");
+            KHR_ICD_TRACE("v2.0 layer missing required symbol clInitLayerWithProperties\n");
             goto Done;
         }
 
@@ -416,6 +435,29 @@ void khrIcdLayerAdd(const char *libraryName)
         {
             KHR_ICD_TRACE("layer does not support clDeinitLayer\n");
         }
+    }
+    else
+    {
+        KHR_ICD_TRACE("unsupported layer api version %u\n", (unsigned)api_version);
+        goto Done;
+    }
+
+    /*
+     * khrForceLegacyTermination overrides the version-based path: when set,
+     * all layers are treated as v1.0 regardless of what api_version reports.
+     * This is a last-resort escape hatch; the version-based path above is
+     * the preferred mechanism for backward compatibility.
+     */
+    if (khrForceLegacyTermination && !p_clInitLayer)
+    {
+        p_clInitLayer = (pfn_clInitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clInitLayer");
+        if (!p_clInitLayer)
+        {
+            KHR_ICD_TRACE("OCL_ICD_FORCE_LEGACY_TERMINATION set but layer missing clInitLayer\n");
+            goto Done;
+        }
+        p_clInitLayerWithProperties = NULL;
+        p_clDeinitLayer = NULL;
     }
 
     layer = (struct KHRLayer*)calloc(sizeof(struct KHRLayer), 1);
@@ -447,14 +489,16 @@ void khrIcdLayerAdd(const char *libraryName)
     }
 
     loaderDispatchNumEntries = sizeof(khrMainDispatch)/sizeof(void*);
-    if (khrForceLegacyTermination)
+    if (p_clInitLayer)
     {
+        /* v1.0 path: use clInitLayer */
         result = p_clInitLayer(
             loaderDispatchNumEntries,
             targetDispatch,
             &layerDispatchNumEntries,
             &layerDispatch);
     } else {
+        /* v2.0 path: use clInitLayerWithProperties */
         result = p_clInitLayerWithProperties(
             loaderDispatchNumEntries,
             targetDispatch,
