@@ -59,7 +59,6 @@
 #include <CL/cl_ext.h>
 #include <CL/cl_egl.h>
 #include <CL/cl_icd.h>
-#include "cl_khr_icd2.h"
 
 #if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 
