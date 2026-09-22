@@ -35,6 +35,7 @@ typedef enum
 {
     ProbeFailure,
     PendingReboot,
+    DeviceUnavailable,
     Valid
 } DeviceProbeResult;
 
@@ -196,6 +197,19 @@ static DeviceProbeResult ProbeDevice(DEVINST devnode)
     {
         KHR_ICD_TRACE("    WARNING: device is pending reboot (0x%" PRIxUL "), skipping...\n", ulStatus);
         return PendingReboot;
+    }
+
+    //
+    // A device that has been disabled still has a valid OpenCLDriverName in its HKR software key,
+    // because disabling a device does not remove its registry values. Note that enumeration uses
+    // CM_GETIDLIST_FILTER_PRESENT, and a disabled device is still "present". Without this check the
+    // loader reads that path and registers an ICD for hardware that can never supply an OpenCL
+    // device, producing a platform with zero devices.
+    //
+    if ((ulStatus & DN_HAS_PROBLEM) && (ulProblem == CM_PROB_DISABLED))
+    {
+        KHR_ICD_TRACE("    WARNING: device is disabled (0x%" PRIxUL "), skipping...\n", ulStatus);
+        return DeviceUnavailable;
     }
 
     return Valid;
