@@ -330,6 +330,21 @@ Done:
     }
 }
 
+void khrIcdVendorsTeardown(void)
+{
+    KHRicdVendor *vendor = khrIcdVendors;
+    while (vendor)
+    {
+        KHRicdVendor *next = vendor->next;
+        // Make sure not to unload vendor->library here. This function is called in DllMain,
+        // at which point it is unsafe to call FreeLibrary because of the loader lock.
+        free(vendor->suffix);
+        free(vendor);
+        vendor = next;
+    }
+    khrIcdVendors = NULL;
+}
+
 #if defined(CL_ENABLE_LAYERS)
 void khrIcdLayerAdd(const char *libraryName)
 {
@@ -492,8 +507,29 @@ Done:
     }
     if (layer)
     {
+#ifdef CL_LAYER_INFO
+        free(layer->libraryName);
+#endif
         free(layer);
     }
+}
+
+void khrIcdLayersTeardown(void)
+{
+    struct KHRLayer *layer = khrFirstLayer;
+    while (layer)
+    {
+        struct KHRLayer *next = layer->next;
+        //Make sure not to unload layer->library here.
+        // This function is called in DllMain, at which point it is unsafe to call
+        // FreeLibrary because of the loader lock.
+#ifdef CL_LAYER_INFO
+        free(layer->libraryName);
+#endif
+        free(layer);
+        layer = next;
+    }
+    khrFirstLayer = NULL;
 }
 #endif // defined(CL_ENABLE_LAYERS)
 
