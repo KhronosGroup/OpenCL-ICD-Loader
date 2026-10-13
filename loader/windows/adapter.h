@@ -18,17 +18,46 @@
 * Author: Lenny Komow <lenny@lunarg.com>
 */
 
+typedef struct LoaderAdapterInfo {
+    UINT handle;
+    LUID luid;
+    ULONG source_count;
+    BOOL present_move_regions_preferred;
+} LoaderAdapterInfo;
+
 typedef struct LoaderEnumAdapters2 {
     ULONG adapter_count;
-    struct {
-        UINT handle;
-        LUID luid;
-        ULONG source_count;
-        BOOL present_move_regions_preferred;
-    } * adapters;
+    LoaderAdapterInfo *adapters;
 } LoaderEnumAdapters2;
 
 typedef _Check_return_ NTSTATUS(APIENTRY *PFN_LoaderEnumAdapters2)(const LoaderEnumAdapters2 *);
+
+typedef struct LoaderEnumAdaptersFilter {
+    union {
+        struct {
+            ULONGLONG include_compute_only : 1;
+            ULONGLONG include_display_only : 1;
+            ULONGLONG include_virtual_gpu_only : 1;
+            ULONGLONG include_test_only : 1;
+            ULONGLONG reserved : 60;
+        };
+        ULONGLONG value;
+    };
+} LoaderEnumAdaptersFilter;
+
+typedef struct LoaderEnumAdapters3 {
+    LoaderEnumAdaptersFilter filter;
+    ULONG adapter_count;
+    LoaderAdapterInfo *adapters;
+} LoaderEnumAdapters3;
+
+typedef _Check_return_ NTSTATUS(APIENTRY *PFN_LoaderEnumAdapters3)(LoaderEnumAdapters3 *);
+
+typedef struct LoaderCloseAdapter {
+    UINT handle;
+} LoaderCloseAdapter;
+
+typedef _Check_return_ NTSTATUS(APIENTRY *PFN_LoaderCloseAdapter)(const LoaderCloseAdapter *);
 
 typedef enum AdapterInfoType {
     LOADER_QUERY_TYPE_REGISTRY = 48,
