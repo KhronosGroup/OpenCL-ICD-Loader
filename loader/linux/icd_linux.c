@@ -220,7 +220,7 @@ void khrIcdOsVendorsEnumerate(void)
     khrIcdInitializeEnvOptions();
     khrIcdVendorsEnumerateEnv();
 
-    khrIcdOsDirEnumerate(ICD_VENDOR_PATH, "OCL_ICD_VENDORS", ".icd", khrIcdVendorAdd, 0);
+    khrIcdOsDirEnumerate(ICD_VENDOR_PATH, "OCL_ICD_VENDORS", ".icd", khrIcdVendorAdd, 1);
 
 #if defined(CL_ENABLE_LAYERS)
     // system layers should be closer to the driver
