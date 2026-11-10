@@ -115,7 +115,7 @@ clGetGLObjectInfo(cl_mem                 memobj,
                        memobj,
                        gl_object_type,
                        gl_object_name);
-     test_icd_stub_log("Value returned: %p\n", 
+     test_icd_stub_log("Value returned: %d\n",
                       ret_val);
      return ret_val;
 }
@@ -134,7 +134,7 @@ clGetGLTextureInfo(cl_mem                memobj,
                        param_value_size,
                        param_value,
                        param_value_size_ret );
-     test_icd_stub_log("Value returned: %p\n", 
+     test_icd_stub_log("Value returned: %d\n",
                       ret_val);
      return ret_val;
 }
@@ -156,7 +156,7 @@ clEnqueueAcquireGLObjects(cl_command_queue       command_queue,
                       event_wait_list,
                       event);
 
-     test_icd_stub_log("Value returned: %p\n", 
+     test_icd_stub_log("Value returned: %d\n",
                       ret_val);
      return ret_val;
 }
@@ -178,7 +178,7 @@ clEnqueueReleaseGLObjects(cl_command_queue       command_queue,
                         num_events_in_wait_list,
                         event_wait_list,
                         event); 
-     test_icd_stub_log("Value returned: %p\n", 
+     test_icd_stub_log("Value returned: %d\n",
                       ret_val);
      return ret_val;
 }
@@ -198,7 +198,7 @@ clGetGLContextInfoKHR(const cl_context_properties *  properties,
                       param_value,
                       param_value_size_ret);
 
-     test_icd_stub_log("Value returned: %p\n", 
+     test_icd_stub_log("Value returned: %d\n",
                       ret_val);
      return ret_val;
 }
