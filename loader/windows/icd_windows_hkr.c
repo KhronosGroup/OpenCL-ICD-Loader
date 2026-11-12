@@ -71,7 +71,7 @@ const char* getOpenCLRegKeyName(void)
 #endif
 }
 
-static bool ReadOpenCLKey(DEVINST dnDevNode)
+static bool ReadOpenCLKey(WinAdapterList *adapterList, DEVINST dnDevNode)
 {
     HKEY hkey = 0;
     CONFIGRET ret;
@@ -145,7 +145,7 @@ static bool ReadOpenCLKey(DEVINST dnDevNode)
 
         KHR_ICD_TRACE("    Path: %s\n", cszOclPath);
 
-        bRet |= adapterAdd(cszOclPath, ZeroLuid);
+        bRet |= adapterAdd(adapterList, cszOclPath, ZeroLuid);
     }
 
 out:
@@ -217,7 +217,7 @@ static DeviceProbeResult ProbeDevice(DEVINST devnode)
 
 // Tries to look for the OpenCL key under the display devices and
 // if not found, falls back to software component devices.
-bool khrIcdOsVendorsEnumerateHKR(void)
+bool khrIcdOsVendorsEnumerateHKR(WinAdapterList *adapterList)
 {
     CONFIGRET ret;
     int iret;
@@ -312,7 +312,7 @@ bool khrIcdOsVendorsEnumerateHKR(void)
         }
 
         KHR_ICD_TRACE("    Trying to look for the key in the display adapter HKR...\n");
-        if (ReadOpenCLKey(devinst))
+        if (ReadOpenCLKey(adapterList, devinst))
         {
             foundOpenCLKey = true;
             continue;
@@ -378,7 +378,7 @@ bool khrIcdOsVendorsEnumerateHKR(void)
                     continue;
                 }
 
-                if (ReadOpenCLKey(devchild))
+                if (ReadOpenCLKey(adapterList, devchild))
                 {
                     foundOpenCLKey = true;
                     break;

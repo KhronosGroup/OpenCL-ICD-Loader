@@ -27,7 +27,9 @@ extern "C" {
 #endif
 extern const LUID ZeroLuid;
 
-BOOL adapterAdd(const char* szName, LUID luid);
+typedef struct WinAdapterList WinAdapterList;
+
+BOOL adapterAdd(WinAdapterList *list, const char* szName, LUID luid);
 
 // Do not free the memory returned by this function.
 const char* getOpenCLRegKeyName(void);

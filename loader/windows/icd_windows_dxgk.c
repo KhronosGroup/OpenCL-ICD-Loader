@@ -108,7 +108,7 @@ static bool enumerateAdapters(
     }
 }
 
-bool khrIcdOsVendorsEnumerateDXGK(void)
+bool khrIcdOsVendorsEnumerateDXGK(WinAdapterList *adapterList)
 {
     bool ret = false;
     int result = 0;
@@ -222,7 +222,7 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
                 }
                 else
                 {
-                    ret |= adapterAdd(cszLibraryName, adapters[AdapterIndex].luid);
+                    ret |= adapterAdd(adapterList, cszLibraryName, adapters[AdapterIndex].luid);
                 }
             }
             else if (status == (NTSTATUS)STATUS_INVALID_PARAMETER)

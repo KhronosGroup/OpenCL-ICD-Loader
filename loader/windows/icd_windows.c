@@ -41,16 +41,19 @@ typedef struct WinAdapter
 
 const LUID ZeroLuid = { 0, 0 };
 
-static WinAdapter* pWinAdapterBegin = NULL;
-static WinAdapter* pWinAdapterEnd = NULL;
-static WinAdapter* pWinAdapterCapacity = NULL;
+struct WinAdapterList
+{
+    WinAdapter* pWinAdapterBegin;
+    WinAdapter* pWinAdapterEnd;
+    WinAdapter* pWinAdapterCapacity;
+};
 
-BOOL adapterAdd(const char* szName, LUID luid)
+BOOL adapterAdd(WinAdapterList *list, const char* szName, LUID luid)
 {
     BOOL result = TRUE;
-    if (pWinAdapterEnd == pWinAdapterCapacity)
+    if (list->pWinAdapterEnd == list->pWinAdapterCapacity)
     {
-        size_t oldCapacity = pWinAdapterCapacity - pWinAdapterBegin;
+        size_t oldCapacity = list->pWinAdapterCapacity - list->pWinAdapterBegin;
         size_t newCapacity = oldCapacity;
         if (0 == newCapacity)
         {
@@ -61,32 +64,32 @@ BOOL adapterAdd(const char* szName, LUID luid)
             newCapacity *= 2;
         }
 
-        WinAdapter* pNewBegin = malloc(newCapacity * sizeof(*pWinAdapterBegin));
+        WinAdapter* pNewBegin = malloc(newCapacity * sizeof(WinAdapter));
         if (!pNewBegin)
             result = FALSE;
         else
         {
-            if (pWinAdapterBegin)
+            if (list->pWinAdapterBegin)
             {
-                memcpy(pNewBegin, pWinAdapterBegin, oldCapacity * sizeof(*pWinAdapterBegin));
-                free(pWinAdapterBegin);
+                memcpy(pNewBegin, list->pWinAdapterBegin, oldCapacity * sizeof(WinAdapter));
+                free(list->pWinAdapterBegin);
             }
-            pWinAdapterCapacity = pNewBegin + newCapacity;
-            pWinAdapterEnd = pNewBegin + oldCapacity;
-            pWinAdapterBegin = pNewBegin;
+            list->pWinAdapterCapacity = pNewBegin + newCapacity;
+            list->pWinAdapterEnd = pNewBegin + oldCapacity;
+            list->pWinAdapterBegin = pNewBegin;
         }
     }
-    if (pWinAdapterEnd != pWinAdapterCapacity)
+    if (list->pWinAdapterEnd != list->pWinAdapterCapacity)
     {
         size_t nameLen = (strlen(szName) + 1)*sizeof(szName[0]);
-        pWinAdapterEnd->szName = malloc(nameLen);
-        if (!pWinAdapterEnd->szName)
+        list->pWinAdapterEnd->szName = malloc(nameLen);
+        if (!list->pWinAdapterEnd->szName)
             result = FALSE;
         else
         {
-            memcpy(pWinAdapterEnd->szName, szName, nameLen);
-            pWinAdapterEnd->luid = luid;
-            ++pWinAdapterEnd;
+            memcpy(list->pWinAdapterEnd->szName, szName, nameLen);
+            list->pWinAdapterEnd->luid = luid;
+            list->pWinAdapterEnd++;
         }
     }
     return result;
@@ -105,9 +108,12 @@ typedef struct WinLayer
     DWORD priority;
 } WinLayer;
 
-static WinLayer* pWinLayerBegin;
-static WinLayer* pWinLayerEnd;
-static WinLayer* pWinLayerCapacity;
+typedef struct WinLayerList
+{
+    WinLayer* pWinLayerBegin;
+    WinLayer* pWinLayerEnd;
+    WinLayer* pWinLayerCapacity;
+} WinLayerList;
 
 static int __cdecl compareLayer(const void *a, const void *b)
 {
@@ -115,12 +121,12 @@ static int __cdecl compareLayer(const void *a, const void *b)
            ((const WinLayer *)a)->priority > ((const WinLayer *)b)->priority ? 1 : 0;
 }
 
-static BOOL layerAdd(const char* szName, DWORD priority)
+static BOOL layerAdd(WinLayerList* list, const char* szName, DWORD priority)
 {
     BOOL result = TRUE;
-    if (pWinLayerEnd == pWinLayerCapacity)
+    if (list->pWinLayerEnd == list->pWinLayerCapacity)
     {
-        size_t oldCapacity = pWinLayerCapacity - pWinLayerBegin;
+        size_t oldCapacity = list->pWinLayerCapacity - list->pWinLayerBegin;
         size_t newCapacity = oldCapacity;
         if (0 == newCapacity)
         {
@@ -131,7 +137,7 @@ static BOOL layerAdd(const char* szName, DWORD priority)
             newCapacity *= 2;
         }
 
-        WinLayer* pNewBegin = malloc(newCapacity * sizeof(*pWinLayerBegin));
+        WinLayer* pNewBegin = malloc(newCapacity * sizeof(WinLayer));
         if (!pNewBegin)
         {
             KHR_ICD_TRACE("Failed allocate space for Layers array\n");
@@ -139,30 +145,30 @@ static BOOL layerAdd(const char* szName, DWORD priority)
         }
         else
         {
-            if (pWinLayerBegin)
+            if (list->pWinLayerBegin)
             {
-                memcpy(pNewBegin, pWinLayerBegin, oldCapacity * sizeof(*pWinLayerBegin));
-                free(pWinLayerBegin);
+                memcpy(pNewBegin, list->pWinLayerBegin, oldCapacity * sizeof(WinLayer));
+                free(list->pWinLayerBegin);
             }
-            pWinLayerCapacity = pNewBegin + newCapacity;
-            pWinLayerEnd = pNewBegin + oldCapacity;
-            pWinLayerBegin = pNewBegin;
+            list->pWinLayerCapacity = pNewBegin + newCapacity;
+            list->pWinLayerEnd = pNewBegin + oldCapacity;
+            list->pWinLayerBegin = pNewBegin;
         }
     }
-    if (pWinLayerEnd != pWinLayerCapacity)
+    if (list->pWinLayerEnd != list->pWinLayerCapacity)
     {
         size_t nameLen = (strlen(szName) + 1)*sizeof(szName[0]);
-        pWinLayerEnd->szName = malloc(nameLen);
-        if (!pWinLayerEnd->szName)
+        list->pWinLayerEnd->szName = malloc(nameLen);
+        if (!list->pWinLayerEnd->szName)
         {
             KHR_ICD_TRACE("Failed allocate space for Layer file path\n");
             result = FALSE;
         }
         else
         {
-            memcpy(pWinLayerEnd->szName, szName, nameLen);
-            pWinLayerEnd->priority = priority;
-            ++pWinLayerEnd;
+            memcpy(list->pWinLayerEnd->szName, szName, nameLen);
+            list->pWinLayerEnd->priority = priority;
+            list->pWinLayerEnd++;
         }
     }
     return result;
@@ -194,25 +200,26 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     const char* platformsName = "SOFTWARE\\Khronos\\OpenCL\\Vendors";
     HKEY platformsKey = NULL;
     DWORD dwIndex;
+    WinAdapterList adapterList = {NULL, NULL, NULL};
 
     khrIcdInitializeEnvOptions();
     khrIcdVendorsEnumerateEnv();
 
-    currentStatus = khrIcdOsVendorsEnumerateDXGK();
+    currentStatus = khrIcdOsVendorsEnumerateDXGK(&adapterList);
     status |= currentStatus;
     if (!currentStatus)
     {
         KHR_ICD_TRACE("Failed to load via DXGK interface on RS4, continuing\n");
     }
 
-    currentStatus = khrIcdOsVendorsEnumerateHKR();
+    currentStatus = khrIcdOsVendorsEnumerateHKR(&adapterList);
     status |= currentStatus;
     if (!currentStatus)
     {
         KHR_ICD_TRACE("Failed to enumerate HKR entries, continuing\n");
     }
 
-    currentStatus = khrIcdOsVendorsEnumerateAppPackage();
+    currentStatus = khrIcdOsVendorsEnumerateAppPackage(&adapterList);
     status |= currentStatus;
     if (!currentStatus)
     {
@@ -272,7 +279,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
                 continue;
             }
             // add the library
-            status |= adapterAdd(cszLibraryName, ZeroLuid);
+            status |= adapterAdd(&adapterList, cszLibraryName, ZeroLuid);
         }
     }
 
@@ -294,7 +301,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
                     DXGI_ADAPTER_DESC AdapterDesc;
                     if (SUCCEEDED(pAdapter->lpVtbl->GetDesc(pAdapter, &AdapterDesc)))
                     {
-                        for (WinAdapter* iterAdapter = pWinAdapterBegin; iterAdapter != pWinAdapterEnd; ++iterAdapter)
+                        for (WinAdapter* iterAdapter = adapterList.pWinAdapterBegin; iterAdapter != adapterList.pWinAdapterEnd; ++iterAdapter)
                         {
                             if (iterAdapter->luid.LowPart == AdapterDesc.AdapterLuid.LowPart
                                 && iterAdapter->luid.HighPart == AdapterDesc.AdapterLuid.HighPart)
@@ -314,16 +321,13 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     }
 
     // Go through the list again, putting any remaining adapters at the end of the list in an undefined order
-    for (WinAdapter* iterAdapter = pWinAdapterBegin; iterAdapter != pWinAdapterEnd; ++iterAdapter)
+    for (WinAdapter* iterAdapter = adapterList.pWinAdapterBegin; iterAdapter != adapterList.pWinAdapterEnd; ++iterAdapter)
     {
         khrIcdVendorAdd(iterAdapter->szName);
         adapterFree(iterAdapter);
     }
 
-    free(pWinAdapterBegin);
-    pWinAdapterBegin = NULL;
-    pWinAdapterEnd = NULL;
-    pWinAdapterCapacity = NULL;
+    free(adapterList.pWinAdapterBegin);
 
     result = RegCloseKey(platformsKey);
     if (ERROR_SUCCESS != result)
@@ -334,6 +338,7 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
 #if defined(CL_ENABLE_LAYERS)
     const char* layersName = "SOFTWARE\\Khronos\\OpenCL\\Layers";
     HKEY layersKey = NULL;
+    WinLayerList layerList = {NULL, NULL, NULL};
 
     KHR_ICD_TRACE("Opening key HKLM\\%s...\n", layersName);
     result = RegOpenKeyExA(
@@ -383,20 +388,17 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
                 continue;
             }
             // add the library
-            status |= layerAdd(cszLibraryName, dwValue);
+            status |= layerAdd(&layerList, cszLibraryName, dwValue);
         }
-        qsort(pWinLayerBegin, pWinLayerEnd - pWinLayerBegin, sizeof(WinLayer), compareLayer);
-        for (WinLayer* iterLayer = pWinLayerBegin; iterLayer != pWinLayerEnd; ++iterLayer)
+        qsort(layerList.pWinLayerBegin, layerList.pWinLayerEnd - layerList.pWinLayerBegin, sizeof(WinLayer), compareLayer);
+        for (WinLayer* iterLayer = layerList.pWinLayerBegin; iterLayer != layerList.pWinLayerEnd; ++iterLayer)
         {
             khrIcdLayerAdd(iterLayer->szName);
             layerFree(iterLayer);
         }
     }
 
-    free(pWinLayerBegin);
-    pWinLayerBegin = NULL;
-    pWinLayerEnd = NULL;
-    pWinLayerCapacity = NULL;
+    free(layerList.pWinLayerBegin);
 
     result = RegCloseKey(layersKey);
 
