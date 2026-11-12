@@ -161,7 +161,7 @@ int test_clGetGLObjectInfo(const struct clGetGLObjectInfo_st* data)
                                 data->gl_object_type,
                                 data->gl_object_name);
 
-    test_icd_app_log("Value returned: %p\n", ret_val);
+    test_icd_app_log("Value returned: %d\n", ret_val);
 
     return ret_val;
 
@@ -188,7 +188,7 @@ int test_clGetGLTextureInfo(const struct clGetGLTextureInfo_st* data)
                                   data->param_value,
                                   data->param_value_size_ret);
 
-    test_icd_app_log("Value returned: %p\n", ret_val);
+    test_icd_app_log("Value returned: %d\n", ret_val);
 
     return 0;
 }
@@ -216,7 +216,7 @@ int test_clEnqueueAcquireGLObjects(const struct clEnqueueAcquireGLObjects_st* da
                                          &event,
                                          &event);
 
-    test_icd_app_log("Value returned: %p\n", ret_val);
+    test_icd_app_log("Value returned: %d\n", ret_val);
 
     return 0;
 }
@@ -245,7 +245,7 @@ int test_clEnqueueReleaseGLObjects(const struct clEnqueueReleaseGLObjects_st* da
                                          &event);
 
 
-    test_icd_app_log("Value returned: %p\n", ret_val);
+    test_icd_app_log("Value returned: %d\n", ret_val);
 
     return 0;
 }
@@ -319,7 +319,7 @@ int test_clGetGLContextInfoKHR(const struct clGetGLContextInfoKHR_st* data)
                                     data->param_value,
                                     data->param_value_size_ret);
 
-    test_icd_app_log("Value returned: %p\n", ret_val);
+    test_icd_app_log("Value returned: %d\n", ret_val);
     return 0;
 
 }
