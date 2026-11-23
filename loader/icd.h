@@ -171,11 +171,23 @@ void khrIcdVendorsEnumerateEnv(void);
 // add a vendor's implementation to the list of libraries
 void khrIcdVendorAdd(const char *libraryName);
 
+// free the heap allocations (suffix strings and KHRicdVendor nodes) held by
+// the vendor list.  called on process/library detach to avoid leaking these
+// process-lifetime allocations.
+void khrIcdVendorsTeardown(void);
+
 // read layers from environment variables
 void khrIcdLayersEnumerateEnv(void);
 
 // add a layer to the layer chain
 void khrIcdLayerAdd(const char *libraryName);
+
+#if defined(CL_ENABLE_LAYERS)
+// free the heap allocations (KHRLayer nodes and, under CL_LAYER_INFO, their
+// library name strings) held by the layer chain.  called on process/library
+// detach to avoid leaking these process-lifetime allocations.
+void khrIcdLayersTeardown(void);
+#endif // defined(CL_ENABLE_LAYERS)
 
 // parse properties and determine the platform to use from them
 void khrIcdContextPropertiesGetPlatform(

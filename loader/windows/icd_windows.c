@@ -416,7 +416,18 @@ BOOL APIENTRY DllMain(HINSTANCE hinst, DWORD reason, LPVOID reserved) {
     (void)hinst;
     (void)reserved;
     if (reason == DLL_PROCESS_DETACH) {
-        khrIcdDeinitialize(reserved == NULL ? 1 : 0);
+        // skip cleanup if process is terminating. khrIcdDeinitialize is unsafe to
+        // call here: it invokes vendor/layer clDeinitLayer callbacks and FreeLibrary,
+        // which can deadlock while the loader lock is held. Instead just free the
+        // loader's own bookkeeping allocations (vendor/layer list nodes) to avoid
+        // leaking them.
+        if (reserved == NULL)
+        {
+            khrIcdVendorsTeardown();
+#if defined(CL_ENABLE_LAYERS)
+            khrIcdLayersTeardown();
+#endif // defined(CL_ENABLE_LAYERS)
+        }
     }
     return TRUE;
 }
