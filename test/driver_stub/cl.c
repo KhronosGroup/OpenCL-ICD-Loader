@@ -73,6 +73,7 @@ struct _cl_sampler
 
 static CLIicdDispatchTable* dispatchTable = NULL;
 static cl_platform_id stub_platform = NULL;
+static cl_platform_id stub_platform_2 = NULL;
 static cl_bool initialized = CL_FALSE;
 
 CL_API_ENTRY cl_int CL_API_CALL
@@ -1965,6 +1966,24 @@ clEnqueueBarrier(cl_command_queue  command_queue) CL_API_SUFFIX__VERSION_1_0
 extern cl_int cliIcdDispatchTableCreate(CLIicdDispatchTable **outDispatchTable);
 extern void cliIcdDispatchTableDestroy(CLIicdDispatchTable *dispatchTable);
 
+
+static inline cl_platform_id
+cliIcdCreatePlatform(const char * const name)
+{
+    cl_platform_id platform;
+    platform = (cl_platform_id) malloc(sizeof(struct _cl_platform_id));
+    memset(platform, 0, sizeof(struct _cl_platform_id));
+
+    CL_INIT_PLATFORM(platform, dispatchTable);
+    platform->version = "OpenCL 1.2 Stub";
+    platform->vendor = "stubvendorxxx";
+    platform->profile = "stubprofilexxx";
+    platform->name = name;
+    platform->extensions = "cl_khr_icd cl_khr_icd_unloadable cl_khr_gl cl_khr_d3d10";
+    platform->suffix = "ilts";
+    return platform;
+}
+
 CL_API_ENTRY cl_int CL_API_CALL
 clIcdGetPlatformIDsKHR(cl_uint           num_entries,
                        cl_platform_id * platforms,
@@ -1973,37 +1992,37 @@ clIcdGetPlatformIDsKHR(cl_uint           num_entries,
     cl_int result = CL_SUCCESS;
     if (!initialized) {
         result = cliIcdDispatchTableCreate(&dispatchTable);
-        stub_platform = (cl_platform_id) malloc(sizeof(struct _cl_platform_id));
-        memset(stub_platform, 0, sizeof(struct _cl_platform_id));
 
-        CL_INIT_PLATFORM(stub_platform, dispatchTable);
-        stub_platform->version = "OpenCL 1.2 Stub";
-        stub_platform->vendor = "stubvendorxxx";
-        stub_platform->profile = "stubprofilexxx";
 #if defined(CL_ENABLE_ICD2)
-        stub_platform->name = "ICD_LOADER_TEST_OPENCL_STUB_ICD2";
+        stub_platform = cliIcdCreatePlatform("ICD_LOADER_TEST_OPENCL_STUB_ICD2");
 #else
-        stub_platform->name = "ICD_LOADER_TEST_OPENCL_STUB";
+        stub_platform = cliIcdCreatePlatform("ICD_LOADER_TEST_OPENCL_STUB");
 #endif
-        stub_platform->extensions = "cl_khr_icd cl_khr_icd_unloadable cl_khr_gl cl_khr_d3d10";
-        stub_platform->suffix = "ilts";
+
+#if defined(CL_ENABLE_ICD2)
+        stub_platform_2 = cliIcdCreatePlatform("ICD_LOADER_TEST_OPENCL_STUB_ICD2_2");
+#else
+        stub_platform_2 = cliIcdCreatePlatform("ICD_LOADER_TEST_OPENCL_STUB_2");
+#endif
+
         initialized = CL_TRUE;
     }
 
-    if ((platforms && num_entries >1) ||
-        (platforms && num_entries <= 0) ||
+    if ((platforms && num_entries >2) ||
+        (platforms && num_entries <= 1) ||
         (!platforms && num_entries >= 1)) {
         result = CL_INVALID_VALUE;
         goto Done;
     }
 
-    if (platforms && num_entries == 1) {
+    if (platforms && num_entries == 2) {
         platforms[0] = stub_platform;
+        platforms[1] = stub_platform_2;
     }
 
 Done:
     if (num_platforms) {
-        *num_platforms = 1;
+        *num_platforms = 2;
     }
 
     return result;
@@ -2015,6 +2034,12 @@ static void deinit(void) {
         stub_platform->device = NULL;
         free(stub_platform);
         stub_platform = NULL;
+
+        free(stub_platform_2->device);
+        stub_platform_2->device = NULL;
+        free(stub_platform_2);
+        stub_platform_2 = NULL;
+
         cliIcdDispatchTableDestroy(dispatchTable);
         dispatchTable = NULL;
         initialized = CL_FALSE;
